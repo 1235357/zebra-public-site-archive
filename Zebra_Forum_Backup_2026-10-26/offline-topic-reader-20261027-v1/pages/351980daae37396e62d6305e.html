@@ -1,0 +1,212 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Unable to pair DS2278 manually via latest Android SDK</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Unable to pair DS2278 manually via latest Android SDK</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/unable-pair-ds2278-manually-latest-android-sdk; original snapshot: threads/00696.html; SHA-256: fe9e2b7f3c615d7dc0b2004b80251d82f3621191841031bcb85784856ffa2ceb</small><pre id="topic">
+
+    
+        Unable to pair DS2278 manually via latest Android SDK
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          3 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            111
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Environment:
+--------------------
+Android Scanner SDK version: v2.6.10.0
+Android version: 10
+Scanner Model: DS2278
+Firmware version: CAADFS00-003-R00
+Operation Mode: DCSSDK_OPMODE_BT_NORMAL
+--
+Source Code:
+https://gist.github.com/Pranit-Harekar/548998a4f8b66fcae000ad15b81bd8f7
+--
+Description:
+As per the manual for Scanner Android SDK, there are two ways to pair scanner -
+1. Manual - scan HID Bluetooth Classic barcode provided in the getting started manual and connect scanner directly from Android device
+2. Through generated pairing barcode
+However, when scanner is paired using the manual approach (#1), the SDK fails to establish connection using `dcssdkEstablishCommunicationSession` method. Please refer to the following logs -
+--
+I/BluetoothManager: Trying to connect to socket. Attempt = 3
+W/BluetoothAdapter: getBluetoothService() called with no BluetoothManagerCallback
+E/BluetoothManager: Unable to connect() socket
+    java.io.IOException: read failed, socket might closed or timeout, read ret: -1
+        at android.bluetooth.BluetoothSocket.readAll(BluetoothSocket.java:772)
+        at android.bluetooth.BluetoothSocket.readInt(BluetoothSocket.java:786)
+        at android.bluetooth.BluetoothSocket.connect(BluetoothSocket.java:404)
+        at com.zebra.scannercontrol.BluetoothManager$ConnectThread.run(BluetoothManager.java:549)
+E/BluetoothManager: ConnectThread notify
+E/BluetoothManager: ConnectThread notify completed
+I/BluetoothManager: connect:wait completed
+I/BluetoothManager: connect:Connection not successful
+I/SDKHandler: connectToAvailableScanner() connMgr.connect returns false
+I/BluetoothManager: setState() 2 -&amp;gt; 1
+I/BluetoothManager: ConnectThread close()
+D/BluetoothSocket: close() this: android.bluetooth.BluetoothSocket@629ea2a, channel: -1, mSocketIS: android.net.LocalSocketImpl$SocketInputStream@badb01b, mSocketOS: android.net.LocalSocketImpl$SocketOutputStream@47e65b8mSocket: android.net.LocalSocket@11f8f91 impl:android.net.LocalSocketImpl@3547ef6 fd:java.io.FileDescriptor@1ed32f7, mSocketState: INIT
+I/BluetoothManager: start
+D/BluetoothSocket: close() this: android.bluetooth.BluetoothSocket@629ea2a, channel: -1, mSocketIS: android.net.LocalSocketImpl$SocketInputStream@badb01b, mSocketOS: android.net.LocalSocketImpl$SocketOutputStream@47e65b8mSocket: null, mSocketState: CLOSED
+I/BluetoothManager: setState() 1 -&amp;gt; 1
+E/BluetoothManager: ConnectThread return
+W/System: A resource failed to call close.
+I/SDKHandler: connectToAvailableScanner Error occurred
+D/BluetoothSocket: close() this: android.bluetooth.BluetoothSocket@629ea2a, channel: -1, mSocketIS: android.net.LocalSocketImpl$SocketInputStream@badb01b, mSocketOS: android.net.LocalSocketImpl$SocketOutputStream@47e65b8mSocket: null, mSocketState: CLOSED
+--
+The same issue is reproducible with the Scanner Control app v2.6.10.0. i.e. when tried to connect to a manually paired scanner, app displays “Unable to communicate with scanner” error message as shown in the attached screenshots. However when the scanner is connected through generated pairing barcode, it works as expected.
+Similar issues have been reported in the past on this forum however there is no resolution provided. Kindly advice/escalate this issue. Thanks!
+--
+Refs:
+https://developer.zebra.com/forum/25447
+https://developer.zebra.com/forum/24946
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            For Pairing scanner from android device manually and using android SDK please test steps below
+DS2278 - Manual link https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/barcode-sc…
+- Remove the DS2278 from your android device BT list
+- Set DS2278 to default  - Page 63 in previous link
+- Set DS2278 to SSI Bluetooth Classic (Discoverable - Page 105 in previous link 
+Go to your android BT explorer and find DS2278 and select pair 
+Run Zebra Android Scanner control app
+Go to device Available device list and select DS2278
+The connection should pass and the menu for controlling the scanner should open up 
+BT HID classic is uni-directional protocol.
+Android SDK supported communication protocols include:
+For Zebra wired scanners
+• USB - Symbol Native API (SNAPI) with Imaging Interface -
+For BT Zebra Scanners
+• Simple Serial Interface (SSI) over Bluetooth Classic - In this mode Scanner can be Central or Peripheral device
+• Simple Serial Interface (SSI) over Bluetooth Low-Energy (BLE) - In this mode the scanner can be only Central 
+When in Central mode, to pair you use pairing barcode (the pairing barcode in fact set the scanner into SSI BT BLE or Classic (non-discoverable) depending on which setting was selected.)
+When in Peripheral mode SSI Bluetooth Classic (Discoverable), you can connect to the scanner from android device. as per the steps highlighted earlier .
+The pairing barcode format can be checked from the following link
+https://supportcommunity.zebra.com/s/article/Extended-Pairing-Barcode-f…
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

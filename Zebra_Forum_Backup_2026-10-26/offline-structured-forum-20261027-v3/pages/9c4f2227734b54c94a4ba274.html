@@ -1,0 +1,155 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Problem with wrap text in ZPL field blocks printing labels</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/problem-wrap-text-zpl-field-blocks-printing-labels; snapshot threads/00353.html; SHA-256 6bf478ec97052d1d94cf4679cbd17004d8c478d542d2a97a36248316f110152c. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Problem with wrap text in ZPL field blocks printing labels</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            F
+          </div>
+          <div class="forum-topic__author-name">Filippo Rovaris</div>
+          <div class="forum-topic__timestamp">11 months 3 weeks ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            552
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello, I have a problem with text wrap in field blocks created with ZPL command ^FB. The block is made up of 17 lines, left justified. Each line has the escape sequence \&amp; to go to a new line when needed, and everithings work fine when line are shorter than the label. The problem comes when a line is longer and automatically wrap to a new line: if the has some spaces between words (see example line 5 in the image attached) it works fine, the subsequent line start in a new line, when there are no spaces (see example line 8) it automatically wrap with an added "-" but the next line start on the same line, not on a new line, the "\&amp;" is ignored.</p><p>Someone have a solution? </p><p> </p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+      <div class="field field--name-field-attachment field--type-file field--label-hidden field__items">
+              <div class="field__item">
+<span class="file file--mime-image-jpeg file--image"> <span data-original-href="/sites/default/files/user-uploads/2025/11/06/label.jpg">label.jpg</span></span>
+</div>
+          </div>
+  
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-54251" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              A
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Amar Byrisetty</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            10 months 4 weeks ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>To make the \&amp; work as a carriage return and new line feed in the ^FD statement, you would need to have a preceding ^FB statement to define a box, so that the printer knows where the next line should start. Without the ^FB, everything in the ^FD will be in one line. In ZPL there is no command to breakup the text you want to write based on its length. You have to break it into 2 or 3 variables as per the length and then you can write it using that 2 or more ^FD commands.</p>
+<p><span>See the examples of multi lines in a text block in the </span><span data-original-href="https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/printers/common/programming/zpl-zbi2-pm-en.pdf#page=184">^FB</span><span> section in the ZPL User Guide.</span> You can use this link for preview of output from your ZPL code <span data-original-href="https://labelary.com/viewer.html">https://labelary.com/viewer.html</span></p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/problem-wrap-text-zpl-field-blocks-printing-labels%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/problem-wrap-text-zpl-field-blocks-printing-labels%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

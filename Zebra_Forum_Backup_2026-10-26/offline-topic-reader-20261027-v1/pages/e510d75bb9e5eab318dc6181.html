@@ -1,0 +1,145 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Persistent &quot;Operation In Progress&quot; Error During TagAccess.writeWait()</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Persistent &quot;Operation In Progress&quot; Error During TagAccess.writeWait()</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/persistent-operation-progress-error-during-tagaccesswritewait; original snapshot: threads/00359.html; SHA-256: a80f1b8c92af4437208baabbfe5c68ed3487ebcc72374bcd61b6bdafabf9a7cd</small><pre id="topic">
+
+    
+        Persistent &quot;Operation In Progress&quot; Error During TagAccess.writeWait()
+
+
+        
+      
+                        
+                    
+            G
+          
+          Georg Aschauer
+          12 months ago
+        
+        
+      
+        
+            
+                  
+            
+            189
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Issue SummaryI&#x27;m experiencing a persistent &quot;Operation In Progress&quot; error when attempting to write to UHF RFID tags using the Zebra Android SDK. Despite implementing multiple conflict prevention strategies, the error continues to occur intermittently, making reliable tag writing impossible.Hardware/Software DetailsDevice: RFD90SDK Version: 2.0.5.224Tag Type: UHF Gen2 tags (various manufacturers - Impinj, NXP)Current Implementationprivate suspend fun performWrite(   tagId: String,   memoryBank: MEMORY_BANK,   offset: Int,   data: String,   accessPassword: Long,   operationType: String): Boolean {   return withContext(Dispatchers.IO) {       try {           Log.d(TAG, &quot;Starting atomic write for $operationType&quot;)           val config = reader!!.Config.Antennas.getAntennaRfConfig(1)           config.transmitPowerIndex = 240           config.setrfModeTableIndex(0)           config.tari = 0           reader!!.Config.Antennas.setAntennaRfConfig(1, config)           reader!!.Config.setAccessOperationWaitTimeout(15000)           reader!!.Actions.Inventory.stop()           val tagAccess = TagAccess()           val accessParams = tagAccess.WriteAccessParams()           accessParams.accessPassword = accessPassword           accessParams.memoryBank = memoryBank           accessParams.offset = offset           accessParams.setWriteData(data)           accessParams.writeRetries = 3           accessParams.writeDataLength = data.length / 4           Log.d(TAG, &quot;Executing write with TID-based password: ${accessPassword.toString(16).uppercase()}&quot;)           // wait 150ms before write           kotlinx.coroutines.delay(150)           val useTIDfilter = memoryBank === MEMORY_BANK.MEMORY_BANK_EPC           reader!!.Actions.TagAccess.writeWait(tagId, accessParams, null, null, true, useTIDfilter)           Log.d(TAG, &quot;Write for $operationType completed successfully&quot;)           return@withContext true       } catch (e: OperationFailureException) {           Log.e(TAG, &quot;Write failed for $operationType: ${e.vendorMessage}&quot;)           throw e       }   }}Error DetailsException Type: `OperationFailureException`Vendor Message: &quot;Operation In Progress&quot; or &quot;Command Not Allowed&quot;Typical Log Output2025-10-30 08:33:44.081 30010-30010 IRFIDError              com.example.zebrademo                D  GetStatus Write RFID_OPERATION_IN_PROGRESS Operation In Progress-Command Not Allowed2025-10-30 08:33:44.091 30010-30010 IRFIDError              com.example.zebrademo                D  GetStatus SetStartTrigger RFID_OPERATION_IN_PROGRESS Operation In Progress-Command Not Allowed2025-10-30 08:33:44.100 30010-30010 IRFIDError              com.example.zebrademo                D  GetStatus SetSelectRecords RFID_OPERATION_IN_PROGRESS Operation In Progress-Command Not Allowed2025-10-30 08:33:44.102 30010-30010 IRFIDError              com.example.zebrademo                D  GetStatus SetQueryParams RFID_OPERATION_IN_PROGRESS Operation In Progress-Command Not Allowed2025-10-30 08:33:44.105 30010-30010 ZEBRA_RFID_DEMO         com.example.zebrademo                E  Atomic write failed for PIN: Operation In Progress-Command Not Allowed 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alex Lavie
+          
+          
+            11 months 2 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            did you check this tutorial?Write Access Tutorial - Zebra Technologies Techdocs
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

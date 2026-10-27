@@ -1,0 +1,218 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>&#x27;_CoreScanner_i.c&#x27; is missing in sample app&#x27;s code</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>&#x27;_CoreScanner_i.c&#x27; is missing in sample app&#x27;s code</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25976; original snapshot: threads/resume-00347.html; SHA-256: 29a787ea3f4d73f1370b95baf5af5642ddcd881d4b7426d271b3534ba73907d4</small><pre id="topic">
+
+    
+        &#x27;_CoreScanner_i.c&#x27; is missing in sample app&#x27;s code
+
+
+        
+      
+                        
+                    
+            K
+          
+          kim kimkim
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            26
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I compiled Windows c++ Barcode scanner sample in visual studio
+ but I got &quot; &#x27;_CoreScanner_i.c&#x27;: No such file or directory&quot; error message and I can&#x27;t compile sample app.
+where can I get this file?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              K
+            
+          
+                
+          
+            kim kimkim
+          
+          
+            5 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I explored &quot;_CoreScanner.h&quot; file, and I found out that the problem is some variables declared as EXTERN_C.
+These 4 variables are declared as EXTERN_C.
+- IID_ICoreScanner
+- LIBID_CoreScanner
+- DIID__ICoreScannerEvents
+- CLSID_CCoreScanner
+These variables need to have approprate initial value(GUID of class or library)
+I found out classes&#x27; GUID from &quot;_CoreScanner.h&quot; and library ID from c# project
+So this Nonofficial _CoreScanner_i.c code works!
+========_CoreScanner_i.c=========(Nonofficial)
+#include &quot;rpc.h&quot;
+#include &quot;rpcndr.h&quot;
+const IID IID_ICoreScanner = { 0x2105896C, 0x2B38, 0x4031, {0xBD,0x0B,0x7A,0x9C,0x4A,0x39,0xFB,0x93} };
+const IID LIBID_CoreScanner = { 0xDB07B9FC, 0x18B0, 0x4B55, {0x9A,0x44,0x31,0xD2,0xC2,0xF8,0x78,0x75} };
+const IID DIID__ICoreScannerEvents = { 0x981E3D8B, 0xC756, 0x4195, {0xA7,0x02,0xF1,0x98,0x96,0x50,0x31,0xC6} };
+const CLSID CLSID_CCoreScanner = { 0x9F8D4F16, 0x0F61, 0x4A38, {0x98,0xB3,0x1F,0x6F,0x80,0xF1,0x1C,0x87} };
+============================
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              L
+            
+          
+                
+          
+            linda perryly
+          
+          
+            5 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            How to solve basic calculations  https://standard-deviationcalculator.com free online
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

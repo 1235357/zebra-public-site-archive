@@ -1,0 +1,532 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>browserPrint appears to detect printer but is unable to print to it. Returns 500 errors and network &#x27;write&#x27; errors</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/browserprint-appears-detect-printer-unable-print-it-returns-500-errors-and-network-write-errors; snapshot threads/00990.html; SHA-256 a69d31dcaed4bd896e428fd47af3e388a0401889e76f21bd5f2e48685bcd93ec. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">browserPrint appears to detect printer but is unable to print to it. Returns 500 errors and network 'write' errors</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            M
+          </div>
+          <div class="forum-topic__author-name">Matt Mattox</div>
+          <div class="forum-topic__timestamp">5 years ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            2008
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            7
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi our company, Faithlife, uses your Zebra printers for one of our services in our church management software. We are inquiring about a problem we are noticing on the front end that we think our customers will run into involving your “browser print” SDK.</p>
+<p>The code that is failing was pulled straight from &lt;em&gt;your documentation&lt;/em&gt;. See below.<br>
+Here's a video of our interface and the console/network errors. <span data-original-href="https://recordit.co/d9RbFF6YId">https://recordit.co/d9RbFF6YId</span><br>
+Attached are some screenshots as well of the 500 errors and network errors. </p>
+<p>Tdlr: On my MacBook pro the default?type=printers request succeeded and returned a printer then when it tried to do write it would error out and say something like Could not print to printer</p>
+<p>&lt;code&gt;export const getDevices = (</p>
+<p>	onGetDevices: ({</p>
+<p>		defaultDevice,</p>
+<p>		devices,</p>
+<p>	}: {</p>
+<p>		defaultDevice: IZebraDevice;</p>
+<p>		devices: IZebraDevice[];</p>
+<p>	}) =&amp;gt; void</p>
+<p>) =&amp;gt; {</p>
+<p>	//Get the default device from the application as a first step. Discovery takes longer to complete.</p>
+<p>	browserPrint.getDefaultDevice(</p>
+<p>		'printer',</p>
+<p>		(defaultDevice: IZebraDevice) =&amp;gt; {</p>
+<p>			//Discover any other devices available to the application</p>
+<p>			browserPrint.getLocalDevices(</p>
+<p>				(devices: IZebraDevice[]) =&amp;gt; {</p>
+<p>					onGetDevices({</p>
+<p>						defaultDevice: [defaultDevice, ...devices].find(({ name }) =&amp;gt; name),</p>
+<p>						devices,</p>
+<p>					});</p>
+<p>				},</p>
+<p>				() =&amp;gt; {</p>
+<p>					console.error('Error getting local devices');</p>
+<p>				},</p>
+<p>				'printer'</p>
+<p>			);</p>
+<p>		},</p>
+<p>		error =&amp;gt; {</p>
+<p>			console.error(error);</p>
+<p>		}</p>
+<p>	);</p>
+<p>}; &lt;/code&gt;</p>
+<p>We also noticed that your test app isn’t sending the request that is failing in our app so we are not sure if your example is representative of the API we are using. Here's what we see in the `default?type=printer` network tab response.</p>
+<p>&lt;blockquote&gt; {"deviceType":"printer","uid":"usb#vid_0a5f&amp;amp;pid_0120#D2N204202525#bus_002#addr_004#model_ZTC ZD420-203dpi ZPL","provider":"com.zebra.ds.webdriver.desktop.provider.DefaultDeviceProvider","name":"ZD420-203dpi ZPL (D2N204202525)","connection":"usb","version":4,"manufacturer":"Zebra Technologies"} </p>
+<p>Here's what we see in the available network response type.<br>
+ {}<br>
+ which looks like an empty array</p>
+<p>Here's what we see in the `write` network response tab.<br>
+ Failed to write to device: Unable to establish connection to ZD420-203dpi ZPL (D2N204202525) </p>
+<p>We are also curious if you have any better documentation that won’t require customers to install the SDK as we’ll most likely have people run into problems.<br>
+&lt;/blockquote&gt;</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      7 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-49559" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>When you get the 500 error, it means that the printer is unreachable. Are you sure that the printer is truly reachable? You can verify that by opening the settings of the Browser Print client on your MacBook, and click on the Change button next to the Default Devices. Then you should be able to see the the printer that is either connected via USB or the network. If it's not there, then you will get 500 error.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-49562" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              M
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Matt Mattox</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thanks for the reply. I did the following steps and I do see my printer.</p>
+<p>When I click change I get a small window that says "Select Default Device" and under it, it says Device Type: Printer and below that says Device: ZD420-203dpi ZPL...etc.</p>
+<p>Here's a screenshot: <span data-original-href="https://amber.faithlife.com/shares/0Mq0C6YZkKqmy5it">https://amber.faithlife.com/shares/0Mq0C6YZkKqmy5it</span></p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-49563" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Would you be able to print from the Browser Print demo? The demo code is packed with the <span data-original-href="https://www.zebra.com/us/en/support-downloads/printer-software/by-request-software.html">Download Browser Print JavaScript Library</span> package, under the sample folder. To run the demo, you can either simply double click on the index.html file, or load the entire sample folder onto your server and access the demo on the server from a local browser.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-49570" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              M
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Matt Mattox</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Yeah i've used this before and so did other developers. <span data-original-href="https://www.zebra.com/us/en/forms/browser-print-request-osx.html">https://www.zebra.com/us/en/forms/browser-print-request-osx.html</span> </p>
+<p>That works, but it seems to work differently than their example code in the docs because I don't see the same requests when using that as when I use the example code.</p>
+<p>I think the question we need to get answered is what is a reliable way for our customers to setup to be able to use browser print?</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-49597" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              M
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Matt Mattox</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Bump -- </p>
+<p>What is the recommended way for users (not developers) to operate the zebra printer? Do you guys have a step-by-step guide that doesn't require the SDK to install?</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-49598" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              B
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Bryan Kenote</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi I am one of one of the developers working on supporting Zebra label printers for the customers of our app.</p>
+<p>I downloaded your Browser Print sdk found here: <span data-original-href="https://www.zebra.com/us/en/products/software/barcode-printers/link-os/browser-print.html">https://www.zebra.com/us/en/products/software/barcode-printers/link-os/…</span></p>
+<p>This download requires a form to be filled out that requires a company name. The files included in the download are more than the print web service. It also includes documentation. Is there documentation that we can refer our customers to that will allow them to setup a zebra label printer, like the ZD420, to work with a web app using your browser print sdk? And a way for them to download the web service without filling out a form and receiving the documentation for development?</p>
+<p>Also we are trying to set this up for others internally and as Matt has mentioned, we are noticing some differences with how the example is setup and how the documentation recommends checking for available printers. Matt was having some issues getting everything working on his machine even after installing the sdk. We are hoping we can get this working reliably for customers as well as other developers.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-49611" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 12 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Bryan,</p>
+<p>The Browser Print supports Windows PC, Mac OS and Android OS. Depending on the environment your customer will be using, your customer needs to download the corresponding client part of the Browser Print and install it on their Windows PC, Mac OS or Android device. The <span data-original-href="https://www.zebra.com/us/en/support-downloads/printer-software/by-request-software.html">Browser Print download page</span> provides a list of the client parts of the Browser Print and their corresponding user's guides. See the screenshot below. Your customer should be able to install the clients in their environment by following the user's guide. Just a note: The Browser Print User Guide is for both Windows PC and Mac OS, while the Browser for Android User Guide is specific for Android users. The Browser Print JavaScript Library is for the web app on the server to use. Let us know if any questions.</p>
+<p><img alt="BrowserPrintDownloadPage" src="../assets/0c36e684962fa99a2703ece9b5ef6f2af2c1b91d7791f0b630148881710bd9aa.png" data-source-url="https://developer.zebra.com/sites/default/files/inline-images/BrowserPrintDownloadPage.png"></p>
+<p> </p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/browserprint-appears-detect-printer-unable-print-it-returns-500-errors-and-network-write-errors%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/browserprint-appears-detect-printer-unable-print-it-returns-500-errors-and-network-write-errors%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

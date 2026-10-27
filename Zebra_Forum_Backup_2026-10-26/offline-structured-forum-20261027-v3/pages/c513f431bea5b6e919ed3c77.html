@@ -1,0 +1,148 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>OEMConfig build_serial extraction</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/oemconfig-buildserial-extraction; snapshot threads/00060.html; SHA-256 d0055a45d1ee47901c882009ce77f6579f777ed12539f9d946664d68d23daa6f. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">OEMConfig build_serial extraction</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            M
+          </div>
+          <div class="forum-topic__author-name">Matan Genezia</div>
+          <div class="forum-topic__timestamp">1 year 7 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            223
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi</p><p>In my Android app, I use UUID.randomUUID().toString() and save it to SharedPreferences</p><p>This UUID used for save information about the device in server DB</p><p>My problem is that our customer works with MDM that not update the app, but uninstall and install the new version</p><p>Therefor the UUID is changed</p><p>I need a way to extract some unique identifier of the device, that won't be change when reinstalling the app (or clear data)</p><p> </p><p>I tried to use OEMConfig:</p><p>I tried with CallerSignature as hex &amp; base64 as mentioned in <span data-original-href="https://developer.zebra.com/blog/generating-package-signature-use-mx">https://developer.zebra.com/blog/generating-package-signature-use-mx</span> (Zebra's App Signature Tools)</p><p>I tried to extract the CallerSignature with SigTools.jar</p><p>I always got the same result- CursorIndexOutOfBoundsException (index 0)</p><p> </p><p>I added those to the manifest as well </p><p><code><span>&lt;uses-permission android</span>:name<span>="com.zebra.provider.READ"/&gt;</span></code><br><br><code><span>&lt;queries&gt;</span></code><br><code><span>    &lt;package android</span>:name<span>="com.zebra.zebracontentprovider" /&gt;</span></code><br><code><span>&lt;/queries&gt;</span></code></p><p> </p><p>Here's my code:</p><p><code>        val profileName = UUID.randomUUID().toString()</code><br><code>       val profile = "&lt;wap-provisioningdoc&gt;\n" +</code><br><code>               "  &lt;characteristic type=\"ProfileInfo\"&gt;\n" +</code><br><code>               "      &lt;parm name=\"created_wizard_version\" value=\"11.0.1\" /&gt;\n" +</code><br><code>               "  &lt;/characteristic&gt;\n" +</code><br><code>               "  &lt;characteristic type=\"Profile\"&gt;\n" +</code><br><code>               "      &lt;parm name=\"ProfileName\" value=\"$profileName\" /&gt;\n" +</code><br><code>               "      &lt;parm name=\"ModifiedDate\" value=\"2022-08-17 10:20:36\" /&gt;\n" +</code><br><code>               "      &lt;parm name=\"TargetSystemVersion\" value=\"10.4\" /&gt;\n" +</code><br><code>               "      &lt;characteristic type=\"AccessMgr\" version=\"10.4\"&gt;\n" +</code><br><code>               "          &lt;parm name=\"emdk_name\" value=\"\" /&gt;\n" +</code><br><code>               "          &lt;parm name=\"ServiceAccessAction\" value=\"4\" /&gt;\n" +</code><br><code>               "          &lt;parm name=\"ServiceIdentifier\" value=\"content://oem_info/oem.zebra.secure/build_serial\" /&gt;\n" +</code><br><code>               "          &lt;parm name=\"CallerPackageName\" value=\"com.supersmart.cc6000.sapir.il\" /&gt;\n" +</code><br><code>               "          &lt;parm name=\"CallerSignature\" value=\"{{hex signature}}\" /&gt;\n" +</code><br><code>               "      &lt;/characteristic&gt;\n" +</code><br><code>               "  &lt;/characteristic&gt;\n" +</code><br><code>               "&lt;/wap-provisioningdoc&gt;"</code></p><p><code>       Log.i("SERIAL", "version with hex key")</code><br><code>       val returnVal = arrayOf(profile)</code><br><code>       val profileXml = mapOf(Pair(profileName, returnVal))</code></p><p><code>       ProfileManagerBase {</code><br><code>           val SERIAL_URI = "content://oem_info/oem.zebra.secure/build_serial"</code></p><p><code>           val uri = Uri.parse(SERIAL_URI)</code><br><code>           object: AsyncTask&lt;String, Void, Cursor&gt;() {</code></p><p><code>               var myUri: String? = null</code></p><p><code>               override fun doInBackground(vararg params: String?): Cursor? {</code><br><code>                   myUri = params[0]</code><br><code>                   var cr = contentResolver</code><br><code>                   val cursor = cr.query(Uri.parse(myUri), null, null, null,null)</code><br><code>                   cursor?.let {</code><br><code>                       it.moveToFirst()</code><br><code>                       val serial = it.getString(0)</code><br><code>                       val a = serial</code><br><code>                       Log.i("SERIAL!!!", "doInBackground: $serial")</code><br><code>                   }</code></p><p><code>                   return cursor</code><br><code>               }</code><br><code>           }.execute(uri.toString())</code><br><code>       }</code><br><code>           .handleXmlProfile(profileXml, true)</code><br><br> </p><p>I want to extract the build_serial (or any other data that won't be changed after reinstall)</p><p>I'm using Cc6000 Android 13</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-53928" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              I
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Ian Hatton</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 7 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Please take a look at the guide here ( <span data-original-href="https://developer.zebra.com/blog/device-identifiers-zebra-devices-running-android-10-%25E2%2580%2593-complete-guide">Device Identifiers on Zebra Devices Running Android 10 – The Complete Guide | Developer Portal</span> ) which covers several methods of accessing device-specific info including UUID</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/oemconfig-buildserial-extraction%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/oemconfig-buildserial-extraction%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

@@ -1,0 +1,277 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Configure RFID output to report RSSI via broadcast intents in DataWedge</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Configure RFID output to report RSSI via broadcast intents in DataWedge</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/configure-rfid-output-report-rssi-broadcast-intents-datawedge; original snapshot: threads/00356.html; SHA-256: cd8f4f1ba2782429fa27e6607a5c6b8e330751c8753395e005e6ed267f74c333</small><pre id="topic">
+
+    
+        Configure RFID output to report RSSI via broadcast intents in DataWedge
+
+
+        
+      
+                        
+                    
+            D
+          
+          David Corsalini
+          11 months 3 weeks ago
+        
+        
+      
+        
+            
+                  
+            
+            211
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I have working Android code to create a profile in DataWedge, that correctly reads and reports 2D barcode scans back to my application, so I have a working base. I&#x27;m now adding RFID reading, in particular I need to search for a pattern and receive updates on the RSSI for that tag (so that I can show it in our app UI). I&#x27;m facing 2 problems:I can&#x27;t find the correct string to use in the bundle for RSSI reporting. I found out it is saved as &quot;tag_RSSI&quot; in DataWedge, but it doesn&#x27;t set it in DataWedge when used with the setConfig intentI can&#x27;t find documentation on how to receive this data (with RSSI) via the Intent Output (which I have working for barcode scanning)This is the code I have to create the RFID bundle private fun createRfidBundle(configuration: ScannerConfiguration): Bundle {
+val pattern = configuration?.getRfidPattern()
+val enabled = configuration?.wantsRfidCapability() == true &amp;&amp; pattern.isNullOrBlank().not()
+val barcodeParamListBundle = bundleOf(
+&quot;rfid_input_enabled&quot; to if (enabled) &quot;true&quot; else &quot;false&quot;,
+&quot;rfid_beeper_enable&quot; to &quot;true&quot;,
+&quot;rfid_led_enable&quot; to &quot;true&quot;,
+&quot;rfid_session&quot; to &quot;1&quot;,
+&quot;rfid_antenna_transmit_power&quot; to 30,
+&quot;rfid_hardware_trigger_enabled&quot; to &quot;true&quot;,
+&quot;rfid_trigger_mode&quot; to &quot;0&quot;,
+&quot;rfid_filter_duplicate_tags&quot; to &quot;false&quot;,
+&quot;rfid_pre_filter_enable&quot; to &quot;true&quot;,
+&quot;rfid_pre_filter_tag_pattern&quot; to pattern,
+&quot;rfid_pre_filter_target&quot; to 1, //Session 1
+&quot;rfid_pre_filter_memory_bank&quot; to 4, //Memory bank EPC
+&quot;rfid_pre_filter_action&quot; to 0,
+&quot;rfid_post_filter_rssi&quot; to -100,
+&quot;tag_RSSI&quot; to true
+)
+ 
+return bundleOf(
+&quot;PLUGIN_NAME&quot; to &quot;RFID&quot;,
+&quot;RESET_CONFIG&quot; to &quot;true&quot;,
+&quot;PARAM_LIST&quot; to barcodeParamListBundle
+)
+}
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alex Lavie
+          
+          
+            11 months 2 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            hi there: 1/ rfid_enable_tag_rssi: This parameter is specifically used to include RSSI (signal strength) information for each tag read. Setting it to &quot;true&quot; ensures that the RSSI values will be appended to the tag data output.Other Parameters: The remaining parameters (rfid_input_enabled, rfid_enable_hardware_trigger, and rfid_enable_antenna) remain as before to enable RFID input and ensure proper operation of the RFID scanner.Expected OutputWhen a tag is scanned, the output will include the following information:Tag Data: The unique identifier of the tag (e.g., EPC or TID).RSSI Value: The signal strength of the tag read. This is typically a negative value (e.g., -65 dBm), where a higher absolute value indicates a weaker signal.2/ not a specialist but maybe a path below:@Overrideprotected void onNewIntent(Intent intent) {   super.onNewIntent(intent);   if (&quot;com.example.rfid.DATA_CAPTURED&quot;.equals(intent.getAction())) {       String tagData = intent.getStringExtra(&quot;com.symbol.datawedge.data_string&quot;);       String rssi = intent.getStringExtra(&quot;com.symbol.datawedge.data_rssi&quot;); // Check if RSSI is included       Log.d(&quot;RFID&quot;, &quot;Tag Data: &quot; + tagData);       Log.d(&quot;RFID&quot;, &quot;RSSI: &quot; + rssi);   }}
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Dustin Schie
+          
+          
+            6 months 2 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            rfid_enable_tag_rssi does not seem to be the correct key for &quot;Tag Reporting &gt; RSSI&quot;Setting this param to &#x27;true&#x27; doesn&#x27;t cause either of the following:- the check box in the datawedge profile to be checked for &quot;Tag Reporting &gt; RSSI&quot;- does not append RSSI to the data_string value---If I were to manually mark the checkbox on &quot;Tag Reporting &gt; RSSI&quot;, then perform subsequent scans the RSSI will then become appended, but this is less than ideal UX.---Can you provide the actual key for this param? I haven&#x27;t been able to find it in the documentation
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            6 months 2 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I think you may need to query Datawedge Profile to get that key ( and the path to the same key )Would not this TechDoc  techNote help you with that?https://techdocs.zebra.com/datawedge/15-0/guide/api/getconfig/I suppose looking for the &quot;rssi&quot; as a keyward search may reveal both the Key and the key Path you need to traverse to set that parameter = true. ? 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

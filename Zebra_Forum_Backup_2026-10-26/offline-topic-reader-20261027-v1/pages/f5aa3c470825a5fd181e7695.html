@@ -1,0 +1,406 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Interfacing with LS2208 Scanner using Python</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Interfacing with LS2208 Scanner using Python</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/interfacing-ls2208-scanner-using-python; original snapshot: threads/00651.html; SHA-256: fcddbaf55a8f3d2065bb502bbe7bd866bdb66898e0e0a1dbd532434532068a70</small><pre id="topic">
+
+    
+        Interfacing with LS2208 Scanner using Python
+
+
+        
+      
+                        
+                    
+            A
+          
+          Ardyn Izuya
+          3 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            1166
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi All,
+
+ 
+
+I have an LS2208 Barcode scanner. It is plugged in to my computer using the USB. I am trying to read the barcodes scanned using the scanner. I primarily work in python language.
+
+I scoured the internet for the correct way to do it but nothing worked. I tried to read the barcode with standard method of keyboard input as the scanner is an HID device that types data into stream. That did not work either
+
+ 
+
+Any help in this case would be appreciated.
+
+ 
+
+Regards,
+
+S R U
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Ardyn Izuya
+          
+          
+            3 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Greetings.
+
+ 
+
+Just wanted to update that i have resolved my problem.
+
+I am able to interface with LS2208 scanner using python with the help of following python package libraries.
+
+1. PyUSB - https://pypi.org/project/pyusb/
+
+2. LibUSB - https://pypi.org/project/libusb/
+
+After installing them, here are some additional resources that need to be install in order to avoid errors when the script is run. I found all these by googling so you can also find them .
+
+To resolve No Backend Error
+
+        -- Download the latest Windows binary:  https://sourceforge.net/projects/libusb/files/libusb-1.0/libusb-1.0.21/libusb-1.0.21.7z/download
+
+        -- Unzip using 7zip into a temp dir
+
+        -- If on 64-bit Windows, copy MS64\dll\libusb-1.0.dll into C:\windows\system32. If on 32-bit windows, copy MS32\dll\libusb-1.0.dll    into C:\windows\SysWOW64.
+
+Here is the python script i used to interface with the barcode scanner.
+
+&quot;&quot;&quot;
+
+Author : Ardyn Izuya   02/17/2023
+
+ 
+
+Change Log:
+
+    -- Initial Release 02/17/2023
+
+ 
+
+Description:
+
+    -- Script to read barcode data from LS2208 scanner
+
+    -- Script uses libusb and pyusb libraries
+
+    -- Vendor ID and Product ID are mandatory fields
+
+ 
+
+Steps to configure the script:
+
+    -- Get Procduct ID and Vendor ID 
+
+        -- Go to Device Manager
+
+        -- Select the correct device under Human Interface Devices
+
+    -- Install the python libraries
+
+        -- https://pypi.org/project/pyusb/
+
+        -- https://pypi.org/project/libusb/
+
+    -- To resolve No Backend Error
+
+        -- Download the latest Windows binary:  https://sourceforge.net/projects/libusb/files/libusb-1.0/libusb-1.0.21/libusb-1.0.21.7z/download
+
+        -- Unzip using 7zip into a temp dir
+
+        -- If on 64-bit Windows, copy MS64\dll\libusb-1.0.dll into C:\windows\system32. If on 32-bit windows, copy MS32\dll\libusb-1.0.dll into C:\windows\SysWOW64.
+
+ 
+
+Resources:
+
+    -- https://pypi.org/project/pyusb/ -- pusb package download
+
+    -- https://pypi.org/project/libusb/ -- Libusb package download
+
+    -- https://github.com/pyusb/pyusb
+
+    -- https://github.com/pyusb/pyusb/issues/120#issuecomment-322058585
+
+    -- beyondlogic.org/usbinnutshell
+
+    -- asciitable.com
+
+ 
+
+&quot;&quot;&quot;
+
+ 
+
+import usb.core     # main module
+
+import usb.util     # contains utility functions
+
+import string
+
+ 
+
+ 
+
+VENDOR_ID = 0x05e0
+
+PRODUCT_ID = 0x1300
+
+ 
+
+while True:
+
+    try:
+
+        # find our device using vendor ID and Product ID
+
+        dev = usb.core.find(idVendor=VENDOR_ID, idProduct=PRODUCT_ID)
+
+        print(dev)
+
+    except usb.core.USBTimeoutError as timeOutError:
+
+        print(&quot;Scanner Read Time Out Occurred \n&quot;)
+
+        print(&quot;Closing device Object and&quot;)
+
+        
+
+ 
+
+    except Exception as e:
+
+        print(f&quot;The following exception has occurred {e} \n . Retrying.........&quot;)
+
+
+The read functionality is already present in PyUSB GitHub page. Just follow that and make sure you are trimming your non-printable characters out.
+
+ 
+
+ 
+
+Regards,
+
+A I
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            3 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            is your LS2208 mfd after December 2014 ?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steve Justi
+          
+          
+            2 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            This code works for Li2208, Here is a version that also read bar codes not only check connections  import usb.coreimport usb.utilimport time VENDOR_ID = 0x05e0PRODUCT_ID = 0x1300 def read_scanner(dev):    try:        # Set the active configuration. With no arguments, the first        # configuration will be the active one        dev.set_configuration()         # Claim the interface        usb.util.claim_interface(dev, 0)         # Endpoint address and size depend on the specific scanner, you may need to adjust them        endpoint = dev[0][(0, 0)][0]        size = endpoint.wMaxPacketSize         while True:            # Read data from the endpoint            data = dev.read(endpoint.bEndpointAddress, size, timeout=1000)             # Process the scanned data (replace this with your desired processing logic)            scanned_code = data.tobytes().decode(&#x27;utf-8&#x27;)            print(f&quot;Scanned code: {scanned_code}&quot;)     except usb.core.USBError as e:        if &quot;Access denied&quot; in str(e):            print(&quot;Access denied. Make sure you have the necessary permissions.&quot;)        else:            print(f&quot;USB error: {e}&quot;)     except usb.core.USBTimeoutError as timeOutError:        print(&quot;Scanner Read Time Out Occurred&quot;)     except Exception as e:        print(f&quot;An exception occurred: {e}&quot;)     finally:        # Release the interface        try:            usb.util.release_interface(dev, 0)        except usb.core.USBError as e:            print(f&quot;Error releasing interface: {e}&quot;)         # Close the device object to release resources        usb.util.dispose_resources(dev) if __name__ == &quot;__main__&quot;:    while True:        try:            # find our device using vendor ID and Product ID            dev = usb.core.find(idVendor=VENDOR_ID, idProduct=PRODUCT_ID)             if dev is not None:                print(&quot;Device found:&quot;)                # print(dev)                read_scanner(dev)            else:                print(&quot;Device not found.&quot;)         except Exception as e:            print(f&quot;An exception occurred: {e}&quot;)         # Add a delay before the next iteration        time.sleep(1) 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

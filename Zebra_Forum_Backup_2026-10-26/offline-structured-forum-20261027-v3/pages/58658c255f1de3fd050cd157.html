@@ -1,0 +1,174 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>How Download a new Font with ZPL code?</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/forum/24758; snapshot threads/resume-00370.html; SHA-256 4a1476c7ed84369d424b04066ba1b87843d5642ae2001055fd6079aa0887a71b. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">How Download a new Font with ZPL code?</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            S
+          </div>
+          <div class="forum-topic__author-name">System Admin</div>
+          <div class="forum-topic__timestamp">5 years 4 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            235
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>How Download a new Font with ZPL code?<br>
+Hi everyone!<br>
+I'm trying to download a new font for Zebra(GC420t) using ZPL.<br>
+This is the code that i've use for this job.:<br>
+teste += "~DYR:OptimaLTStd,B,T,t,w,data"<br>
+and for printing with font:<br>
+teste += "^XA "<br>
+teste += "^FWB "<br>
+teste += "^FO290,150 "<br>
+teste += "^A2,36,20,R:OptimaLTStd.FNT"<br>
+teste += "^FD " &amp; Etiqueta.Quantidade &amp; "Kg ^FS "<br>
+teste += "^FO335,90 "<br>
+teste += "^A0,36,20,R:OptimaLTStd.FNT "<br>
+teste += "^FD Validade:" &amp; Etiqueta.Validade &amp; " ^FS"<br>
+teste += "^FO380,150 "<br>
+teste += "^A0,36,20,R:OptimaLTStd.FNT "<br>
+teste += "^FD " &amp; Etiqueta.Lote &amp; " ^FS "<br>
+teste += "^XZ" 'Encerra o documento<br>
+Whats happens: that font it's not found and the printer is using default font<br>
+model: GC420t</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-46434" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            6 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Luis,<br>
+Firstly, according to the ZPL documentation on ~DY, the ~DY command is the preferrred for True Type fonts. Based on the parameters you specified in ~DY command</p>
+<p>~DYR:OptimaLTStd,B,T,t,w,datait tells me that the font data is uncompressed, and the font file extension on the printer will be TTF. So the font file on the printer are are looking for would be R:OptimaLTStd.TTF. Can you confirm that&amp;nbsp;OptimaLTStd.TTF exist on R: drive on the printer? Please note, the R: drive means the RAM memorry on the printer.&amp;nbsp;<br>
+Secondly, the following command is incorrect. Please refer to the ZPL doc on ^A for detail. You need to use ^CW command to assign a font identifier to the newly downloaded TTF font, then you can use ^A command to specify the font orientation and size. Hope this helps.</p>
+<p>teste += "^A2,36,20,R:OptimaLTStd.FNT"<br>
+&amp;nbsp;<br>
+&amp;nbsp;</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/forum/24758%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/forum/24758%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

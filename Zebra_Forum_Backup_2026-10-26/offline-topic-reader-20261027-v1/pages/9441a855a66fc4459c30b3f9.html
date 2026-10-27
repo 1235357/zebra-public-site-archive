@@ -1,0 +1,242 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Combination problems with HD4000 and Datawedge</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Combination problems with HD4000 and Datawedge</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/combination-problems-hd4000-and-datawedge; original snapshot: threads/00518.html; SHA-256: ec49be37a83ef92a896e838c3509013da91c89342d0634f557189bffa70a8a75</small><pre id="topic">
+
+    
+        Combination problems with HD4000 and Datawedge
+
+
+        
+      
+                        
+                    
+            L
+          
+          Lukas Probst
+          3 years 3 months ago
+        
+        
+      
+        
+            
+                  
+            
+            83
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello everyone,
+I want to use Datawedge on the mobile computer TC72 to handle voice and scan input. I send a BroadcastIntent to get the data in my Android application. In the Android application I create a BroadcastReceiver. Additionally I use the HuD4000 to visualize the scanned Data.
+
+BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String data = intent.getStringExtra(&quot;com.symbol.datawedge.data_string&quot;);
+        Toast.makeText(MainActivity.this, data, Toast.LENGTH_SHORT).show();
+        handleData(data);
+    }
+};
+
+After that I created an Intentfilter and registered the receiver:
+
+Toast.makeText(MainActivity.getInstance(), &quot;A&quot;, Toast.LENGTH_SHORT).show();
+IntentFilter intentFilter = new IntentFilter(&quot;com.lprobst.myproject.SCAN&quot;);
+Toast.makeText(MainActivity.getInstance(), &quot;B&quot;, Toast.LENGTH_SHORT).show();
+intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+MainActivity.getInstance().registerReceiver(broadcastReceiver, intentFilter);
+
+
+I get the message &quot;A&quot;, but not the message &quot;B&quot;, so I think that the program crashes in the intentfilter constructor. This also happens in the constructor, if i use the default constructor and add the action afterwards. The fun fact is, that this only happens, if the device is connected to the HD4000. If the cable of the HD40000 is not plugged in, everything works fine.
+I guess the problem is, that the HuD_Service App also uses intents to visualize something on the HuD, but all in all I cant see the error.
+
+Unfortunately I dont have any error outputs either, since I can only test the app on the hardware device and not on an emulator. 
+
+Thank you 
+Lukas Probst
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            This may need to be a Help Desk case.
+
+But also you are not out-of-luck for logging when you have the USB connected on a device to HD4000.
+
+Use RxLogger, it is very good at capturing the LogCat to get closer to where your problem may be occurring. ( And, Zebra Libraries do not run on Emulators anyway - so Hardware is best for developing / diagnosing. )
+
+RxLog TechDoc here:  ( Start at the Techdoc main page - book mark this - it is handy...)
+
+https://techdocs.zebra.com/
+
+https://techdocs.zebra.com/rxlogger/   
+
+( RxLogger topic is in the &quot;Device Admin&quot; subcategory - since it is a diagnostic tool that should only be used occasionally. )
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              L
+            
+          
+                
+          
+            Lukas Probst
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Sean,
+
+that actually helped a lot. I forgot to include gson in the dependencies. Therefore i had a ClassNotFoundError. Im not quite sure, why it didn&#x27;t worked before. Probably I didn&#x27;t test it correctly.
+
+Thank you
+Lukas Probst
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,418 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>ZQ521 printer does not print .pcx cpcl image using storeImage - Android</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/zq521-printer-does-not-print-pcx-cpcl-image-using-storeimage-android; snapshot threads/01033.html; SHA-256 1f4c3f27619ead5047560c79f0e9dc69f6cdc02e3c000882173001edebc61785. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">ZQ521 printer does not print .pcx cpcl image using storeImage - Android</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            G
+          </div>
+          <div class="forum-topic__author-name">Guilherme Dellatin</div>
+          <div class="forum-topic__timestamp">5 years 3 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            279
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            5
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello, I'm having an image printing problem on the zq521 printer, I work in an application that prints water bills, and a customer requested to print an image from a hydrometer, on RW420 printers I can print these images normally, here is my code:</p>
+<p>private void printPhotoFromExternal(ZebraPrinter zebraPrinter, final Bitmap bitmap) throws IOException, ConnectionException {<br>
+        try {<br>
+            zebraPrinter.storeImage("R:TEMP.PCX", new ZebraImageAndroid(bitmap), 496, 358);<br>
+            zebraPrinter.getConnection().write("! U1 setvar \"device.languages\" \"CPCL\"\r\n".getBytes());<br>
+            zebraPrinter.getConnection().write("! U1 do \"file.delete\" \"R:TEMP.PCX\"\r\n".getBytes());<br>
+            bitmap.recycle();<br>
+        } catch (ConnectionException | ZebraIllegalArgumentException e) {<br>
+            e.printStackTrace();<br>
+        }<br>
+    }</p>
+<p>I saw that in previous topics they suggested using this code in the connection class:</p>
+<p>public class ConnectionZebraPrint {<br>
+    private static final String TAG = ConnectionZebraPrint.class.getSimpleName();</p>
+<p>    public static ZebraPrinter getZebraPrinter() throws ConnectionException, ZebraPrinterLanguageUnknownException {<br>
+        Connection printerConnection;<br>
+        printerConnection = new BluetoothConnection(PrintUtils.getMacAddress());<br>
+        printerConnection.open();<br>
+        if (printerConnection.isConnected()) {<br>
+           return ZebraPrinterFactory.getInstance(PrinterLanguage.CPCL, printerConnection);<br>
+        }<br>
+        return null;<br>
+    }<br>
+}</p>
+<p>I was not successful on the zq520 and zq520 printers. I configured the printers in Zebra Setup Utilities with the respective drivers for CPCL.<br>
+When I debug the code the image is captured normally but it doesn't appear on the invoice, what could be happening? do I need to configure the R: on the ZQ521?</p>
+<p>The only way to print an image on the zq521 and 520 that I could was using the following code:</p>
+<p>zebraPrinter.printImage( new ZebraImageAndroid(bitmap), 1, 1,496, 358, false);</p>
+<p>But the image is printed on a separate sheet...<br>
+Could someone help me with this question?</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      5 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-48125" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              G
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Guilherme Dellatin</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 3 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>In the water bill class:<br>
+PCX 40 133 !</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-48129" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 2 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Both ZQ520 and ZQ521 are in ZPL mode by default. Though they both support CPCL by configuring device.languages to CPCL, it's recommended to use ZPL with these Link-OS printers. In the Link-OS SDK for Android, there is a <span title="interface in com.zebra.sdk.printer" data-original-href="https://techdocs.zebra.com/link-os/2-14/android/content/com/zebra/sdk/printer/GraphicsUtil.html"><i>GraphicsUtil</i></span> class, in which there are a number of methods to print image. The zebraPrinter.printImage() is one of the methods in  <span title="interface in com.zebra.sdk.printer" data-original-href="https://techdocs.zebra.com/link-os/2-14/android/content/com/zebra/sdk/printer/GraphicsUtil.html"><i>GraphicsUtil</i></span> class. The reason the image is printed on a separate label in your case is because you passed false for the insideFormat parameter of zebraPrinter.printImage(). If you want to print the image as part of a label, you need to pass true for the insideFormat parameter. Here is the pseudo code.</p>
+<pre><code class="language-java">
+String firstHalfOfZPL = "^XA .....";
+String secondHalfOfZPL = "....^XZ";
+
+connection.open();
+ZebraPrinter printer = ZebraPrinterFactory.getInstance(connection);
+
+// Send the first half of the ZPL to the printer
+connection.write(firstHalfOfZPL.getBytes());
+
+// Send your image as part of the ZPL label to the printer with true for the insideFormat parameter
+zebraPrinter.printImage( new ZebraImageAndroid(bitmap), 1, 1,496, 358, true);
+
+// Send the 2nd half of ZPL to the printer
+connection.write(secondHalfOfZPL.getBytes());</code></pre><p> </p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-48130" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              G
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Guilherme Dellatin</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 2 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thank you for your attention SSi1<br>
+I tried using it with "true", with cpcl the printer prints a bunch of binary nonstop, I can only pass the image file to zpl and the rest of the invoice print to cpcl?<br>
+The problem with moving to zpl is that the code is legacy and is all done using cpcl..</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-48133" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 2 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>To support CPCL, you need to first set the device.languages to CPCL on the ZQ521 printer. Then you need to get the printer instance for the CPCL printer as following:</p>
+<pre><code>ZebraPrinter printer = ZebraPrinterFactory.getInstance(CPCL, connection); // Get CPCL printer</code></pre><p>Then send the 1st half of the CPCL, and followed by sending the image with printer.printImage() with true for insideFormat, and the 2nd part of the CPCL.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-48148" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              G
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Guilherme Dellatin</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 2 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi, I came back here to share my solution:<br>
+Using the code I described at the beginning of the post I made a small change in my cpcl class that prints the water bill</p>
+<p>//I used the following code in the invoice layout to print the image<br>
+PCX 40 133 TEMP.PCX;</p>
+<p>//It was only necessary to add this zpl code, and configure the printer drivers for cpcl<br>
+^XA^FO0,0^IMR:TEMP.PCX^XZ</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/zq521-printer-does-not-print-pcx-cpcl-image-using-storeimage-android%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/zq521-printer-does-not-print-pcx-cpcl-image-using-storeimage-android%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

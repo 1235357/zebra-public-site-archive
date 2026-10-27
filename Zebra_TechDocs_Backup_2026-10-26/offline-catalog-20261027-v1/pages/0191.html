@@ -1,0 +1,1100 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Wireless Insights Agent - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/wireless-insights/latest/guide/agent/</code><br>Observed final URL: <code>https://techdocs.zebra.com/wireless-insights/latest/guide/agent/</code><br>Raw source: <code>raw/fb661ab98c9a40f1610822a7.html</code><br>Raw SHA-256: <code>3be65c271ae4a8b5d42608adf1c2947b65ee41763c4c832aa3996c8dc6ca5771</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            Wireless Insights
+                                            3.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Wireless Insights Agent
+                            
+                        
+                        
+                            
+                                    Vendor Agent
+                            
+                        
+                        
+                            
+                                    Licensing
+                            
+                        
+                        
+                            
+                                    Wi-Fi Data
+                            
+                        
+                        
+                            
+                                    Cellular Data
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Wireless Insights Agent
+                        
+                    OverviewRequirementsCore RequirementsFeature-Specific RequirementsLimitationsPrerequisitesSetup: ZDNA CloudI. Enable Wireless Insights ServiceII. Install and Configure AgentIII. Apply LicenseIV. Check Agent ConnectionSetup: SOTI MobiControlI. Enable Wireless Insights ServiceII. Install and Configure AgentIII. Apply LicenseIV. Check Agent ConnectionSetup: Workspace ONE UEMI. Enable Wireless Insights ServiceII. Install and Configure AgentIII. Apply LicenseIV. Check Agent ConnectionSetup: Microsoft IntuneI. Enable Wireless Insights ServiceII. Install the AgentIII. Configure the AgentIV. Launch Agent Using OEMConfigV. Apply LicenseVI. Check Agent ConnectionSetup: EMMs Without Auto OptionsI. Enable Wireless Insights ServiceII. (Optional) Deploy Delegation Scope XMLIII. Install and Configure AgentIV. (Optional) Deploy Permissions and Launch XMLV. (Optional) Apply Managed Config through IntentVI. Apply LicenseVII. Check Agent ConnectionGuide: Deploy XML via EMMActivate License via StageNowIntentsStop Voice AnalysisStart Voice AnalysisAssign Group NameSee Also
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Wireless Insights Agent
+                                    
+                                            Wireless Insights
+                                            3.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+The Wireless Insights (WI) Agent Agent captures wireless data from the Wireless Insights service and transmits it to Zebra DNA Cloud for dashboard visualization to help administrators ensure optimal wireless network performance. This guide provides instructions to install and configure the Wireless Insights Agent, tailored to the specific Enterprise Mobility Management (EMM) system in use or using Zebra DNA Cloud for deployment.
+
+
+ Software Update Required
+The legacy Wireless Insights server is scheduled to be decommissioned on August 24, 2026, rendering Wireless Insights agent apps prior to v3.0.5 inoperable. To avoid service disruption, all customers must install or upgrade to Wireless Insights v3.0.5 (or later) prior to this date. 
+
+
+
+
+Requirements
+
+Core Requirements
+
+
+ Upgrade Required: Install Wireless Insights Agent v3.0.5 or higher before August 24, 2026, to prevent service disruption due to legacy server decommissioning.
+
+Supported Device and Operating System: The device model and its Android/OS version must be listed on Compatible Hardware on the Zebra support portal.
+  Warning: Using an older OS version may result in suboptimal performance and require extra setup steps. For instructions, see Setup - EMMs Without Auto Options.
+
+Delegation Scope (Conditional): Certain configurations require an additional Delegation Scope .xml to authorize the agent on the device. Whether this step is required depends on the device build; see “Compatible Hardware” table in Requirements to confirm, and refer to (Optional) Deploy Delegation Scope XML - EMMs Without Auto Options for instructions.
+
+Wireless Insights License:
+
+
+
+A valid license is required; see Licensing for details.
+
+For Zebra Professional-series devices a Mobility DNA (MDNA) enterprise license is required. 
+
+
+
+Feature-Specific Requirements
+
+Wi-Fi VoIP Analysis: This feature supports the SIP-RTP protocol.
+
+Configuration for Non-Standard SIP Ports: If a SIP port other than 5060 is used, the following steps are required for initial setup:
+
+
+Send the intent to stop Voice Analysis.
+
+Send the intent to start Voice Analysis, specifying the custom SIP port.
+
+
+Unsupported Technologies for Wi-FI VoIP Analysis:
+
+
+Protocol: WebRTC or similar cloud-based protocols.
+
+VoIP Apps: Zebra Work Cloud Sync, Microsoft Teams, Zoom Phone.
+
+
+
+
+Limitations
+
+The Wireless Insights Agent is not compatible with devices configured for an Android Enterprise Work Profile, (formerly Corporate-Owned, Personally Enabled (COPE) Mode). This mode, which creates separate work and personal profiles on a single device, prevents the agent from functioning properly. 
+
+
+
+Prerequisites
+
+Prerequisites for deploying Wireless Insights:
+
+
+Download Agent for EMM Deployment: If deploying the Wireless Insights Agent via an Enterprise Mobility Management (EMM) system, the .apk must first be downloaded. It is available from the Zebra support portal or the Google Play Store.
+
+Establish Network Connectivity: The device must be configured with a network profile that allows a connection to Wi-Fi and/or cellular.
+
+
+
+
+Setup: ZDNA Cloud
+
+This section offers guidance for the installation and configuration of the Wireless Insights Agent using Zebra DNA Cloud.
+
+Note: When using Zebra DNA Cloud to setup the Wireless Insights Agent, the entire installation and configuration process is managed directly within the platform.
+
+I. Enable Wireless Insights Service
+
+Activate the Wireless Insights service to allow the agent to collect wireless data. This configuration is required only once. In the Zebra DNA Cloud console, enable Wireless Insights.
+
+After enabling the service, from the My Service screen, copy the Wireless Insights Enrollment Configuration for use in a later step.
+
+
+II. Install and Configure Agent
+
+Create and apply a policy to install the Wireless Insights Agent and configure it through Managed Configurations. 
+
+
+In the ZDNA Cloud web portal, go to My Apps &gt; Zebra Collection. Locate Wireless Insights, select the version to install, and click Setup.
+
+
+Click Next.
+
+
+If desired, enter a description. Click Next.
+
+
+If desired, edit the App Setup Name. Click Apply Now.
+
+
+Select the target device(s). Click Apply.
+
+
+Apply Delegation Scope: If the device is not updated to the latest LifeGuard Update (per the Requirements) or if the Wireless Insights Agent screen indicates that the device is unsupported, the Delegation Scope .xml file must be applied. This file authorizes the agent to operate with the Wireless Insights stack on the device. Follow these steps:
+     a. Navigate to My Devices from the left menu. Select the target device(s), click Bulk Actions, and then click Submit XML.
+
+     b. Enter the .xml content. 
+
+&lt;wap-provisioningdoc&gt; 
+  &lt;characteristic version=&quot;11.5&quot; type=&quot;AccessMgr&quot;&gt; 
+    &lt;parm name=&quot;ServiceAccessAction&quot; value=&quot;4&quot; /&gt; 
+    &lt;parm name=&quot;ServiceIdentifier&quot; value=&quot;delegation-zebra-wirelessinsight-api-service&quot; /&gt; 
+    &lt;parm name=&quot;CallerPackageName&quot; value=&quot;com.zebra.wirelessinsights.agent&quot; /&gt; 
+    &lt;parm name=&quot;CallerSignature&quot; value=&quot;MIIFhTCCA20CCSMxNhM5AtLvpzANBgkqhkiG9w0BAQsFADB/MQswCQYDVQQGEwJVUzERMA8GA1UECAwITmV3IFlvcmsxEzARBgNVBAcMCkhvbHRzdmlsbGUxIDAeBgNVBAoMF1plYnJhIFRlY2hub2xvZ2llcyBJbmMuMSYwJAYDVQQDDB1BbmRyb2lkIFVucHJpdmlsZWdlZCBLZXkgUm9vdDAeFw0yMzEwMjcxOTM1MTNaFw00ODExMjkxOTM1MTNaMIGJMQswCQYDVQQGEwJVUzELMAkGA1UECAwCTlkxEzARBgNVBAcMCkhvbHRzdmlsbGUxHzAdBgNVBAoMFlplYnJhIFRlY2hub2xvZ2llcyBJbmMxDDAKBgNVBAsMA0VNQzEpMCcGA1UEAwwgY29tLnplYnJhLndpcmVsZXNzaW5zaWdodHMuYWdlbnQwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDX9Ae0Q0gd/rvdq2AYyHwcehsFyuU/x7L5IWhb4deD8O0NN6Tf0pj7ckrAfAylJCgNB8Uq+//f6VUTGQIcuFdinZLgQu5CQfqhD4Znt1lxs7eaXLOu5sVSJBZPdW0p9rl7ti+sqS9zDXa/NAOQjXaBIXQ7PJRJpUSOmSKDlN0ciPioB32ayr5v8aR6oMRQdrYW9AhS2UfYiCt0nWSY05poWvvKHzq4LKq6Agy817EZklOSn18buIo8ujGMxT/O2++XNAOfuRKQmv8+R8GVDCMkh1e1Lb8tHxh9+011AdG93EqxCm/4D6Sz69PGTbSlY1Bn0/H46uulamY8DzeChArsKJVQyxzqAl7h838ZuMPXbkCT+z1XONue5rpOluM6nBJe00Z+97YT0SlaNvJG/g7r/YQddLB/VBQwh8NPIeHufO/gEhukkVzvq49ieU/NZj7CHjz+UXcmnDgGz6hhvfqOVsYmjEAzE8LRmOuelClm8jc7RnmF2g8Q+iApwuy5PA75xjAibeUbEqP6aCJy9XkyVt7JujzZd7G+KH4BVSKoj/it51X3N4JvXwCKe9Fpn8SPFcKOUuCehYFGO4+9DvAGbjbCwx9Q4G8iNpbSMoNd5CsHQFHzc6XsV/dh8Y7KzdcuEm0pahRdVYEBsTrMRl3dwxU28eRQnDMA6OH2bEql0QIDAQABMA0GCSqGSIb3DQEBCwUAA4ICAQBiop746XWulTB7kRBTQL34VvMUUTmrI5sw5wFC2WShu2T63+x0HNfDkW2gNhHcBUN5PW4QIY72CZ01ZA4lHII3Cx5OV0D3nCqsI7kf1JcJdKca3lMQhpjR+RNaPkl6cGwb2ySSMsu74qkFFHt338+NZCvxu/NkErV1M1K2cHJTdXaCvLuHTcSYRbR34dvfL7K0y340NCbIRRZOPWqhble84YBQ8SSSBWNTsR/VyXE/oXuuBIos4kX33DR+s5jEJB44qEWZrzhzPWScwkiPKqVcAaIimpcH1swO9xVbXZF6u9cWVB5iepC0J0gnbKrU4zIRqXNQs9TgYuNxwCNj/dvPzZNVITf33gzO2ePaycvV04cwJLc8bAexpEJJ8nvec9L3ewbunHfywVxT8wUqiXWLWaTjXASvkYxQGsRjFqWwGhgDar37+QYTUN4J7bgrYg/sKDdbdJyIr1tbdKepvh47QJ1aCFj77T1yWxdIu5cukfu6xgGCTK53UTxVdEz5s9ci3Ji/aQJQLH4ceQjV09gcmOj1IQ1QcKtwJBYaOg7yajJl4qo3THYeOJz6ae9okN6C2ECMFESj+f6txgImXZunzT6twiPYLweN+llJVRPZ09Z3FNgNcYWINzuYTn+YZxfgyQA4F9pEaCVA0HcGLUNyHvfRD3F/JXzx9TcD7ztWgA==&quot; /&gt; 
+  &lt;/characteristic&gt; 
+&lt;/wap-provisioningdoc&gt; 
+
+
+               c. Click Submit.
+    
+
+III. Apply License
+
+To activate the Wireless Insights license in production environments (not required for trials), apply the license using any standard Zebra software license installation method. Detailed procedures are available in the Zebra License Manager User Guide.
+
+For testing or small-scale installations, use Zebra’s StageNow tool to generate a barcode or XML from the license parameters. See the Activate License via StageNow section for an example StageNow profile. The resulting .xml file can also be deployed using an EMM.
+
+Follow these steps to apply Wireless Insight licenses:
+
+
+Follow steps to Activate License via StageNow.
+
+In the ZDNA Cloud web console, go to My Devices in the left menu and choose one of the following actions:
+     • Locate the target device from the list, click the options menu at the end of the row, and select Submit XML.
+     • For multiple devices(s), select the target device(s), click Bulk Actions, and then click Submit XML.
+
+
+Paste the License xml file content from step 1, then click Submit.
+
+
+
+IV. Check Agent Connection
+
+To verify the successful deployment and operation of the Wireless Insights Agent, follow these steps to check its connection status on both the device and within the ZDNA Cloud platform.
+
+Device
+
+Ensure that the Wireless Insights Agent is connected to the ZDNA Cloud server by checking the following statuses in the Wireless Insights Agent:
+
+
+Feature Running: Voice is Running
+
+ZDNA Connection (under External Connections):
+
+
+Connected - Indicates the Wireless Insights Agent is successfully deployed
+
+Activated - Indicates the Wireless Insights license is applied
+
+
+
+
+ZDNA Cloud
+
+In the ZDNA Cloud web console, go to Support Tools &gt; Wireless Insights from the left menu. Verify that the device status, whether in its assigned group or unassigned group, shows &quot;Active.&quot; This confirms successful enrollment.
+
+
+
+
+
+Setup: SOTI MobiControl
+
+This section offers guidance for installing and configuring the Wireless Insights Agent with SOTI MobiControl. 
+
+
+  Note: If your EMM version does not support Managed Configurations or auto options, or if the devices are operating on an older OS version, refer to the Setup - EMMs Without Auto Options guide.
+
+
+ Screen Variations Note: The screen UI may vary depending on the EMM version in use. Refer to your EMM user guide for additional guidance.
+
+I. Enable Wireless Insights Service
+
+Activate the Wireless Insights service to allow the agent to collect wireless data. This configuration is required only once. In the Zebra DNA Cloud console, enable Wireless Insights.
+
+After enabling the service, from the My Service screen, copy the Wireless Insights Enrollment Configuration for use in a later step.
+
+
+II. Install and Configure Agent
+
+Install the Wireless Insights Agent on the enrolled devices and apply the configuration through Managed Configurations. Two methods are provided below — select one based on the organization’s app-distribution policy.
+
+Method 1: Install via Google Play Store (Recommended)
+
+The recommended method for installing Wireless Insights Agent is through the Google Play Store.
+
+
+In the SOTI MobiControl web console, go to APPS &gt; ADD APP &gt; Android &gt; Android Enterprise. 
+
+
+Enter a name for the app policy, then click the APPS tab.
+
+
+Click +.
+
+
+For App Source, select Managed Google Play.
+
+
+Search for &quot;Zebra Wireless Insights&quot; and click Select.
+
+
+Click the three-dot menu icon and select Configure.
+
+
+Click Installation Options. Select Mandatory for Deployment Type and enable Launch App After Installation.
+
+
+Click Managed App Config. Toggle on Enable Managed App Config. For WI API Request, paste the Wireless Insights Enrollment Configuration copied from ZDNA Cloud in step I. Click Save.
+
+
+The policy is created. Click Save and Assign.
+
+
+Search for the enrolled device and select it. Click Assign.
+
+
+
+Method 2: Install via APK
+
+Instructions for Wireless Insights Agent installation via APK using SOTI MobiControl.
+
+
+In the SOTI MobiControl web console, go to APPS &gt; ADD APP &gt; Android &gt; Android Enterprise. 
+
+
+Enter a name for the app policy, then click the APPS tab.
+
+
+Click +.
+
+
+For the App Source dropdown, select Enterprise.
+
+
+By default, Import is selected for the Source. Click Browse File and select the Wireless Insights .APK file.
+
+
+After the file is uploaded, click Configure.
+
+
+Click Installation Options. Deployment Type is set to Mandatory by default. Toggle to enable Launch App After Installation and click Managed App Config.
+
+
+Toggle on Enable Managed App Config. For WI API Request, paste the Wireless Insights Enrollment Configuration copied from ZDNA Cloud in step I. Click Save.
+
+
+Click Add.
+
+
+The policy is created. Click Save and Assign.
+
+
+Search for the enrolled device and select it. Click Assign.
+
+
+
+The Wireless Insights Agent is installed to all devices in the group and the Managed Configuration is applied to enroll the device to the ZDNA Cloud.
+
+III. Apply License
+
+To activate a Wireless Insights license in production environments (not required for trials), use any standard Zebra software license deployment method. For details instructions, refer to Zebra License Manager User Guide.
+
+For testing or small-scale deployments, use Zebra’s StageNow tool to generate a barcode or XML file based on the license parameters. An example StageNow profile is provided in Activate License via StageNow. The resulting XML generated can also be deployed via an EMM.
+
+IV. Check Agent Connection
+
+To verify the successful deployment and operation of the Wireless Insights Agent, follow these steps to check its connection status on both the device and within the ZDNA Cloud platform.
+
+Device
+
+Ensure that the Wireless Insights Agent is connected to the ZDNA Cloud server by checking the following statuses in the Wireless Insights Agent:
+
+
+Feature Running: Voice is Running
+
+ZDNA Connection (under External Connections):     
+
+
+Connected - Indicates the Wireless Insights Agent is successfully deployed
+
+Activated - Indicates the Wireless Insights license is applied
+
+
+
+
+ZDNA Cloud
+
+In the ZDNA Cloud web console, go to Support Tools &gt; Wireless Insights from the left menu. Verify that the device status, whether in its assigned group or unassigned group, shows &quot;Active.&quot; This confirms successful enrollment.
+
+
+
+
+
+Setup: Workspace ONE UEM
+
+This section offers guidance for installing and configuring the Wireless Insights Agent with Workspace ONE Unified Endpoint Management (UEM), formerly known as AirWatch. 
+
+
+  Note: If your EMM version does not support Managed Configurations or auto options, or if the devices are operating on an older OS version, refer to the Setup - EMMs Without Auto Options guide.
+
+
+ Screen Variations Note: The screen UI may vary depending on the EMM version in use. Refer to your EMM user guide for additional guidance.
+
+I. Enable Wireless Insights Service
+
+Activate the Wireless Insights service to allow the agent to collect wireless data. This configuration is required only once. In the Zebra DNA Cloud console, enable Wireless Insights.
+
+After enabling the service, from the My Service screen, copy the Wireless Insights Enrollment Configuration for use in a later step.
+
+
+II. Install and Configure Agent
+
+Install the Wireless Insights Agent on the enrolled devices and apply the configuration through Managed Configurations. Two methods are provided below — select one based on the organization’s app-distribution policy.
+
+Method 1: Install via Google Play Store (Recommended)
+
+This is the recommended method for installing Wireless Insights Agent.
+
+Create and apply a policy to install the Wireless Insights Agent and configure it through Managed Configurations. 
+
+
+In the Workspace ONE UEM web console, go to Resources &gt; Native Apps. Click the Public tab, then click Add Application.
+
+
+For Platform, select Android. Enter a name e.g., Zebra Wireless, then click Search.
+
+
+Select the Zebra Wireless Insights app.
+
+
+Click Select.
+
+
+Enter the application name. Click Save and Assign.
+
+
+In the Assignment screen, enter or select the following under Distribution:
+
+
+
+Name: [Enter an assignment name]
+
+Assignment Groups: [Enter group to assign the app]
+
+App Delivery Method: Auto
+
+
+
+Click Application Configuration. Enable Managed Access and Send Configuration. For WI API Request, paste the Wireless Insights Enrollment Configuration copied from ZDNA Cloud in step I. Click Save.
+
+
+
+Method 2: Install via APK
+
+Instructions for Wireless Insights Agent installation via APK using Workspace ONE UEM.
+
+
+In the Workspace ONE UEM web console, go to Resources &gt; Native. Click Internal, then Add, and select Application File.
+
+
+Click Upload.
+
+
+Click Choose File. Select the Wireless Insights Agent .APK file to upload, then click Save.
+
+
+The Application File is populated with the file name. Click Continue.
+
+
+Enter the application name and version. Click Save and Assign.
+
+
+In the Assignment screen, enter or select the following under Distribution:
+
+
+
+Name: [Enter an assignment name]
+
+Assignment Groups: [Enter group to assign the app]
+
+App Delivery Method: Auto
+
+
+
+Click Application Configuration. Enable Managed Access and Send Configuration. For WI API Request, paste the Wireless Insights Enrollment Configuration copied from ZDNA Cloud in step I. Click Save.
+
+
+
+III. Apply License
+
+To activate a Wireless Insights license in production environments (not required for trials), use any standard Zebra software license deployment method. For details instructions, refer to Zebra License Manager User Guide.
+
+For testing or small-scale deployments, use Zebra’s StageNow tool to generate a barcode or XML file based on the license parameters. An example StageNow profile is provided in Activate License via StageNow. The resulting XML generated can also be deployed via an EMM.
+
+IV. Check Agent Connection
+
+To verify the successful deployment and operation of the Wireless Insights Agent, follow these steps to check its connection status on both the device and within the ZDNA Cloud platform.
+
+Device
+
+Ensure that the Wireless Insights Agent is connected to the ZDNA Cloud server by checking the following statuses in the Wireless Insights Agent:
+
+
+Feature Running: Voice is Running
+
+ZDNA Connection (under External Connections):     
+
+
+Connected - Indicates the Wireless Insights Agent is successfully deployed
+
+Activated - Indicates the Wireless Insights license is applied
+
+
+
+
+ZDNA Cloud
+
+In the ZDNA Cloud web console, go to Support Tools &gt; Wireless Insights from the left menu. Verify that the device status, whether in its assigned group or unassigned group, shows &quot;Active.&quot; This confirms successful enrollment.
+
+
+
+
+
+Setup: Microsoft Intune
+
+This section offers guidance for installing and configuring the Wireless Insights Agent with Microsoft Intune. 
+
+
+  Note: If your EMM version does not support Managed Configurations or auto options, or if the devices are operating on an older OS version, refer to the Setup - EMMs Without Auto Options guide.
+
+
+ Screen Variations Note: The screen UI may vary depending on the EMM version in use. Refer to your EMM user guide for additional guidance.
+
+I. Enable Wireless Insights Service
+
+Activate the Wireless Insights service to allow the agent to collect wireless data. This configuration is required only once. In the Zebra DNA Cloud console, enable Wireless Insights.
+
+After enabling the service, from the My Service screen, copy the Wireless Insights Enrollment Configuration for use in a later step.
+
+
+II. Install the Agent
+
+Create and apply a policy to deploy the Wireless Insights Agent. 
+
+
+In the Microsoft Intune web console, click Apps from the left menu, then click Android for the platform.
+
+
+Click Create. Select Managed Google Play app for the app type and click Select.
+
+
+Search for Zebra Wireless Insights and choose the app. Click Select.
+
+
+Zebra Wireless Insights is now available under all apps. Click on the app added.
+
+
+Click Properties.
+
+
+Click Add group.
+
+
+Select the group where the device resides and click Select. 
+
+
+Click Review + save.
+
+
+
+III. Configure the Agent
+
+Configure the Wireless Insights Agent by applying the required configuration using Managed Configurations.
+
+
+Navigate to Apps &gt; All Apps. Click Create.
+
+
+Select the following, then click Select:
+
+
+
+Platform: Android
+
+Category: Android Enterprise system app
+
+
+
+For Profile Type, select &quot;Fully Managed Dedicated and Corporate-Owned Work Profile Only&quot; and click Select app.
+
+
+Select Zebra Wireless Insights and click OK.
+
+
+For Configuration Settings, select Use configuration designer. In the right panel, select WI API Request. Click OK, then click Next.
+
+
+Click Review + Save.
+
+
+
+IV. Launch Agent Using OEMConfig
+
+Apply the XML below to launch the Wireless Insights Agent; refer to Deploy XML via EMM for instructions to push the XML to devices.
+
+    &lt;wap-provisioningdoc&gt;
+    &lt;characteristic version=&quot;13.5&quot; type=&quot;AppMgr&quot;&gt;
+        &lt;parm name=&quot;Action&quot; value=&quot;LaunchApplication&quot; /&gt;
+        &lt;parm name=&quot;ApplicationName&quot; value=&quot;Wireless Insights&quot; /&gt;
+    &lt;/characteristic&gt;
+    &lt;/wap-provisioningdoc&gt;
+
+V. Apply License
+
+To activate a Wireless Insights license in production environments (not required for trials), use any standard Zebra software license deployment method. For details instructions, refer to Zebra License Manager User Guide.
+
+For testing or small-scale deployments, use Zebra’s StageNow tool to generate a barcode or XML file based on the license parameters. An example StageNow profile is provided in Activate License via StageNow. The resulting XML generated can also be deployed via an EMM.
+
+VI. Check Agent Connection
+
+To verify the successful deployment and operation of the Wireless Insights Agent, follow these steps to check its connection status on both the device and within the ZDNA Cloud platform.
+
+Device
+
+Ensure that the Wireless Insights Agent is connected to the ZDNA Cloud server by checking the following statuses in the Wireless Insights Agent:
+
+
+Feature Running: Voice is Running
+
+ZDNA Connection (under External Connections):     
+
+
+Connected - Indicates the Wireless Insights Agent is successfully deployed
+
+Activated - Indicates the Wireless Insights license is applied
+
+
+
+
+ZDNA Cloud
+
+In the ZDNA Cloud web console, go to Support Tools &gt; Wireless Insights from the left menu. Verify that the device status, whether in its assigned group or unassigned group, shows &quot;Active.&quot; This confirms successful enrollment.
+
+
+
+
+
+Setup: EMMs Without Auto Options
+
+Typically, EMMs offer Auto App Launch, Auto Grant Permissions, and Managed Configurations. If your EMM does not support these features or if the device is running an older OS version, follow this guide to install and configure Wireless Insights Agent.
+
+I. Enable Wireless Insights Service
+
+Activate the Wireless Insights service to allow the agent to collect wireless data. This configuration is required only once. In the Zebra DNA Cloud console, enable Wireless Insights.
+
+After enabling the service, from the My Service screen, copy the Wireless Insights Enrollment Configuration for use in a later step.
+
+
+II. (Optional) Deploy Delegation Scope XML
+
+If the device has not been updated to the latest OS version (as specified in the Requirements), the Delegation Scope .XML file to authorize the agent to operate with the Wireless Insights stack must be applied on the device. Make sure the MXMF App is installed on the device prior to pushing .XML file. Create the .XML file with the XML content shown below and push it to the device(s). For instructions, see the guide to Deploy XML via EMM.
+
+    &lt;wap-provisioningdoc&gt;
+    &lt;characteristic version=&quot;13.1&quot; type=&quot;AccessMgr&quot;&gt;
+        &lt;parm name=&quot;ServiceAccessAction&quot; value=&quot;4&quot; /&gt;
+        &lt;parm name=&quot;ServiceIdentifier&quot; value=&quot;delegation-zebra-wirelessinsight-api-service&quot; /&gt;
+        &lt;parm name=&quot;CallerPackageName&quot; value=&quot;com.zebra.wirelessinsights.agent&quot; /&gt;
+        &lt;parm name=&quot;CallerSignature&quot; value=&quot;MIIFhTCCA20CCSMxNhM5AtLvpzANBgkqhkiG9w0BAQsFADB/MQswCQYDVQQGEwJVUzERMA8GA1UECAwITmV3IFlvcmsxEzARBgNVBAcMCkhvbHRzdmlsbGUxIDAeBgNVBAoMF1plYnJhIFRlY2hub2xvZ2llcyBJbmMuMSYwJAYDVQQDDB1BbmRyb2lkIFVucHJpdmlsZWdlZCBLZXkgUm9vdDAeFw0yMzEwMjcxOTM1MTNaFw00ODExMjkxOTM1MTNaMIGJMQswCQYDVQQGEwJVUzELMAkGA1UECAwCTlkxEzARBgNVBAcMCkhvbHRzdmlsbGUxHzAdBgNVBAoMFlplYnJhIFRlY2hub2xvZ2llcyBJbmMxDDAKBgNVBAsMA0VNQzEpMCcGA1UEAwwgY29tLnplYnJhLndpcmVsZXNzaW5zaWdodHMuYWdlbnQwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDX9Ae0Q0gd/rvdq2AYyHwcehsFyuU/x7L5IWhb4deD8O0NN6Tf0pj7ckrAfAylJCgNB8Uq+//f6VUTGQIcuFdinZLgQu5CQfqhD4Znt1lxs7eaXLOu5sVSJBZPdW0p9rl7ti+sqS9zDXa/NAOQjXaBIXQ7PJRJpUSOmSKDlN0ciPioB32ayr5v8aR6oMRQdrYW9AhS2UfYiCt0nWSY05poWvvKHzq4LKq6Agy817EZklOSn18buIo8ujGMxT/O2++XNAOfuRKQmv8+R8GVDCMkh1e1Lb8tHxh9+011AdG93EqxCm/4D6Sz69PGTbSlY1Bn0/H46uulamY8DzeChArsKJVQyxzqAl7h838ZuMPXbkCT+z1XONue5rpOluM6nBJe00Z+97YT0SlaNvJG/g7r/YQddLB/VBQwh8NPIeHufO/gEhukkVzvq49ieU/NZj7CHjz+UXcmnDgGz6hhvfqOVsYmjEAzE8LRmOuelClm8jc7RnmF2g8Q+iApwuy5PA75xjAibeUbEqP6aCJy9XkyVt7JujzZd7G+KH4BVSKoj/it51X3N4JvXwCKe9Fpn8SPFcKOUuCehYFGO4+9DvAGbjbCwx9Q4G8iNpbSMoNd5CsHQFHzc6XsV/dh8Y7KzdcuEm0pahRdVYEBsTrMRl3dwxU28eRQnDMA6OH2bEql0QIDAQABMA0GCSqGSIb3DQEBCwUAA4ICAQBiop746XWulTB7kRBTQL34VvMUUTmrI5sw5wFC2WShu2T63+x0HNfDkW2gNhHcBUN5PW4QIY72CZ01ZA4lHII3Cx5OV0D3nCqsI7kf1JcJdKca3lMQhpjR+RNaPkl6cGwb2ySSMsu74qkFFHt338+NZCvxu/NkErV1M1K2cHJTdXaCvLuHTcSYRbR34dvfL7K0y340NCbIRRZOPWqhble84YBQ8SSSBWNTsR/VyXE/oXuuBIos4kX33DR+s5jEJB44qEWZrzhzPWScwkiPKqVcAaIimpcH1swO9xVbXZF6u9cWVB5iepC0J0gnbKrU4zIRqXNQs9TgYuNxwCNj/dvPzZNVITf33gzO2ePaycvV04cwJLc8bAexpEJJ8nvec9L3ewbunHfywVxT8wUqiXWLWaTjXASvkYxQGsRjFqWwGhgDar37+QYTUN4J7bgrYg/sKDdbdJyIr1tbdKepvh47QJ1aCFj77T1yWxdIu5cukfu6xgGCTK53UTxVdEz5s9ci3Ji/aQJQLH4ceQjV09gcmOj1IQ1QcKtwJBYaOg7yajJl4qo3THYeOJz6ae9okN6C2ECMFESj+f6txgImXZunzT6twiPYLweN+llJVRPZ09Z3FNgNcYWINzuYTn+YZxfgyQA4F9pEaCVA0HcGLUNyHvfRD3F/JXzx9TcD7ztWgA==&quot; /&gt;
+    &lt;/characteristic&gt;
+    &lt;/wap-provisioningdoc&gt;
+
+III. Install and Configure Agent
+
+Create and apply a policy to install the Wireless Insights Agent. Use one of the following guides:
+
+
+Setup using SOTI MobiControl
+
+Setup using Workspace ONE UEM
+
+Setup using Microsoft Intune
+
+
+IV. (Optional) Deploy Permissions and Launch XML
+
+If Auto App Launch or Auto Grant Permissions is not available in your EMM, push the .XML containing the content shown below to launch the Wireless Insights Agent and grant the appropriate permissions. For instructions, see the guide to Deploy XML via EMM.
+
+    &lt;wap-provisioningdoc&gt;
+    &lt;characteristic version=&quot;13.1&quot; type=&quot;AccessMgr&quot;&gt;
+        &lt;parm name=&quot;PermissionAccessAction&quot; value=&quot;1&quot; /&gt;
+        &lt;parm name=&quot;PermissionAccessPermissionName&quot; value=&quot;ALL_DANGEROUS_PERMISSIONS&quot; /&gt;
+        &lt;parm name=&quot;PermissionAccessPackageName&quot; value=&quot;com.zebra.wirelessinsights.agent&quot; /&gt;
+        &lt;parm name=&quot;PermissionAccessSignature&quot; value=&quot;MIIFhTCCA20CCSMxNhM5AtLvpzANBgkqhkiG9w0BAQsFADB/MQswCQYDVQQGEwJVUzERMA8GA1UECAwITmV3IFlvcmsxEzARBgNVBAcMCkhvbHRzdmlsbGUxIDAeBgNVBAoMF1plYnJhIFRlY2hub2xvZ2llcyBJbmMuMSYwJAYDVQQDDB1BbmRyb2lkIFVucHJpdmlsZWdlZCBLZXkgUm9vdDAeFw0yMzEwMjcxOTM1MTNaFw00ODExMjkxOTM1MTNaMIGJMQswCQYDVQQGEwJVUzELMAkGA1UECAwCTlkxEzARBgNVBAcMCkhvbHRzdmlsbGUxHzAdBgNVBAoMFlplYnJhIFRlY2hub2xvZ2llcyBJbmMxDDAKBgNVBAsMA0VNQzEpMCcGA1UEAwwgY29tLnplYnJhLndpcmVsZXNzaW5zaWdodHMuYWdlbnQwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDX9Ae0Q0gd/rvdq2AYyHwcehsFyuU/x7L5IWhb4deD8O0NN6Tf0pj7ckrAfAylJCgNB8Uq+//f6VUTGQIcuFdinZLgQu5CQfqhD4Znt1lxs7eaXLOu5sVSJBZPdW0p9rl7ti+sqS9zDXa/NAOQjXaBIXQ7PJRJpUSOmSKDlN0ciPioB32ayr5v8aR6oMRQdrYW9AhS2UfYiCt0nWSY05poWvvKHzq4LKq6Agy817EZklOSn18buIo8ujGMxT/O2++XNAOfuRKQmv8+R8GVDCMkh1e1Lb8tHxh9+011AdG93EqxCm/4D6Sz69PGTbSlY1Bn0/H46uulamY8DzeChArsKJVQyxzqAl7h838ZuMPXbkCT+z1XONue5rpOluM6nBJe00Z+97YT0SlaNvJG/g7r/YQddLB/VBQwh8NPIeHufO/gEhukkVzvq49ieU/NZj7CHjz+UXcmnDgGz6hhvfqOVsYmjEAzE8LRmOuelClm8jc7RnmF2g8Q+iApwuy5PA75xjAibeUbEqP6aCJy9XkyVt7JujzZd7G+KH4BVSKoj/it51X3N4JvXwCKe9Fpn8SPFcKOUuCehYFGO4+9DvAGbjbCwx9Q4G8iNpbSMoNd5CsHQFHzc6XsV/dh8Y7KzdcuEm0pahRdVYEBsTrMRl3dwxU28eRQnDMA6OH2bEql0QIDAQABMA0GCSqGSIb3DQEBCwUAA4ICAQBiop746XWulTB7kRBTQL34VvMUUTmrI5sw5wFC2WShu2T63+x0HNfDkW2gNhHcBUN5PW4QIY72CZ01ZA4lHII3Cx5OV0D3nCqsI7kf1JcJdKca3lMQhpjR+RNaPkl6cGwb2ySSMsu74qkFFHt338+NZCvxu/NkErV1M1K2cHJTdXaCvLuHTcSYRbR34dvfL7K0y340NCbIRRZOPWqhble84YBQ8SSSBWNTsR/VyXE/oXuuBIos4kX33DR+s5jEJB44qEWZrzhzPWScwkiPKqVcAaIimpcH1swO9xVbXZF6u9cWVB5iepC0J0gnbKrU4zIRqXNQs9TgYuNxwCNj/dvPzZNVITf33gzO2ePaycvV04cwJLc8bAexpEJJ8nvec9L3ewbunHfywVxT8wUqiXWLWaTjXASvkYxQGsRjFqWwGhgDar37+QYTUN4J7bgrYg/sKDdbdJyIr1tbdKepvh47QJ1aCFj77T1yWxdIu5cukfu6xgGCTK53UTxVdEz5s9ci3Ji/aQJQLH4ceQjV09gcmOj1IQ1QcKtwJBYaOg7yajJl4qo3THYeOJz6ae9okN6C2ECMFESj+f6txgImXZunzT6twiPYLweN+llJVRPZ09Z3FNgNcYWINzuYTn+YZxfgyQA4F9pEaCVA0HcGLUNyHvfRD3F/JXzx9TcD7ztWgA==&quot; /&gt;
+    &lt;/characteristic&gt;
+    &lt;characteristic version=&quot;13.5&quot; type=&quot;AppMgr&quot;&gt;
+        &lt;parm name=&quot;Action&quot; value=&quot;LaunchApplication&quot; /&gt;
+        &lt;parm name=&quot;ApplicationName&quot; value=&quot;Wireless Insights&quot; /&gt;
+    &lt;/characteristic&gt;
+    &lt;/wap-provisioningdoc&gt;
+
+V. (Optional) Apply Managed Config through Intent
+
+If Managed Configurations are not supported by your EMM, after launching the Wireless Insights Agent, use the following intent to send the managed configuration:
+
+    “am broadcast -a &#x27;com.zebra.wirelessinsights.agent.ACTION_CONFIGURE_EXTERNAL_CONNECTION&#x27; --es &#x27;message&#x27; &#x27;&lt;Wireless Insights Enrollment Configuration&gt;’”
+
+For &lt;Wireless Insights Enrollment Configuration&gt;, paste the encrypted Wireless Insights Enrollment Configuration copied from step I.
+
+VI. Apply License
+
+To activate the Wireless Insights license in production environments (not required for trials), apply the license using any standard Zebra software license installation method. Detailed procedures are available in the Zebra License Manager User Guide.
+
+For testing or small-scale installations, use Zebra’s StageNow tool to generate a barcode or XML from the license parameters. See the Activate License via StageNow section for an example StageNow profile. The resulting .xml file can also be deployed using an EMM.
+
+VII. Check Agent Connection
+
+To verify the successful deployment and operation of the Wireless Insights Agent, follow these steps to check its connection status on both the device and within the ZDNA Cloud platform.
+
+Device
+
+Ensure that the Wireless Insights Agent is connected to the ZDNA Cloud server by checking the following statuses in the Wireless Insights Agent:
+
+
+Feature Running: Voice is Running
+
+ZDNA Connection (under External Connections):     
+
+
+Connected - Indicates the Wireless Insights Agent is successfully deployed
+
+Activated - Indicates the Wireless Insights license is applied
+
+
+
+
+ZDNA Cloud
+
+In the ZDNA Cloud web console, go to Support Tools &gt; Wireless Insights from the left menu. Verify that the device status, whether in its assigned group or unassigned group, shows &quot;Active.&quot; This confirms successful enrollment.
+
+
+
+
+
+Guide: Deploy XML via EMM
+
+This section explains how to submit .XML file content outlined in Setup instructions for EMMs Without Auto Options subsections. Follow the steps specific to the EMM in use - SOTI MobiControl, Workspace ONE UEM, or Microsoft Intune. XML content submissions include:
+
+
+Delegation Scope
+
+Permissions and Launch Agent
+
+
+ Screen Variations Note: The screen UI may vary depending on the EMM version in use. Refer to your EMM user guide for additional guidance.
+
+
+
+SOTI MobiControl
+
+Follow the instructions below to push an .XML file using SOTI MobiControl:
+
+
+In the SOTI MobiControl web console, go to Policies &gt; File Sync and click File Manager.
+
+
+Click Browse, select the desired .XML file to submit, click Import, then click OK.
+
+
+Click New File Sync Policy.
+
+
+Click Android.
+
+
+Enter a name for the policy and click Next.
+
+
+Click Download from Server, select the .XML file, select the appropriate folder, and click Next.
+
+
+Enter/select the following, then click Next:
+
+
+
+Enable Post-Sync Script: [toggle on]
+
+Script Type: Custom
+
+Script Editor: mxconfig sdcard/WI_Agent_Launch_permissions.xml
+
+Execute Script Only if Files Transmitted: [toggle on]
+
+
+
+Click Device Update and then click Save and Assign.
+
+
+Select the group or device(s) to apply the .XML file. Click the file sync icon from the bottom menu.
+
+
+Click Sync Files Now to initiate the file synchronization.
+
+
+
+
+
+Workspace ONE UEM
+
+Follow the instructions below to push an .XML file using Workspace ONE UEM:
+
+
+In the Workspace ONE UEM web console, go to Orchestration &gt; File Actions. Click Add Files/Actions.
+
+
+Select Android.
+
+
+Enter a name for the File/Action and click the Files tab.
+
+
+Click Add Files.
+
+
+Choose the .xml and click Save.
+
+
+Enter /sdcard for the Download Path, and enter the version if needed. Click Save.
+
+
+The file is added. Click the Manifest tab. Under Installation Manifest, click Add Action.
+
+
+Select the following, then click Save.
+
+
+
+Action(s) To Perform: Apply Custom Settings
+
+File: [Choose the .XML file]
+
+
+
+Create a product using the file/action just created.  Go to Orchestration &gt; Products and click Add Product.
+
+
+Select Android.
+
+
+Enter a name, assign a Smart Group, and click on the Manifest tab.
+
+
+Click Add.
+
+
+Select the following and click Save.
+
+
+
+Action(s) To Perform: File/Action - Install
+
+Files/Actions: [Select the File/Action created from step 9.]
+
+
+
+Click Save.
+
+
+Deploy the product created. Go to Orchestration &gt; Products (under Product Provisioning). Search for the product created. Select the product, click More Actions, and select Reprocess.
+Note: If the product is in the deactivated state, it must be activated before reprocessing.
+
+
+
+Microsoft Intune
+
+Follow the instructions below to push an .XML file using Microsoft Intune:
+
+I. Create an OEMConfig app in the Intune Console
+
+
+In the Microsoft Intune web console, navigate to Apps &gt; All apps. Search for Zebra OEMConfig Powered by MX, then click on the application to open it.
+
+
+Click on Properties. Under Assignments, click on Edit.
+
+
+Click on Review + save.
+
+
+
+II. Apply XML via OEM Passthrough
+
+
+Ensure that the Zebra OEMConfig powered by MX application is installed from the previous step. 
+
+In the Microsoft Intune web console, navigate to Devices &gt; Configuration. Click Create. From the right panel, select the following then select OEMCOnfig for the Template and click Create:
+
+
+
+Platform: Android Enterprise
+
+Profile type: Templates
+
+
+
+Enter a name. Click Select an OEMConfig app. Search for Zebra OEMCOnfig POwered by MX. Select this app name. Click Select, then click Next.
+
+
+Click Next.
+
+
+Click Create.
+
+
+
+ Important: Microsoft Intune EMM does not prioritize policies. If a group is assigned to multiple policies with conflicting settings, it creates a conflict state. To avoid this, remove the group from the existing policy before assigning it to a new policy that targets the same settings.
+
+
+
+Activate License via StageNow
+
+Use Zebra&#x27;s StageNow tool to create staging profiles for license deployment. A profile can either generate a barcode to scan with the StageNow client or export an XML file for mass deployment via an Enterprise Mobility Management (EMM) system. 
+
+Upon license procurement, a confirmation email is sent containing the &quot;Badge ID&quot; and &quot;Product Name&quot; parameters required for activation.
+
+To create a StageNow profile:
+
+
+Open StageNow. Click Create new Profile from the left-hand menu. Select MX version 10.2 or higher to match the MX version on the device. Select Xpert Mode and click Create.
+
+
+Enter a profile name and click Start.
+
+
+Scroll down and click LicenseMgr. It appears on the right side of the window. Click Add.
+
+
+Under LicenseMgr, fill in the following and click Continue to activate the license using Badge ID:
+
+
+License action type: Perform Zebra license action
+
+Zebra license action: Activate License using Badge ID
+
+Cloud Server Type: Production Cloud
+
+Badge ID: [Enter the Badge ID received in Zebra&#x27;s license confirmation email.]
+
+Product Name: [Enter the Product Name received in Zebra&#x27;s license confirmation email.]
+
+
+Click Complete Profile to finish creating the StageNow profile.
+
+
+
+Deployment options:
+
+
+Barcode: Generate the barcode from the StageNow profile, launch the StageNow client on the target device, and scan the barcode(s).
+
+XML: Export the XML from the StageNow profile. Do not modify the XML file to prevent unexpected behavior. Deploy the file to the devices via EMM (consult the EMM guide) or Zebra DNA Cloud.
+
+
+
+
+Intents
+
+Stop Voice Analysis
+
+Use the following intent to stop voice analysis:
+
+    &quot;am broadcast -a &#x27;com.zebra.wirelessinsights.agent.ACTION_EXTERNAL_COMMANDS&#x27; --es &#x27;message&#x27; &#x27;{ \&quot;message_type\&quot;: \&quot;command\&quot;, \&quot;message\&quot;: { \&quot;action\&quot;: \&quot;stop\&quot;, \&quot;feature\&quot;: \&quot;voice\&quot;}}&#x27;&quot; 
+
+Start Voice Analysis
+
+Use the following intent to start voice analysis, replacing both instances of 5060 values with your desired port number:
+
+    &quot;am broadcast -a &#x27;com.zebra.wirelessinsights.agent.ACTION_EXTERNAL_COMMANDS&#x27; --es &#x27;message&#x27; &#x27;{ \&quot;message_type\&quot;: \&quot;command\&quot;, \&quot;message\&quot;: { \&quot;action\&quot;: \&quot;start\&quot;, \&quot;feature\&quot;: \&quot;voice\&quot;, \&quot;filter\&quot;: [\&quot;warning\&quot;, \&quot;error\&quot;], \&quot;configuration\&quot;: [ { \&quot;key\&quot;: \&quot;activityMode\&quot;, \&quot;value\&quot;: \&quot;PASSIVE_MODE\&quot; }, { \&quot;key\&quot;: \&quot;sessionName\&quot;, \&quot;value\&quot;: \&quot;wi\&quot; }, { \&quot;key\&quot;: \&quot;reportLevel\&quot;, \&quot;value\&quot;: \&quot;INFO\&quot; }, { \&quot;key\&quot;: \&quot;voicePktFilterRule\&quot;, \&quot;value\&quot;: \&quot;TCP:5060,UDP:5060\&quot; }, { \&quot;key\&quot;: \&quot;dynamicCodec\&quot;, \&quot;value\&quot;: true }, { \&quot;key\&quot;: \&quot;port\&quot;, \&quot;value\&quot;: 4556 } ] } }&#x27;&quot;
+
+Assign Group Name
+
+Assigning a group name to devices helps organize them when displayed in the Wireless Insights dashboard within ZDNA Cloud. Use the intent below to assign a group name to the device, replacing Zebra_group with your desired group name. This intent should be sent after the Wireless Insights Agent is installed and configured.
+
+    &quot;am broadcast -a &#x27;com.zebra.wirelessinsights.agent.ACTION_EXTERNAL_COMMANDS&#x27; --es &#x27;message&#x27;&#x27;{\&quot;message_type\&quot;:\&quot;command\&quot;,\&quot;message\&quot;:{\&quot;action\&quot;:\&quot;set\&quot;,\&quot;feature\&quot;:\&quot;server_config\&quot;,\&quot;configuration\&quot;:[{\&quot;key\&quot;:\&quot;groupName\&quot;,\&quot;value\&quot;:\&quot;Zebra_group\&quot;}]}}&#x27;&quot;
+
+
+
+See Also
+
+
+About Wireless Insights
+
+Vendor Agent
+
+Licensing
+
+Wi-Fi Data
+
+Cellular Data
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

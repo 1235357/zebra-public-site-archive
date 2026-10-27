@@ -1,0 +1,156 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>URGENT HELP: rfidStartMultiTagsLocationing returns SUCCESS but no proximity events fire on RFD40 / iOS</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>URGENT HELP: rfidStartMultiTagsLocationing returns SUCCESS but no proximity events fire on RFD40 / iOS</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/urgent-help-rfidstartmultitagslocationing-returns-success-no-proximity-events-fire-rfd40-ios; original snapshot: threads/00315.html; SHA-256: 5e01c5f14e71251033f78a0b5b3c39f7f564887d16391d948fec20beaea7c935</small><pre id="topic">
+
+    
+        URGENT HELP:  rfidStartMultiTagsLocationing returns SUCCESS but no proximity events fire on RFD40 / iOS
+
+
+        
+      
+                        
+                    
+            W
+          
+          waqas ali
+          5 months 2 weeks ago
+        
+        
+      
+        
+            
+                  
+            
+            53
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi all,We’re trying to use srfidStartMultiTagsLocationing on iOS to find any of N RFID tags in proximity, and we can’t get the SDK to deliver any proximity callbacks. Single-tag locate (srfidStartTagLocationing) works perfectly on the same setup with the same tags — only multi-tag is broken.Hoping someone with experience on this API can spot what we’re missing.What we observeWhen we call srfidStartMultiTagsLocationing:The call returns SRFID_RESULT_SUCCESS.srfidEventStatusNotify fires with SRFID_EVENT_STATUS_OPERATION_START — so the reader firmware confirms it entered an active operation.The reader physically reads tags and beeps on every tag in range (typical inventory-mode behavior, not locate-mode — beeping continues even when walking away from the registered EPCs).Neither srfidEventMultiProximityNotify nor srfidEventReadNotify delivers a single callback for the reads. Total silence at the delegate level for the entire operation.Multi-tag locate also intermittently crashes the app (no useful stack trace yet — happens deep in SDK frames). Single-tag never crashes.So the reader is reading, the SDK accepts the start, the firmware activates — but reads never bubble up to a delegate method.What we’ve tried (none worked)aRSSIValueLimit — started at 0, changed to -40 per Zebra’s iOS tutorial. No change.reportConfig.setSdkStatusMultipleTagsLocationing(true) vs not calling it — both states produce identical behavior.EPC format — our tags have short EPCs that work fine with single-tag locate. For multi-tag, we tried registering both the raw form (e.g. 00001143) and the 24-char zero-padded form (000000000000000000001143) for each input EPC via addItem:aRSSIValueLimit:. Neither, nor both together, made events fire.EPC normalization — trimmed whitespace, uppercased, deduplicated.Reader profiles — tried FASTEST_READ and DENSE_READ. No effect on multi-tag event delivery.Delegate subscription — confirmed SRFID_EVENT_MASK_MULTI_PROXIMITY is subscribed via srfidSubsribeForEvents:.Same delegate also handles single-tag — srfidEventProximityNotify fires fine during single-tag locate. So the delegate is wired up correctly; only the multi-proximity branch is silent.What we’ve ruled out via process of eliminationReader hardware — beeps on reads, single-tag locate worksBluetooth / transport — single-tag uses the same connectionTag EPC encoding — single-tag locates the same tags fineDelegate registration — proves out via working status notify and single proximityMethod channel / Swift-Obj-C bridging — start call goes through, status notify comes backCode snippet (multi-tag setup)let reportConfig = srfidReportConfig()
+for epc in targets {
+    reportConfig.addItem(epc, aRSSIValueLimit: -40)
+}
+let result = api.srfidStartMultiTagsLocationing(
+    connectedReaderID!,
+    aReportConfig: reportConfig,
+    aAccessConfig: nil,                  // ← passing nil here — could this be the problem?
+    aStatusMessage: &amp;statusMessage
+)
+// returns SRFID_RESULT_SUCCESS, then nothing fires in srfidEventMultiProximityNotify
+Delegate is implemented on the same class that successfully receives srfidEventStatusNotify, srfidEventProximityNotify (for single-tag), srfidEventReadNotify (for inventory), srfidEventBatteryNotity, etc.QuestionsIs there something obvious missing from our srfidStartMultiTagsLocationing setup? The iOS SDK tutorial example we found omits alloc/init on the srfidReportConfig, so we’re not sure if that example was complete or representative.Should aAccessConfig be a non-nil srfidAccessConfig() instance? The tutorial passes nil but maybe a default-initialized config is required.Are there known compatibility issues between iOS SDK v1.1.94 and RFD40 firmware for multi-tag locate specifically?Is there a way to enable verbose SDK debug logging on iOS so we can see the internal ECRT: log lines (we can see strings like ECRT: software filter epc=%@, limit=%d in the framework binary, suggesting internal debug logs exist)?The Zebra Android docs show multi-tag locate firing through eventReadNotify with getMultiTagLocateTagInfo(). Should iOS multi-tag also fire through srfidEventReadNotify (which we also tried — never fires during the locate either)?A recent forum thread (Best approach for GTIN-based tag locating with dynamic tag switching) suggested srfidStartTagLocationing with an aTagEpcMask is a recommended alternative. Is that the official guidance for “find any of N similar tags” on iOS, with multi-tag-locate considered legacy?EnvironmentReader: Zebra RFD40iOS RFID SDK: v1.1.94iOS: 17.xTag encoding: ours are short-form EPCs (e.g. 8 hex chars / 32 bits as reported by the reader during pair operation)Single-tag locate confirmed working with the same tags and same readerThanks for any pointers — happy to provide additional logs or test specific configurations.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            4 months 3 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Copy from Duplicate -Similar posting &quot;Multi-Tag Locate on iOS / RFD40s&quot; -- copy here for same reason.FYI - for any iOS RFID SDK questions - I prefer to validate certain functionality operates on the Apple Store released version of 123RFID Mobile app.As a result of which - the Multi-Tag locate - typically is done via the Demo Config setting for &quot;Application Menu&quot; - of &quot;Export Data&quot;  slider activated.For any Inventory (trigger pull / then trigger release) - this will then save the Inventory Captured data to a flat file to the iOS filesystem (Save to files) button.{ Mine saves to the &quot;Download&quot; folder in the file dialog. }  [ Quick Tip activate this feature 1 time take an inventory and Save it, and then turn the &quot;Export data&quot; off. ]When you goto &quot;Locate Tag&quot; in the main screen UI - the Locate Tag featue has &quot;Single Tag&quot; locate - which is whatever highlighted &quot;inventory&quot; view EPC you selected.ORMulti Tag locate &lt;tab&gt;  - that if you click the lower RH corner icon of a sheet of paper with a (+) in the icon. ( Recents alas is the default starting point, navigate to &quot;Browse&quot; in the bottom right, and choose the up-to-date &quot;TagList########&quot; file.If you choose the correct &quot;Export file&quot; - the screen / UI when it returns will show the &quot;INVENTORY SUMMARY&quot; list of the tags you exported. &lt;quick point&gt; on Android ( RFID SDK for Android Studio 123RFID Mobile ) this export file should do the Multi-Tag locate and show status&#x27;s - However, On iOS this currently seems to fail on V1.1.94.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,216 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Install APK via MDM results in AccessMgr is not in Register CSP cache Table</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Install APK via MDM results in AccessMgr is not in Register CSP cache Table</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/31576; original snapshot: threads/resume-00022.html; SHA-256: 374fb32e7c68d828dbc49a0b640bc60bfd2cb675b8c598fce835eabffc397b99</small><pre id="topic">
+
+    
+        Install APK via MDM results in AccessMgr is not in Register CSP cache Table
+
+
+        
+      
+                        
+                    
+            B
+          
+          Brock Davis
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            55
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  When I install my APK to a device using an MDM, I am unable to access some features of the EMDK.
+ 
+Here is what I see in the logs:
+ 
+E/MxFrameworkHelper( 2447): bindCSP: sTLC=[AccessMgr] is * NOT * in local registered CSP cache talble !
+E/MxFrameworkService( 2447): isApplicationAllowedCheckByAcessMgr: bind to Accesss Manager failed!
+ 
+If I adb side load install the APK or install via any other method (load via browser and have system install, etc.) it works just fine.
+ 
+1. At what point are CSP Cache tables populated?
+ 
+2. Is there someway to cause the tables to be loaded via Intent?
+ 
+3.  Is there a permission needed within the MDM to allow for installing APK&#x27;s that require EMDK?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Brock Davis
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Solution to this:&amp;nbsp; It is Timing issue with EMDK at device boot.
+My application is the first to utilize the EMDK after booting the device, I make a call to the EMDK, the call returns success, but underneath the EMDK has failed (table not loaded).
+Real solution would be for the EMDK to throw an error when it fails because of table load issue OR gracefully retry the command once the table is loaded.
+My work around is to sleep X period of time and retry the command.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jonhn Mary
+          
+          
+            5 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Download the list of most trending apk mod apps of 201 at the website: https://modpree.com/
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

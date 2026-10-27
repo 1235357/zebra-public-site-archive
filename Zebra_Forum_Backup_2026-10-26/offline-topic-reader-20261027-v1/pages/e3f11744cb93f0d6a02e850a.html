@@ -1,0 +1,287 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Unable to connect USB device &amp;quot;USB003&amp;quot; in Zebra barcode printer</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Unable to connect USB device &amp;quot;USB003&amp;quot; in Zebra barcode printer</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/unable-connect-usb-device-usb003-zebra-barcode-printer; original snapshot: threads/00688.html; SHA-256: f55b811b5f72b31d5e436117c2b4cfbea15794aca88dde259ce9e02c4a99f833</small><pre id="topic">
+
+    
+        Unable to connect USB device &amp;quot;USB003&amp;quot; in Zebra barcode printer 
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          3 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            651
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Dear Zebra Team,
+I cannot connect the zebra printer via USB. Here is the code. It is showing like Unable to connect USB device port &quot;USB003&quot;. Printer configuration are perfectly setup and test print is working fine. Kindly guide me what is missed in the below code. My zebra SDK version is 2.14.1919 and .net framework is 4.7. Printer model is zebra zt411
+  private void SendZplOverUSB()
+        {
+            Console.WriteLine(&quot;Finding Zebra printer...!!!&quot;);
+            Connection thePrinterConn = new UsbConnection(&quot;USB003&quot;);
+            Console.WriteLine(&quot;USB Connection Open...!!!&quot;);
+            try
+            {
+                thePrinterConn.Open();
+                string zplData = @&quot;^XA
+                            ^ILR:SAMPLE.GRF^FS
+                            ^XZ&quot;;
+                thePrinterConn.Write(Encoding.UTF8.GetBytes(zplData));
+                Console.WriteLine(&quot;Write ZPL data to printer&quot;);
+                Console.ReadLine();
+            }
+            catch (ConnectionException e)
+            {
+                // Handle communications error here.
+                Console.WriteLine(e.ToString());
+                Console.ReadLine();
+            }
+            finally
+            {
+                thePrinterConn.Close();
+            }
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The USB string of &quot;USB003&quot; is incorrect. You need to use the UsbDiscoverer class to find the proper string for the USB connected printer. See the example code in the UsbDiscoverer class.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              N
+            
+          
+                
+          
+            Narendran R
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            My USB String is &quot;\\?\usb#vid_0a5f&amp;amp;pid_0174#99j210604359#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}&quot;
+Connection thePrinterConn = new UsbConnection(@&quot;\\?\usb#vid_0a5f&amp;amp;pid_0174#99j210604359#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}&quot;);
+It is also throws &quot;Connection is not open&quot;
+Kindly help me..
+Thanks in advance
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Half Wolf
+          
+          
+            3 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I&#x27;m encountering an issue while attempting to connect my Zebra printer via USB. I&#x27;ve provided the relevant code snippet below for your reference. The error message I&#x27;m receiving is: &quot;Unable to connect USB device port &#x27;USB003&#x27;.&quot;
+
+The printer configuration appears to be correctly set up, and I can successfully perform a test print. However, I&#x27;m unsure about what might be missing or causing this USB connection problem.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

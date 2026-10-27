@@ -1,0 +1,856 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Linux SDK API clarification</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Linux SDK API clarification</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/linux-sdk-api-clarification; original snapshot: threads/00887.html; SHA-256: 8a8547ff2e8ca3a2e2cfb3f17c0e25f483502d41171e1e7f557b5e2b1cc9e59a</small><pre id="topic">
+
+    
+        Linux SDK API clarification
+
+
+        
+      
+                        
+                    
+            D
+          
+          David Llevat
+          4 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            65
+          
+                
+                  
+            
+            13
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+I have a system with PL5000AM and a SE4850 connected to it. Up until now we where integrating it using the SSI, however, I wanted to try the Linux SDK to build some plug-and-play driver to connect the PL5000 using the microUSB connector to a Linux PC. So far, I haven&#x27;t been able to replicate the behavior I have with the SSI and I&#x27;d like some clarifications regarding the Linux SDK:
+- Do you know which commands provided in the Linux SDK API allows for a continuous scan (like the START_SESSION of the SSI command)?
+- Regarding the API, do you know some extra documentation on the Methods to be executed through ExecCommand and ExecCommandAsync, for instance, SCAN_ENABLE, DEVICE_CAPTURE_BARCODE and SET_ACTION (available in doc but not in the API). I found the documentation a little bit ambiguous.
+- Also, do you know if there is a way to decode all barcodes in the field of view and not only just one programmatically (like Multicode)?
+Thanks in advanced!
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      13 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Linux SDk support only SNAPI or IBM usb protocols
+with following link  https://techdocs.zebra.com/dcs/scanners/sdk-linux/api/
+Check DEVICE_PULL_TRIGGER
+under src &amp;gt; Native &amp;gt; CsCommon &amp;gt; include &amp;gt; CsUserDefs.h
+or within page https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/software/s…
+check page 55
+Note that sdk comes with full sample including its source code 0
+With regards decoding all barcodes in field of view. The Pl5000 does support MDF and UDI parsing
+For MDF check page
+https://www.zebra.com/us/en/products/software/scanning-systems/multi-co…
+For UDI check pages below
+https://www.zebra.com/content/dam/zebra_new_ia/en-us/support-and-downlo…
+https://www.youtube.com/watch?v=ZNUjLVWWdYs
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            David Llevat
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Sorry for the delayed answer.
+I&#x27;ve been checking your answers and regarding the MDF and UDI, I have a follow up question.
+The main issue is that I don&#x27;t have any structured data, meaning that I have any barcode type and a random number of barcodes. What I&#x27;d like to do is to read all of them (if they are in the field of view only) without any criteria, basically, doing the MDF but with no criteria at all; aside from sending a separator inbetween codes to differentiate them. 
+I&#x27;ve been trying to configure the MDF to do so, but I haven&#x27;t been able to do it so far. Could you help me with that? How should I configure or structure the MDF to be able to decode any code and any number of codes in a single shot?
+Thanks in advanced
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Indeed if no structured data with pattern to differentiate between the codes MDF will not work . unfortunately there is no option. That would allow to read all code in one pull for your scenario but what would be possible is to enable Continuous Bar Code Read Parameter # 649 to report every barcode when trigger is pressed with that you can enable Unique Bar Code Reporting Parameter # 723 to report the barcode only one time while trigger is pressed . This process should apply to a pull trigger command .
+Note you might adjust Timeout Between Decodes, Different Symbols Parameter # 144 to zero .
+Hope above helps
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            David Llevat
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Just tested the configuration you propose and indeed it works much better, however, it does not solve the issue.
+Regarding MDF, there is something I don&#x27;t understand. Supose I had 3 barcodes in an image but they can be total random barcodes. If I create 3 rules, defined as:
+* code type -&amp;gt; all codes,
+* criteria -&amp;gt; any/required for match/transmit barcode,
+* actions -&amp;gt; send all that remains
+What happens is that, effectively reads any barcode but the output is the SAME barcode three times.
+Given this, I&#x27;m guessing that (sort of) the decoder has a list of decoded barcodes existing in the image and applies the filter to that list, and every time does it from the beggining of the list. What I&#x27;d like is to get that list.
+Can you think of a workaround for an MDF rule that, for instance, Rule2 excludes from the pattern the result of Rule1?
+Or is there a way of requesting that list of codes?
+Thanks in advanced!
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Unfortunately if the 3 barcodes do not have anything that differitionate them then that would cause a loop where all rules applies to all codes which will cause decoder to continuously look for match until mdf session time out is reached or trigger being released .
+If this impacting a opportunity you might consider contacting your zebra account team for custom
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            David Llevat
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            And just to make sure I understood your previous answer, are the following statements correct?
+1. there is no way to retrieve the 3 barcodes without applying a rule, despite the decoder having them.
+2. I cannot not apply a rule where the filter is the result of the previous rule.
+Sorry for the insistence!
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            For point 1 : That&#x27;s correct hence I suggested you might ask for custom through your zebra account team .
+For point 2 : I&#x27;m not sure if I understand . Could help me clarify what you meant ?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            David Llevat
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Sure! Thanks for the help.
+I am thinking of a way to workaround this issue and trying to understand how rules are applied internally. Hence, I was thinking if there is a way such that:
+* Option1: use previous rules to define criteria. Example:
+Rule1: code type - any, criteria - any, actions - send all that remains.
+Rule2: code type - any, criteria - &lt;strong&gt;not matched before&lt;/strong&gt;, actions - send all that remains.
+* Option2: match a single code and output all of them. Like if the rule was: if code X detected, read all. Example:
+Rule1: code type - any, criteria - any, actions - send all that remains &lt;strong&gt;+ other codes&lt;/strong&gt;.
+Any ideas?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Unfortunately that is not available .
+You can define different set of rules , with output flag in case it&#x27;s match or not .
+If you set three rules to send the data in both case it&#x27;s match or not match , as long the rules criteria and code types are the same then you will have an issue because the three barcodes would have all three rules applicable and in this case none will be selected which results on no output . I don&#x27;t see solution for your problem without custom .
+Just out of curiosity are the labels always sale format and same number of barcodes printed ?
+If the issue is with fact that you want to send all code at same time , you can still use continues read and set some buffer and timers/count . Obviously there is delay in such solution however your application can buffer decided data then send them together
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            David Llevat
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for all the answers!
+Answering your last question, no; in fact, the barcodes may belong to different labels which are placed together. Also, the number of barcodes may vary; what can be true is that, given the FOV, no more than 3 barcodes (4 in a worst case escenario) will appear in a single image.
+The main issue I found with the continous reading is that if I do a test still, i.e., engine pointing to same point, the barcodes around the first decoding are never read.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Odd , because if picklist is disabled and different symbol time out is set to zero , continuous read should allow to decode any different barcode in FOV in sequence . If you have picklist enabled then it will lead to behavior you mentioned because scanner will only decode barcode that is touched by the aimer
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            David Llevat
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I&#x27;ve double checked and picklist is deactivated. Knowing that the behaviour should be as you say, I&#x27;ve noticed that the issue was with the timeout between same symbols #137, setting it to 0 makes it work, although with a small delay.
+I&#x27;ll check if in this configuration the system performs correctly, but most probably won&#x27;t. I&#x27;ll try to get a custom modification.
+Thanks for the help.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Let me know the test results you will have
+For my info what scan engine are you using and what firmware was loaded in you pl decoder ?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

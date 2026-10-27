@@ -1,0 +1,560 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>React-Native get data through Bluetooth</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/react-native-get-data-through-bluetooth; snapshot threads/00491.html; SHA-256 913c1d9a5705318ff533f84fc1aef30d16e8dd26a7e2ad05754c6f121b59abc0. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">React-Native get data through Bluetooth</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            J
+          </div>
+          <div class="forum-topic__author-name">Joris Thalamas</div>
+          <div class="forum-topic__timestamp">3 years 1 month ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            2228
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            7
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>​<br>
+Hello,</p>
+
+<p>I'm currently developping a react-native app which need to read Barcode, QrCode and RFID tags.</p>
+
+<p>It need to support various scanner. Currently I'm trying to use a RFD40 premium plus and a RFD85 within the app.</p>
+
+<p>I use the react-native-bluetooth-classic module to.</p>
+
+<p>So far I manage to connect both of the devices to the app.</p>
+
+<p>The issue is that I don't manage to get the data from the scanner. When I perform a RFID scan nothing happen and when I scan a barcode or QrCode the scanner emit 1 bip with a green light then a few seconds later it emit 4 bips with a red light (one light peer bip).</p>
+
+<p>In my code, when I use the method onDataReceived wich should trigger as soon as I scan something nothing happend and when I use the method read and available it seems to have no data.</p>
+
+<p>I someone any idea of why I don't manage to get data and what does these 4 bips means ?</p>
+
+<p>Best Regards</p>
+
+<p>​</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      7 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-52116" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Joris Thalamas</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Here a sample of my code :</p>
+
+<pre><code class="language-javascript">let readInterval = null;
+let device = null;
+ 
+async function startDiscovery() {
+    try {
+      console.log('startDiscovery');
+      let unpaired = await RNBluetoothClassic.startDiscovery();
+      for (const unpairedDevice of unpaired) {
+        if (unpairedDevice .name === 'RFD40+_22249520100906') {
+          device = unpairedDevice;
+          try {
+            await device.connect();
+            readInterval = setInterval(() =&gt; performRead(), 5000);
+            //sub = device.onDataReceived((data) =&gt; onReceivedData(data));
+          } catch (err) {
+            console.error('sub', err);
+          }
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+ async function performRead() {
+    try {
+      console.log('Polling for available messages');
+      let available = await device.available();
+      console.log(`There is data available [${available}], attempting read`);
+      if (available &gt; 0) {
+        for (let i = 0; i &lt; available; i++) {
+          console.log(`reading ${i}th time`);
+          let data = await device.read();
+          console.log(`Read data ${data}`);
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+</code></pre>
+
+<p> </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-52117" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Joris Thalamas</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Ok after many trial I manage to get the data from BarCode and QrCode using :</p>
+
+<pre><code>await device.connect({
+  connectionType: 'binary',
+});</code></pre>
+
+<p>The issues are :</p>
+
+<ul>
+	<li>After scanning a barcode or qrcode I need to wait for the 4 bips to scan again (wich take a few seconde)</li>
+	<li>I still don't manage to perform a RFID scan</li>
+</ul></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-52118" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>The RFID support for Bluetooth is Interactive with the RFID API3 Libraries - this is not available as a Bluetooth Classic SPP profile only - this is not supported.<br>
+<br>
+If you wish to have RFID / Barcode Data from the RFD8500 / RFD40 and you do not wish to use the RFID API3 SDK - you will need to configure the RFD devices as Bluetooth HID interface devices - and you will lose a lot of Capability (NO RFID Transactions - only read-only data.</p>
+
+<p>The RFD40 RFID SDK for the Handheld RFID Sled is found on the RFD40 Support portal.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-52119" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>If you choose to use the RFID API3 and Scanner control Framework by using the Android Studio - version of the RFID SDK for the RFD40 platform, you gain a lot of features for Both Barcode Support as well as for RFID Support.</p>
+
+<p>Zebra does not have plans to support 3rd party Development Frameworks (Flutter, React, and Cordova).<br>
+<br>
+Zebra Supports Java based Android Studio development, and Xamarin Forms (not Maui at the moment) for RFID API3 and Scanner Framework for RFD sled.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-52143" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Joris Thalamas</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hello,</p>
+
+<p>Thank you so much Sean, your answer was really helpfull. I integrated the RFID API13 in our app and manage to read our RFID tags on android side (IOS will be done later).</p>
+
+<p>Now I'm trying to read barcode. If I understand correctly to read barcode, I need to use the <span data-original-href="https://www.zebra.com/us/en/support-downloads/software/developer-tools/scanner-sdk-for-android.html">Scanner sdk</span> or is it possible to use the RFID API13 too ?</p>
+
+<p>If I have to use the Scanner sdk, could you please help me to understand which class in the android_scanner_sdk_demo_v2.6.19.0_src I should look for ? I have trouble to identify what is helpful or not (I'm looking how to get device list, connect/disconnect and read tag).</p>
+
+<p>If I can use RFID API13 (which I would prefer) could you please help me understand how to do it ? So far the only thing I found about bar code is :  com.zebra.rfid.api3.Config.setTriggerMode(ENUM_TRIGGER_MODE.BARCODE_MODE, true) but my event handler don't detect when a barcode is scanned.</p>
+
+<p>Thank you in advance</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-52146" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Joris Thalamas</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Ok I found my answer, the scanner sdk is included in RFID API13, so I need to implement either RIFID scan handler or Barcode scan handler (using IDcsSdkApiDelegate) depending on the device mode.</p>
+
+<p>I would like to know if it's possible to detect the mode change. For example is it possible to detect on a RFD85 if the user press the mode button ? Or on RFD40 if it's possible to detect if the user press the lower trigger ? Is there any event in either com.zebra.rfid or com.zebra.scannercontrol (I don't manage to find it) ? </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-52843" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              N
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Nishil E</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi, how did you manage to work it with React Native? I'm using the DS3678 barcode scanner and I am required to scan the barcodes and display the data in my app. I'm trying to integrate the Android SDK with my project and facing many issues. Any suggestions or tips would be helpful. Thank you so much.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/react-native-get-data-through-bluetooth%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/react-native-get-data-through-bluetooth%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

@@ -1,0 +1,188 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>XmlPrinting with .Net core - Zebra.Printer.SDK not working (Builder not correctly implemented)</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/xmlprinting-net-core-zebraprintersdk-not-working-builder-not-correctly-implemented; snapshot threads/00918.html; SHA-256 21e6a61593e6d4380bd25028644fc332b68074e7a10c69a4e159c7619ab3ecc6. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">XmlPrinting with .Net core - Zebra.Printer.SDK not working (Builder not correctly implemented)</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            X
+          </div>
+          <div class="forum-topic__author-name">Xavier Stevenne</div>
+          <div class="forum-topic__timestamp">4 years 9 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            871
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello,</p>
+<p>I designed a label with Zebra Designer for Developers. I could test print it from there on a ZT411 300dpi, with default values for the variables.<br>
+I am now trying to print it from .Net 5 code, without success.<br>
+I tried :<br>
+1.<br>
+Create a console application in .Net 5.<br>
+Install Nuget package Zebra.Printer.SDK (2.15.2634)<br>
+Copy-paste the following code example: <span data-original-href="https://techdocs.zebra.com/link-os/2-14/pc_net/content/html/8026e23d-26d4-5bd2-9f3e-a29cda0e523b.htm">https://techdocs.zebra.com/link-os/2-14/pc_net/content/html/8026e23d-26…</span><br>
+Create the file XmlPrinterExampleTemplate.zpl and add the ZPL code (see comment in example)<br>
+Change the IP address to use the correct one.</p>
+<p>When I start the program, the first call to XmlPrinter.Print works (it only logs to the console) but the other two give me the following error:<br>
+System.ArgumentException: Builder not correctly implemented<br>
+   at Zebra.Sdk.Comm.Internal.ConnectionBuilderInternal.Build(String descriptionString)<br>
+   at Zebra.Sdk.Printer.CsvPrinter.OpenConnection(String destinationDevice)<br>
+   at Zebra.Sdk.Printer.CsvPrinter.Print(String destinationDevice, Stream sourceDataStream, String templateFilename, String defaultQuantityString, Stream outputDataStream, Boolean verbose)<br>
+   at Zebra.Sdk.Printer.XmlPrinter.Print(String destinationDevice, Stream sourceDataStream, String templateFilename, String defaultQuantityString, Stream outputDataStream, Boolean verbose)</p>
+<p>I tried several IP address formats (« 1.2.3.4 », « 1.2.3.4:9100 », « TCP:1.2.3.4 », et « TCP:1.2.3.4:9100 ») but always get the same error.</p>
+<p>2.<br>
+I found this doc about ConnectionBuilder: <span data-original-href="https://techdocs.zebra.com/link-os/2-15/pc_net/content/html/ba1a1ca6-598d-aaed-da69-e709a68b7eac.htm">https://techdocs.zebra.com/link-os/2-15/pc_net/content/html/ba1a1ca6-59…</span><br>
+After I copy-pasted the method "SendZplOverTcp" I get the compile-time error "Error CS0103 The name 'ConnectionBuilder' does not exist in the current context"<br>
+It seems the ConnectionBuilder class is not publicly accessible in the 2.15 version of the nuget package.<br>
+When I downgrade to version 2.14.1989, I get a warning and another compile-time error.<br>
+    Warning NU1701 Package 'Zebra.Printer.SDK 2.14.1989' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework 'net5.0'. This package may not be fully compatible with your project.</p>
+<p>    Error      NETSDK1149      SdkApi_Desktop.dll cannot be referenced because it uses built-in support for WinRT, which is no longer supported in .NET 5 and higher.  An updated version of the component supporting .NET 5 is needed. For more information, see <span data-original-href="https://aka.ms/netsdk1149">https://aka.ms/netsdk1149</span><br>
+The compilation error was fixed by downgrading the project to .Net Core 3.1</p>
+<p>With version 2.14 of the package and .Net core 3.1 I could print "This is a ZPL test" with the printer. However, the XmlPrinterExample is still not working; I got errors regarding a dependency with CsvHelper. I managed to find a compatible version of CsvHelper and I then get the following error :<br>
+Exception thrown: 'System.IO.FileNotFoundException' in SdkApi_Core.dll </p>
+<p>I tried to use .Net Framework 4.7.2 and had the same error about SdkApi_Core.dll</p>
+<p>3.<br>
+As the nuget package was definitely not working, I tried downloading the SDK from here: <span data-original-href="https://www.zebra.com/fr/fr/support-downloads/printer-software/link-os-multiplatform-sdk.html">https://www.zebra.com/fr/fr/support-downloads/printer-software/link-os-…</span> (Windows version)<br>
+Unfortunately, in the lib directory, there is nothing else than the nuget package (the one that I can't make work)</p>
+<p>There is also a demo included in the SDK, in C:\Program Files\Zebra Technologies\link_os_sdk\PC-.NET\v2.15.2634\demos-desktop\Source<br>
+This demo contains multiple examples but I don't see an example for XML printing with the label I designed in Zebra Designer.</p>
+<p>I feel stuck. Can someone help me print my label with Xml printing ?<br>
+Other acceptable solutions :<br>
+- Something else than Xml printing that would let me print a label with variables<br>
+- Print from web browser (javascript)</p>
+<p>Thanks.<br>
+Xavier</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-49899" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 9 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>The whole implementation of the Link-OS SDK for PC-.NET is built for the .NET Framework 4.7 (or higher). The .NET 5 &amp; the .NET 6 are the evolution of the .NET Core 3.1, which is not supported by the Link-OS SDK for PC-.NET from the beginning.</p>
+<p>Please change your .NET project to a .NET Framework 4.7 or 4.8 based project.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/xmlprinting-net-core-zebraprintersdk-not-working-builder-not-correctly-implemented%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/xmlprinting-net-core-zebraprintersdk-not-working-builder-not-correctly-implemented%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

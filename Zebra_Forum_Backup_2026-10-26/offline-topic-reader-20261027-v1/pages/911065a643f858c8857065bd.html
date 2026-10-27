@@ -1,0 +1,166 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Issue with converting the Base64String to ZPL command</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Issue with converting the Base64String to ZPL command</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25270; original snapshot: threads/resume-00465.html; SHA-256: 1105add489156a617e21c03edbd569b1d61deacc0837f9ba98f59418eab42cf4</small><pre id="topic">
+
+    
+         Issue with converting the Base64String to ZPL command
+
+
+        
+      
+                        
+                    
+            S
+          
+          System Admin
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            1926
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We have the Label in Base64String format stored in our DB/Table. Please refer “Base64String_LabelData.Txt” in the attachment.
+We are converting this Base64 string to a ZPL command (by first converting Base64 string to a monochrome/.bmp Image, and then converting that image to the ZPL command).
+Please refer “ZPLCommand_LabelData.txt” for the ZPL command output. You can paste that in online ZPL viewer.
+I have validated the ZPL command in the Online ZPL Viewer: http://labelary.com/viewer.html and this works fine.
+Another word document “.NET code to convert the BMP Monochrome to ZPL command.txt”  contains the .NET C# code which we used to convert from “BMP /Monochrome” to ZPL command.
+Below are the challenges which we have currently.
+1.	The current ZPL output file is around 248KB which is way larger than our input file, and is causing performance issues when sent to Zebra printer.
+Is there a way we can generate the file of lesser size by using some compression technique?
+2.	Other than this label, we are appending additional fields to the lower section in the label. Once I try this in the ZPL viewer, the text is getting added but is inverted.
+Please refer OnlineZPLViewer_Output.jpg in the attached.
+3.	Once we validate this data in ZPL viewer, able to see the label but when we actually send this label to the Zebra printer, nothing is coming out from the printer.
+And we have ZT230  model of Zebra printer.
+Can you please help me, how can I convert the base64String to Zebra printing Language command ?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            6 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Anuj,
+Probably you may have already figured out the solutions. If not, here are the suggestions or answers.
+You will have to look up on the internet for tools to reduce the size of Base64 or Bitmap.
+The inverted text is because of ^PMY &amp;amp; ^POI commands, to instruct the printer to print the entire label as mirrored and inverted. You may consider to generate an image without using the ^PMY &amp;amp; ^POI, so that the text will be in correct orientation.
+When you see nothing comes out from the printer with the correct ZPL input, it is most likely that the media size settings on the printer were incorrect. For example, the media length was set to 100 dots, while the ^XA^FO2,200^AND,36,20^FDHello World!^FS^XZ intends to print at 200 dots in Y direction. There will be nothing comes out from the printer, because it cannot print the “Hello World!” because of the mis-match of media settings.
+Suggestions: Not sure how you get the label in Base64 at&amp;nbsp;the first place. Maybe the Base64 string was converted from the label in PDF format. Starting with Link-OS v6.3 (released in August, 2020), we can send the PDF directly to the printer without the needs to convert into bitmap. This is called PDF Direct and is Free. (Prior to August, 2020, the PDF Direct was licensed with fees.) If you upgrade the firmware on your ZT230 printer, your application may bypass the issues discussed above. For more info about PDF Direct, refer to&amp;nbsp;Announcement | Printers Include Free PDF Direct with Link-OS 6.3. Hope this helps.
+Regards,
+Steven Si
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

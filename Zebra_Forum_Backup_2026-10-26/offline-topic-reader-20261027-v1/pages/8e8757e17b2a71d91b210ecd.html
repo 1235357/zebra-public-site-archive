@@ -1,0 +1,165 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>C# code that scales font, now having issue getting the Zebra printer to interpret it</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>C# code that scales font, now having issue getting the Zebra printer to interpret it</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/c-code-scales-font-now-having-issue-getting-zebra-printer-interpret-it; original snapshot: threads/00931.html; SHA-256: c35a77a18d84d2e4056eb40920f5b030a59018e48eb668afbf8de76c48223f2a</small><pre id="topic">
+
+    
+        C# code that scales font, now having issue getting the Zebra printer to interpret it
+
+
+        
+      
+                        
+                    
+            V
+          
+          Vince Quach
+          4 years 10 months ago
+        
+        
+      
+        
+            
+                  
+            
+            79
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  So a while back I posted about whether or not Zebra/ZPL had some sort of auto-scaling functionality to scale AND wrap text to fit a label. It didn&#x27;t, so I came up with my own method, although now I&#x27;m having difficulty getting it to print properly.
+My C# code takes in a user input of what they&#x27;d like printed, and then passes that along with the font name, font style, and label width into a function that scales it down: 
+public Font ScaleFont(string text, string fontName, FontStyle fontStyle, int startingFontSize, double labelWidth) {
+            for (int fontSize = startingFontSize; fontSize &amp;gt; 1; --fontSize) {
+                Font trialFont = new Font(fontName, fontSize, fontStyle);
+                Size textSize = TextRenderer.MeasureText(text, trialFont);
+                if (textSize.Width &amp;lt; labelWidth)
+                    return trialFont;
+            }
+            return null;
+        }
+This seems to work, and it returns a font whose Font.Size&#x27;s width property is always smaller than the maximum label width that I pass. Now I&#x27;m just having difficulty getting that into ZPL and getting the printer to interpret it properly. To start, I&#x27;ve already downloaded Arial onto the printer, and when checking the on-board memory it returns that the font is in position &quot;1&quot;. I read the documentation and saw that you&#x27;re to use the &quot;^Afo,h,w&quot; command to set the font size along with other properties, so I have a string that gets concatenated with the rest of my pre-generated ZPL code: 
+$&quot;^A1N,{fontsize.Height},{fontsize.Width}&quot; Is right before my &quot;^FD&quot;block with the calculated values being used for the height and width property of the ^A command. However, upon printing it seems to output the default size regardless of the input-text&#x27;s length or content. I&#x27;m not sure if I&#x27;m doing this correctly.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Looks like the downloaded Arial font is not designated to a correct letter.
+If the ZebraDesigner driver is used to download the Arial font onto the printer, there would a *.TTF file called as 9835202.TTF (or something similar to it) on the E: drive or R: drive after the font is downloaded. The downloading process could take a while depending on the size of the font library. Then,  we need to use ^CW command to designate the 9835202.TTF font to a letter. For example, to designate the font to the letter Z, we use the following ZPL
+^XA^CWZ,E:9835202.TTF^FS^XZThen we can call out the Z font with the following ZPL for the desired size we want.
+^XA^FO10,10 ^CI28^AZN,32,32^FDArial 32x32^FS^XZ
+
+^XA^FO10,10 ^CI28^AZN,64,64^FDArial 64x64^FS^XZ
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

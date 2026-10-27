@@ -1,0 +1,280 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Conflict when Multiple APK&#x27;s using the EMDK</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Conflict when Multiple APK&#x27;s using the EMDK</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/31796; original snapshot: threads/resume-00053.html; SHA-256: b703d1a33d69e45e6b8da3f84091674e698c24fe31ce2d50cd4c4c8b251ad34f</small><pre id="topic">
+
+    
+        Conflict when Multiple APK&#x27;s using the EMDK
+
+
+        
+      
+                        
+                    
+            B
+          
+          Brock Davis
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            51
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I have developed multiple applications that utilize the EMDK for various features.   Running the applications standalone works fine.  If I start one application, then launch a second EMDK enabled application, the first application fails when using the EMDK features.
+ 
+Typical error response from EMDK is
+ 
+Extended Status message is : One or more names of parameters not found in extraData.
+ 
+Status String is:
+ 
+It is almost as if the EMDK Service is loading one Asset Profile at a time, or getting confused as to which profile to use.
+ 
+Is the EMDK single use?
+ 
+Is there someway to flush out the EMDK Service to allow the application in the foreground to have it&#x27;s profile loaded?
+ 
+Suggestions?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+      
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Brock Davis
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Bill,
+More information:&amp;nbsp; I built and tested multiple EMDK sample applications, no problems.&amp;nbsp; Switching back/forth between applications, no problems.&amp;nbsp; But all the examples appear to supply the XML data within the processProfile method, like:
+&amp;nbsp;&amp;nbsp;&amp;nbsp; profileManager.processProfile(_profileName,&amp;nbsp; ProfileManager.PROFILE_FLAG.SET,&amp;nbsp; profileArgs);
+The difference between the sample applications and my application:
+1. The Sample Application builds the&amp;nbsp; XML and sends to EMDK.&amp;nbsp; My application is depending on EMDK pulling profile from EMDKConfig.xml
+2.&amp;nbsp; Within my Application is a launcher (not sure if it matters).
+I will reboot the device, my application/launcher starts.&amp;nbsp; EMDK profiles are set.
+I start one of the Sample applications, it works.
+I go back to my application and attempt something that invokes EMDK, those features fail.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Brock, How are you handling the EMDK objects in the lifecycle methods of your Activties?&amp;nbsp;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Brock Davis
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Bill,
+Typically within the onCreate of the Main Activity I create an object to hold the EMDK objects.&amp;nbsp; The on the OnDestroy I clean up.&amp;nbsp; There is nothing within the OnResume/OnStop.
+Reviewing a clients application, same setup, create EMDK objects within the OnCreate, clean up in the OnDestroy.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

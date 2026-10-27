@@ -1,0 +1,463 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Enterprise Browser CustomDOM</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/thread/35007; snapshot threads/resume-00225.html; SHA-256 4005e8585ab4be244cab518d6f4c513048dea224ca1953773adbda58ac93c2e1. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Enterprise Browser CustomDOM</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            M
+          </div>
+          <div class="forum-topic__author-name">Martin Sramo</div>
+          <div class="forum-topic__timestamp">5 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            73
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            6
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi everybody, I just run into some strange situation with Enterprise Browser. I wanted to use Custom DOM feature, so I prepared some javascripts to inject. Some of them do some stuff at page load, like looking for 'bgsound' tag and playing custom sound using Notification API. Everything was looking fine until I left the device (TC8000) on the desk for a while. When I came back, device was at sleep of course. I woke it up, refreshed the page and I noticed my custom wav file sounds strange, like it tries to run it several times. So I started to dig deeper what could be the problem and finally I end with a very easy way to reproduce my situation.<br>
+ <br>
+These are the steps:<br>
+1. install EB from scratch (or delete config.xml to force EB to recreate)<br>
+2. in default config, change only the start page (I used google.com) and path to CustomDOMElements tags file (tags.txt in my case)<br>
+3. use tags file with only one javascript file (test.js in my case)<br>
+4. in the javascript file, only use alert() function to show a message at every page load<br>
+5. start EB and browse a few pages, everything should be working fine, for every page an alert should show up<br>
+6. put the device to sleep by pressing Power button and wake it up after a few seconds (or you can wait for display timeout)<br>
+7. now browse a few pages again<br>
+In my case, at this step, I got 2 to 15 (or more) alerts for every page. At first, I though that after every sleep, one alert is added, but I left the device in sleep for about a minute and after wake up, I got 15 alerts for every page.<br>
+ <br>
+Finally I turned on debug mode in EB and checked the source in Chrome developer tools. I noticed, that after initial EB startup, only one "script code" is added into HEAD section using DOM injection. But when I sleep/wake device and reload a page, "script code" is multiplied in the source code. Like this:</p>
+<p>The number of multiplications stays the same for every page, until I sleep the device again. Then the code is multiplied even more times. When you restart EB, it will start from one again.<br>
+ <br>
+I use TC8000 with latest OS patch (Lollipop) and EB 1.7.1.0. I tried two TC8000s and TC56 (Marshmallow) with the same results. I also tried EB 1.6, again with the same results.<br>
+ <br>
+This is all I was able to gather  I work with EB only for a short time so I guess I could easily make some mistake or forgot something. I tried to find an answer on techdocs at first, but I was not lucky. I also attached abovementioned files including config.xml and log.txt (enabled log for everything).<br>
+ <br>
+I would appreciate any help to solve the situation.<br>
+ <br>
+Thank you very much in advance.<br>
+ <br>
+Regards,<br>
+Martin</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      6 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-42579" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              H
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Herbert De Jong</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hello Michal,</p>
+<p>we have sent you an fix based on EB 1.7&amp;nbsp; by mail</p>
+<p>EnterpriseBrowser_signed_1.7.1.7.apk&amp;nbsp; please let me know if this resolves for you.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-42537" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              H
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Herbert De Jong</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hello Martin,</p>
+<p>i was contacted by EB engineers to find out if you have an support case open with Zebra Support ?</p>
+<p>also could you tell me what company and for which end-customer this fix is needed.</p>
+<p>we would like to get an Support case in place as well for this issue.<br>
+contact me back on xbr786 </p>
+<p>EB engineers have identified the rootcause and are planning to add this in EB 1.8 version</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-42538" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              M
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Michal Keracik</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Herbert,</p>
+<p>we don't have ticket yet as we didn't assumed this is bug at first so we placed question here - do we need to create one? Will it speed up release of 1.8 version or some kind of patch?</p>
+<p>don't get me wrong but as I understand it all EB customers using CustomDOM (one of most promoted EB functionality ) need this fix urgently and I'm quite surprised nobody reported it till now. If you need one name it's Pharmacopola.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-42524" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              M
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Martin Sramo</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hey guys,</p>
+<p>any news please on this issue? My project relies on this feature. I would be glad for some info.</p>
+<p>Thank you.</p>
+<p>Regards,<br>
+Martin</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-42482" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              M
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Martin Sramo</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Guys, any idea?<br>
+​ or ​ maybe?</p>
+<p>Thank you,<br>
+Martin</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-42475" class="comment forum-topic__reply js-comment by-anonymous forum-topic__reply--comment by-viewer">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              A
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Anonymous (not verified)</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I understand pdth87's team have reproduced this and it is in the backlog to be fixed.&amp;nbsp; He or somebody from his team should be able to provide an update.</p>
+<p>Thanks,<br>
+Darryn.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/thread/35007%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/thread/35007%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

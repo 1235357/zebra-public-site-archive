@@ -1,0 +1,169 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>write doesn&#x27;t return error for out of paper</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>write doesn&#x27;t return error for out of paper</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/33303; original snapshot: threads/resume-00162.html; SHA-256: baa75f68103534c0e41d13676126c82d72a39536155d942605f948030a342ddd</small><pre id="topic">
+
+    
+        write doesn&#x27;t return error for out of paper
+
+
+        
+      
+                        
+                    
+            D
+          
+          Del Brown
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            38
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I expected that if I attempted to write to a printer without paper in it (e.g. it just ran out of paper), that I would get an error from the write command.
+In the below code, no error is logged.  If I set a breakpoint, I am able to verify that writeError is nil.
+ 
+      let zebraConnection = MfiBtPrinterConnection(serialNumber: serialNumber)
+      DispatchQueue.global(qos: .utility).async(execute: {
+        if (zebraConnection?.open())! {
+          .
+          .
+          .
+          var writeError: NSError?
+          zebraConnection?.write(printReceipt.data(using: String.Encoding.utf8), error: &amp;writeError)
+          if writeError != nil{
+            DDLogError(&quot;Print to zebra errored with error: \(writeError?.localizedDescription)&quot;)
+          }
+          zebraConnection?.close()
+       }
+ 
+iMZ220 with firmware V73.20.01Z
+link-OS v1.4.957 for iOS
+ 
+What is wrong with my approach? 
+ 
+Thanks,
+Del
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Del Brown
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Also should note that putting paper in the printer, causes it to print what was previously sent to the printer.&amp;nbsp; So the writes weren&#x27;t lost...&amp;nbsp; But I would like a way to communicate to the end user that the printer needs paper.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

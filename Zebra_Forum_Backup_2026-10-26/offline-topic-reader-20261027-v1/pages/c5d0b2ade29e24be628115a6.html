@@ -1,0 +1,443 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Any api to post scan epc in SQl Server</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Any api to post scan epc in SQl Server</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/any-api-post-scan-epc-sql-server; original snapshot: threads/00539.html; SHA-256: 74237dd70efcf2da4be0fc643c24855aa1b8f4da2a871f77d4ae17ebd71e93c7</small><pre id="topic">
+
+    
+        Any api to post scan epc in SQl Server
+
+
+        
+      
+                        
+                    
+            S
+          
+          Syed Moiz
+          3 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            204
+          
+                
+                  
+            
+            6
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  we have 4 fix reader ,control and  get data for this fix reader and send to SQl server 
+the issue is that how to run four reader in single application 
+there is any application to handle 4 reader 
+ 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      6 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Syed.
+
+The Host-Based RFID SDK for the FX-Series using DOT-NET - may be ideal as a set of processes that connect to each RFID FX-Reader - and then have a session on the SQL to feed/update data to the Database.
+
+There ware two Samples provided for the DOT-NET SDK  CS_Sample1, and CS_Sample2.
+Your app may be best suited to the CS_Sample1 app that connects to the Reader and then you can choose what to do with the RFID Data in the app to send it to the SQL Back-End.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Syed Moiz
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            HI Kennedy.
+
+Thanks For Replay 
+My concern is how to connect multiple readers in a single application and ensure that all readers work in parallel. I tried using CS_Sample1, but it only supports a single reader. I also attempted to use a for loop to provide multiple reader IPs, but it didn&#x27;t result in parallel reader operation.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The method that RFID SDK uses to connect to Fixed readers ( All readers technically ) is a 1:1 relationship / library process.
+
+For Linux and Big Windows - an app thread which uses a single instance of the RFID SDK can only connect to a single instance reader connection.
+
+For Linux / Windows - this is not an issue - you use as many apps / services you need to define / configure to connect on a per-reader basis.
+
+Being MultiTasking Operating systems - the same app / service can be run / initialized multiple times. ( each is its own Windows/Unix Process. )
+
+This may seem like a Unix thing - but it really is designed in this manner to allow each reader to maintain the 1:1 State and not to confuse an app that may have multiple sessions - where if one puts the app into exception - means the other readers in the connection pool may not be processed. If a 1:1 session has an issue with its own reader - only that process / session / connection is affected.
+
+ 
+
+FYI - Mobile Platforms:
+
+On iOS / Android - this is particularly more complex - since the RFID SDK - for these &quot;Mobile / Handheld&quot; platforms - were designed to connect to a Single Instance reader ( the sled / handheld reader)  and although extended to connect to a FX-Series reader - the Sincgle App/ Library nature on these mobile platforms means Multiple Connections / Sessions are problematic.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Syed Moiz
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Zebra Developer 
+Implement MQTT  in Zebra Fix  Reader 9600 For Zebra Guide Document (https://zebradevs.github.io/rfid-ziotc-docs/other_cloud_support/MQTT/web.html#add-mqtt-endpoint)
+Issue is that we add certificate path reader page but its show path not fund there is any format to add path .
+My Certificate path is (F:/Git_Project/broker.emqx.io-ca.crt)
+If See Any Issue Guide Me 
+Thanks For Advance
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Syed Moiz
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Developer,
+
+we are trying to use the HTTPS method for our Zebra 7500 Fixed RFID reader, but it requires an SSL certificate. How can we obtain an SSL certificate? Is it available for free or do we need to purchase it? Can we use a webhook site for this purpose?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              F
+            
+          
+                
+          
+            Frederi ckJax
+          
+          
+            2 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I&#x27;ve explored the Zebra RFID SDKs and APIs, leveraging them to control the readers programmatically. The primary hurdle lies in implementing a solution that allows concurrent operation of all four readers, ensuring that data retrieval from each reader is handled independently and efficiently. I&#x27;m looking into anrainerparken wien multithreading or asynchronous programming models to achieve this, aiming to streamline the process of collecting and processing RFID data. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

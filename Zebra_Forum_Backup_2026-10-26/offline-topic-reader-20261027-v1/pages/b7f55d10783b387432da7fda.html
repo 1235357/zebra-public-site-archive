@@ -1,0 +1,607 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Control Chracters and Power Automate API</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Control Chracters and Power Automate API</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/control-chracters-and-power-automate-api; original snapshot: threads/00699.html; SHA-256: 47ef929099d8c819da20dd5db2982b83bb40cdb6ceed41691f8861c8d72aa3a3</small><pre id="topic">
+
+    
+        Control Chracters and Power Automate API
+
+
+        
+      
+                        
+                    
+            J
+          
+          Joel Lewis
+          3 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            88
+          
+                
+                  
+            
+            9
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+I am working with the Zebra API titled Barcode Generate where you can send parameters to Zebra from Microsoft&#x27;s Power Automate to generate a barcode. One of my barcodes that I have to generate is a pdf417 and there is a requirement for control characters, particularly Group Separator, Record Separator, and End of Transmission. I have tried typing in &quot;Alt&quot; codes to generate a character but those don&#x27;t work. I&#x27;ve tried putting things in brackets like  and those don&#x27;t work either. The API is taking any string of text literally as it&#x27;s typed. I would like to know if there&#x27;s a special way I can type/transmit something to the API so that it will create a pdf417 barcode with the control characters I need.
+Thanks,
+Joel
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      9 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Joel.
+Although I am not familiar with this API suite you refer to - there is two things you could try:
+The ASCII lookup for GS for example is decimal 29, or 0x1D (hex)  - and i am unsure of the common convention of using ~ddd  or \ddd is usable.
+ASCII to refer to for the decimal for GS / STX / ETX
+https://www.rapidtables.com/code/text/ascii-table.html
+Also this web link discussing similar data &quot;map&quot; separator components in PDF417 - here:
+https://stackoverflow.com/questions/22374593/extracting-data-from-pdf41…
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Joel Lewis
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you for the quick reply PVT784. I have tried doing the decimal codes like you referred to in the first suggestion with no success. When I type them, I get characters like ↔▲♦ and those are not control characters. I appreciate the second link but I don&#x27;t know how the discussion there would apply.
+Everything I type and send via the API is coming over literally character for character and I am hoping there&#x27;s possibly a sequence of characters, when typed, translate into those control characters.
+I read on a Zebra forum that in Zebra software (not API) you can use things like  or  and the software translates those into the control characters, but when I try it with the API, it reads back literally as  or  instead of using the control characters. It would be great if there was already something built into the API when sent over would translate.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Joel Lewis
+          
+          
+            3 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I still do not have a resolution for this issue. If anyone could take another look into this, I would appreciate it. I just want to know how to input a a &quot;code&quot; or &quot;series of characters&quot; that translates to control characters, like Record Separator and Group Separator in the Barcode Generate API (Link below to the website I&#x27;m using)
+https://developer.zebra.com/apis/barcode-generate#/Barcode%20Generator/…
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            As suggested by PVT784, it looks like you need to create a string buffer and fill in with the corresponding hex values of the control characters in the ASCII at the desired positions in the buffer, and then pass the content of the string buffer to the API call. For example, the Group Separator (GS) is the 0x1D in hex on the ASCII table, which cannot be typed in as a readable character. Programmatically, however, the 0x1D can be inserted at the desired position in the string buffer and the content of the string buffer can be sent with the barcode generator API call.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Joel Lewis
+          
+          
+            3 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I apologize, not entirely sure what a &quot;string buffer&quot; is. Would you be able to tell me how to input the following text example and translate &quot;RS&quot; to record separator,  &quot;GS&quot; to group separator, and &quot;EOT&quot; to end of transmission to the correct string that I need to type to get them to work with the Zebra Barcode Generator?
+Example
+&quot;RS&quot;08&quot;GS&quot;TEST&quot;EOT&quot;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Here is the code snippet in Java to form a string with the control characters of your example.
+final String RS  = Character.toString(0x1E); // Hex 0x1E for the Record Separator
+final String GS  = Character.toString(0x1D); // Hex 0x1D for the Group Separator
+final String EOT = Character.toString(0x04); // Hex 0x1D for the EOT
+
+// The string to be sent to the barcode generator with the API for PDF-417 encoding
+String strToEncode = RS + &quot;08&quot; + GS + &quot;TEST&quot; + EOT;
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Joel Lewis
+          
+          
+            3 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I guess I&#x27;m still not sure how to put that java code into the Barcode Generator to work properly. Again, I&#x27;m working in this site:
+https://developer.zebra.com/apis/barcode-generate#/Barcode%20Generator/…
+The string portion is what I&#x27;m trying to get the control character to work in.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The referred page is about the Barcode Generate API, which is supposed to be used in a program. The page gives the user an opportunity to try the API out without writing a program, however, the page itself has limitation for the user to input the non-printable control characters. I think you need to write a program that uses the Barcode Generate API for the control characters.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Carlos Neto
+          
+          
+            1 month 3 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            CARLOS GOMES ALEXANDRE NETO $16.76 BILLION USD
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

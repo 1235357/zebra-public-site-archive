@@ -1,0 +1,1298 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>ZPL code not working on different devices</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>ZPL code not working on different devices</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zpl-code-not-working-different-devices; original snapshot: supplement/verified-threads/c476f732213c5eeb95e76ac0.html; SHA-256: a1548bc8b7024e200cca64b81337db63a2ccae6670a856cc68af88faaa752734</small><pre id="topic">
+
+    
+        ZPL code not working on different devices
+
+
+        
+      
+                        
+                    
+            C
+          
+          Cenk Yenikoylu
+          3 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            1447
+          
+                
+                  
+            
+            17
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                          //Solved
+        
+  
+
+    
+    
+        
+      
+            
+                  Hello everyone,
+
+I developed an application with Winforms. The ZPL code I developed with ZD220t (also on Windows 10/11 OS computer in Turkey) works. My second device ZD421 (also in the Netherlands on a Windows 11 OS computer) works and prints labels without any problems when I install my application. My third device, the GX430t (also on a Windows 10 OS computer in China), runs but prints the label blank. Please see attached photos.
+
+Thinking that maybe there was a character problem in the GX430t,
+When I upload the ZPL code I received as a txt from the GX430t to my ZD220t, it works without any problems. My ^CI setting in the ZPL code is 0.
+
+All of my ZPL code is in the attached txt file.
+Please help me with the possibilities of a solution for this problem.
+
+Thanks,
+Cenk
+              
+
+                    
+          
+      
+              
+ Printer ZPL code log-V2.20.txt
+
+              
+ ZD220t.jpg
+
+              
+ GX430t.jpg
+
+          
+  
+        
+      
+                    
+          
+
+
+
+        
+      
+        ✓ Accepted Solution
+      
+      
+        
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You can submit a support request at https://www.zebra.com/us/en/about-zebra/contact-zebra/contact-tech-supp…. Usually, you will get a response within 24 hours from Zebra Support team.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+      
+    
+  
+      
+    
+      17 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The ZPL looks fine. Make sure the media installed on the GX430t printer is thermal direct. If the media installed on the GX430t is thermal transfer, the ribbon must be installed. Otherwise you may get a blank label on the thermal transfer media if the ribbon is not installed. 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Cenk Yenikoylu
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            thank you Steven, for ansfer.
+
+There were some improvements yesterday but as a result still no text on the label.
+
+This device (GX430t) is working in a factory in China. It works with custom-developed Zebra apps made by others. Other apps have text over labels. But not in my app. Label data appears when the printer is dry. The printer is printing, but the label is blank.
+
+I tried some things. Maybe there is an error in my ZPL codes or because the GX series device does not detect it. I tried removing the printer setting code in each line at the top of my ZPL codes one by one. I removed the Image part and tried it. I removed the special characters and tried it. Finally, I wanted to print a single line of simple text. None of them yielded results.
+
+I then encapsulated my ZPL code with square brackets. ${ }$.
+This too failed. Last time I wanted to print with printDocument like a regular A4, office printer. In that method, the label was blank. I can&#x27;t print anything on the label. But other applications can print successfully.
+
+Where am I doing wrong?
+
+ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            As pointed out in my early reply, make sure the media (the labels) installed on the GX430t printer is the thermal-transfer media and the ribbon is installed as well. In your ZPL, you have the ^MTT, which sets the printer in the thermal-transfer mode. In this setting, the ribbon is required. Without the ribbon, the printer prints a blank label.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Cenk Yenikoylu
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Steven, thank you so much for your reply. Because there is no one to support me. And the software I developed for my client does not work in the factory in china.
+
+I asked the people at the factory about the thermal transfer mode. I am waiting for a reply.
+
+- I tried on the printer by deleting the ^MTT code, but the result was still unsuccessful.
+- I just tried a label ZPL data with the following code on the printer, but the result was still unsuccessful.
+
+private void simpleButton2_Click(object sender, EventArgs e)
+        {
+            string filename = Functions.RAWLabelTestDocName;
+
+            String text = &quot;^XA&quot; + Environment.NewLine;
+            text += &quot;^FO20,210&quot; + Environment.NewLine;
+            text += &quot;^A0N50,50&quot; + Environment.NewLine;
+            text += &quot;^FDModel: [TEST LABEL]^FS&quot; + Environment.NewLine;
+            text += &quot;^XZ&quot; + Environment.NewLine;
+
+            RawPrinterHelper.SendStringToPrinter(lblPrinterName.Text, text);
+        }
+
+Is this printer using EPL instead of ZPL?
+The Setting Export .drs file I got in the printer&#x27;s Properties window is the GoogleDrive link. Also, GoogleDrive link are screenshots of all Properties windows of the printer. https://drive.google.com/drive/folders/1M8JnhUqrPdqj5J7-R5Ki3Qfp4AA0IUK1?usp=sharing
+
+How can I try to send the file.zpl file directly to the printer outside of ZPL or EPL? Is there a C# resource on this?
+
+I can&#x27;t think of anything new to solve this problem right now.
+
+ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            If the printer is set for EPL, then the ZPL will be ignored and the printer will not even advance a label. Since you mentioned that the printer printed a blank label, it means that the printer processed ZPL accordingly and printed a label. However, if there is no ribbon, there will be nothing on the label if the label is the thermal-transfer paper, which requires the ribbon to have the text/barcode/graphics printed on. Check if the printer has run out of the ribbon. If there is no ribbon, then the label media has to be the thermal-direct.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Cenk Yenikoylu
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Steven, I have forwarded your questions to the factory. I am sharing the answers and screenshots.
+
+I also share a screenshot of another barcode software and a photo of the label printed with that program. Barcode software of 5 different customers is used in this factory. Each customer has developed special software for the label designs of their products. I am one of those customers.
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Cenk,
+I am kind of lost. From the first screenshot, it is clear that the ribbon is installed. I have no idea why the printer gives you a blank label. Are you using the Zebra Link-OS SDK for .NET?
+Can you by any chance get an allcv output from the GX430t printer? You need to have a direct connection to the printer and issue the ! U1 getvar &quot;allcv&quot; SGD command via the Printer Setup Utility for Windows tool.
+! U1 getvar &quot;allcv&quot; 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Cenk Yenikoylu
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Steven, I wish you a good week.
+
+They sent me the allcv information file from the device in the factory. Since I could not attach a file to this reply message, I uploaded the file to the link below. I would be very happy if you review and give feedback.
+
+Thanks,
+
+https://drive.google.com/drive/folders/1UwElBxFYwxhdABWeHN18JqvYLzzfoODR?usp=sharing
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Based on the allcv output, it looks like the GX430t printer is configured properly, i.e., with Thermal Transfer (TT), EPL &amp; ZPL.
+...
+media.thermal_mode : TT , Choices: TT, DT
+...
+device.languages : epl_zpl , Choices: epl_zpl, epl, zpl
+...
+device.product_name : GX430t 
+...How does your application connects to the GX430t printer? Does your app use the Link-OS SDK with the USB direct connection (i.e., UsbConnection class) or with the USB driver connection (i.e., DriverPrinterConnection class)? To help narrow down the issue, can you print the following simple ZPL (Hello World) via the Printer Setup Utility and your app?
+^XA^FO50,50^ADN,36,20^FDHello World!^FS^XZIf the Hello World can be printed via the Printer Setup Utility and your app, then issue is probably related to your ZPL file.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Cenk Yenikoylu
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Steven, Narrow down the issue thank you for your effort.
+
+Yes, I am using the reference of Link-OS SDK in my source code. I am using USB protocol for connection. The screenshot of my source code is as follows. I ran code very similar to the basic ZPL thread you posted and outputs blank tags. I am using UsbDiscovery to connect to the device. I have an interface design that helps me make sure the connection. It is as in the screenshot below.
+
+private void simpleButton2_Click(object sender, EventArgs e)
+        {
+            String text = &quot;^XA&quot; + Environment.NewLine;
+            text += &quot;^FO20,210&quot; + Environment.NewLine;
+            text += &quot;^A0N50,50&quot; + Environment.NewLine;
+            text += &quot;^FDModel: [TEST LABEL]^FS&quot; + Environment.NewLine;
+            text += &quot;^XZ&quot; + Environment.NewLine;
+
+            RawPrinterHelper.SendStringToPrinter(lblPrinterName.Text, text);
+        }
+
+ 
+
+
+
+ 
+
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Cenk Yenikoylu
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Steven, I hope you had a good weekend.
+
+Do you have any other solution for this issue?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Cenk,
+I don&#x27;t know what could be wrong. In your screenshot, you use the USBDiscoverer to find the GX430t printer. How do you open the connection to send the ZPL?
+One last thing I would suggest is to send the ZPL directly to the GX430t printer with the Printer Setup Utility for Windows tool to see if the printer prints the label. If it does print the label, then we can focus on why your app prints a blank label with the same ZPL.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Cenk Yenikoylu
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Steven, thank you.
+
+Please refer to the below link for the document containing the screenshot of all Preferences setting windows of the device. I could not find from which setting tab to send the txt file containing the ZPL codes to the device.
+
+https://drive.google.com/drive/folders/1M8JnhUqrPdqj5J7-R5Ki3Qfp4AA0IUK1?usp=drive_link
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+             The Printer Setup Utility for Windows tool is an application, which connects the printer via the ZebraDesigner driver. It has a UI interface for pasting in the ZPL script to be sent to the printer. It also has other features for configuring the printer and getting configuration data out from the printer, such as the allcv output.
+Of course, you can use the ZebraDesigner driver to send ZPL script, though the driver has limited functionalities than the Printer Setup Utility for Windows tool. To send ZPL script via the ZebraDesigner driver, you need to save the ZPL script into a file and use the Send File feature in the ZebraDesigner driver. See the screenshot for detail.
+
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Cenk Yenikoylu
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Steven,
+
+The factory tried the ZPL file sent directly to the printer (GX430t) and the result was unsuccessful. Tried the same ZPL file on different Zebra printer devices and it worked fine. There is a problem with the GX430t device. My client requests support directly from Zebra.
+
+^XA
+^FO20,210
+^ADN,50,50
+^FDModel: [TEST LABEL]^FS
+^XZ
+
+They gave me the contact information of the personnel in charge of the device. Could you please share your e-mail address with me? I will share my client&#x27;s contact information with you. And I&#x27;d be very grateful if you could create a support ticket if needed.
+
+Thanks,
+Cenk
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You can submit a support request at https://www.zebra.com/us/en/about-zebra/contact-zebra/contact-tech-supp…. Usually, you will get a response within 24 hours from Zebra Support team.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Cenk Yenikoylu
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you Steven for all your support and help.
+
+I created a support ticket. If you want to follow the topic, support ticket code: 16375927. Thanks.
+
+
+Regards,
+
+Cenk
+Spailor LLC
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

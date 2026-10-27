@@ -1,0 +1,236 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Datawedge Decorparameter not set after intent</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Datawedge Decorparameter not set after intent</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/datawedge-decorparameter-not-set-after-intent; original snapshot: threads/00604.html; SHA-256: 0077fcf38d636b1401d355116199f1de2cd097dcf2a1aa234a2438d0993da328</small><pre id="topic">
+
+    
+        Datawedge Decorparameter not set after intent
+
+
+        
+      
+                        
+                    
+            S
+          
+          Sascha Distelrath
+          3 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            109
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+
+I&#x27;m using datawedge with intents to receive barcodes. In need to change decoderparameters to runtime on fragment changes. This works perfectly but somehow for no reason the parameters won&#x27;t change anymore. I&#x27;m not able to reproduce this so I don&#x27;t know why it&#x27;s acting like this. For my decodeparameter changes I&#x27;m doing something like this:
+
+Bundle profileConfig = new Bundle();
+profileConfig.putString(PROFILE_NAME, EXTRA_PROFILE_NAME);
+profileConfig.putString(PROFILE_ENABLED, &quot;true&quot;);
+profileConfig.putString(CONFIG_MODE, &quot;UPDATE&quot;);
+
+Bundle barcodeConfig = new Bundle();
+barcodeConfig.putString(PLUGIN_NAME, BARCODE);
+barcodeConfig.putString(RESET_CONFIG, &quot;False&quot;);
+
+Bundle barcodeProps = new Bundle();
+List&lt;DecoderParam&gt; decoderParams = DecoderParam.getParamListForDecoderConfig(decoderConfig);
+
+for (DecoderParam decoderParam: DecoderParam.values()) {
+       barcodeProps.putString(decoderParam.getParamName(), decoderParams.contains(decoderParam) ? 
+       &quot;true&quot; : &quot;false&quot;);
+}
+
+barcodeConfig.putBundle(PARAM_LIST, barcodeProps);
+profileConfig.putBundle(PLUGIN_CONFIG, barcodeConfig);
+        
+sendDataWedgeIntentWithExtra(context, ACTION_DATAWEDGE, EXTRA_SET_CONFIG, profileConfig);
+
+If I&#x27;m deleting my datawedge profile and return to my app it will work again. Am I doing something wrong? 
+
+Thanks in advance
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+You can implement result codes to obtain the result of the intent, which may shed some light on your issue: https://techdocs.zebra.com/datawedge/13-0/guide/api/resultinfo/
+Also, if you&#x27;re attempting to change the profile configuration based on which Fragment is in the foreground, you may want to look into creating multiple profiles and switching between them, rather than updating the profile each time.
+Thanks,
+James
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sascha Distelrath
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi James,
+
+thanks for your reply. I&#x27;m already logging the result info but I couldn&#x27;t figure it out. 
+
+I didn&#x27;t try to switch profiles because the same issue may also occur. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

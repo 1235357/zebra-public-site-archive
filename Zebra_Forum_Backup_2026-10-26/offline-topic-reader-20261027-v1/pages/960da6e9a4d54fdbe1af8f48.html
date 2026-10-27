@@ -1,0 +1,453 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Problems connecting RFD8500 scanner via Bluetooth for C# WPF app</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Problems connecting RFD8500 scanner via Bluetooth for C# WPF app</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/problems-connecting-rfd8500-scanner-bluetooth-c-wpf-app; original snapshot: threads/00751.html; SHA-256: b3fc8ba5e1fa8cee708c1771aa1db48c225f75a40b40a9d61152a88c26e1f882</small><pre id="topic">
+
+    
+        Problems connecting RFD8500 scanner via Bluetooth for C# WPF app
+
+
+        
+      
+                        
+                    
+            D
+          
+          Dougie Birrell
+          4 years 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            302
+          
+                
+                  
+            
+            6
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  The API documentation (Zebra RFID SDK for Windows Overview) is outdated and sample app crashes, and doesn&#x27;t compile from the source code (Windows.Desktop.DemoApp.Src_v3.0.23.zip)
+Environment:
+Windows 10 21H2
+Visual Studio Pro 2022
+.NET 4.8 C# WFP project
+When following the SDK instructions: (From Page 9 - &quot;Connecting to an RFID Reader&quot;)
+Create an IRemoteReaderManagement interface instance by using the RfidSdk.RemoteReaderManagementServicesFactory class. Create the method as follows:
+IRemoteReaderManagement readerManagement =RfidSdk.RemoteReaderManagementServicesFactory.Create();
+Visual Studio complains that &quot;RemoteReaderManagementServicesFactory&quot; is obselete and to use ReaderManagementServicesFactory instead.
+So, off I got, and find out I need to supply a ReaderCommunicationMode, which I discover from the Sample app code mentioned above to be passed as &quot;ReaderCommunicationMode.Bluetooth&quot; so my code now looks like this...
+IRemoteReaderManagement readerManagement =RfidSdk.RemoteReaderManagementServicesFactory.Create(ReaderCommunicationMode.Bluetooth);
+If I run this, it crashes out with:
+System.ArgumentException: &#x27;Value does not fall within the expected range.&#x27; 
+Can anyone help me with this, it&#x27;s so frustrating, have I overlooked something? Is it a dev environment issue? Does anyone have an updated API or sample code that compiles out of the box that reads RFID tags via Bluetooth?. 
+My end goal is to create a windows C# .Net 4.x app that reads surrounding RFID tag numbers using a RFD8500 scanner, which is connected to Windows PC via Bluetooth.
+Thanks
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      6 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Panos Papanikolaou
+          
+          
+            4 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The Windows.Desktop.DemoApp.Src_v3.0.23.zip that I downloaded contains a WinForms project, not a WPF. Did you mean to write WinForms instead of WPF?
+If that&#x27;s the case, then you are right: the WinForms project doesn&#x27;t build and it needs some fixing.
+I managed to build it and connect to a RFD8500 via Bluetooth from my laptop (Win 10 Pro, VS 2022) successfully. Unfortunately I can&#x27;t find a way to upload the zip file to this forum. Can you help me find a way?
+Regarding the System.ArgumentException: &#x27;Value does not fall within the expected range.&#x27;:
+Have you by any chance forgotten to copy the App.config contained in the project? The RFID library expects some specific appSettings.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Dougie Birrell
+          
+          
+            4 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The WPF solution attempt was me following the documentation in the API, as Winforms, seem to be depreciated, the old way of doing things. I get the same issue if I try and use a WinForm solution.
+If I use the API sample code (which uses winforms) and open the .sln solution. I get a lot of errors, lots of missing assembly references. I can get rid of some by adding references, but it&#x27;s taking a while to go through them.
+For uploading a sample, you&#x27;d need to put the zip on a 3rd party site? Sign up for a free mega.nz account (for a permanent place to store it) or you could upload it to a temporary site like WeTransfer which would be there for about 7 days.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Panos Papanikolaou
+          
+          
+            4 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I&#x27;ve uploaded my source to https://github.com/pkpapani/Windows.Desktop.DemoApp.Src_v3.0.23. Have a look and let me know if this helps.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Dougie Birrell
+          
+          
+            4 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I can get it to compile and run, and when I do it detects the RFID reader serial and appears in &#x27;Active RFID Readers&#x27;. There is still an issue, when I try to connect, I get this error in the &#x27;Log&#x27;  
+Events_StatusNotify: Connected.
+Enable notification on device failed. Operation In Progress-Command Not Allowed
+To try and get a bit more error info, as it&#x27;s happening within IRfidReader&#x27;s Connect() function
+System.ArgumentException: Enable notification on device failed. Operation In Progress-Command Not Allowed
+   at Symbol.RFID.SDK.Domain.Reader.ZetiRfidReader.PostConnectInitialize()
+   at Symbol.RFID.SDK.Domain.Reader.ZetiRfidReader.Connect()
+Have you any ideas as to why this might be happening, I tried running VS in administrator mode in case it was security related, but got the same error.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Panos Papanikolaou
+          
+          
+            4 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I don&#x27;t think it has anything to do with the code or the desktop app. I&#x27;d suggest you unpair the device, pair again and then open the app.
+Also, whenever you make an action (change a setting, scan a tag etc) I suggest that you wait for the event handler to be triggered and print to log before you make another action. I suspect that the desktop app hangs because it waits for a response from the device. But that&#x27;s just a &quot;feeling&quot; I have.
+Have you managed to perform any basic ops: scan, read data, write data, locate tag? I have, but generally the desktop app is not very stable; sometimes it seems to leave the device in an &quot;unstable&quot; state and it keeps logging error messages (like the one you described). On the other hand, the Android app seems far more reliable.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Dougie Birrell
+          
+          
+            4 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There is definitely an issue with the Connect() function in the SDK for Windows. I can&#x27;t do anything because the Connect() function appears to hang, and am unable to read any tags. Unfortunately it does it every time, unless I sit down and workout how to write my own driver (or Zebra update the driver/SDK) I think I&#x27;m stuck. I&#x27;ll ask on the other forum and see if anything comes along.
+I was wanting a Windows version, just so I can easily connect to a MSSQL and &quot;check off&quot; each RFID tag as it would be really easy for me to do so.
+Android isn&#x27;t really an option as it would involve learning new ways to do what already can and the android device wouldn&#x27;t be able to be on the same network as the SQL server.   
+Thank you again for your help.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

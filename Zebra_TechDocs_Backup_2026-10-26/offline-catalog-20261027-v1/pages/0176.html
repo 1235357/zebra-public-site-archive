@@ -1,0 +1,1580 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Settings - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/rxlogger/latest/guide/settings/</code><br>Observed final URL: <code>https://techdocs.zebra.com/rxlogger/latest/guide/settings/</code><br>Raw source: <code>raw/07c80c9cc796f455141b0731.html</code><br>Raw SHA-256: <code>94c2ff6333b29716824b97d1e31d2b5e1215b5f1c54b937830aaeecea8949c85</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            RxLogger
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Settings
+                            
+                        
+                        
+                            
+                                    User Guide
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Settings
+                        
+                    OverviewConfiguration FileConfigure via UIConfigure via FileDeploymentReset to DefaultAndroid Work ProfileBehaviors and RestrictionsConfiguration DeploymentModulesANR ModuleTombstone ModuleRamoops ModuleKernel ModuleLogcat ModuleResource ModuleSnapshot ModuleMemory ModuleBTSnoopLog ModulePersist Logging ModuleQXDM ModuleTCPDump ModuleRecovery ModuleLTS ModuleInstant LoggingRelated Links
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Settings
+                                    
+                                            RxLogger
+                                            15.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+RxLogger settings can be configured in two ways:
+
+
+Device UI: Using the RxLogger user interface directly on the device
+
+Via Configuration File: Deploying the config.json file. This file can be exported and deployed across multiple devices to ensure consistent settings.
+
+
+For devices using the Android Enterprise Work Profile, RxLogger settings may vary depending on whether the device is operating in Work Profile or Personal Profile.
+
+RxLogger utilizes data collection modules to capture logs from various Android system components. Each module can be enabled, disabled, or customized as needed.
+
+
+
+Important: Changes in RxLogger Security Modes
+The default security behavior of RxLogger varies by version. When turned on, Secure Mode enhances security by restricting log access and RxLogger APIs to only authorized applications.
+
+
+  
+    RxLogger Version
+    Default Secure Mode
+    Key Characteristics
+  
+  
+    15.0.13.00 - 15.0.14.70
+   On
+   Defaults to Secure Mode on, which cannot be disabled. This restricts external log access and secures the broadcasting of intents, ensuring only authorized apps can access logs or interact with RxLogger APIs.
+  
+  
+    15.0.14.71 and later
+    Off
+    Defaults to Secure Mode off, similar to RxLogger v14 and earlier. However, administrators now have the flexibility to enable or disable Secure Mode using the Control Secure Logging option within OEMConfig.
+  
+
+
+
+
+Configuration File
+
+All RxLogger settings are stored in a file on the device, permitting remote configuration and mass deployment of these files using an enterprise mobile management (EMM) system. 
+
+
+File name - config.json
+
+Internal storage: /sdcard/RxLogger (if the external SD card is not present on the device or Enable internal sdcard only option is activated)
+
+External storage (SD card): /storage/&lt;UUID&gt;/RxLogger, where &lt;UUID&gt; represents the UUID of the SD card (if the external SD card is present)
+
+
+RxLogger settings can be configured through the RxLogger user interface (UI) or by editing the settings file.
+
+ Note: Zebra recommends using the same config.json file across devices with the same Android platform version. Use of the same file across different Android platform versions may lead to unexpected behavior.
+
+
+
+Configure via UI
+
+General Log Settings
+
+Follow the steps below to configure general log settings. This method ensures accuracy and minimizes the risk of errors that may occur from manually editing values in config.json.
+
+
+From the RxLogger main screen, tap the settings icon at the top right.
+
+
+Tap RxLogger Settings.
+
+
+Enable/disable the desired settings:
+   • Notifications - When enabled, the RxLogger icon is displayed in the notification bar while running. This is enabled by default and helps confirm whether RxLogger is active in the background.
+   • Debug Logs - When enabled, this collects debug logs from RxLogger and diagdaemon (its logging service). These logs are stored to the location specified in the Configuration File section. This setting is disabled by default.After enabling/disabling this setting, tap the back button, tap Save and reboot the device for the change to take effect. 
+   • Internal Storage Logging Only - When enabled, logs are saved on the internal SD card even if an external SD card is inserted. By default, logs are saved to the external SD card when available.
+
+
+
+Tap the back button to save the configuration. A Config.json configuration file is created and saved to either internal or external storage. RxLogger will restart to apply the new configuration settings.
+
+
+Module Configuration
+
+Follow these steps to configure module-specific settings:
+
+
+From the RxLogger main screen, tap the settings icon at the top right.
+
+
+Select the desired module to configure.
+
+
+Adjust the desired settings within the selected module. Refer to the respective module section in this guide for information on module-specific settings.
+
+Tap the back button to save the changes.
+
+
+
+
+
+
+Configure via File
+
+To manually configure RxLogger settings:
+
+
+Locate and retrieve the config.json configuration file from either internal or external storage.
+
+Manually update the config.json file with the required changes, modifying only the values in the &quot;Value&quot; field; all other fields are pre-defined. For parameter values, refer to the Modules section. Zebra recommends viewing the file in JSON format for easier editing.
+
+For secure mode, broadcast the intent to trigger RxLogger to restart upon detecting an updated config.json file. This must be performed prior to file deployment. For instructions, see Secure Mode Deployment.
+
+Deploy the config.json file to the designated path in Step 1.
+
+
+
+
+Deployment
+
+To deploy the configuration file, use the Deploy Config API.
+
+
+
+Reset to Default
+
+Reset to Default restores all configurations to their original settings, facilitating recovery from misconfigurations and enabling a fresh start with default values. This option is not available when RxLogger is active to prevent configuration changes from disrupting logging.
+
+To activate Reset to Default, ensure RxLogger is disabled and then use one of the following methods:
+
+
+RxLogger Settings: From the RxLogger main screen, tap the settings icon at the top right, tap the reset icon, then select Yes to reset settings.
+
+    
+       
+    
+
+
+Module Settings: From any of the module settings screen, for example Logcat Module, tap the reset icon at the top-right, then select Yes to reset settings.
+
+    
+       
+    
+
+
+
+
+
+Android Work Profile
+
+Android Enterprise Work Profile is designed for mixed-use, company-owned devices, enabling organizations to enforce corporate policies and restrictions while preserving the privacy of personal data. Formerly known as Corporate-Owned, Personally Enabled (COPE), the Work Profile allows a single device to serve both professional and personal purposes by providing distinct Work and Personal Profiles. This separation ensures corporate data remains secure and isolated from personal applications, safeguarding user privacy.
+
+When Work Profile is active on a company-owned device, RxLogger operates in Secure Mode. Developers can interact with RxLogger using one of the following methods:
+
+
+Permissions
+
+Tokenization
+
+
+To access RxLogger logs within the Work Profile, perform a backup operation. This process compresses all logs into a single file and stores it in the directory: /storage/emulated/10/RxLogger/
+
+All Work Profile-related files are stored in the same directory: /storage/emulated/10/RxLogger/. This directory contains:
+
+
+Log files
+
+Bug reports
+
+Backup files
+
+config.json file
+
+
+Behaviors and Restrictions
+
+The Work Profile introduces specific restrictions and behaviors for RxLogger. Below are the key guidelines:
+
+Accessibility:
+
+
+When Personal Profile is active, RxLogger is disabled. It is accessible only within the Work Profile.
+
+Within the Work Profile, logs can only be accessed through a backup process; for details, see Backup.
+
+
+SD Card Compliance:
+
+
+Since RxLogger operates in Secure Mode within the Work Profile, any external storage used must be encrypted to enable logging to the external storage path. To encrypt, use the Encryption Manager from MX.
+
+
+Configuration Deployment
+
+In Work Profile mode, configurations must be deployed using Permissions or Tokenization. After the intent is triggered, the configuration file must be deployed within 60 seconds to the directory: /storage/emulated/10/RxLogger/. After this time expires, RxLogger automatically reconfigures itself with the new settings. These changes can be validated in the RxLogger Settings interface. For more information on deployment, see Deploy Config
+
+
+
+
+
+Modules
+
+Data collection modules are used to log various components of the Android system. These modules can be enabled, disabled, or customized as needed. By default, 8 of the 13 modules are enabled.
+
+Modules Enabled by Default:
+
+
+ANR
+
+Kernel
+
+Logcat
+
+Memory
+
+Ramoops
+
+Resource
+
+Snapshot
+
+Tombstone
+
+
+Modules Disabled by default: 
+
+
+BTSnooplog
+
+LTS
+
+Persist Logging
+
+Qxdm
+
+Recovery
+
+Tcpdump
+
+Instant Logging Module
+
+
+Log_Path
+
+&lt;Log_Path&gt; represents the log storage path, which depends on whether Secure Mode is enabled.
+
+
+  
+    Secure Mode
+    Storage Path
+  
+  
+    Disabled
+   Internal Storage:/sdcard/RxLogger/External Storage:/storage/&lt;UUID&gt;/RxLogger/
+  
+  
+    Enabled
+    Internal Storage:/sdcard/Android/data/com.symbol.rxlogger/RxLogger/secure/log_data/External Storage:/storage/&lt;UUID&gt;/Android/data/com.symbol.rxlogger/RxLogger/secure/log_data/Note: For external storage, the SD card must be encrypted using Encryption Manager from MX. Otherwise, the log path defaults to the internal storage path.
+  
+
+
+ANR Module
+
+The ANR Module controls collection of data from Android&#x27;s &quot;application not responding&quot; (ANR) events. Event data is copied directly from the Android system and saved in a file called trace.txt or some variant thereof. For example, the ANR event for a post-loaded app would be similar to trace-&lt;app_package_name&gt;.txt.
+
+To configure the ANR Module:
+
+
+From the RxLogger main screen, tap the settings icon at the top right, then tap ANR Module to display the ANR Module screen.
+
+
+    
+       
+    
+       
+    
+
+
+
+Options:
+
+
+  
+    Option Name
+    Description
+    Type
+    Value(s)
+  
+  
+    Enable Module
+   Enable or disable collection of ANR files
+   Boolean
+    true (default)false
+  
+  
+    Log File Path
+    The storage path for ANR files
+    String
+    &lt;Log_Path&gt;/anr/
+  
+  
+    Collect Historic ANR&#x27;s
+    Archive the ANR files generated prior to the start of RxLogger
+    Boolean
+    true (default)false
+  
+
+
+
+
+Tombstone Module
+
+The Tombstone Module collects Android native crash logs from the device, providing stack traces and detailed information about the crashed process. Tombstone files are generated sequentially starting from tombstone_00through tombstone_09, and then the sequence restarts at tombstone_00. Starting with Android 11, the system can generate up to 32 tombstone log files (ranging from tombstone_00 to tombstone_31), after which the sequence resets to tombstone_00. To identify the most recent logs, refer to the timestamps.
+
+For more information on Android native crash logs, visit Crash dumps and tombstones.
+
+To configure the Tombstone Module:
+
+
+From the RxLogger main screen, tap the settings icon at the top right, then tap Tombstone Module to display the ANR Module screen.
+
+
+    
+       
+    
+       
+    
+
+
+
+Options:
+
+
+  
+    Option Name
+    Description
+    Type
+    Value(s)
+  
+  
+    Enable Module
+   Enable or disable tombstone collection
+   Boolean
+    true (default)false
+  
+  
+    Log File Path
+   The storage path for tombstone logs
+   String
+   &lt;Log_Path&gt;/tombstone/
+  
+  
+    Collect Historic Tombstone&#x27;s
+    Archive the Tombstone files generated prior to the start of RxLogger
+    Boolean
+    true (default)false
+  
+
+
+
+
+Ramoops Module
+
+The Ramoops Module captures the last kmsg from the device, writing it to persistent memory immediately prior to a system crash. Ramoops outputs text files generated by the system at boot or after a kernel panic. These files contain raw kmsg data from the boot immediately prior to the crash. More about Ramoops.
+
+To configure the Ramoops Module:
+
+
+From the RxLogger main screen, tap the settings icon at the top right, then tap Ramoops Module to display the Ramoops Module screen.
+
+
+    
+       
+    
+       
+    
+
+
+
+Options:
+
+
+  
+    Option Name
+     Description
+    Type
+    Value(s)
+  
+  
+    Enable Module
+   Enable or disable Ramoops collection
+   Boolean
+    true (default)false
+  
+  
+    Log File Path
+   The storage path for Ramoops files
+   String
+   &lt;Log_Path&gt;/ramoops/
+  
+  
+    Log File Name
+   The file name of the stored ramoops file
+   String
+   ramoops (default)
+  
+  
+    Log File Count
+   The maximum number of ramoops log files to keep at any one time
+   Integer
+    Minimum: 1Maximum: 10Default: 2
+  
+
+
+
+
+Kernel Module
+
+The Kernel module captures kmsg data from the Android system and outputs it to a series of numbered files (i.e. KLog0.txt, KLog1.txt, KLog2.txt) with 0 being the newest.
+
+To configure the Kernel Module:
+
+
+From the RxLogger main screen, tap the settings icon at the top right, then tap Kernel Module to display the Kernel Module screen.
+
+
+    
+       
+    
+       
+    
+
+
+
+Options:
+
+
+  
+    Option Name
+    Description
+    Type
+    Value(s)
+  
+  
+    Enable Module
+   Enable or disable collection of kernel logs
+   Boolean
+    true (default)false
+  
+  
+    Log File Path
+   The storage path for kernel logs
+   String
+   &lt;Log_Path&gt;/
+  
+  
+    Log Interval
+    The frequency in seconds in which kernel logs will be dumped into the collecting file
+   Integer
+    Minimum: 1Maximum: 120Default: 30
+  
+  
+    Log File Name
+   The base file name to save kernel logs
+   String
+    KLog (default)
+  
+  
+    Log File Size
+   The size (in MB) of each kernel log file before it is rotated
+   Integer
+    Minimum: 5Maximum: 50Default: 10
+  
+  
+    Log File Count
+   The maximum number of kernel log files to keep at any one time
+   Integer
+    Minimum: 1Maximum: 20Default: 2
+  
+  
+    System Timestamp
+   Enable or disable time stamp in kernel logs
+   Boolean
+    true (default)false
+  
+  
+    System Timestamp Interval
+   The interval (in seconds) to add timestamp in kernel logs
+   Integer
+    Minimum: 1Maximum: 120Default: 60
+  
+  
+    Logcat Integration Override
+   Allow the merging of Logcat and Kernel logs into a single unified file for easier analysis.
+   Boolean
+    truefalse (default)
+  
+
+
+
+
+Logcat Module
+
+The Logcat Module collects data from Android&#x27;s internal logging mechanism, commonly known as logcat buffers. This module captures logs from any or all of the following buffers:
+
+
+System
+
+Event
+
+Radio
+
+Main
+
+Crash
+
+
+User can configure the module to store data from selected buffers either in seprate files or combined into a single file. The output is stored as a series of sequentially numbered text files (e.g. Main0.txt, Main1.txt, Main2.txt) where 0 represents the most recent file.
+
+To configure the Logcat Module:
+
+
+From the RxLogger main screen, tap the settings icon at the top right, then tap Logcat Module to display the configuration screen.
+
+
+    
+       
+    
+       
+    
+
+
+
+Options:
+
+
+  
+    Option Name
+     Description
+    Type
+    Value(s)
+  
+  
+    Enable Module
+   Enable or disable collection of logcat logs
+   Boolean
+    true (default)false
+  
+  
+    Log File Path
+   The storage path for logcat logs
+   String
+    &lt;Log_Path&gt;/
+  
+  
+    Logcat Buffer Size
+    Select the logcat buffer sizeNote: For Android 11, the default is 4MB.
+    List
+    0 - 256K (default)1 - 1M2 - 4M3 - 8M4 - 16M
+  
+  
+    Enable Main Logcat
+   Enable or disable the collection of the main buffer
+   Boolean
+    true (default)false
+  
+  
+    Main Log Interval
+   The frequency (in seconds) in which the main buffer logs will be dumped into the collecting file
+   Integer
+    Minimum: 1Maximum: 120Default: 30
+  
+  
+    Main Log File Name
+   The base file name to save main buffer logs
+   String
+    Main (default)
+  
+  
+    Main Log File Size (MB)
+   The size of each main buffer log file (in MB) before rotating
+   Integer
+    Minimum: 5Maximum: 50Default: 5
+  
+  
+    Main Log File Count
+   The maximum number of main buffer log files to keep at any one time
+   Integer
+    Minimum: 1Maximum: 20Default: 2
+  
+  
+    Main Log Filter
+   Custom logcat filter to run on the main buffer
+   String
+    [Enter string]
+  
+  
+    Enable Event Logcat
+   Enable or disable the collection of the event buffer
+   Boolean
+    true (default)false
+  
+  
+    Event Log Interval
+   The frequency (in seconds) in which event buffer logs will be dumped into the collecting file
+   Integer
+    Minimum: 1Maximum: 120Default: 30
+  
+  
+    Event Log File Name
+   The base file name to save event buffer logs
+   String
+    Event (default)
+  
+  
+    Event Log File Size
+   The size (in MB) of each event buffer log file before rotating
+   Integer
+    Minimum: 5Maximum: 50Default: 5
+  
+  
+    Event Log File Count
+   The maximum number of event buffer log files to keep at any one time
+   Integer
+    Minimum: 1Maximum: 20Default: 20
+  
+  
+    Event Log Filter
+   Custom logcat filter to run on the event buffer
+   String
+    [Enter string]
+  
+  
+    Enable Radio Logcat
+   Enable or disable the collection of the radio buffer
+   Boolean
+    true (default)false
+  
+  
+    Radio Log Interval
+   The frequency (in seconds) in which radio buffer logs will be dumped into the collecting file
+   Integer
+    Minimum: 1Maximum: 120Default: 30
+  
+  
+    Radio Log File Name
+   The default base file name to save logs from the radio buffer
+   String
+    Radio (default)
+  
+  
+    Radio Log File Size
+   The size (in MB) of each radio buffer log file before rotating in megabytes
+   Integer
+    Minimum: 5Maximum: 50Default: 5
+  
+  
+    Radio Log File Count
+   The maximum number of radio buffer log files to keep at any one time
+   Integer
+    Minimum: 1Maximum: 20Default: 2
+  
+  
+    Radio Log Filter
+   Custom logcat filter to run on the radio buffer
+   String
+    [Enter string]
+  
+  
+    Enable System Logcat
+   Enable or disable the collection of the system buffer
+   Boolean
+    true (default)false
+  
+  
+    System Log Interval
+   The frequency (in seconds) in which system buffer logs will be dumped into the collecting file
+   Integer
+    Minimum: 1Maximum: 120Default: 30
+  
+  
+    System Log File Name
+   The base file name to save system buffer logs
+   String
+    System (default)
+  
+  
+    System Log File Size
+   The size (in MB) of each system buffer log file before it is rotated
+   Integer
+    Minimum: 5Maximum: 50Default: 5
+  
+  
+    System Log File Count
+   The maximum number of system buffer log files to keep at any one time
+   Integer
+    Minimum: 1Maximum: 20Default: 2
+  
+  
+    System Log Filter
+   Custom logcat filter to run on the system buffer
+   String
+    [Enter string]
+  
+  
+    Enable Crash Logcat
+   Enable or disable the collection of the crash buffer
+   Boolean
+    true (default)false
+  
+  
+    Crash Log Interval
+   The frequency (in seconds) in which crash buffer logs will be dumped into the collecting file
+   Integer
+    Minimum: 1Maximum: 120Default: 30
+  
+  
+    Crash Log File Name
+   The base file name to save crash buffer logs
+   String
+    Crash (default)
+  
+  
+    Crash Log File Size
+   The size (in MB) of each crash buffer log file before it is rotated
+   Integer
+    Minimum: 5Maximum: 50Default: 5
+  
+  
+    Crash Log File Count
+   The maximum number of crash buffer log files to keep at any one time
+   Integer
+    Minimum: 1Maximum: 20Default: 2
+  
+  
+    Crash Log Filter
+   Custom logcat filter to run on the crash buffer
+   String
+    [Enter string]
+  
+  
+    Enable Combined Logcat
+   Enable or disable the collection of the combined logcat buffer, which includes the following buffers: main, event, radio, system, and crash
+   Boolean
+    true (default)false
+  
+  
+    Combined Logcat Buffer
+   Select one or more logcat buffers to include in the combined log capture
+   List
+    CrashEventMainRadioSystem
+  
+  
+    Combined Log Interval
+   The frequency (in seconds) in which combined buffer logs will be dumped into the collecting file
+   Integer
+    Minimum: 1Maximum: 120Default: 30
+  
+  
+      Combined Log File Name
+   The base file name to save combined buffer logs
+   String
+    Combined (default)
+  
+  
+      Combined Log File Size
+   The size (in MB) of each combined buffer log file before it is rotated
+   Integer
+    Minimum: 5Maximum: 50Default: 10
+  
+  
+      Combined Log File Count
+   The maximum number of crash buffer log files to keep at any one time
+   Integer
+    Minimum: 1Maximum: 20Default: 2
+  
+  
+      Combined Log Filter
+   Custom logcat filter to run on the combined buffer
+   String
+    [Enter string]
+  
+
+
+
+
+Resource Module
+
+The Resource Module records device information and system statistics at defined intervals, providing insights into the health and behavior of device resources over time. The collected data is saved as a series of comma-separated values stored in .CSV files.
+
+While most metrics are consistent across devices with different chipsets, the data for Battery Power may vary depending on the device&#x27;s chipset.
+
+To configure the Resource Module:
+
+
+From the RxLogger main screen, tap the settings icon at the top right, then tap Resource Module to display the configuration screen.
+
+
+    
+       
+    
+       
+    
+
+
+
+Options:
+
+
+  
+    Option Name
+     Description
+    Type
+    Value(s)
+  
+  
+    Enable Module
+   Enable or disable Resource collection
+   Boolean
+    true (default)false
+  
+  
+    Log File Path
+   The storage path for Resource files
+   String
+    &lt;Log_Path&gt;/
+  
+  
+    Log Interval
+   The frequency (in seconds) in which Resource collects and logs information
+   Integer
+    Minimum: 10Maximum: 300Default: 60
+  
+  
+    Log File Size
+   The size (in MB) of each Resource Log file before it is rotated
+   Integer
+    Minimum: 5Maximum: 50Default: 10
+  
+  
+    Log File Count
+   The maximum number of Resource files to keep at any one time
+   Integer
+    Minimum: 1Maximum: 10Default: 2
+  
+  
+    Resource Log Field
+   Select the resource type to log
+   List
+    Power - Collect battery statistics, see Battery PowerSystem Resource - Collect system resource informationAdvanced CPU - Collect CPU status informationNetwork - Collect network status informationBluetooth - Collect Bluetooth informaationLight - Collect ambient light level information (default)Heater - Collect heater informationThermal - Collect temperature readings from various device hardware components.Hide Non-Applicable data - Collect data not applicable based on available device resources. For example, a WLAN only device will not log WAN data. Hide Raw Data - Collect raw data information
+  
+
+
+
+
+Snapshot Module
+
+The Snapshot Module captures device information and system statistics at a specific point in time, offering a snapshot of the device&#x27;s health and resource behavior over that given time period. It generates a single text file for each data collection interval, containing the collected metrics for the selected parameters.
+
+While similar to the Resource Module, the Snapshot Modules captures more granular data, including threads and dumpsys information, and a device fingerprint header for each file. Snapshot consolidates all enabled data selections into one text file per data collection cycle.
+
+To configure the Snapshot Module:
+
+
+From the RxLogger main screen, tap the settings icon at the top right, then scroll down and tap Snapshot Module to display the configuration screen.
+
+
+    
+       
+    
+       
+    
+
+
+
+Options:
+
+
+  
+    Option Name
+     Description
+    Type
+    Value(s)
+  
+  
+    Enable Module
+   Enable or disable Snapshot collection
+   Boolean
+    true (default)false
+  
+  
+    Log File Path
+   The storage path for Snapshot logs
+   String
+   &lt;Log_Path&gt;/snapshots/
+  
+  
+    Log Interval
+   The frequency (in seconds) in which Snapshot will collect information and dump into its file
+   Integer
+    Minimum: 60Maximum: 3000Default: 1800
+  
+  
+    Log File Name
+   The base file name of stored Snapshot file
+   String
+    snapshot (default)
+  
+  
+    Log File Count
+   The maximum number of Snapshot files to keep at any one time
+   Integer
+    Minimum: 1Maximum: 100Default: 50
+  
+  
+    Snapshot Log Field
+   Select the Snapshot log fields to include
+   List
+    Top - Run the top command for data collectionCPU Info - Run the dumpsys cpuinfo and cat /proc/stat commands for data collectionBattery Info -  Run the dumpsys batterystats and dumpsys battery commands for data collectionThermal Service - A system-level Android service responsible for monitoring the temperatures of critical hardware components, including the CPU, GPU, USB port, and batteryWake Lock - Collect the sys/fs wake_lock informationTime In State - Collect the sys/fs cpufreq for each coreProcess - Run the ps -p command for data collectionThreads - Run the ps -t -p -P command for data collectionProperties - Run the getprop command for data collectionInterface - Run the netcfg command for data collectionIP Routing Table - Collect the net route for data collectionConnectivity -Run the dumpsys connectivity command for data collectionWi-Fi -Run the dumpsys wifi command for data collectionFile System -Run the df command for data collectionUsage Stats -Run the dumpsys usagestats command for data collectionISub -Capture information regarding SIM cards and the mobile network subscriptionTelephony Debug Service -Capture debug information related to telephony services and cellular network connectivity.Telephony Registry - Capture state of telephony-related components and servicesTelecom - Collect telephony-related functionality, such as making and receiving calls, handling SIM cards, and managing call logsISms - Capture information about the SMS (Short Message Service) functionality through the Isms interfaceLocation - Capture detailed information about the device&#x27;s location providers, location requests, and other location-related detailsPhone - Capture information about the phone state, call-related details, signal strength, network information and other phone-related detailsCarrier Config - Capture detailed information about the configuration settings that are applied by the device for a specific carrier
+  
+
+
+
+
+
+Memory Module
+
+The Memory Module captures comprehensive telemetry on device memory consumption, ranging from system-wide physical RAM and kernel-space distribution to per-application heap and native memory metrics.
+
+To configure the Memory Module:
+
+
+From the RxLogger main screen, tap the settings icon at the top right, then scroll down and tap Memory Module to display the configuration screen.
+
+
+    
+       
+    
+       
+    
+
+
+
+Options:
+
+
+  
+    Option Name
+    Description
+    Type
+    Value(s)
+  
+  
+    Enable Module
+    Enable or disable Memory module log collection
+    Boolean
+    true (default)false
+  
+  
+    Log File Path
+    The storage path for Memory logs
+    String
+    &lt;Log_Path&gt;/memory/
+  
+  
+    Log Interval
+    The frequency (in seconds) at which the Memory module collects information
+    Integer
+    Minimum: 60Maximum: 3000Default: 1800
+  
+  
+    Log File Name
+    The base file name of stored Memory log file
+    Integer
+    Minimum: 60Maximum: 3000Default: 1800
+  
+  
+    Log File Count
+    The maximum number of Memory log files to keep at any one time
+    Integer
+    Minimum: 1Maximum: 100Default: 50
+  
+  
+    Memory Log Field
+    Choose one of the following:• Memory Info [-s system] - Enable/disable running the dumpsys meminfo -s and cat /proc/meminfo commands to collect memory usage of system processes. Enabled by default. Available on all devices except WS50.• Memory Info [-a application] - Enable or disable running the dumpsys meminfo -a and cat /proc/meminfo commands to collect memory usage of installed apps. Disabled by default.
+    Integer
+    true (default) falsetrue  false (default)
+  
+  
+    
+    Disk Usage - Disk usage summary for the /data partition
+    Boolean
+    true (default)false
+  
+  
+    
+    Disk Usage Details - Disk usage details for each folder within the /data partition
+    Boolean
+    true false (default)
+  
+  
+    
+    Disk Free - Disk storage available in the /data partition.
+    Boolean
+    true (default)false
+  
+
+
+
+
+BTSnoopLog Module
+
+The BTSnooplog Module captures Bluetooth HCI (Host Controller Interface) snoop logs from the device, recording all Bluetooth transmissions with the connected Bluetooth peripheral. These logs are stored in:
+
+&lt;Log_Path&gt;/btsnooplog/
+
+Each log file is named in the format hci_snoop&lt;YYYYMMDDhhmmss&gt;.cfa. A maximum of two log files can exist at any given time, with each file having a size limit of 64 MB. When a newer .cfa log reaches its maximum size, RxLogger overwrites the older log file with the updated HCI data. To collected the BTSnoopLog files, RxLogger must first be stopped.
+
+
+ Important Notes:
+
+
+BTSnoopLog is not supported on TC15 and TN28 devices.
+
+When a Bluetooth peripheral is paired and BTSnoopLog module is enabled, the Bluetooth connection will disconnect and re-connect to the peripheral. This is required for BTSnoopLog to start capturing snoop logs and will also occur when any configuration changes are made to the BTSnoopLog Module.
+
+
+To configure the BTSnoopLog Module:
+
+
+From the RxLogger main screen, tap the settings icon at the top right, then scroll down and tap BTSnoopLog Module to display the configuration screen.
+
+
+    
+       
+    
+       
+    
+
+
+
+Options:
+
+
+  
+    Option Name
+     Description
+    Type
+    Value(s)
+  
+  
+    Enable Module
+    Enable or disable BTSnooplog module log collection
+    Boolean
+    truefalse (default)
+  
+  
+    Log File Path
+    The storage path for BTSnoopLog files
+    String
+    &lt;Log_Path&gt;/btsnooplog/
+  
+  
+    Log Filter
+    Determines the amount of information logged
+    List
+    VERBOSE (0) - Captures all logs, including full HCI packet traces.DEBUG (1) - Captures detailed debugging information.INFO (2) - (Default) Captures general status updates.WARN (3) - Captures unexpected but recoverable issues.ERROR (4) - Captures failures only.
+  
+
+
+
+
+Persist Logging Module
+
+The Persist Logging Module continuously captures platform logs for post-incident root-cause analysis. Logs are maintained using a circular buffer (rotating files). When the configured file size or file count threshold is reached, RxLogger automatically overwrites the oldest file. When RxLogger stops, all in-memory buffers are flushed to the log files to ensure data retention. Collect logs soon after reproducing the issue to avoid older data being overwritten.
+
+ Important: Export or back up logs immediately after reproducing an issue to prevent critical diagnostic data from being overwritten by the circular log buffer.
+
+To configure the Persist Logging Module:
+
+
+From the RxLogger main screen, tap the settings icon at the top right, then scroll down and tap Persist Logging Module to open the configuration screen.
+
+
+    
+       
+    
+       
+    
+
+
+
+Options:
+
+
+  
+    Option Name
+     Description
+    Type
+    Value(s)
+  
+  
+    Enable Module
+   Enable or disable Persist Logging collection
+   Boolean
+    truefalse (default)
+  
+  
+    Log File Path
+    The storage path for Persist Logging files
+    String
+    &lt;Log_Path&gt;/persist/logs
+  
+  
+    Log File Name
+   Base file name for persisted log files
+   String
+    RxPersist (default)
+  
+  
+    Log Buffer
+   Select the Android log buffer(s) to capture
+   List
+    AllAll but radio and kernel only (userdebug build only)
+  
+  
+    Log File Size
+   Specify the maximum size (in MB) of each log file before rotation
+   Integer
+    Minimum: 2Maximum: 20Default: 4
+  
+  
+    Log File Count
+   Specifies the maximum number of log files to retain
+   Integer
+    Minimum: 1Maximum: 20Default: 5
+  
+    
+    Backup
+   Enables retention and backup of persisted log files
+   Boolean
+    true (default) false
+  
+
+
+
+
+QXDM Module
+
+The QXDM Module captures Qualcomm Modem logs from the device, which are read using a Qualcomm utility. This module also accepts a user-defined or custom configuration file Custom_filter.cfg generated through Qualcomm tools. This configuration file is stored in the &lt;Log_Path&gt;/qxdm/cfg folder.
+
+For SD660 devices, QXDM Module is only available on WAN devices. However, for newer chipsets such as SD6490 and SD6375, it is available on both WAN and WLAN devices due to the inclusion of the battery filter. For more information, see Zebra Platform Devices list.
+
+
+   IMPORTANT NOTE: Output from this module can consume all available storage space if the &quot;Custom Log&quot; option is not enabled with a specified &quot;Maximum Log File.&quot; Zebra recommends defining an appropriate log size and maximum log quantity based on the available storage capacity.
+
+
+To configure the QXDM Module:
+
+
+From the RxLogger main screen, tap the settings icon at the top right, then scroll down and tap QXDM Module to display the configuration screen.
+
+
+    
+       
+    
+       
+    
+
+
+
+Options:
+
+
+  
+    Option Name
+     Description
+    Type
+    Value(s)
+  
+  
+    Enable Module
+   Enable or disable QXDM collection
+   Boolean
+    truefalse (default)
+  
+  
+    Log File Path
+    The storage path for QXDM files
+    String
+    &lt;Log_Path&gt;/qxdm/logs
+  
+  
+    Log File Size
+   Specify the size (in MB) of each individual QXDM log file
+   Integer
+    Minimum: 50Maximum: 200Default: 100
+  
+  
+    Log Test Sets
+   Number of test sets to retain (each test consists of a start and stop)
+   Integer
+    Minimum: 1Maximum: 10Default: 3
+  
+    
+    Log Filter
+   Select the log filter that QXDM needs to process.
+   List
+    • Default-Lite (0) [default]: Lightweight modem logging profile with the recommended filter mask for general diagnostics.Note: This filter is not available on SD660-platform devices, see Zebra Platform Devices.• Default (2): Standard modem logging profile with the recommended filter mask for general diagnostic capture.• Battery (3): Targeted logging for battery, charging, and power-management diagnostics.• Audio (4): Targeted logging for audio pipeline, routing, and voice/media diagnostics.• RFID (5): Targeted logging for RFID subsystem activity and related events.• GNSS (6): Targeted logging for GNSS/GPS positioning, satellite tracking, and location diagnostics.• User Defined (7): Custom logging configuration utilizing user-specified filter file: &lt;Log_Path&gt;/qxdm/cfg/Custom_filter.cfg
+  
+  
+    Logging Limit Type
+   Select custom log option to specify the maximum number of log files to be generated
+   List
+    Default logging (0 - default)Custom Log (1 - Specify Max Log File)
+  
+  
+    Maximum Log File
+   Applies to Custom Log, specifies the number of log files to keep on a test set which must be specified by user
+   Integer
+    Minimum: 1Maximum: 10Default: 3
+  
+
+
+
+
+TCPDump Module
+
+The TCPDump Module captures packet data from all device network connections on the device and outputs a binary file. This file can be analyzed using Wireshark or other standard network analysis tools.
+
+To configure the TCPDump Module:
+
+
+From the RxLogger main screen, tap the settings icon at the top right, then scroll down and tap TCPDump Module to display the configuration screen.
+
+
+    
+       
+    
+       
+    
+
+
+
+Options:
+
+
+  
+    Option Name
+     Description
+    Type
+    Value(s)
+  
+  
+    Enable Module
+   Enable or disable tcpdump collection
+   Boolean
+    truefalse (default)
+  
+  
+    Log File Path
+    The storage path for TCPDump logs
+    String
+    &lt;Log_Path&gt;/tcpdump
+  
+  
+    Log File Name
+   The file name of the stored TCPDump file
+   String
+    capture.pcap (default)
+  
+  
+    Log File Size
+   The max file size (in MB) allowed before TCPDump files are rotated
+   Integer
+    Minimum: 5Maximum: 50Default: 5
+  
+  
+    Log File Count
+   The maximum number of TCPDump files to retain
+   Integer
+    Minimum: 1Maximum: 20Default: 2
+  
+  
+    Backup
+    Archive any existing TCPDump logs, if present. Only the logs from the most recent reboot are retained. On a second reboot, the previous log is removed, and the current log is archived.
+    Boolean
+    truefalse (default)
+  
+
+
+
+
+Recovery Module
+
+The Recovery Module captures recovery and OSUpdate logs, as well as Android&#x27;s Rescue Party logs from the device. Rescue Party, supported in RxLogger starting with Android 9.0, helps prevent devices from getting stuck in reboot loops. When a boot loop is detected, Android initiates a &quot;rescue party,&quot; which performs a series of actions in an attempt to recover the device. If all recovery attempts fail, Rescue Party reboots the device into recovery mode and prompts the user to perform a factory reset.
+
+To configure the Recovery Module:
+
+
+From the RxLogger main screen, tap the settings icon at the top right, then scroll down and tap Recovery Module to display the configuration screen.
+
+
+    
+       
+    
+       
+    
+
+
+
+Options:
+
+
+  
+    Option Name
+     Description
+    Type
+    Value(s)
+  
+  
+      Enable Module
+   Enable or disable Recovery module log collection
+   Boolean
+    truefalse (default)
+  
+    
+    Log File Path
+    The storage path for TCPDump logs
+    String
+    &lt;Log_Path&gt;/recovery
+  
+
+
+
+
+LTS Module
+
+The Long Term Storage (LTS) Module collects log files generated by other active modules and consolidates them for analyzing device health and behavior over a period of time. The output files are compressed using gzip and stored in a specified path, which follows the structure outlined below. If multiple logs are stored within in the same hour (recorded in military time), they are sequentially numbered from 00 to 99.
+
+
+Storage Path Format:
+/&lt;device_model&gt;/&lt;BSP_build_number&gt;/&lt;device_serial_number&gt;/&lt;YYMMDD&gt;/&lt;HHxx&gt;/ - Example: TC51/91-01-21-NN-00/16885225D0029/170621/2100/
+
+To configure the LTS Module:
+
+
+From the RxLogger main screen, tap the settings icon at the top right, then scroll down and tap LTS Module to display the configuration screen.
+
+
+    
+       
+    
+       
+    
+
+
+
+Options:
+
+
+  
+    Option Name
+     Description
+    Type
+    Value(s)
+  
+  
+    Enable Module
+   Enable or disable LTS collection
+   Boolean
+    truefalse (default)
+  
+  
+    
+    Log File Path
+    The storage path for LTS logs
+    String
+    &lt;Log_Path&gt;/RxLoggerLTS
+  
+
+
+
+
+Instant Logging
+
+Instant Logging simplifies on-demand log capture for specific device data, such as Battery, Audio, or Wi-Fi, offering a quick and efficient way to diagnose device-related issues. For usage, see Instant Logging.
+
+
+
+
+
+Related Links
+
+
+About RxLogger - Provides an overview of RxLogger
+
+User Guide - Provides instrucdtions on using RxLogger
+
+APIs - Guides how to use APIs
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+    
+       
+            
+                
+                    
+                       	ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

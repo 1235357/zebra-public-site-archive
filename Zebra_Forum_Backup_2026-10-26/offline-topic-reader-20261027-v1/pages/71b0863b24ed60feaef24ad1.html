@@ -1,0 +1,182 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Turn off beep on RFD8500 sled</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Turn off beep on RFD8500 sled</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/36652; original snapshot: threads/resume-00314.html; SHA-256: f39a55a5deb81ff70cbf836c9db9a39e0264c374aae628c53baab9a8144df37a</small><pre id="topic">
+
+    
+        Turn off beep on RFD8500 sled
+
+
+        
+      
+                        
+                    
+            J
+          
+          Jeff Mr
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            606
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m developing an Application where the Zebra RFD8500 Sled scanner communicates with an  Android phone via Bluetooth. 
+I want to programmatically  turn off the beeping sound on the RFD8500 Sled when I scan a barcode, so I can play my own custom sound. I&#x27;ve seen examples on how to initiate the beep sound on the Sled through the &quot;Zebra Scanner SDK for Android developer guide&quot;.  And  I understand how to play a sound on an Android phone which would replace the Sled&#x27;s beep.  But haven&#x27;t seen anything with regards to a config parameter setting I could set programmatically that would turn off the Sleds&#x27; sound altogether. 
+Any thoughts?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jeff Mr
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            After a some more research, I found out how to do this through the following developer guide section 5.2
+https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/rfid/rfd85…
+The only problem now is, the beeper is not turned off when I scan a barcode.&amp;nbsp; It is turned off when the RFD8500 sled connects and disconnects, but NOT when a barcode is&amp;nbsp; scanned.
+So I&#x27;m really back to square one. Because the whole point of this was to silence the beep sound when a barcode is scanned and replace that sound with my own custom sound.
+In any event, below is the code to connect to the 8500 sled and turn off the beeping sound up to a point as I mentioned.
+You&#x27;ll need to import the following Java archive library -&amp;gt;&amp;nbsp; API3_LIB-release.aar
+That archive can be found in the following zip file&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Zebra_RFID_Mobile_Android_1.2.3.26.zip
+The following url has the zip file
+Zebra RFID Mobile Application for Android Support &amp;amp; Downloads | Zebra
+import com.zebra.rfid.api3.BEEPER_VOLUME;
+import com.zebra.rfid.api3.RFIDReader;
+import com.zebra.rfid.api3.ReaderDevice;
+public static Readers readers;
+public static RFIDReader rfidReader;
+The specific code gets executed in a Async method when the Sled is found...
+private class ProcessAsyncTask extends AsyncTask {
+{
+@Overrideprotected Boolean doInBackground(Void... voids) {
+try {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; readers = new Readers();
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ArrayList availableRFIDReaderList = readers.GetAvailableRFIDReaderList();
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ReaderDevice readerDevice = availableRFIDReaderList.get(0);
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; rfidReader = readerDevice.getRFIDReader();
+} catch (InvalidUsageException e) {
+&amp;nbsp; e.printStackTrace();
+}
+try {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; rfidReader.connect();
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; rfidReader.Config.setBeeperVolume(BEEPER_VOLUME.QUIET_BEEP);
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; rfidReader.Config.saveConfig();
+} catch (Exception e) {
+&amp;nbsp; e.printStackTrace();
+}
+}
+}
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

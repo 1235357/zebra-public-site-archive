@@ -1,0 +1,775 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Savanna printing can&#x27;t associate template with printer</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Savanna printing can&#x27;t associate template with printer</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/savanna-printing-cant-associate-template-printer; original snapshot: supplement/verified-threads/79290d66254d860531816bc4.html; SHA-256: 283760916d87300b7272f2446e91c9bffa223c67f0f55a33d1cef05d5f25b0b8</small><pre id="topic">
+
+    
+        Savanna printing can&#x27;t associate template with printer
+
+
+        
+      
+                        
+                    
+            H
+          
+          Hussain Hussain
+          4 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            46
+          
+                
+                  
+            
+            12
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+We are using https://api.zebra.com/v2/devices/printers to register a Zebra printer and then added a ZPL template. But when we try to print using the api, we are getting an error back - &quot;Template  not found associated with printer &quot;
+Is there a way I can log in to Savanna and see an admin panel or something similar to see the registered printers, templates and associations? 
+If not, how do I go about troubleshooting this issue?
+Thank you!
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      12 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The SendFileToPrinter API (endpoint: https://api.zebra.com/v2/devices/printers/send) just sends a file to a printer. It&#x27;s a REST request and unidirectional. The file sent by this API can be a label format file (ZPL) to print a label, a template file (ZPL Store Format or XML Store Format to be called by the Recall Format sent to the printer later) that is to be stored on the printer, etc.
+Where does this &quot;Template not found associated with printer&quot; error come from? It doesn&#x27;t look like it comes from the response of the REST request.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hussain Hussain
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you for your response. I have just taken on an existing project with no prior knowledge of Zebra or Savanna products and APIs, so pardon my ignorance. Is there a documentation for the Savanna APIs and what request and response objects it expects/returns so I can better understand this?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Please refer to these documents:
+
+Use the SendFileToPrinter API for Your Cloud-Based Printing Needs
+SendFileToPrinter API
+Print From Cloud Demo on GitHub
+
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hussain Hussain
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you very much! 
+Is there a way to pass the ZPL template as a string instead of a ZPL file?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            It has to be a file or a file object. The SendFileToPrinter API doesn&#x27;t take string.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hussain Hussain
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I see. In this documentation  - https://developer.zebra.com/apis/sendfiletoprinter-model#/SendFileToPri…
+ it does not mention anything about the actual values that need to be passed in for printing? 
+Same with the example here- https://developer.zebra.com/blog/use-sendfiletoprinter-api-your-cloud-b…
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            As the name of the SendFileToPrinter API indicates, this API sends a FILE to a printer. Here is the screenshot of the API documentation about what are required in the body of the HTTPS multipart POST request.
+
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hussain Hussain
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you. I am still not 100% of what type of file is accepted as valid by the api. 
+I tried sending in a zpl template file that we use for our label printing and I got this error back from the api -
+{&quot;fault&quot;:{&quot;faultstring&quot;:&quot;Execution of JS-ExtractPrinterList failed with error: Javascript runtime error: \\&quot;TypeError: Cannot read property \\&quot;1\\&quot; from null. (JS-ExtractPrinterList.js:7)\\&quot;&quot;,&quot;detail&quot;:{&quot;errorcode&quot;:&quot;steps.javascript.ScriptExecutionFailed&quot;}}}
+Does this tell you what I might be doing wrong?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The error msg indicates that the backend server cannot parse the request body, which means there are something wrong with the format of the request body. Please follow the instructions in the Test Print section of this article - Use the SendFileToPrinter API for Your Cloud-Based Printing Needs, and make sure you are able to print a simple ZPL label in the HelloWorld.txt (containing the ZPL of ^XA ^FO50,50^ADN,36,20^FDHello World^FS ^XZ) first by using the Curl commands at the command line, in order to get a sense on what is required in what format.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hussain Hussain
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi again,
+I tried the exact zpl contents as that file and still got the same error. I am passing in the apikey, tenant and sn as well along with the zpl-file. 
+I need to be able to troubleshoot the error so I know what part of my request is having trouble being parsed at your end.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Could you provide some details about how the request is composed and what tool or programming language is used, so as to help to diagnose? Without the details, we cannot troubleshoot. The three online documents provided early contain the information we need to make a successful call.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hussain Hussain
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Just to make things clear.
+ I am Hussain and I apologize for the repeated questions. This thread has been generated by a colleague of mine. He used this account in my vacation.
+The API and the endpoint  are working fine.
+We are able to print thousands of lables daily.
+@Dave, please use a separate account for experimental questions
+Thank you.
+Hussain
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

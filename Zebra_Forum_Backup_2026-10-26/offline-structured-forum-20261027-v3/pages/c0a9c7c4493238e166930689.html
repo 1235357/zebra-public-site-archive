@@ -1,0 +1,161 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Unable to print QR barcodes from a web application using Prowser Print and the JS API</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/unable-print-qr-barcodes-web-application-using-prowser-print-and-js-api; snapshot threads/00271.html; SHA-256 19e6db9f42e3574f0119367f4d357b59e38540304517d094f9776e6e776632f0. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Unable to print QR barcodes from a web application using Prowser Print and the JS API</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            G
+          </div>
+          <div class="forum-topic__author-name">Gerardo Rubio</div>
+          <div class="forum-topic__timestamp">2 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            203
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>I have a Zebra ZQ220 PLUS printer, a web application and an android device. Using browserprint and the JS API available, I am able to print text, barcodes (even some 2D barcodes like maxicode) and shapes, but for some reason it cannot print QR codes. So I instaled the Zebrat Printer Setup Utilities software, and using the "Printer Direct Communication" (or something like that) it turns out my printer can print QR codes. So I have been trying to understand why I can print from the software giving it certain instructions, but if I pass the exact same CPCL code to the printer from my web application, it simply blocks. This only happens with QR codes, with the rest of the functionalities it works as it is suposed to. This is the CPCL that I am passing to the printer, from Zebrat Printer Setup Utilities and from my web application:</p><pre><code class="language-plaintext">! 0 200 200 210 1
+TEXT 4 0 30 40 Hello World
+PRINT
+</code></pre><p>This is always printed, either I pass it via Zebrat Printer Setup Utilities or the web application.</p><pre><code class="language-plaintext">! 0 200 200 500 1
+B QR 10 100 M 2 U 10
+MA,QR code ABC123
+ENDQR
+T 4 0 10 400 QR code ABC123
+PRINT
+</code></pre><p>This is only printed if is passed from Zebrat Printer Setup Utilities, but the printer blocks if it comes from the web application. I am making sure that the sintax is correct, and always ending the files with an endline.</p><p>I just don't know what else can I try. Is there some configuration differences in the printing format betwen the two methods?</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-52754" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>ZQ220 Plus should print the QR code. How is the CPCL script of the QR code sent to the printer with the Browser Print? Have you tried to save the CPCL script into a file and send the file via the Browser Print API sendFile()?</p>
+<pre><code class="language-javascript">function sendFile(fileUrl){
+    url = window.location.href.substring(0, window.location.href.lastIndexOf("/"));
+    url = url + "/" + fileUrl;
+    selected_device.sendFile(url, undefined, errorCallback)
+}</code></pre></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/unable-print-qr-barcodes-web-application-using-prowser-print-and-js-api%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/unable-print-qr-barcodes-web-application-using-prowser-print-and-js-api%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

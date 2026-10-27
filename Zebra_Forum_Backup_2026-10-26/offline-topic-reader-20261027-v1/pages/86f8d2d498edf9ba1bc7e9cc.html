@@ -1,0 +1,277 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MC75: How to disable DHCP over serial connection?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MC75: How to disable DHCP over serial connection?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/25719; original snapshot: threads/01476.html; SHA-256: 777814a7cce0c8baa3f51048c9c54688ec18a0894fd1d9cef4fc32dd3a45bb3a</small><pre id="topic">
+
+    
+        MC75: How to disable DHCP over serial connection?
+
+
+        
+      
+                        
+                    
+            C
+          
+          Charles Malm
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            19
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I have a customer that is using a PPP server connected to a MC75 over serial, the server assigns an IP address to the MC75 prior to the DHCP request being received and thus ignores it. The MC75 does not like this and terminates the connection. Is there a way to disable DHCP over a serial connection?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Charles Malm
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I’ve tried several configurations of static IP addresses but I’m not getting anywhere.&amp;nbsp; Actually, the connection progress isn’t getting as far.&amp;nbsp; Here is what I’m seeing:
+09/10 13:58:37 WM_RASDIALEVENT - rasconnstate  is RASCS_OpenPort, dwRasError = 
+09/10 13:58:37 WM_RASDIALEVENT - rasconnstate  is RASCS_PortOpened, dwRasError = 
+09/10 13:58:37 WM_RASDIALEVENT - rasconnstate  is RASCS_Disconnected, dwRasError = 
+&amp;nbsp;
+When I specify the IP address in the “PPTP NDISWAN Miniport”, should I be using the same IP address that I specified in the “PPP RAS entry?&amp;nbsp; I’ve tried it several different ways but I get the same result.  
+&amp;nbsp;
+1.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; If I make a change to the “PPTP NDISWAN Miniport”, do those changes take effect immediately or do I need to reboot the device?
+2.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; I have the MC75 configured to access my WLAN from its WiFi configuration.&amp;nbsp; I do this so that I connect to the device and deploy my applications from visual Studio 2008.&amp;nbsp; This is a different network than the PPP network I’m trying to open a connection with.&amp;nbsp; Will having this enabled affect the results of the PPP connection?&amp;nbsp; It didn’t seem to have any effect prior to changing the “PPTP NDISWAN Miniport”, so I don’t think it will, but I thought I’d mention it.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Charles Malm
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks Dave, I will let them know/ask.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Charles Malm
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Dave, 
+  Here is the response from the customer: 
+Thanks for the information.&amp;nbsp; In the snippet below, you said to “select the PPP connection”.&amp;nbsp; When I go to Settings -&amp;gt; Connections -&amp;gt; WiFi, I see the choice for “PPTP NDISWAN Miniport”.&amp;nbsp; Is this what you mean by the “PPP connection”?
+  &amp;nbsp;
+To answer your question about setting an IP address on the PPP connection, when I created the “PPP” RAS entry, I used the following options:
+RASEO_ProhibitEAP |
+RASEO_ProhibitMsCHAP2 |
+RASEO_ProhibitMsCHAP |
+RASEO_ProhibitCHAP |
+RASEO_ProhibitPAP |
+RASEO_SwCompression |
+RASEO_IpHeaderCompression |
+RASEO_SpecificIpAddr
+  &amp;nbsp;
+By specifying RASEO_SpecificIpAddr I can then fill in the static IP address in the field ipaddr.&amp;nbsp; The structure for the RAS entry I’m referring to is called RASENTRY.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

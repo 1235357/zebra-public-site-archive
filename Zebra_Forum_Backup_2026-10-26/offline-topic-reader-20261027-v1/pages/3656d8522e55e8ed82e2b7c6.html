@@ -1,0 +1,256 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra BarcodeScannerSDK MAUI for iOS and DotNet10?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Zebra BarcodeScannerSDK MAUI for iOS and DotNet10?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zebra-barcodescannersdk-maui-ios-and-dotnet10; original snapshot: threads/00308.html; SHA-256: 15b3c033a2799f47512876544cc1ef694bd7fdf449138def47b2f255c7a1e3da</small><pre id="topic">
+
+    
+        Zebra BarcodeScannerSDK MAUI for iOS and DotNet10?
+
+
+        
+      
+                        
+                    
+            T
+          
+          Tim Johnson
+          5 months ago
+        
+        
+      
+        
+            
+                  
+            
+            224
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I am using the Zebra_BarcodeScannerSDK_MAUI_for_iOS_v1.0.7 which currently targets dotnet 9, however my application is now changed to be targeting dotnet 10, due to other dependancies.I am seeing problems when attempting to build a Release mode version of my App, seeing failures at AOT step with errors like:Failed to AOT compile ZebraBarcodeScannerSDK.dll, the AOT compiler exited with code 1.Failed to AOT compile aot-instances.dll, the AOT compiler exited with code 1.Failed to AOT compile ScannerSDKAndroidBinding.dll, the AOT compiler exited with code 1.I am finding it impossible to get any further details on what is actually failing here. Is this library expected to work in an app targeting dotnet 10? Is a new version of the Zebra_BarcodeScannerSDK_MAUI_for_iOS package going to be released targeting dotnet 10? 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              E
+            
+          
+                
+          
+            Ernie Scott
+          
+          
+            4 months 3 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I also am having this issue and made a forum post about it shortly prior to this post.  I can no longer access my forum post, so I do not know what happened to it. I also created a support case at the time I made the forum post, so am inquiring through that support case about what happened to my forum post and whether this is being addressed.  In both my forum post and my support case, I provided details on a possible fix for this issue. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              E
+            
+          
+                
+          
+            Ernie Scott
+          
+          
+            4 months 3 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I have also encountered this issue in the Zebra.Printer.SDK and posted about it on this forum shortly before this post appeared; however, I can no longer access my post as it appears to have been removed. I also filed a support case for this issue (case 25537290) and am currently trying to find out what happened to the forum post and whether the underlying problem is being addressed. In both the forum post and the support case I provided details on the likely root cause and a suggested fix, based on decompiling the SDK assemblies. While we are also on .NET 10, we are still using Zebra.Printer.SDK 3.0.3295. At some point we may be forced to update — for example, due to the Android 17 Bluetooth socket read behavior change, although our review of the 3.0.3295 IL suggests we may be OK there — but the iOS AOT build failure means we currently have no safe upgrade path.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              T
+            
+          
+                
+          
+            Tim Johnson
+          
+          
+            4 months 3 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I seem to have gotten past this issue.  I&#x27;m not certain as to whether the problem was caused by a too-long path, or if there was some issue with the DLLs being included where they should not have been.The changes I made in my project were:Moved the &quot;References&quot; folder containing the zebra DLLs for each platform to be at the root of my solutionAdded the following to my project file:    &lt;ItemGroup&gt;
+      &lt;Compile Remove=&quot;References\**&quot; /&gt;
+      &lt;EmbeddedResource Remove=&quot;References\**&quot; /&gt;
+      &lt;MauiCss Remove=&quot;References\**&quot; /&gt;
+      &lt;MauiXaml Remove=&quot;References\**&quot; /&gt;
+      &lt;None Remove=&quot;References\**&quot; /&gt;
+    &lt;/ItemGroup&gt;In addition, I deleted the &#x27;obj&#x27; and &#x27;bin&#x27; folders to get a completely clean slate.  Anyway, given that Dotnet 9 is now out of support, it seems odd that Zebra has not released a version of this package that specifically targets Dotnet 10.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

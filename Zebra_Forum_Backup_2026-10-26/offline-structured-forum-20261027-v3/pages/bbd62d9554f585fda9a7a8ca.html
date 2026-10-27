@@ -1,0 +1,179 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Invoking GPIOs by external service / RCI Interface - Reader FX9600</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/invoking-gpios-external-service-rci-interface-reader-fx9600; snapshot threads/00626.html; SHA-256 14ffd7830d00bf29b3d13fea2e0f190570c67abb301eb9e93a7e399f69d86ee4. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Invoking GPIOs by external service / RCI Interface - Reader FX9600</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            M
+          </div>
+          <div class="forum-topic__author-name">Maciej Kołkowski</div>
+          <div class="forum-topic__timestamp">3 years 7 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            235
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi,<br>
+I have RFID reader FX9600 and my question is: Is there any solution for invoking a GPIO Out signal by external service? For example by IoT Connector MQTT, Http server endpoint or IoT Connector RESTs API? My goal is to turn on a lamp connected to GPIO on a specific tag processed by an external service (API) that processes the reader's HTTP POSTs with tag data. I am trying to use RCI Interface by reader's endpoint https://IPAddress/restrci and using commands GetGPIOs, SetGPIOs like in the example below. </p>
+
+<p>{"Cmd":"GetGPIOs","ReportNow":[1,3,4],"ReportEvent":[2]}  - Sended by Postman tool </p>
+
+<p>Response: </p>
+
+<p>{</p>
+
+<p>  "Report": "Unknown",</p>
+
+<p>    "ErrID": 1002</p>
+
+<p>}</p>
+
+<p>About RCI Interface I can't find any documentation about that error.</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+      <div class="field field--name-field-attachment field--type-file field--label-hidden field__items">
+              <div class="field__item">
+<span class="file file--mime-image-png file--image"> <span data-original-href="/sites/default/files/user-uploads/2023/03/16/REST%20RCI%20Command_0.PNG">REST RCI Command_0.PNG</span></span>
+</div>
+          </div>
+  
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-51475" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 7 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>If you are already using the HTTP POST method setup via the Web Console - the restrci interface may not be available since you are now using the Zebra IOT embedded support.  ( What you are doing is not multiplexed - the RestRCI is a different module to the IoT Module doing HTTP POST config. )<br>
+<br>
+If you are using the HTTP POST interface that you need to use the Reader IOT instance web URI that is correct (the RestRCI is not)  and use this interface to get the GPIO status abut also update the GPIO as you envision.<br>
+See this link: </p>
+
+<p>https://zebradevs.github.io/rfid-ziotc-docs/other_cloud_support/HTTP_POST/testing.html#interact-with-reader</p>
+
+<p>As an example of Interacting with the HTTP POST connection / session.</p>
+
+<p>This API doc may also help:</p>
+
+<p>https://zebradevs.github.io/rfid-ziotc-docs/api_ref/local_rest/index.html#local-rest-apis</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/invoking-gpios-external-service-rci-interface-reader-fx9600%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/invoking-gpios-external-service-rci-interface-reader-fx9600%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

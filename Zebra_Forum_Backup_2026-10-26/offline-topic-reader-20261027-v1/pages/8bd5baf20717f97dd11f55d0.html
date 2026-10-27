@@ -1,0 +1,552 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>ZQ320 and BrowserPrint ?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>ZQ320 and BrowserPrint ?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zq320-and-browserprint; original snapshot: threads/00676.html; SHA-256: e4819efcb5de0e4c76dcd71f135cc0ba622cc48f83eed455f67543481229d548</small><pre id="topic">
+
+    
+        ZQ320 and BrowserPrint ?
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          3 years 10 months ago
+        
+        
+      
+        
+            
+                  
+            
+            117
+          
+                
+                  
+            
+            7
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello, good afternoon.
+Is it possible to use BrowserPrint with a ZQ320 printer?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      7 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Yes, the ZQ320 printers, which are one of the Link-OS printer models, are supported by the Browser Print. All Link-OS printer models are supported by the Browser Print.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Please download and install the Download Browser Print For OSX on your MacBook and connect the printer to the MacBook via USB, or put the printer on the same Wi-Fi network. Then run the sample script from the Download Browser Print JavaScript Library. See the Download Browser Print User Guide for more info.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Are you using the continuous media, i.e., the receipt type of media? You can manually set the label_lenght on the printer with the following SGD command.
+### Set the label length to 400 dots for example
+! U1 setvar &quot;zpl.label_length&quot; &quot;400&quot;Or, you can specify the label length in the ZPL of the label to be printed with the ^LL command. Here is the example of specifying the label length as 400 dots.
+^XA
+^LL400
+....
+^XZ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The ~HQES is a ZPL command for retrieving the printer status. It&#x27;s most likely sent to the printer when you try to get the printer status from the Browser Print API after each receipt. Since the printer&#x27;s control languages is already changed to the line_print, the printer treats the ~HQES as a text string and prints it as it is. This is why you see the ~HQES is printed between the receipts. To prevent the ~HQES from being printed on the receipt, please set the device.languages back to ZPL before calling the API for the printer&#x27;s status.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gustavo Zimbron
+          
+          
+            3 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thankyou so much, i finally got this work, now i have a little problem, every label printed with 380mm height.
+How can i fix this ?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gustavo Zimbron
+          
+          
+            3 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for answring, I&#x27;m trying to print in line mode a 20 lines receipt, but, i need to send 3 ~ 4 times, for success print (printer prints 4 same texts) 
+Additional is printing ~HQES 
+Image: https://ibb.co/rssz3Cc
+I&#x27;m using following commands before send print:
+browserPrint.write(&#x27;! U1 setvar &quot;device.languages&quot; &quot;line_print&quot;&#x27;);
+browserPrint.print(`----------------------------------------
+                 COCINA
+----------------------------------------
+FECHA: 17/mar./2021
+MESERO: Gustavo XXXXXX
+FOLIO: 37479
+HORA: 02:10 PM
+C. CONSUMO:TANARAH
+MESA: B9            CUENTA: 1
+SOCIO: 1 - Publico en General
+----------------------------------------
+           ***UNICO TIEMPO***           
+   1 POLLO KARAAGE BOTANA               
+----------------------------------------`)
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gustavo Zimbron
+          
+          
+            3 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            thank you so much! i prevent ~HQES print backing to &quot;hybrid_xml_zpl&quot; then, set line_print .
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gustavo Zimbron
+          
+          
+            3 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            is There a way to print latin characters in line_print mode?
+I&#x27;m trying to print &quot;Tardío&quot; for example, but is printing: &quot;TardÃ o&quot;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

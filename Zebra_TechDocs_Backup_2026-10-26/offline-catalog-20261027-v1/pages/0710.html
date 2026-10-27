@@ -1,0 +1,343 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Scanner Parameter Config API Guide - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/emdk-for-android/latest/guide/extended_scanner_parameters</code><br>Observed final URL: <code>https://techdocs.zebra.com/emdk-for-android/latest/guide/extended_scanner_parameters/</code><br>Raw source: <code>raw/310bf226752474167ad78726.html</code><br>Raw SHA-256: <code>a4e5e6ea410e0757965f0d656bdc4162de111b9850b88071e98832f03f4d47e6</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                           EMDK For Android 15.1
+                          
+                          
+                                EMDK For Android 4.2
+                                EMDK For Android 4.0
+                          
+                                            
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Set Up
+                            
+                        
+                        
+                            
+                                    Tutorials
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Profile Manager
+                            
+                        
+                        
+                            
+                                    FAQs
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Scanner Parameter Config API Guide
+                        
+                    OverviewSupported ParametersRemote Trigger StatusAPI UsageBundle getParams(Bundle parameters)Void setParams(Bundle parameters)Sample CodeSet Remote Trigger StatusGet Newly Connected ScannerNotes:Also See:
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Scanner Parameter Config API Guide
+                                    
+                                            EMDK For Android
+                                            15.1
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+This guide explains the use of scanner parameter configuration APIs, interfaces introduced with EMDK-A 9.1 that allow for the setting and retrieval of scanning parameters using Scanner.setParams() and Scanner.getParams() methods. Introduced with EMDK for Android 9.1, these pass-through APIs can be used to set and get scanner parameter configurations in scanning applications.
+
+
+  Zebra strongly recommends using these APIs in favor of the ScannerConfig class, which is deprecated and scheduled to be discontinued in 2022. Zebra will continue to add to the parameters supported by the new APIs.
+
+
+NOTE: This guide requires a basic knowledge of the use of EMDK-A scanning APIs. If necessary, please become familiar with the guides below before proceeding.
+
+
+EMDK Basic Scanning Tutorial
+
+EMDK Barcode Scanning API Programmer&#x27;s Guide
+
+
+
+
+Supported Parameters
+
+Remote Trigger Status
+
+
+Parameter: remote_trigger_status
+
+Description: Notifies an app through the Android KeyEvents mechanism of remote trigger presses of a connected Bluetooth scanner as KeyUp and KeyDown events. Scanner must be Enabled to receive the trigger press notifications.
+
+Supported values: 0 – Disable, 1 – Enable
+
+Supported device(s): WT6300
+
+
+
+
+
+
+API Usage
+
+Bundle getParams(Bundle parameters)
+
+Description:
+
+Gets the current value of the specified parameter available at the scanner.
+
+Input parameters:
+
+parameters: Bundle with parameter names
+
+Return type:
+
+Bundle
+
+Return value:
+
+Current value of parameters
+
+
+
+Void setParams(Bundle parameters)
+
+Description:
+
+Sets the given values to the specified parameters.
+
+Input parameters:
+
+parameters: Bundle with parameter names and values
+
+
+
+Sample Code
+
+
+
+Set Remote Trigger Status
+
+The following code segment shows how to set the value of the remote_trigger_status parameter using the scanner parameter configuration APIs.
+
+    
+    try {
+        // Get scanner config
+        Bundle requiredParams = new Bundle();
+        requiredParams.putString(&quot;remote_trigger_status&quot;,&quot;&quot;);
+        Bundle params = scanner.getParams(requiredParams);
+
+        if(params.containsKey(&quot;remote_trigger_status&quot;)) {
+            params.putString(&quot;remote_trigger_status&quot;, &quot;0&quot;);
+        }
+
+        scanner.setParams(params);
+    } catch (ScannerException e) {
+        updateStatus(e.getMessage());
+    }
+
+
+  Note: Parameter names should match those from the supported param list.
+
+
+
+
+Get Newly Connected Scanner
+
+Newly connected scanners are sometimes unavailable for selection using device identifiers, making acquisition of scanner parameters impossible. The following code segment shows how to access a newly available scanner using device enumeration.
+
+Use the BarcodeManager.getSupportedDevicesInfo() method first. Then pass one of the received ScannerInfo objects to BarcodeManager.getDevice(ScannerInfo scnInfo) as follows:
+
+    
+    List&lt;ScannerInfo&gt; supportedDevList = barcodeManager.getSupportedDevicesInfo();
+    Scanner scanner = null;
+
+    Iterator&lt;ScannerInfo&gt; it = deviceList.iterator();
+    while(it.hasNext()) {
+        ScannerInfo scnInfo = it.next();
+        if(scnInfo.getFriendlyName().toUpperCase().contains(&quot;RS6000&quot;))
+        {
+            scanner = barcodeManager.getDevice(scnInfo);
+            break;
+        }
+    }
+
+Notes:
+
+
+If a scanner is connected to a device but does not appear when using an EMDK library, it can be accessed using the device enumeration APIs. Refer to the EMDK Barcode Scanning API Programmer&#x27;s Guide and EMDK Basic Scanning Tutorial for help enumerating available scanners.
+
+If the required scanner is not available under device identifier, try filtering by friendly name or class and scanner type. Alternatively, the device index also can be passed to the getDevice method to get the scanner.
+
+
+
+
+Also See:
+
+
+EMDK Basic Scanning Tutorial
+
+EMDK Barcode Scanning API Programmer&#x27;s Guide
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

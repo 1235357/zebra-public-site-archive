@@ -1,0 +1,157 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>ZQ520 failed to connect from TC75X (but not other devices) using Zebra SDK</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>ZQ520 failed to connect from TC75X (but not other devices) using Zebra SDK</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25899; original snapshot: threads/resume-00342.html; SHA-256: 3698436dacd23a859ea86e00d477b4cdc6ce32dedb3481e8fc8a52b0dffa2c9b</small><pre id="topic">
+
+    
+        ZQ520 failed to connect from TC75X (but not other devices) using Zebra SDK
+
+
+        
+      
+                        
+                    
+            S
+          
+          System Admin
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            69
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+I&#x27;m currently developing a Xamarin.Forms application which uses the latest version of the Zebra Printer SDK (2.15.2634, from nuget.org) to print to Zebra printers over either Bluetooth or IP, and is intended primarily for use with Zebra Android devices, such as the TC75X or TC72.
+I got a report from one of my testers that printing to his new ZQ520 printer from the app on his TC75X over Bluetooth would always fail. However printing from other Zebra applications on the device succeeds, though I have no idea how they handle their printer comms (whether they use the SDK, even then they&#x27;re not Xamarin apps). I have a TC72 and ZQ520, for which the printing works perfectly fine over BT every time, using exactly the same code. The way I have invoked the Zebra SDK is simply to call `Zebra.Sdk.Printer.PrinterUtil.SendContents(connectionString, labelData);` from shared code, where the connection string is the BT mac address and the label data is the ZPL I want to print. For this particular tester, that line returns an exception, `Could not open connection Printing failed with address: XX:XX:XX:XX:XX:XX`. After executing the command, the printer lights up with a flashing BT icon as if it&#x27;s going to print, then stops. We haven&#x27;t received any reports from clients who have this version of the app in testing, also with TC75Xs and ZQ520s, so it seems particularly bizarre to me.
+I came across a similar issue in here (with a different printer/device combination) that suggested the issue could be related to Low-Energy BT. I tried changing the ZQ520 settings to Classic only, LE only, and mixed, but the issue persisted in each.
+One thing that may be of note related to this may be that we had to do a full factory reset of this TC75X before it was even capable of pairing with this ZQ520. That suggested to me that something was very wrong on the software side of the device itself, but it seemed to be fine afterwards.
+Last point to note is that both the printer and Android device are running the latest available firmware, as of today. Same goes for my setup.
+Although I am confident that this is an issue with either one of these individual devices, the combination of hardware (since printing works fine for other printers and devices I have available using the same code), or something in the SDK itself, I can&#x27;t get through to anyone at Zebra who deals with that level of support, they only see the fact that it prints fine from other Zebra apps as an indication that it must be my problem. so hopefully someone here can help!
+Thanks very much!
+Ewan
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Ewan,
+Thanks for the detailed description. First of all, the Zebra.Sdk.Printer.PrinterUtil.SendContents(connectionString, labelData) API doesn’t work for BLE. Therefore, the Bluetooth mode on ZQ520 needs to be either on Classic or Both (Mixed) mode.
+Based on the description above, if the exact same code works on TC72, but not on TC75X, then I would suspect if the&amp;nbsp;Zebra.Sdk.Printer.PrinterUtil.SendContents(connectionString, labelData) is called on a UI thread instead. Since printers are considered as slow accessories, we should not use UI thread to interact with the printers either over BT or TCP. Make sure to use a background thread to call any API provided in the Link-OS SDK. If switching to background thread doesn’t solve the issue, could you provide a test project so that we can look into further.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

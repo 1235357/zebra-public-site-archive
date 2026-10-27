@@ -1,0 +1,339 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Inferencer Options - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/ai-datacapture/latest/class/inferenceroptions/</code><br>Observed final URL: <code>https://techdocs.zebra.com/ai-datacapture/latest/class/inferenceroptions/</code><br>Raw source: <code>raw/f861444da03c2d34de4989b7.html</code><br>Raw SHA-256: <code>15022650a8dc072e3122943f9d826ca010fc0059beec2ad95a2810086f0f389e</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            AI Data Capture SDK
+                                            4.1
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Setup
+                            
+                        
+                        
+                            
+                                    Localizer
+                            
+                        
+                        
+                            
+                                    Product Recognition
+                            
+                        
+                        
+                            
+                                    Barcode Decoder
+                            
+                        
+                        
+                            
+                                    Text OCR
+                            
+                        
+                        
+                            
+                                    CameraX
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Inferencer Options
+                        
+                    OverviewInferencerOptions()runtimeProcessorOrderdefaultDimsPerformanceModeRelated Guides
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Inferencer Options
+                                    
+                                            AI Data Capture SDK
+                                            4.1
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+Inferencer Options offer settings that influence how the model processes input data to make predictions or inferences. Inferencers provide a way to efficiently execute machine learning models using available hardware.
+
+
+
+InferencerOptions()
+
+    InferencerOptions.InferencerOptions()
+
+Description: Constructs a new InferencerOptions object. Use this to create a new set of inference options for customizing how the specified model will be executed. This is often the first step before setting any specific parameters, particularly when default settings do not meet your requirements.
+
+
+
+
+
+runtimeProcessorOrder
+
+    integer InferencerOptions.runtimeProcessorOrder[]
+
+Description: Specifies the preferred processing sequence to be used for running the model. By default, the processing order is set as: DSP, CPU, GPU. The corresponding processor values are:
+
+
+0 - CPU
+
+1 - GPU
+
+2 - DSP
+
+
+Adjust this setting to optimize performance based on available the hardware. Use DSP for faster processing if available on the device, especially in environments with high-performance requirements or when running on devices with specialized processors for machine learning tasks.
+
+The AI Data Capture SDK determines the target runtime processor by following the specified runtimeProcessorOrder. It selects the first available processor in the provided order. For example, if the runtimeProcessorOrder is set to {DSP, CPU, GPU}, the SDK attempts to execute the model on DSP first. If DSP is unavailable, it falls back to CPU, and finally to GPU if neither DSP nor CPU is available.
+
+ Important Notes:
+
+
+If the runtimeProcessorOrder parameter is not specified, the default processor order {DSP, CPU, GPU} is applied.
+
+When the following methods are called, and the specified runtime processor is not available on the device, an AIVisionSDKException error is thrown with the message &quot;Given runtimes are not available:&lt;specified runtime(s)&gt;.&quot; The affected methods are:
+
+
+
+Localizer.getLocalizer( )
+
+BarcodeDecoder.getBarcodeDecoder()
+
+TextOCR.getTextOCR()
+
+FeatureExtractor.getFeatureExtractor()
+
+
+
+
+
+defaultDims
+
+    DynamicDimensions InferencerOptions.defaultDims
+
+Description: Specifies the image dimensions, height and width in pixels. This is important when processing non-standard image sizes or when consistent input dimensions are needed across different devices or use cases.
+
+Type: {width, height}
+
+Default { -1, -1} (No dimensions are enforced.)
+
+
+
+PerformanceMode
+
+    enum PerformanceMode
+
+Description: Specifies the operational performance profile for the DSP: Balanced or Burst. By default, the SDK automatically selects the performance mode based on the device platform. Apps can use this enum to switch to a preferred performance mode. 
+
+Values:
+
+
+BALANCED (0) - (Default) Optimizes for power efficiency. This mode conserves battery and is highly recommended for continuous detection and recognition use cases.
+
+BURST (1) - Maximizes processing performance at the expense of increased power consumption. BURST mode is supported on select devices only. Attempting to set this mode on unsupported devices/platforms throws an AIVisionSDKException stating that BURST mode is not supported.
+
+
+Sample Code:
+
+    // Set to balanced mode
+    textOCRSettings.detectionInferencerOptions.performanceMode = InferencerOptions.PerformanceMode.BALANCED; 
+
+    // Set to burst mode for maximum speed
+    textOCRSettings.detectionInferencerOptions.performanceMode = InferencerOptions.PerformanceMode.BURST; 
+
+
+
+Related Guides
+
+
+About
+
+Setup
+
+Localizer
+
+
+
+Models: Barcode, Product &amp; Shelf
+
+
+Product Recognition - Model: Model
+
+
+
+Feature Extractor
+
+Feature Storage
+
+Recognizer
+
+
+Barcode Decoder
+
+Text OCR
+
+
+
+Model
+
+
+CameraX
+
+
+
+EntityTrackerAnalyzer
+
+Detectors
+
+EntityViewfinder
+
+
+Image Attributes Detector
+
+Image Transform Detector
+
+Custom Detector
+
+Entity
+
+Data Types
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

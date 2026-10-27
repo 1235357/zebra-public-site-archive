@@ -1,0 +1,249 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Enterprise Home Screen Kiosk Mode Issues</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Enterprise Home Screen Kiosk Mode Issues</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/26127; original snapshot: threads/resume-00412.html; SHA-256: 28c2d288cc5d72a051e6b1825b9564890f77497fc3c97367e0c5909988095587</small><pre id="topic">
+
+    
+        Enterprise Home Screen Kiosk Mode Issues
+
+
+        
+      
+                        
+                    
+            M
+          
+          Marshall Ellis
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            107
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello all:
+We are trying to modernize a customer app that was written for an older version of Android to Android 10 on the MC9300. This app simply enables Kiosk mode in Enterprise Home Screen which we got it running by simply upgrading the target SDKs BUT the previous behavior (Per customer) was that the app would enable Kiosk mode AND would also trigger the Kiosk app (Enterprise Browser) to start which it is no longer doing???
+Source:
+public class MainActivity extends AppCompatActivity {
+    TextView mTextField;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Intent intent = new Intent(&quot;com.symbol.enterprisehomescreen.actions.MODIFY_KIOSK_MODE&quot;);
+        intent.putExtra(&quot;enable&quot;, true);
+        sendBroadcast(intent);
+        mTextField = (TextView)findViewById(R.id.textView);
+        new CountDownTimer(5000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                mTextField.setText(&quot;Setting Kiosk Mode... &quot; + millisUntilFinished / 1000);
+                //here you can have your logic to set text to edittext
+            }
+            public void onFinish() {
+                mTextField.setText(&quot;Done!&quot;);
+                finish();
+            }
+        }.start();
+    }
+Enterprise Home Screen Config:
+		H7Lx2l9zyUvVkmTZmg/N7g==
+    0
+    0
+    0
+    0
+    1
+    1
+    1
+    1
+    1
+    1
+    0
+    Toyota FVM APP
+    1
+    #fff0eff5
+    #00FFFFFF
+    0
+This looks like it should be pretty straight forward???
+Any ideas?
+Thank you
+Marshall Ellis
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+      
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Marshall Ellis
+          
+          
+            5 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Darryn:
+Yes ... running 4.0.5
+Thank you
+Marshall
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Darryn Campbell
+          
+          
+            5 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi, can you please confirm you are running Enteprise Home Screen v4.0?&amp;nbsp; Looks like that was the first version to introduce A10 support.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

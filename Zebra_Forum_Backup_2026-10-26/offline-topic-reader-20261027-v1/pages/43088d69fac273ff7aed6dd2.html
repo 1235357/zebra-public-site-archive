@@ -1,0 +1,164 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Integration between Nodejs/ElectronJs and Printer Zebra</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Integration between Nodejs/ElectronJs and Printer Zebra</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25907; original snapshot: threads/resume-00589.html; SHA-256: 6f2a6ea7993c658d449b58ab25cf8ea297471d42c87bf9b1ff68c71c3e17be50</small><pre id="topic">
+
+    
+        Integration between Nodejs/ElectronJs and Printer Zebra
+
+
+        
+      
+                        
+                    
+            E
+          
+          Ezequiel Ramirez
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            135
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi, I am trying to make an integration between a nodeJs/electronJS app and a Printer Zebra gc420t, and i don&#x27;t know how do that correctly.
+I make a label (800x350 px) on html and send to print on a label 8x2.5 cm.
+Te problem is the printer print a label correctly but it eject a blank label or a part of the blank label
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            It sounds like you need to calibrate the printer for the media. Based on the media type, the printer needs to be set to the correct media type that match with the media installed on the printer, i.e. label or journal, with the following SGD commands.
+// Check the setting for media type
+! U1 getvar &quot;media.type&quot;
+// Set to label
+! U1 setvar &quot;media.type&quot; &quot;label&quot;
+// Set to journal (a.k.a. continuous paper)
+! U1 setvar &quot;media.type&quot; &quot;journal&quot;If the media type is set to label, you also need to make sure the sense mode to bar (a black bar on the back of the paper) or gap (a gap between labels) with the following SGD commands.
+// Check the setting
+! U1 getvar &quot;media.sense_mode&quot;
+// Set the sense mode to bar, if black bars are used on the back of the paper.
+! U1 setvar &quot;media.sense_mode&quot; &quot;bar&quot;
+// Set the sense mode to gap, if white gaps are used between the labels.
+! U1 setvar &quot;media.sense_mode&quot; &quot;gap&quot;
+Once the above configuration is set, issue the following SGD to do a calibration, so that the printer knows the length of the label.
+// Calibrate the media
+~JCHope this helps.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

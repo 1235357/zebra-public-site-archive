@@ -1,0 +1,314 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Browser Print PDF</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/browser-print-pdf; snapshot threads/00201.html; SHA-256 b1d4fb07d50efe3fd68dfbbe50fc7e27e4425e58b7c2b28434656c3fdf7a4acc. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Browser Print PDF</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            K
+          </div>
+          <div class="forum-topic__author-name">Keith Hall</div>
+          <div class="forum-topic__timestamp">2 years 2 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            1109
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            4
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi,</p><p>I am trying to use BrowserPrint to remotely print API-based shipping labels to label printer, they are PDF labels, and according to docs I'm sure I read it will convert and print various formats, JPG, PNG etc and PDF.</p><p>When trying to print, am getting "Error: The format conversion attempted requires a licensing key and none was provided." </p><p>Where is this provided and how do we fix it?</p><p>I've also tried converting PDF to PNG server-side using pdftoppm but it aliases/interpolates the 2D barcode which makes it unreadable, tried various options there to, so I'm stuck with PDF format I think. The printers don't accept PDF files directly (they just lock up and refuse to print further until powered off and on!).</p><p>Also there's an existing web application that uses BrowserPrint to another Zebra printer used on the same computer (also shipping labels but a different printer and media size combination), so that is set up as a default 'printer' device... How do we set up a 2nd 'default' device (perhaps named 'printer2') that can be used by the application I'm developing, please? At the moment I've just hacked the device list to index the 2nd printer (there are 3) as a workaround but fear that could change if the order of the printer list changes.</p><p>I'm on a tight timeframe here to get a solution in the next few days so am hoping experts around here will be able to offer some pointers in the right direction, and would be most grateful!</p><p> </p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      4 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-53014" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 2 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>What's the printer model you are using? Most Zebra printer models support the PDF Direct (See <span data-original-href="https://developer.zebra.com/blog/announcement-printers-include-free-pdf-direct-link-os-63">Announcement | Printers Include Free PDF Direct with Link-OS 6.3</span> for details). With a PDF Direct enabled printer, there is no need to use the convertAndSendFile(), which is a legacy API in the Browser Print. Instead, you simply call the sendFile() API in the Browser Print, which directly sends the PDF content to the printer to print. It saves development effort and ensures the readability.</p>
+<p>The Browser Print only allows one default printer to be set. You can always call the BrowserPrint.getLocalDevices() to get the printers that are available to the local host. </p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-53047" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              K
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Keith Hall</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thanks, however PDF Direct doesn't work as the printers are older and not included on supported models list (e.g. GK420d). As mentioned sendFile() causes the printers to lock up and refuse to do anything further.</p><p>Need the PDF convert function to work as mentioned in the documentation? How do we fix this error please?</p><p>Understood on the default printer, however getLocalDevices does take some time to return, and is what has ben done but it feels like a hack. Who is actively developing BrowserPrint - can this additional saved printer idea be added as a future enhancement request please?</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-53303" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Keith,</p>
+<p>For the PDF license key used in the Browser Print for the PDF print, you can find the license key in the <span data-original-href="https://cagdemo.com/BrowserPrint/test/external/zebra_test.html">zebra_test.html</span> file on our test site - <span class="ms-outlook-linkify" data-original-href="https://cagdemo.com/BrowserPrint/test/external/zebra_test.html">https://cagdemo.com/BrowserPrint/test/external/zebra_test.html</span>. Open the Inspector of the browser and look for the feature_keys variable. You can also refer to the code in the zebra_test.html for the details on how to convert a PDF file.</p>
+<p>Regarding your feedback about expanding the default printer from one printer to a list of printers, we will pass the feedback to the engineering team to make an assessment.</p>
+<p> </p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div></div>  
+
+
+
+<article id="comment-53484" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              K
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Keith Hall</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thanks, will give this a try.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/browser-print-pdf%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/browser-print-pdf%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

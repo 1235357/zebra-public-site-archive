@@ -1,0 +1,184 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Inconsistent KeyEvent Behavior with Zebra Scanner Running Android 8.1 and Flutter</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Inconsistent KeyEvent Behavior with Zebra Scanner Running Android 8.1 and Flutter</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/inconsistent-keyevent-behavior-zebra-scanner-running-android-81-and-flutter; original snapshot: threads/00498.html; SHA-256: 0dcff26a24b101a210db7ab9e5d1235c1761a97e6efa81d2bb2a6b65b3c77c5a</small><pre id="topic">
+
+    
+        Inconsistent KeyEvent Behavior with Zebra Scanner Running Android 8.1 and Flutter
+
+
+        
+      
+                        
+                    
+            S
+          
+          sean Drury
+          3 years 1 month ago
+        
+        
+      
+        
+            
+                  
+            
+            128
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m currently developing an application using Flutter, where I need to capture barcodes using different Android scanner devices. I&#x27;ve encountered a peculiar issue with a Zebra (MC330M) scanner running on Android 8.1.
+
+Issue Description:
+
+When I first launch my application on the Zebra scanner, I get a series of KeyRepeatEvents with unknown logical keys and null character values. However, after closing and reopening the application, it starts working as expected, and I receive the correct key events.
+
+Devices Used:
+
+
+	Cipherlab scanner running Android 9 (Works as expected)
+	Zebra scanner running Android 8.1 (Problematic)
+
+
+Logs:
+
+Here are some logs from Flutter, showing the inconsistent behavior:
+
+Before closing and reopening the app:
+(KeyEvent logs indicating KeyRepeatEvents with unknown logical keys and null character values)
+
+After closing and reopening the app:
+(KeyEvent logs showing correct key events)
+
+[Logs are similar to the ones mentioned in the Stack Overflow question.]
+
+Troubleshooting:
+
+I have checked the DataWedge settings for the Zebra (MC330M) scanner, and they seem to be in line with the application&#x27;s requirements.
+
+Code:
+
+The entire codebase for this implementation can be found here.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            sean Drury
+          
+          
+            3 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+             these key presses are just from the hardware button on the scanner to trigger the scan action
+I/flutter ( 7704): KeyEvent: KeyDownEvent#9d9b8(physicalKey: PhysicalKeyboardKey#0b109(usbHidUsage: &quot;0x11000002e8&quot;, debugName: &quot;Key with ID 0x11000002e8&quot;), logicalKey: LogicalKeyboardKey#38915(keyId: &quot;0x1100002734&quot;, keyLabel: &quot;&quot;, debugName: &quot;Key with ID 0x01100002734&quot;), character: null, timeStamp: 0:00:02.104150)
+I/flutter ( 7704): KeyEvent: KeyRepeatEvent#42666(physicalKey: PhysicalKeyboardKey#0b109(usbHidUsage: &quot;0x11000002e8&quot;, debugName: &quot;Key with ID 0x11000002e8&quot;), logicalKey: LogicalKeyboardKey#38915(keyId: &quot;0x1100002734&quot;, keyLabel: &quot;&quot;, debugName: &quot;Key with ID 0x01100002734&quot;), character: null, timeStamp: 0:00:02.104651)
+I/flutter ( 7704): KeyEvent: KeyRepeatEvent#0c5de(physicalKey: PhysicalKeyboardKey#0b109(usbHidUsage: &quot;0x11000002e8&quot;, debugName: &quot;Key with ID 0x11000002e8&quot;), logicalKey: LogicalKeyboardKey#38915(keyId: &quot;0x1100002734&quot;, keyLabel: &quot;&quot;, debugName: &quot;Key with ID 0x01100002734&quot;), character: null, timeStamp: 0:00:02.104702)
+I/flutter ( 7704): KeyEvent: KeyRepeatEvent#a8c5a(physicalKey: PhysicalKeyboardKey#0b109(usbHidUsage: &quot;0x11000002e8&quot;, debugName: &quot;Key with ID 0x11000002e8&quot;), logicalKey: LogicalKeyboardKey#38915(keyId: &quot;0x1100002734&quot;, keyLabel: &quot;&quot;, debugName: &quot;Key with ID 0x01100002734&quot;), character: null, timeStamp: 0:00:02.104753)
+I/flutter ( 7704): KeyEvent: KeyRepeatEvent#a89ea(physicalKey: PhysicalKeyboardKey#0b109(usbHidUsage: &quot;0x11000002e8&quot;, debugName: &quot;Key with ID 0x11000002e8&quot;), logicalKey: LogicalKeyboardKey#38915(keyId: &quot;0x1100002734&quot;, keyLabel: &quot;&quot;, debugName: &quot;Key with ID 0x01100002734&quot;), character: null, timeStamp: 0:00:02.104803)
+I/flutter ( 7704): KeyEvent: KeyRepeatEvent#ffe04(physicalKey: PhysicalKeyboardKey#0b109(usbHidUsage: &quot;0x11000002e8&quot;, debugName: &quot;Key with ID 0x11000002e8&quot;), logicalKey: LogicalKeyboardKey#38915(keyId: &quot;0x1100002734&quot;, keyLabel: &quot;&quot;, debugName: &quot;Key with ID 0x01100002734&quot;), character: null, timeStamp: 0:00:02.104853)
+I/flutter ( 7704): KeyEvent: KeyRepeatEvent#5314e(physicalKey: PhysicalKeyboardKey#0b109(usbHidUsage: &quot;0x11000002e8&quot;, debugName: &quot;Key with ID 0x11000002e8&quot;), logicalKey: LogicalKeyboardKey#38915(keyId: &quot;0x1100002734&quot;, keyLabel: &quot;&quot;, debugName: &quot;Key with ID 0x01100002734&quot;), character: null, timeStamp: 0:00:02.104905)
+I/flutter ( 7704): KeyEvent: KeyRepeatEvent#608ed(physicalKey: PhysicalKeyboardKey#0b109(usbHidUsage: &quot;0x11000002e8&quot;, debugName: &quot;Key with ID 0x11000002e8&quot;), logicalKey: LogicalKeyboardKey#38915(keyId: &quot;0x1100002734&quot;, keyLabel: &quot;&quot;, debugName: &quot;Key with ID 0x01100002734&quot;), character: null, timeStamp: 0:00:02.104956)
+I/flutter ( 7704): KeyEvent: KeyUpEvent#b4a6c(physicalKey: PhysicalKeyboardKey#0b109(usbHidUsage: &quot;0x11000002e8&quot;, debugName: &quot;Key with ID 0x11000002e8&quot;), logicalKey: LogicalKeyboardKey#38915(keyId: &quot;0x1100002734&quot;, keyLabel: &quot;&quot;, debugName: &quot;Key with ID 0x01100002734&quot;), character: null, timeStamp: 0:00:02.104970)
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

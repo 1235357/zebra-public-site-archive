@@ -1,0 +1,648 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MIB vs SDK</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MIB vs SDK</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/mib-vs-sdk; original snapshot: threads/00534.html; SHA-256: bdf41dc54ca9c1ae8fb24def390c01ac39f11c124380141f9e59907c962e3a60</small><pre id="topic">
+
+    
+        MIB vs SDK
+
+
+        
+      
+                        
+                    
+            S
+          
+          SDK NDD
+          3 years 3 months ago
+        
+        
+      
+        
+            
+                  
+            
+            516
+          
+                
+                  
+            
+            8
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+
+We are developing a solution for managing and monitoring Zebra printers.
+
+Printers are: 
+
+
+	ZC series, ZD series, ZT series, ZQ series.
+
+
+The aim is to collect :
+
+
+	Printer information data (IP Address, Mac Address, Serial Number, Model Name, etc )
+	Supply data ( Ribbon remaining, Label remaining, etc)
+	Odometer data
+	Alerts ( Head too hot, etc )
+
+
+
+For getting this type of information, what would be your recommendation for the collecting method, regarding of what is more data-rich, via SDK or consulting in the MIB via SNMP?
+
+And there is any difference in data availability between SDK and MIB?  Or everything that is available on the SDK we would also find on the MIB?
+
+SDK used would be LINK-OS PC-.NET SDK
+
+Best regards,
+
+Elison.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      8 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            First of all, the ZC series are the card printers. The card printers are very different from the label printers. For the label printers, it is recommended to use SNMP for gathering printer info, monitoring supply and configuring the alert destination, etc., which are the primary reason to provide the SNMP/MIB in the printer&#x27;s firmware. A data collection can be done via an agent on a PC browsing the MIB periodically on the LAN, including browsing the MIB table for the supply. The SDK is designed for label printing, which requires to have a direct connection to the printer and dose not have the access to the supply tables on the printer. 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            SDK NDD
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Steven,
+
+Did you get a chance to look into my reply below?
+
+ 
+
+Best regards,
+
+Elison.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            SDK NDD
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Steven,
+
+ 
+
+Perfect, so for label printers connected via LAN/Network, SNMP/MIB is the way to go.
+
+But if we have one connected via USB, how would we browse the MIB via USB?
+
+Our goal is to have two options for monitoring, via LAN/Network and via USB, depending on how the printer is connected.
+
+In standard MFP printers of other manufacturers when the printer is connected via USB, we have experience sending PJL commands that encapsulate OID calls, so that way we can browse and retrieve data from MIB.
+
+How this is done in Zebra printers?
+
+ 
+
+About card printers, how would we do the same as the label printers?
+
+I couldn&#x27;t find the MIB for the ZC300 printer.
+
+We would like to collect the same data (printer information, supplies, odometer, alerts), via LAN/Network and USB.
+
+ 
+
+Best regards,
+
+Elison.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            If a Zebra printer is connected via USB, then we cannot browse the MIB, as browsing MIB is only applicable for network connected printer via SNMP protocol. Unlike MFP printers, Zebra label printers do not expose the MIB data via the USB connection at the moment.
+Regarding the card printers, the MIB for the card printers has not been solidified, as it has not been prioritized because the use case for card printers is limited to identity cards and smart cards, where the supply monitoring is not a priority.
+I would suggest to start the supply monitoring with the networked label printers via SNMP/MIB.
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            SDK NDD
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Steven,
+
+ 
+
+ 
+
+What alternative does this leave us for label printers via USB? In my research, I found a way to retrieve the data via SGD commands using the SGD utility class on the SDK, but I still didn&#x27;t have the opportunity to test it, is this a good way? what would you recommend?
+
+ 
+
+And the same question for Card printers, as the MIB is not solidified, what would be our alternative? we still need to monitor all the data that can possibly be obtained from these devices, for both Network and USB.
+
+ 
+
+If you can help us, we need to have the paths below clear as this is all for version 1 of our monitoring software:
+
+ 
+
+Label Printers via Network= SNMP/MIB
+
+Label Printers via USB= ???
+
+Card Printers via Network= ???
+
+Card Printers via USB = ???
+
+ 
+
+Best regards,
+
+Elison.
+
+ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Based on the current capability on the printers, here is what we can do in terms of the monitoring (status &amp; supply).
+Label Printers via Network= SNMP/MIB, Monitoring both printer status &amp; supply consumption
+Label Printers via USB= SGD, Monitoring printer status. Can access the odometers, but cannot access the supply tables (only available in MIB)
+Card Printers via Network= Monitor printer status
+Card Printers via USB = Monitor printer status
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            SDK NDD
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Steven,
+
+ 
+
+Label Printers via Network= SNMP/MIB, Monitoring both printer status &amp; supply consumption
+
+Label Printers via USB= SGD, Monitoring printer status. Can access the odometers, but cannot access the supply tables (only available in MIB)
+
+Card Printers via Network= Monitor printer status (How?)
+
+Card Printers via USB = Monitor printer status (How?)
+
+
+Only question remaining is how to &quot;monitor printer status&quot; on the card printer devices? using the SDK PC-Card-.NET methods? or maybe with some type of commands similar to SGD? What would be the best way to do that?
+
+Thank you.
+
+ 
+
+Best regards,
+
+Elison.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            For card printers, use the SDK to check the status. There are two SDKs, one for .NET and one for Java.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,186 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>How to configure a profile and receive a Datawedge broadcast receiver intent programatically in an Angular Ionic app?</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/how-configure-profile-and-receive-datawedge-broadcast-receiver-intent-programatically-angular-ionic-app; snapshot threads/00064.html; SHA-256 5c695ef8f7fcb67c67d192761aed8ec2da4f68ff83283de49b3dccee3db70c70. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">How to configure a profile and receive a Datawedge broadcast receiver intent programatically in an Angular Ionic app?</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            S
+          </div>
+          <div class="forum-topic__author-name">Sobia Shahbaz</div>
+          <div class="forum-topic__timestamp">1 year 7 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            459
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Dear Zebra Support Team,</p><p>I hope this message finds you well. I am reaching out for assistance with an issue I’m encountering while working with DataWedge on a Zebra TC26 device running Android 14 and DataWedge version 15.0.9.</p><p>Issue Description<br>I am trying to configure a profile programmatically on DataWedge and retrieve the list of DataWedge profiles using the com.symbol.datawedge.api.GET_PROFILES_LIST API.</p><p>However, despite successfully sending the intent (confirmed by the log: "Intent sent successfully to get DataWedge profiles list"), I am not receiving any response from DataWedge. The broadcast receiver does not seem to capture the intent containing the profiles list.</p><p>Current Implementation</p><p>1. Profile Creation and Configuration<br>I am dynamically creating and configuring a DataWedge profile named "ABC" using the following steps:<br>Associate the profile with my app’s package name.<br>Configure the INTENT plugin to use a custom intent action (&lt;packageName&gt;.scan) and enable BROADCAST delivery.<br>Set the Intent Category to android.intent.category.DEFAULT.</p><p>Here’s the relevant code snippet for profile configuration:</p><p><br>public profileIntentOutputConfig(profileName: string, scanIntentName: string): DataWedgeProfileConfig {<br>   return {<br>       PROFILE_NAME: profileName,<br>       PROFILE_ENABLED: 'true',<br>       CONFIG_MODE: 'UPDATE',<br>       PLUGIN_CONFIG: [<br>           {<br>               PLUGIN_NAME: 'INTENT',<br>               RESET_CONFIG: 'true',<br>               PARAM_LIST: {<br>                   intent_output_enabled: 'true',<br>                   intent_action: scanIntentName,<br>                   intent_delivery: DataWedgeIntentDelivery.BROADCAST,<br>                   intent_category: 'android.intent.category.DEFAULT',<br>               },<br>           },<br>           // Other plugin configurations...<br>       ]<br>   };<br>}</p><p>2. Sending the Intent<br>I am sending the following intent to request the profiles list:<br>const intent = {<br>   action: 'com.symbol.datawedge.api.ACTION',<br>   extras: {<br>       'com.symbol.datawedge.api.GET_PROFILES_LIST': ''<br>   }<br>};</p><p>(window as any).plugins.intentShim.sendBroadcast(intent, successCallback, errorCallback);</p><p>The log "Intent sent successfully to get DataWedge profiles list" confirms that the intent is sent successfully.</p><p>3. Broadcast Receiver<br>I have set up a broadcast receiver to listen for the response:<br>(window as any).plugins.intentShim.registerBroadcastReceiver(<br>   {<br>       filterActions: [<br>           'com.symbol.datawedge.api.RESULT_ACTION'<br>       ],<br>       filterCategories: [<br>           'android.intent.category.DEFAULT'<br>       ]<br>   },<br>   (intent) =&gt; {<br>       console.log('Received Intent:', intent);<br>       if (intent.action === 'com.symbol.datawedge.api.RESULT_ACTION') {<br>           const profilesList = intent.extras['com.symbol.datawedge.api.RESULT_GET_PROFILES_LIST'];<br>           if (profilesList) {<br>               console.log('DataWedge Profiles List:', profilesList);<br>           }<br>       }<br>   }<br>);</p><p>However, the broadcast receiver does not log any intents, and I am unable to retrieve the profiles list.</p><p>What I’ve Tried<br>Verified that the DataWedge profile is correctly configured with the INTENT plugin.<br>Ensured that the &gt;Intent Category is set to android.intent.category.DEFAULT.<br>Restarted the DataWedge service on the device.<br>Confirmed that the app has the necessary permissions:<br>RECEIVE_BOOT_COMPLETED<br>WAKE_LOCK<br>FOREGROUND_SERVICE</p><p>Request for Assistance<br>Could you please help me identify what might be wrong with my implementation? Specifically:<br><br>Are there any additional configurations required in the DataWedge profile to enable the GET_PROFILES_LIST API?<br>Is there a known issue with DataWedge version 15.0.9 or Android 14 that might be causing this behavior?<br>Are there any debugging steps I can take to further investigate why the broadcast receiver is not capturing the response?</p><p>Any guidance or suggestions would be greatly appreciated! Please let me know if you need additional information or logs from my side.</p><p>Thank you for your time and support!<br> </p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-53880" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              A
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Adam Stein</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 7 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>It looks like you've set up everything correctly, but there are a few things you can check and try to troubleshoot why you're not receiving the response from DataWedge. Let's go through them step by step:</p><h3><strong>1. Check DataWedge Logging for Errors</strong></h3><p>Since DataWedge is not sending a response, check if the GET_PROFILES_LIST intent is being processed at all:</p><ul><li>Open <strong>DataWedge</strong> &gt; <strong>Settings</strong> &gt; <strong>Enable DataWedge Logging</strong>.</li><li><p>Use <strong>ADB Logcat</strong> to check if any errors appear when you send the intent:</p><pre><code class="language-plaintext">adb logcat -s DataWedge
+</code></pre></li><li>If there’s an issue with intent handling, you should see relevant logs.</li></ul><h3><strong>2. Verify Broadcast Receiver Setup</strong></h3><p>Ensure that your <strong>broadcast receiver is actually running</strong> and listening to the correct intents. Some things to check:</p><ul><li>The response from DataWedge should contain an <strong>Intent action</strong> of <code>com.symbol.datawedge.api.RESULT_ACTION</code>. Your receiver should be listening for this.</li><li>Ensure your receiver is properly registered.</li></ul><p>Try registering it dynamically instead of using <code>intentShim</code>:</p><h4><strong>Test with Java/Kotlin</strong></h4><p>If possible, test with native Java/Kotlin code to check if the issue is with <code>intentShim</code>:</p><pre><code class="language-java">BroadcastReceiver dataWedgeReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (intent.getAction().equals("com.symbol.datawedge.api.RESULT_ACTION")) {
+            Bundle extras = intent.getExtras();
+            if (extras != null &amp;&amp; extras.containsKey("com.symbol.datawedge.api.RESULT_GET_PROFILES_LIST")) {
+                ArrayList&lt;String&gt; profiles = extras.getStringArrayList("com.symbol.datawedge.api.RESULT_GET_PROFILES_LIST");
+                Log.d("DataWedge", "Profiles: " + profiles);
+            }
+        }
+    }
+};
+
+// Register the receiver dynamically
+IntentFilter filter = new IntentFilter();
+filter.addAction("com.symbol.datawedge.api.RESULT_ACTION");
+context.registerReceiver(dataWedgeReceiver, filter);
+</code></pre><p>If this works, the issue may be related to how <code>intentShim</code> is handling broadcasts.</p><h3><strong>3. Ensure DataWedge Has Permission to Send Broadcasts</strong></h3><p>Starting from <strong>Android 12+, broadcast receivers need explicit permissions</strong> to receive implicit broadcasts.</p><p>Try adding the following to your <strong>AndroidManifest.xml</strong>:</p><pre><code class="language-xml">&lt;receiver android:name=".DataWedgeReceiver"
+    android:exported="true"&gt;
+    &lt;intent-filter&gt;
+        &lt;action android:name="com.symbol.datawedge.api.RESULT_ACTION"/&gt;
+        &lt;category android:name="android.intent.category.DEFAULT"/&gt;
+    &lt;/intent-filter&gt;
+&lt;/receiver&gt;
+</code></pre><p>Also, request <code>RECEIVE_BROADCAST</code> permission:</p><pre><code class="language-xml">&lt;uses-permission android:name="android.permission.RECEIVE_BROADCAST"/&gt;
+</code></pre><h3><strong>4. Force DataWedge to Send Result via "SEND_RESULT"</strong></h3><p>In some cases, DataWedge doesn’t send responses automatically. You can explicitly request a response using the <code>SEND_RESULT</code> flag.</p><p>Modify your <strong>GET_PROFILES_LIST</strong> request like this:</p><pre><code class="language-javascript">const intent = {
+   action: 'com.symbol.datawedge.api.ACTION',
+   extras: {
+       'com.symbol.datawedge.api.GET_PROFILES_LIST': '',
+       'SEND_RESULT': 'LAST_RESULT'
+   }
+};
+</code></pre><p>This forces DataWedge to send the response <strong>as the last known result</strong>.</p><h3><strong>5. Check If DataWedge is Running in Foreground</strong></h3><p>Sometimes, DataWedge might not process requests properly if it is inactive or crashes in the background.</p><p>Try restarting DataWedge manually:</p><ol><li>Open the <strong>DataWedge</strong> app.</li><li>Go to <strong>Settings</strong> &gt; <strong>Disable DataWedge</strong> &gt; <strong>Enable DataWedge</strong>.</li><li>Restart your app and try again.</li></ol><h3><strong>6. Verify That Other Intents Work</strong></h3><p>To determine if the issue is with <code>GET_PROFILES_LIST</code> specifically, try sending another API request, such as <code>GET_VERSION_INFO</code>:</p><pre><code class="language-javascript">const intent = {
+   action: 'com.symbol.datawedge.api.ACTION',
+   extras: {
+       'com.symbol.datawedge.api.GET_VERSION_INFO': ''
+   }
+};
+</code></pre><p>If this also doesn’t return a response, the problem may be with the broadcast setup.</p><h3><strong>7. Try Using "START_ACTIVITY" Instead of "BROADCAST"</strong></h3><p>As a last resort, switch from <strong>BROADCAST</strong> to <strong>START_ACTIVITY</strong> in your DataWedge configuration:</p><pre><code class="language-javascript">intent_delivery: 'START_ACTIVITY'
+</code></pre><p>This will open your app when a scan is received.</p><h3><strong>Next Steps</strong></h3><ul><li>✅ Enable DataWedge logging and check logs with <code>adb logcat -s DataWedge</code>.</li><li>✅ Test <strong>GET_VERSION_INFO</strong> to see if any API calls work.</li><li>✅ Register a <strong>native broadcast receiver</strong> in Java/Kotlin and check if the issue is with <code>intentShim</code>.</li><li>✅ Add the necessary <strong>permissions</strong> in <code>AndroidManifest.xml</code>.</li><li>✅ Explicitly request a response with <strong>SEND_RESULT</strong>.</li></ul><p><span data-original-href="https://www.troubleshoot.dev/">.</span> <span data-original-href="https://www.latestmerch.com/">.</span> <span data-original-href="https://www.programable.com/">.</span> <span data-original-href="https://www.attorney.work/">.</span> <span data-original-href="https://www.authenticjerseysstore.com/">.</span></p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/how-configure-profile-and-receive-datawedge-broadcast-receiver-intent-programatically-angular-ionic-app%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/how-configure-profile-and-receive-datawedge-broadcast-receiver-intent-programatically-angular-ionic-app%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

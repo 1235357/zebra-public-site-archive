@@ -1,0 +1,262 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>BrowserPrint printer &quot;dies&quot; and needs restart</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>BrowserPrint printer &quot;dies&quot; and needs restart</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/browserprint-printer-dies-and-needs-restart; original snapshot: threads/00138.html; SHA-256: dc6900a1ac118583086a58f7dd64ac26ba894eb9b1859e05b7f05c264c3db59c</small><pre id="topic">
+
+    
+        BrowserPrint printer &quot;dies&quot; and needs restart
+
+
+        
+      
+                        
+                    
+            E
+          
+          Erik Sköld
+          1 year 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            286
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello! We are experiencing big problems with a .NET application that we are using to print labels using browserprint. We shipped this application in june 2024 and it was working great in the start then we added more users and problems with printing began. What is happening is that the application works great until it suddenly stops and nothing happens when we try to print out using our application or any other browserprint application the only solution is to restart the printer after a restart it is working a while until the problem comes back. Other application are still working and we can print from these without problem but all applications that are using browserprint and printing from USB are not working. We do not really know how to get past this we are not able to replicate this in our printer but it happens &quot;out in the wild&quot;. What we have tried to do is following:Rewrote the code removing all status requests where we asked for the status of the printer etc. Removed timer from USB-port (windows can sometimes make the printer sleep)Changed timeout settings in the printer (timeout for internal wired)Changed ZPL-format from sending two zplcommands one with setting to one. We are only using USB-connected printers the models that we are using is GX420t and ZD421 user are using desktop computers with the same installation of zebra browser print. Any tips on what we can do to find out what is happening? I will attach our JS code and zpl-samples in the attached files.  
+              
+
+                    
+          
+      
+              
+ ZebraJsCode.txt
+
+              
+ ZebraZPLs.txt
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            1 year 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The log file of the Browser Print may provide you some information to debug this further. The log file can be found at C:\Users\yourUserName\AppData\Local\Zebra\BrowserPrint\log.txt.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              E
+            
+          
+                
+          
+            Erik Sköld
+          
+          
+            1 year 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I can not se any logs in the log file when this happens. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              E
+            
+          
+                
+          
+            Erik Sköld
+          
+          
+            1 year 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            UPDATEThis was a long journey but i think we finally seing something. Se below for a description. Note that Winetirem is a custom build windows applikation used for printing labels and Retikett is our web system that uses browserprint.I have now managed to at least recreate the symptoms of the issue in our development environment and have also been able to print in the production environment without restarting the printer.Recreating the Issue (Note: Only Works on ZD421)Send the following text to the printer using Zebra Setup Utilities:Open the sample application included with BrowserPrint using the following command: “chrome.exe --user-data-dir=&quot;C://Chrome dev session&quot; --disable-web-security “. Select the printer and press &quot;Send BMP.&quot;Nothing happens except for an error message in the browser console.Press &quot;Send BMP&quot; again.A label with the Zebra logo is printed.Press &quot;Send ZPL Label.&quot;A label with the text &quot;Test Label&quot; is printed.“{     &quot;name&quot;: &quot;Test&quot;,     &quot;deviceType&quot;: &quot;printer&quot;  } “The printer is now in an &quot;error state.&quot; Printing still works via Winetirem, but it does not work via BrowserPrint or by sending data through Zebra Setup Utilities. The printer&#x27;s indicator shows that it is receiving documents, but no printout is produced.This allows files to be accessed from the disk.The printer now appears to have exited the &quot;error state,&quot; and I can send print jobs to it without any issues.Solution in the Production EnvironmentAfter successfully reproducing the symptoms on our test printer, I wanted to test in the production environment as well. I visited three healthcare centers and quickly found two printers that were not working: one ZD421 and one GX420t.Tested printing in Retikett and Winetirem.Printing in Retikett did not work.Printing in Winetirem worked on the ZD421, and I could see the same indicator showing that the printer was receiving data.Connected the printer to my computer.Repeated the exact same steps as described in step 2 above.After this, the printer worked without any problems. I was able to get both the GX420t and ZD421 printers working again.ConclusionWe are able to reproduce the symptoms and restore the printer to a working state. However, we still do not know what initially causes the problem.My theory is that some system (possibly Retikett) is sending commands similar to the one I used to recreate the issue. This causes the printer to enter an &quot;error state&quot; (essentially, it is waiting for additional commands and will continue waiting indefinitely). In this state, it is not possible to send further text commands, but it is possible to send an image/file, which resets the printer and allows text-based printing again.These are my assumptions based on forum discussions, so I would love to hear your thoughts on this./Erik 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

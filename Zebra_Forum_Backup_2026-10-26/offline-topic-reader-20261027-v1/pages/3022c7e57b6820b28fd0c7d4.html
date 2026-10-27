@@ -1,0 +1,230 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Accessing fields in a template loaded from the printer on Android via java</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Accessing fields in a template loaded from the printer on Android via java</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/accessing-fields-template-loaded-printer-android-java; original snapshot: threads/00035.html; SHA-256: 9203f8d0860b7bbfc436d519aae8813dc282ea2dda53f0aa9434ef6e2979cc39</small><pre id="topic">
+
+    
+        Accessing fields in a template loaded from the printer on Android via java
+
+
+        
+      
+                        
+                    
+            T
+          
+          Tony Bass
+          1 year 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            145
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I am loading a template (zpl) from a ZQ511 mobile printer via bluetooth. I am scanning a barcode (UPC) into the first field. I need to grab that barcode and use it to get data out of a csv file (no problem doing that) and put the data into the other fields in the template for the label.My question is how do i access the fields (variables?) in the template via java?  
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              L
+            
+          
+                
+          
+            Lavakush Verma
+          
+          
+            1 year 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Dear Customer, Thank you for your inquiry about using ZPL templates with your ZQ511 mobile printer via Bluetooth. I understand you’re looking to insert data from a CSV file into specific fields of a ZPL template after scanning a barcode.Here’s a general approach to achieve this using Java on Android:Understand the Template Structure:Begin by ensuring your ZPL template includes placeholders or variables for each field where data will be inserted. These are typically denoted with identifiers or specific markers in the ZPL syntax.Load the ZPL Template:Use the appropriate method to load your ZPL template into your Android application. If you’re using Zebra’s SDK, refer to the documentation provided in Link-OS SDK.Parse and Manipulate the Template:In Java, you can access and replace the template placeholders with actual data using standard string manipulation techniques. Here is a simplified example:String zplTemplate = &quot;^XA^FO50,50^ADN,36,20^FD{{barcode}}^FS^XZ&quot;; // Example template with a placeholder
+String scannedBarcode = &quot;123456789012&quot;; // Barcode value obtained from scanning
+String updatedZpl = zplTemplate.replace(&quot;{{barcode}}&quot;, scannedBarcode);
+
+// Print a stored format with the given variables. This ZPL will store a format on a printer, for use with example1.
+     // ^XA
+     // ^DFE:FORMAT1.ZPL
+     // ^FS
+     // ^FT26,243^A0N,56,55^FH\^FN12&quot;First Name&quot;^FS
+     // ^FT26,296^A0N,56,55^FH\^FN11&quot;Last Name&quot;^FS
+     // ^FT258,73^A0N,39,38^FH\^FDVisitor^FS
+     // ^BY2,4^FT403,376^B7N,4,0,2,2,N^FH^FDSerial Number^FS
+     // ^FO5,17^GB601,379,8^FS
+     // ^XZ
+ 
+     private void example1() throws ConnectionException {
+         Connection connection = new TcpConnection(&quot;192.168.1.32&quot;, TcpConnection.DEFAULT_ZPL_TCP_PORT);
+         try {
+             connection.open();
+             ZebraPrinter printer = ZebraPrinterFactory.getInstance(connection);
+             Map&lt;Integer, String&gt; vars = new HashMap&lt;Integer, String&gt;();
+             vars.put(12, &quot;John&quot;);
+             vars.put(11, &quot;Smith&quot;);
+             printer.printStoredFormat(&quot;E:FORMAT1.ZPL&quot;, vars);
+         } catch (ConnectionException e) {
+             e.printStackTrace();
+         } catch (ZebraPrinterLanguageUnknownException e) {
+             e.printStackTrace();
+         } finally {
+             connection.close();
+         }
+     }Retrieve Data from CSV:Once the barcode is scanned, use it to query your CSV file and retrieve the necessary data. Ensure your CSV parsing logic is robust enough to handle various scenarios.Update Remaining Fields:Use similar string replacement techniques to update other fields in the template with data retrieved from the CSV file.Send the Modified Template to the Printer:After updating the template with all necessary data, send the modified ZPL to your ZQ511 printer over Bluetooth. Ensure your application has the correct Bluetooth permissions and is set up for connection.Utilize Zebra’s SDK:If available, leverage Zebra’s Link-OS SDK, as it may provide more streamlined methods for handling templates and variables. Refer to the FormatUtil Class for more advanced operations.I hope this provides a clear path forward for accessing and updating fields in your ZPL template. Please feel free to reach out if you need further clarification or assistance.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              T
+            
+          
+                
+          
+            Tony Bass
+          
+          
+            1 year 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for the reply and info,I am using code from PrintStation demo app to grab the template but i can&#x27;t seem to find where it is storing the variable data to grab the barcode when it is scanned and then load the data i get from the csv file into the remaining fields?Any ideas on where it would be?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,199 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to set Pre-Filter for my MC3300?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to set Pre-Filter for my MC3300?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25996; original snapshot: supplement/threads/f1733142b55e76613b12d662.html; SHA-256: 59d9dbbdbf85e884e936df3d24d0a64429361b712bde5e626be39d17d142bf55</small><pre id="topic">
+
+    
+        How to set Pre-Filter for my MC3300?
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            197
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  This is my current config for RFID :
+---------------------------------------------
+// set trigger mode as rfid so scanner beam will not come
+reader.Config.setTriggerMode(ENUM_TRIGGER_MODE.RFID_MODE, true);
+// set start and stop triggers
+reader.Config.setStartTrigger(triggerInfo.StartTrigger);
+reader.Config.setStopTrigger(triggerInfo.StopTrigger);
+// power levels are index based so maximum power supported get the last one
+// general
+MAX_POWER = reader.ReaderCapabilities.getTransmitPowerLevelValues().length - 1;
+// set antenna configurations
+Antennas.AntennaRfConfig config = reader.Config.Antennas.getAntennaRfConfig(1);
+config.setTransmitPowerIndex(MAX_POWER);
+config.setrfModeTableIndex(0);
+config.setTari(0);
+reader.Config.Antennas.setAntennaRfConfig(1, config);
+// Set the singulation control
+Antennas.SingulationControl s1_singulationControl = reader.Config.Antennas.getSingulationControl(1);
+s1_singulationControl.setSession(SESSION.SESSION_S0);
+s1_singulationControl.Action.setInventoryState(INVENTORY_STATE.INVENTORY_STATE_A);
+s1_singulationControl.Action.setSLFlag(SL_FLAG.SL_ALL);
+reader.Config.Antennas.setSingulationControl(1, s1_singulationControl);
+// delete any prefilters
+reader.Actions.PreFilters.deleteAll();
+------------------------------------------------------
+ With above config, my reader is scan tag successfully.
+Now I want to set pre-filter to scan only tag (GRAI96) which start with &quot;E2801160600002&quot;, others are reject by machine.
+--------------------------------------
+I&#x27;ve tried using this code :
+String tag = &quot;E2801160600002&quot;;
+// Add state aware pre-filter
+PreFilters filters = new PreFilters();
+PreFilters.PreFilter filter = filters.new PreFilter();
+filter.setAntennaID((short) 1);// Set this filter for Antenna ID 1
+// hex value tag
+filter.setTagPattern(tag);// Tags which starts with passed pattern
+filter.setTagPatternBitCount(tag.length() * 4);
+filter.setBitOffset(32); // skip PC bits (always it should be in bit length)
+filter.setMemoryBank(MEMORY_BANK.MEMORY_BANK_EPC);
+filter.setFilterAction(FILTER_ACTION.FILTER_ACTION_STATE_AWARE); // use state aware singulation
+filter.StateAwareAction.setTarget(TARGET.TARGET_INVENTORIED_STATE_S0); // inventoried flag of session S1 of matching tags to B
+filter.StateAwareAction.setStateAwareAction(STATE_AWARE_ACTION.STATE_AWARE_ACTION_NOT_INV_B); // NOT INV B OR NOT DSRT SL
+// not to select tags that match the criteria
+try {
+	reader.Actions.PreFilters.add(filter);
+} catch (InvalidUsageException e) {
+	e.printStackTrace();
+} catch (OperationFailureException e) {
+	e.printStackTrace();
+}
+------------------------------------------
+But this seem not working, reader allow every tags. I think there&#x27;s a problem in my filter config because I don&#x27;t understand about filter action or state aware, etc...
+So how I config pre-filter with above setting?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              I
+            
+          
+                
+          
+            Ian Hatton
+          
+          
+            5 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Please refer to the latest version of 123RFID Mobile posted here :&amp;nbsp;https://www.zebra.com/us/en/support-downloads/software/demo/123rfid-mobi... . The source code of this demo app includes tag pre-filtering and should provide a working reference for your own code.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

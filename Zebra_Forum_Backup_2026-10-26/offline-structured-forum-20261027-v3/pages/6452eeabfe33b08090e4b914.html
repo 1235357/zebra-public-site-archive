@@ -1,0 +1,639 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>MC3300x rfid stopped working with updated DataWedge</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/mc3300x-rfid-stopped-working-updated-datawedge; snapshot threads/00581.html; SHA-256 d453d20504b3fadb6cdf50c89bad837698873b7712bf73aa60c1766d88799e27. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">MC3300x rfid stopped working with updated DataWedge</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            H
+          </div>
+          <div class="forum-topic__author-name">Hakan Ostrom</div>
+          <div class="forum-topic__timestamp">3 years 5 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            776
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            8
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                          <span class="forum-solved">//Solved</span>
+        </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>We have developed an app for the MC3300x. The app is reading rfid through DataWedge and Android Intents (which we understood is the preferred way of doing it). It worked perfectly when we developed the app about a year ago.</p>
+
+<p>But now rfid-reading has stopped working. No new developing has been done from us on the app. It is though a slightly more updated model of the MC3300x that is now malfunctioning.<br>
+It is still on the Android 10, but the DataWedge seem to have a newer version; 8.2.16 (as we recall during development it was on v7.3).</p>
+
+<p>And also the demo app called "RWDemo" wont scan rfid tags. In contrast though the demo app called "123RFID Mobile" is reading rfid as before, but this app is (as we understood it) not using the DataWedge interface.</p>
+
+<p>Another mysterious thing is that the DataWedge profile can be configured to read traditional barcodes, and <em>this </em>is still working as usuall.</p>
+
+<p>It seems like <em>the rfid-scan through DataWedge</em> is somehow broken on updated devices. Is there some initial setup that has to be runned on new devices?</p>
+
+<p>We have followed the online guide about creating a DataWedge profile in code. But to no avail. What can we do?<br>
+<span data-original-href="https://techdocs.zebra.com/datawedge/8-2/guide/api/setconfig/">https://techdocs.zebra.com/datawedge/8-2/guide/api/setconfig/</span></p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+        <div class="forum-topic__accepted-solution">
+      <div class="forum-topic__accepted-solution-badge">
+        <span class="forum-topic__accepted-solution-label">✓ Accepted Solution</span>
+      </div>
+      <div class="forum-topic__accepted-solution-content">
+          
+
+
+
+<article id="comment-51782" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              H
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Hakan Ostrom</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>As an answer to my own question. I finally got it to work!<br>
+It was not so very well documented (or logical) but here it goes:</p>
+
+<ol>
+	<li>The DW-profile used must have the setting "Gun trigger" under "RFID Input -&gt; Configure reader settings -&gt; Hardware key" selected.<br>
+	Why is this new? I dont know. And I also do not know how to set it programmatticaly. So as for now it had to be done manually editing the profile (after it was created by our app). I tried the new <em>scanner_trigger_resource</em> introduced in DW 8.2, but it I did not seemed to get it to work.</li>
+	<li>No other apps on the device can run simultaneous that also uses the rfid-scanning (like for instance the demo app). I seems that in that case it could result in some kind of rase condition.</li>
+</ol></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+      </div>
+    </div>
+  
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      8 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-51645" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              R
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Robert Arneson</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>You can try navigating to the RFID Manager application and select the configuration wheel cog, from there make sure the Reader Power Off/On is selected to the 'ON' position. It is possible on OS update this was moved to the off position.</p>
+
+<p> </p>
+
+<p> </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-51649" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              H
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Hakan Ostrom</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thank you for quick answer. Unfortunately it did not do the trick. </p>
+
+<p>I even tried via the mentioned <em>RFID Manager</em> to reset the scanner, even to factory reset it. And restart device. But the problem persists.</p>
+
+<p>When holding down the scan-button the app though is saying "blip blip, scan is active" but no result is received (but here if I point it to a barcode the that result is received as expected).</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-51651" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              R
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Robert Arneson</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I just want to be sure that you followed the below settings?</p>
+
+<p>1. Open <strong>DataWedge</strong> settings<br>
+2. Select target profile, example <strong>Profile0</strong> (<strong>default</strong>)<br>
+3. Scroll down and enable <strong>RFID Input</strong></p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-51653" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              H
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Hakan Ostrom</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Yes, exactly as that.</p>
+
+<p>The profile for our app is called <strong>Builid</strong>. And it has both the <em>Barcode input</em> and the <em>RFID input</em>. And also the <em>Intent output</em>. All programmatically added as in the guide at <span data-original-href="https://techdocs.zebra.com/datawedge/7-3/guide/api/setconfig/">https://techdocs.zebra.com/datawedge/7-3/guide/api/setconfig/</span>. Initially when developed about a year ago this was working fine.</p>
+
+<p>And also the profile for rhe <em>RWDemo</em> standard app (with profile <em>RWDemo</em>) is active and has the <em>RFID input</em> and <em>Intent output</em>. And even that app is not reading rfid.</p>
+
+<p>Both are just sounding "blip" when trigger is pressed indicating reader activated. But no rfid-data received (with rfid-chip within 10 cm). (Although barcode-data is received, so the intent capturing code is working as intended.)</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-51668" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Hakan  - The MC33x0XR you are working with - can you check the (Settings - About Phone - Build Number) on the device?</p>
+
+<p>( My MC3330XR is currently running A11, and RWDemo does work, but I currently have the Keypad Scan button re-assigned to the Barcode Scanning and not the optional RFID scanning.)</p>
+
+<p>I may recommend using the "Restore Defaults" on Datawedge to refresh the Datawedge settings ( a normal Troubleshooting suggestion from Help Desk)  - this will only configure the three default profiles - Profile0,  DWDemo, and Launcher.  None of these will have the RFID Settings.</p>
+
+<p>If you open RWDemo - you will see that RWDemo will auto-provision a profile that configures for RWDemo use.</p>
+
+<p>I cannot speak to your "Builid" app - but if that app auto-creates a Datawedge Profile - then you can test that.  If "Builid" needs a profile created manually - you can create it and then "Backup Profile" to save this for future (Compatible Datawedge version) useages.</p>
+
+<p>Please try the above and let me know the build number - and I will see what further suggestions I may make.</p>
+
+<p> </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-51669" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p> Also make sure in the "Reader Selection" menu - that you have chosen the "Available reader" check box in the profile you are working with. </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-51782" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              H
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Hakan Ostrom</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>As an answer to my own question. I finally got it to work!<br>
+It was not so very well documented (or logical) but here it goes:</p>
+
+<ol>
+	<li>The DW-profile used must have the setting "Gun trigger" under "RFID Input -&gt; Configure reader settings -&gt; Hardware key" selected.<br>
+	Why is this new? I dont know. And I also do not know how to set it programmatticaly. So as for now it had to be done manually editing the profile (after it was created by our app). I tried the new <em>scanner_trigger_resource</em> introduced in DW 8.2, but it I did not seemed to get it to work.</li>
+	<li>No other apps on the device can run simultaneous that also uses the rfid-scanning (like for instance the demo app). I seems that in that case it could result in some kind of rase condition.</li>
+</ol></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-53236" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              T
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Thomas Feuerstein</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I found a way to setup Hardware Key, export your DataWedge profile (with the hardware key defined) and transfert-it to a computer, open the .db file with DB Browser for SQLite (https://sqlitebrowser.org/), by exploring the table you will see plenty of undocumented parameter and especially the one your are looking for :</p><p>"rfid_key_mapping" if you set this one to "1" then "Hardware key" is set to "Gun trigger"</p><p>I hope it helps !</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/mc3300x-rfid-stopped-working-updated-datawedge%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/mc3300x-rfid-stopped-working-updated-datawedge%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

@@ -1,0 +1,195 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra FX9600 Fixed Reader SDK Problem</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/zebra-fx9600-fixed-reader-sdk-problem; snapshot threads/00994.html; SHA-256 ce4e2cd85027d63242694bf6e1dd1f93502c8937a0b9f5642b5b136fe2dfa6c6. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Zebra FX9600 Fixed Reader SDK Problem</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            D
+          </div>
+          <div class="forum-topic__author-name">Damen Hui</div>
+          <div class="forum-topic__timestamp">5 years ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            251
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>We are using the C# to call the Reader API and C# codes about setting the Prefilter are extracted as below:</p>
+<p>            Symbol.RFID3.TagData[] tagData = new Symbol.RFID3.TagData[10000];<br>
+            tagData = null;<br>
+            String filter_initial = "48415345";<br>
+            if (request.RfidReader.IsConnected)<br>
+            {<br>
+                try<br>
+                {<br>
+                    request.RfidReader.Actions.PreFilters.DeleteAll();<br>
+                    request.RfidReader.Events.AttachTagDataWithReadEvent = false;<br>
+                    PreFilters.PreFilter filter = new PreFilters.PreFilter();<br>
+                    int filterMaskLength = (filter_initial.Length / 2);<br>
+                    byte[] filterMask = new byte[filterMaskLength];<br>
+                    for (int index = 0; index &amp;lt; filterMaskLength; index++)<br>
+                    {<br>
+                        filterMask[index] = byte.Parse(filter_initial.Substring(index * 2, 2),<br>
+                            System.Globalization.NumberStyles.HexNumber);<br>
+                    }<br>
+                    filter.TagPattern = filterMask;<br>
+                    filter.TagPatternBitCount = (uint)filterMaskLength * 8;</p>
+<p>                    filter.AntennaID = 0; //Set filter to all antenna<br>
+                    filter.BitOffset = 32;<br>
+                    filter.FilterAction = FILTER_ACTION.FILTER_ACTION_DEFAULT;<br>
+                    filter.StateUnawareAction.Action = STATE_UNAWARE_ACTION.STATE_UNAWARE_ACTION_UNSELECT;<br>
+                    request.RfidReader.Actions.PreFilters.Add(filter);</p>
+<p>                    m_TagTable = new Hashtable();<br>
+                    request.RfidReader.Actions.PurgeTags();<br>
+                    request.RfidReader.Actions.Inventory.Perform(null, null, null);<br>
+                    Thread.Sleep(1000);<br>
+                    request.RfidReader.Actions.Inventory.Stop();</p>
+<p>                    tagData = request.RfidReader.Actions.GetReadTags(1000);</p>
+<p>                }<br>
+                catch (OperationFailureException operationException)<br>
+                {<br>
+                    request.FixedReader.ExceptionCode = operationException.Result.ToString();<br>
+                }</p>
+<p>                catch (Exception ex)<br>
+                {<br>
+                    request.FixedReader.ExceptionCode = ex.HResult.ToString();<br>
+                    request.FixedReader.ExceptionMsg = ex.Message;</p>
+<p>                }<br>
+            }<br>
+            else<br>
+            {<br>
+                request.FixedReader.ExceptionCode = "NO_CONNECT_READER";<br>
+                request.FixedReader.ExceptionMsg = "Reader is not connected";</p>
+<p>            }</p>
+<p>The above codes can be run successfully without error but it results the reader does not filter out the tags with ID which is not started with "48415345".</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-49550" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Damen Hui</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>It seems the prefilter does not work. Anyone encountered the same probleam and care to share the resolution?</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/zebra-fx9600-fixed-reader-sdk-problem%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/zebra-fx9600-fixed-reader-sdk-problem%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

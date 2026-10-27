@@ -1,0 +1,284 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>About Data Encryption Tool - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/det/</code><br>Observed final URL: <code>https://techdocs.zebra.com/det/1-0/guide/about/</code><br>Raw source: <code>raw/47005b7ff7f8c2c1afee24ab.html</code><br>Raw SHA-256: <code>68d07162c0ccbc9dd314019b4e8993e6f37f9222e7034ae0a2b19439332dae15</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            Data Encryption Tool
+                                            1.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+                
+                    About Data Encryption Tool
+                    Used to encrypt sensitive data
+                    
+                
+                
+
+					
+						
+						    Available Downloads
+						
+
+						
+						
+						
+						
+					
+					
+						
+						    Available Source 
+						
+
+						
+						
+						
+						
+					
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+	                    
+	                        
+	                            Product
+	                            Data Encryption Tool - 1.0
+	                        
+	                    
+	                    
+	                        
+	                            Devices
+	                            
+	                            	All supported Zebra Android 11 and higher devices
+	                            	
+	                            
+	                        
+	                    
+	                    
+	                        
+	                            
+	                            Overview
+
+Data Encryption Tool (DET) is used to encrypt sensitive data passed between apps. Rather than receiving data in plain text, the data is encrypted and secure, preventing unintended recipients from accessing the sensitive data. The data encrypted by DET is decrypted by Secure Storage Manager (SSM) for use by the intended target app. SSM provides the interface for an originating app to securely deliver pre-encrypted sensitive data to a target app, providing end-to-end data encryption. 
+
+Common use cases:
+
+
+Managed Configurations – Any Zebra app that supports configuration through Managed Configurations can receive sensitive data securely through the use of Data Encryption Tool and SSM. These configurations can then be safely deployed to devices from an Enterprise Mobility Management (EMM) system. 
+
+OEMConfig – When configuring Zebra Android devices using Android Managed Configurations, sensitive data could be securely passed to OEMConfig using Data Encryption Tool.
+
+Encrypt login credentials passed from an external source to a mobile device, such as passing login credentials specific for a mobile app on the device to login to the app server.
+
+
+
+
+Requirements
+
+
+Linux, macOS or Windows host computer with Java 8 runtime environment 
+
+Bouncy Castle (an open source library) v1.69 or higher
+
+To install Bouncy Castle:
+
+
+If JAVA_HOME is set as an environment variable:
+
+
+
+Copy Bouncy Castle library .JAR file to directory: $JAVA_HOME/jre/lib/ext/
+
+Register Bouncy Castle provider. Edit file $JAVA_HOME/jre/lib/security/java.security and add the following line in the list of providers: 
+security.provider.11=org.bouncycastle.jce.provider.BouncyCastleProvider 
+
+Execute the Java commands in the command line without the need to navigate to the folder path.
+
+
+If JAVA_HOME is not set as an environment variable:
+
+
+
+Locate the Java install folder path and copy Bouncy Castle library .JAR file to the following subfolder: jre/lib/ext.
+
+Register Bouncy Castle provider. Edit file jre/lib/security/java.security and add the following line in the list of providers: 
+security.provider.11=org.bouncycastle.jce.provider.BouncyCastleProvider 
+
+To execute the Java commands, in the command line navigate to the following subfolder in the Java install folder path: jre[version]\bin, where [version] represents the Java Runtime Environment (JRE) version installed.
+
+
+Download DataSecurity-1.0.zip file. Extract DataSecurity-1.0.jar from the compressed file. This is needed to execute the commands for data encryption.
+
+
+
+
+How It Works
+
+End-to-end encryption with DET can be performed in 2 stages:
+
+
+An administrator uses DET to pre-encrypt data for delivery to an intended target app via an originating app.
+
+An originating app uses SSM to deliver decrypted data to the intended target app.
+
+
+An originating app can be coded to receive data pre-encrypted by DET. The pre-encrypted data includes the package name and signature of the intended target app, which is validated by SSM before decrypting and delivering the data to the target app. 
+
+In-depth, if the data is pre-encrypted (using DET) for delivery to a specified target app, SSM decrypts the data before delivering the data to the target app. 
+
+
+
+If the data is pre-encrypted (using DET) for delivery to a specified target app and that target app is not ready to receive the data, SSM decrypts then re-encrypts the data (using SSM encryption) to store for later delivery. The stored data is decrypted before being delivered to the target app.
+
+
+
+In either scenario, when the target app attempts to access the data, the app package name and signature are validated. This ensures that the app claiming to be the target app is verified to be a genuine instance of that target app, before the decrypted data is delivered to the target app. If the data is encrypted for delivery to a specified target app that is not the same as the app trying to access data from SSM, then SSM discards the request. 
+
+
+
+Commands
+
+To provide data in plain text to encrypt:
+
+Java -jar DataSecurity-1.0.jar -d [data] -p [package name] -s [package signature]
+
+To provide data from a file to encrypt: 
+
+Java -jar DataSecurity-1.0.jar -dp [data file path] -p [package name] -sp [package signature file path] 
+
+Options:
+
+-d : Data in plain text format to encrypt 
+-dp : File path of data in plain text format to encrypt
+-p :  Package name for the target app to receive the data
+-s :  App package signature in Base64-encoded string format 
+-sp : File path to app package signature in Base64-encoded string format
+-h : Help information
+
+
+
+Arguments
+
+Required arguments: 
+
+
+[data] or [data file path] – data in clear text, or file path of data to be encrypted 
+
+[package name] - package name of the app the data belongs to
+
+[package signature] or [package signature file path] – package signature or file path to package signature file in Base64-encoded format. To extract the signature file from the .APK, use SigTool.
+
+
+
+
+Sample Command
+
+The following sample command generates the corresponding encrypted data and key: 
+
+JAVA -jar DataSecurity-1.0.jar -d data -p com.ztestapp.clientapplication -s abcxyz123+ 
+
+Encrypted Result:
+
+---Encrypted result - start------ 
+
+UBsMqwweqDH3L00X9YXeWPtc+2AG6C+BXtqSSkuVVz8+AuHAv57icXpNfXyzHnHnq5i6VbFvk+xbDsNbmMf4CA==##AE/putuwFgUkcFG/N3c3JQyuCUbs/Sr5Y7sBQ0VkW5TLps20Pv3IaAYyAQEA7NG7StbPAXCjoPx9ENNJOipTrUcjlpCP7XpjFC1HjBzXmD1vBZTbgVhNQCFAn7AERGOq+d60YOsiHSVNTLCwIyGa4RgL+yik9dVVlgP99uTkr8qoC4JenTpuKZGKZRFN7vsi4RIpDRkSULqPedx5Wp15HJDXi3JNP4hA0Ly2praYCHhrSbwEKc56mHHIZd7RP5Hk3YiumsXJYIFgNe51IIX7IMLPe0ISpYjsDo2Jy3Gm8d+srFOFjuaISpcIkrv57FQDgHPvR4EXrNLAxE0ewGex8Q== 
+
+---Encrypted result - end------ 
+
+The encrypted result can be used to pass sensitive data to other apps through SSM.
+	                        
+	                    
+
+                    
+                
+                
+                	
+                		
+						    
+						        
+						        
+						    
+
+
+            			
+                	
+
+				                
+            
+        
+        
+
+ 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2023 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

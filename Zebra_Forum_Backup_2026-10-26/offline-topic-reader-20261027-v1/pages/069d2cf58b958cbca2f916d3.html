@@ -1,0 +1,373 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Generate and Print Barcodes API</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Generate and Print Barcodes API</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/generate-and-print-barcodes-api-0; original snapshot: threads/00659.html; SHA-256: ebabf888b5915837cc653baf1510dd9fb1bf4246097ba4eaddcf66fd7c429b23</small><pre id="topic">
+
+    
+        Generate and Print Barcodes API
+
+
+        
+      
+                        
+                    
+            J
+          
+          Jacob Kerber
+          3 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            766
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We are currently working through our process flow for the APIs but are having issues with the file upload part. We have multiple ZD611Ts and ZD411s in our environment. I have created a barcode using the designer and have the prn file. I can successfully print the prn file using Postman. We have a webapp that handles our inventory management. We want our webapp to make an API call to print a unique barcode after a part is scanned. Here are our questions:
+
+1. Can I send just the prn code, not the file? That would make it very easy for us to edit the data part of the barcode and keep the rest of the config.
+2. If not, how can I pass the response from the generate barcode api to the print file api? 
+
+Any help would be greatly appreciated!
+
+Thank you!
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The barcode generator API provides a convenient way of getting barcode images for applications that just needs the barcode images. With Zebra printers, there is no need to use the barcode generator API. The ZebraDesigner output files (*.prn) can be sent directly to any Zebra printers to print the barcode directly. The *.prn is a text file, while the output from the barcode generator API is a binary image file. It&#x27;s a lot easier to deal with the *.prn text file. I would recommend to use the *.prn file based on your use case.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jacob Kerber
+          
+          
+            3 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Steven,
+
+Thank you for your response. How can I pass that .prn file to the DocumentPrint API? Can I point the zpl parameter to a URL that contains the file? Could I pass the file text?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I am unfamiliar with the DocumentPrint API. Depending on how the printers are connected to your application. You said that your app is a webapp. The simplest way is to use the SendFileToPrinter API to send the *.prn to the printers with the cloud connection. Here is an article to get started with - Use the SendFileToPrinter API for Your Cloud-Based Printing Needs. Alternatively, the Browser Print is another way to print from a webapp.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jacob Kerber
+          
+          
+            3 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The SendFileToPrint API needs to have a file uploaded with it. Can I pint to zpl file parameter to a URL? How is the API reading the file. Is it converting it to base64? 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The SendFileToPrinter API requires a file, not URL. You already have the *.prn file for the barcode generated from the ZebraDesigner tool. You simply need to replace the text for the barcode in the *.prn file before calling the SendFileToPrinter API, so you get different barcode label each time. You cannot pass a URL to the SendFileToPrinter API, but you can pass a file object instead. The API doesn&#x27;t do a conversion to Base64. If you want print a barcode image, you need to convert the image to Base64 and wrap it with ZPL commands.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

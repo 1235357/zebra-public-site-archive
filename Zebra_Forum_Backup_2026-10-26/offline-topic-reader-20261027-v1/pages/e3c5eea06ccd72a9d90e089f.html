@@ -1,0 +1,146 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to Get TID value using Datawedge in TC53E-RFID device (For cordova application)</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to Get TID value using Datawedge in TC53E-RFID device (For cordova application)</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/how-get-tid-value-using-datawedge-tc53e-rfid-device-cordova-application; original snapshot: threads/00083.html; SHA-256: da2dab391c6f876f17c688e3e6db1e6e17506576830f133d395ac7774b044857</small><pre id="topic">
+
+    
+        How to Get TID value using Datawedge in TC53E-RFID device (For cordova application)
+
+
+        
+      
+                        
+                    
+            C
+          
+          chetan patel
+          1 year 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            205
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello TeamI read RFID tag using Datawedge, and using below pluginhttps://github.com/darryncampbell/darryncampbell-cordova-plugin-intentmy app identifier name : io.cordova.myapp97f49a//registerBroadcastReceiver functionfunction registerBroadcastReceiver() {   window.plugins.intentShim.registerBroadcastReceiver({       filterActions: [           &#x27;io.cordova.myapp97f49a.ACTION&#x27;,           &#x27;com.symbol.datawedge.api.RESULT_ACTION&#x27;       ],       filterCategories: [           &#x27;android.intent.category.DEFAULT&#x27;       ]   },       function (intent) {                     //  Broadcast received           console.log(&#x27;Received Intent: &#x27; + JSON.stringify(intent.extras));           if (intent.extras.hasOwnProperty(&#x27;RESULT_INFO&#x27;)) {               var commandResult = intent.extras.RESULT + &quot; (&quot; +                   intent.extras.COMMAND.substring(intent.extras.COMMAND.lastIndexOf(&#x27;.&#x27;) + 1, intent.extras.COMMAND.length) + &quot;)&quot;;// + JSON.stringify(intent.extras.RESULT_INFO);               commandReceived(commandResult.toLowerCase());           }           if (!intent.extras.hasOwnProperty(&#x27;RESULT_INFO&#x27;)) {               barcodeScanned(intent, new Date().toLocaleString());           }       }   );}also create profile//  Configure the created profile (associated app and keyboard plugin)   var profileConfig = {       &quot;PROFILE_NAME&quot;: &quot;ZebraCordovaDemo&quot;,       &quot;PROFILE_ENABLED&quot;: &quot;true&quot;,       &quot;CONFIG_MODE&quot;: &quot;UPDATE&quot;,       &quot;PLUGIN_CONFIG&quot;: {           &quot;PLUGIN_NAME&quot;: &quot;rfid&quot;,           &quot;RESET_CONFIG&quot;: &quot;true&quot;,           &quot;PARAM_LIST&quot;: {}       },       &quot;APP_LIST&quot;: [{           &quot;PACKAGE_NAME&quot;: &quot;io.cordova.myapp97f49a&quot;,           &quot;ACTIVITY_LIST&quot;: [&quot;*&quot;]       }]   };   sendCommand(&quot;com.symbol.datawedge.api.SET_CONFIG&quot;, profileConfig);   //  Configure the created profile (intent plugin)   var profileConfig2 = {       &quot;PROFILE_NAME&quot;: &quot;testing&quot;,       &quot;PROFILE_ENABLED&quot;: &quot;true&quot;,       &quot;CONFIG_MODE&quot;: &quot;UPDATE&quot;,       &quot;PLUGIN_CONFIG&quot;: {           &quot;PLUGIN_NAME&quot;: &quot;INTENT&quot;,           &quot;RESET_CONFIG&quot;: &quot;true&quot;,           &quot;PARAM_LIST&quot;: {               &quot;intent_output_enabled&quot;: &quot;true&quot;,               &quot;intent_action&quot;: &quot;io.cordova.myapp97f49a.ACTION&quot;,               &quot;intent_delivery&quot;: &quot;2&quot;           }       }   };   sendCommand(&quot;com.symbol.datawedge.api.SET_CONFIG&quot;, profileConfig2);I got response after Read Tag    but when i change MemoryBank value, None to TID then reader is not working and not response resultCan you please suggest, how to configure.Than you        
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              N
+            
+          
+                
+          
+            Nicola De Zolt
+          
+          
+            1 year 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi, my advice is to download the 123RFID sample app here https://www.zebra.com/us/en/support-downloads/software/rfid-software/123rfid-mobile.html?downloadId=e84c9343-b1b1-4275-b110-6a06d4e3e2b4 and look how the feature you need was developed.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

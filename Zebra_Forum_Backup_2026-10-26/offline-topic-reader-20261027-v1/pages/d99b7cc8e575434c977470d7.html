@@ -1,0 +1,350 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Programing Help, Adding a warm boot into an autorun</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Programing Help, Adding a warm boot into an autorun</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/28623; original snapshot: threads/01903.html; SHA-256: 00e2c841b0e7caeefb5b6f5bf95776ca3ba901895c7a8e42e4af8ca6eee85e2a</small><pre id="topic">
+
+    
+        Programing Help, Adding a warm boot into an autorun
+
+
+        
+      
+                        
+                    
+            G
+          
+          Gary Miller
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            18
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  On a 9094 device we use an autorun.exe to install a bunch of .cabs and .exe’s in the order specified.  In the middle of the autorun’s installation sequence, a graceful Warm Boot is needed.  The Fusion .cab used for the 9094s install provides the Warm Boot needed.  After this Warm Boot, the autorun.exe picks up where it left off and finishes the rest of the .cab installs successfully.
+ 
+For the autorun.exe we are trying to design for an MC65 device, there is no standalone Fusion install that can be leveraged for a graceful Warm Boot since latest BSP incorporates latest Fusion driver.  Therefore, I’m trying to find a way to gracefully Warm Boot MC65 in middle of autorun.exe install sequence so that the autorun.exe picks up where it left off after the Warm Boot.  We compiled the following code into an .exe and run this .exe to try and reproduce the Warm Boot provided by a Fusion .cab file.   Based on limited testing , the .exe is Warm Booting the device, however we’ve been getting lucky in that the next .cab that is designated to run after Warm Boot doesn’t finish it’s install before the Warm Boot.  Therefore, this .cab file will get installed after the Warm Boot, since it’s next in line.  The concern is that at some point, this .cab will be in the middle of its install when the .exe Warm Boot takes place, thus causing some inconsistent state.  So, we’re looking for a way to properly pass control from one .cab install to the next while incorporating a graceful Warm Boot in between.  Whatever Warm Boot is being called by the Fusion .cab file (used by 9094), it seems to meet our needs by proxy (for the 9094).  We just need something similar for the MC65.
+ 
+Module Module1
+     _
+    Private Function SetSystemPowerState(ByVal psState() As System.Char, ByVal StateFlags As System.Int32, ByVal Options As System.Int32) As Int32
+    End Function
+ 
+    Const POWER_STATE_RESET As Integer = &amp;H800000
+    Sub Main()
+ 
+        System.Threading.Thread.Sleep(3000)
+        WarmReset()
+ 
+    End Sub
+    Public Sub WarmReset()
+ 
+        SetSystemPowerState(Nothing, POWER_STATE_RESET, 0)
+ 
+    End Sub
+ 
+    Public Sub ColdReset()
+ 
+        Dim cState() As System.Char
+        cState = New String(&quot;ResetCold&quot;).ToCharArray
+        SetSystemPowerState(cState, 0, 0)
+ 
+    End Sub
+ 
+End Module
+Thoughts?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gary Miller
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Paul, That was exactly what my customer was looking for. Thanks
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            How about adding another sleep right after the WamReset()&amp;nbsp; A nice long one (maybe a minute) should ensure that your reboot happens while your reboot app is still running, so the next cab file should not start installing before the reboot.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gary Miller
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            .
+Don,
+Thanks for the response. I think that I needed to add a little more information. What my customer is trying to emulate is the “neat” way that our Fusion cabs behave. I received some information from engineering explaining how they process the flow. It is as follows:
+From engineering:
+When we release a cab file, we make a setup.dll which will do a warmboot after installation completes 
+Setup.dll&#x27;s have defined entry points 
+one of them is Install_Exit 
+which gets called upon the installation being complete. 
+From customer:
+There is no timing issue with the .cab installs. All I need is a “dummy” .cab file that does nothing else except call a graceful reboot via “install_exit”.&amp;nbsp; Alternately, if someone could provide the source code and instructions, then maybe I can build the .cab file.&amp;nbsp; I just don’t know how to program/design this type of .cab file.
+thanks
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Gary,   The attached CAB will do a warmboot - it runs an app to do this.&amp;nbsp; It displays a countdown and also has the option to allow the user to abort the reboot.&amp;nbsp; There are some registry settings that setup the warmboot app fontsize, color etc.. - these are in the CAB and get applied before the warmboot app is run.&amp;nbsp; The defaults in the cab are for WM VGA screen&amp;nbsp; I have included the source code to the setup.dll - It also has the option to call the reboot API for WM (would need to change for CE).   I use a tool called WINCE CAB Manager (by OCP software)&amp;nbsp; to create/edit CAB&#x27;s - it has a very good UI and easy to use. - Can easily add/remove setup.dll, edit registry etc..
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

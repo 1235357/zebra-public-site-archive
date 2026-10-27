@@ -1,0 +1,146 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Exception in enabling Scanner using EMDK Manager</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Exception in enabling Scanner using EMDK Manager</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/exception-enabling-scanner-using-emdk-manager; original snapshot: threads/00497.html; SHA-256: b9ce916713bf534a38720a97170da9364aadfe40b2adc2b57d0c37a7fd62a44a</small><pre id="topic">
+
+    
+        Exception in enabling Scanner using EMDK Manager
+
+
+        
+      
+                        
+                    
+            A
+          
+          Adnan Nasrullah
+          3 years 1 month ago
+        
+        
+      
+        
+            
+                  
+            
+            374
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  com.symbol.emdk.barcode.ScannerException: Cannot enable scanner and is already in use.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mike Bedford
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Only one application can have access to the scanner at a time. One of the common reasons you will get this is if another application has the scanner and either crashed or is running in the background and did not properly release the scanner when this happened. It will hold on to the scanner and you cannot enable it in your app. Make sure also it is not because your app is not releasing the scanner when it crashes or goes to the background OR that you don&#x27;t have multiple instances of your app running. Make sure you wire up to the lifecycle events for background, sleep, terminate, etc... to release the scanner. If other apps on the device did not do this, they will certainly cause problems for you.
+
+I have seen when it gets in this state, you sometimes have to restart the device as well. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,179 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Help with Non-Continuous printing and ZQ500 series</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Help with Non-Continuous printing and ZQ500 series</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/35106; original snapshot: threads/resume-00232.html; SHA-256: 6fec80a1976895856a9e522b1a549db8f3f4d046bd9de86396b581eb439adae4</small><pre id="topic">
+
+    
+        Help with Non-Continuous printing and ZQ500 series
+
+
+        
+      
+                        
+                    
+            J
+          
+          John Ferlazzo
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            479
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+ 
+I am developing an app using Xamarin.iOS and am having issues when connecting and printing non-continuous media (Continuous printing works fine).
+I am using black mark media, during calibration it successfully proceeds to the next black mark. When printing data, it does not.
+ 
+When I first connect to the printer I do the following:
+ 
+1.) Check and set the printer language to ZPL:
+- ! U1 setvar &quot;device.languages&quot; &quot;zpl&quot;
+ 
+2.) Set the Media Mode to Black Mark, Calibrate and Save (It successfully calibrates and feeds to the next black mark):
+^XA
+^MNM
+^XZ
+~JC
+^XA
+^JUS
+^XZ
+ 
+3.) Test print out (Issue - it feeds out a small amount but does not continue to the next black mark and stop):
+^XA
+^MNM
+^PW583
+^FO300,10
+^A0N,10,10
+^FDTEST PRINT
+^FS
+^XZ
+ 
+I am fairly new ZPL so hoping it is a simple solution. Let me know if any more information is required.
+Any assistance will be greatly appreciated.
+ 
+Thanks.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The ZPL in 3) look OK to me. You may want to use ! U1 getvar &quot;media&quot; to the media settings and make sure that the media.type is set as label, not journal. You can use ! U1 getvar &quot;media.type&quot; to check directly.
+In addition, we also need to make sure that the print mode is in &quot;tear off&quot; mode in order for the printer to advance the media to the beginning of the next label after each print. The SGD command is ! U1 setvar &quot;media.printmode&quot; &quot;tear off&quot;. Or we can use ZPL ^MMa, b to set the tear off mode.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,203 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Android DataWedge - How to read EPC from a tag</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/android-datawedge-how-read-epc-tag; snapshot threads/00340.html; SHA-256 23edbec3dfade5d2a79fbeadd2e3b15b7a36927e19db51b42d9262c7b3630cca. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Android DataWedge - How to read EPC from a tag</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            D
+          </div>
+          <div class="forum-topic__author-name">David Corsalini</div>
+          <div class="forum-topic__timestamp">8 months 2 weeks ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            171
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>I'm trying to read the EPC memory bank from an RFID tag, using the DataWedge intent APIs.</p><p>I'm building the intent to set the DataWedge profile like this:</p><pre><code class="language-plaintext">private fun createRfidBundle(configuration: ScannerConfiguration, volatileConfiguration: VolatileScannerConfiguration?, scanType: ScanType): Bundle {
+   val pattern = volatileConfiguration?.getRfidFilterPattern()
+   val filterMemoryBank = volatileConfiguration?.getRfidFilterMemoryBank()
+   val enabled = volatileConfiguration?.wantsRfidCapability() == true &amp;&amp; pattern.isNullOrBlank().not()
+   val session = "2"
+   val barcodeParamListBundle = bundleOf(
+      "rfid_input_enabled" to if (enabled) "true" else "false",
+      "rfid_beeper_enable" to "false",
+      "rfid_led_enable" to "false",
+      "rfid_session" to session, //Session
+      "rfid_tag_read_duration" to "100",
+      "rfid_memory_bank" to "4",//Memory bank EPC
+      "rfid_antenna_transmit_power" to "30", //5-30dB
+      "rfid_filter_duplicate_tags" to "false",
+      "rfid_inventory_state" to "2", //inventory flip ab
+      "tag_RSSI" to "true",
+
+      //TRIGGER MODE
+      "rfid_hardware_trigger_enabled" to when (scanType) {
+         ScanType.AUTO   -&gt; "false"
+         ScanType.MANUAL -&gt; "true"
+      },
+      "rfid_trigger_mode" to when (scanType) {
+         ScanType.AUTO   -&gt; "1"
+         ScanType.MANUAL -&gt; "0"
+      },
+
+      //Pre-filters
+      "rfid_pre_filter_enable" to if (pattern != null) "true" else "false",
+      "rfid_pre_filter_tag_pattern" to pattern,
+      "rfid_pre_filter_target" to session, //Session
+      "rfid_pre_filter_memory_bank" to when (filterMemoryBank) {
+         RfidMemoryBank.EPC  -&gt; "0"
+         RfidMemoryBank.TID  -&gt; "1"
+         RfidMemoryBank.USER -&gt; "2"
+         null                -&gt; "0"
+      },
+      "rfid_pre_filter_action" to "0",
+   )
+
+   return bundleOf(
+      "PLUGIN_NAME" to "RFID",
+      "RESET_CONFIG" to "false",
+      "PARAM_LIST" to barcodeParamListBundle
+   )
+}</code></pre><p>I'm expecting 2 things from this configuration:</p><ol><li>the prefilter should filter out tags where the EPC bank doesn't respect the pattern (not required, but nice to have, not the focus of this question)</li><li>that I get the content of the EPC memory bank in the Intent I receive</li></ol><p><br>Number 2 is required, and since I'm setting "rfid_memory_bank" to "4" in the bundle I'd expect it to work, but this is all I'm getting in the Intent I receive from DataWedge</p><pre><code class="language-plaintext">action: com.barcodescanner.sample.INCOMING_INTENT_ACTION
+data: null
+extras:
+ Bundle {
+  'com.motorolasolutions.emdk.datawedge.source': rfid
+  'com.symbol.datawedge.source': rfid
+  'com.symbol.datawedge.label_type': E2801190A5030065899DE5EF -25
+  'com.motorolasolutions.emdk.datawedge.data_string': E2801190A5030065899DE5EF -25
+  'com.symbol.datawedge.data_dispatch_time': 1770651167195
+  'com.symbol.datawedge.data_string': E2801190A5030065899DE5EF -25
+ }</code></pre><p>All I'm receiving is the tag ID (E2801190A5030065899DE5EF) and the RSSI (-25), no EPC in sight.</p><p>I'm testing on a MC3300x.</p><p>123RFID is able to read the EPC, so I'm guessing there is a way to read it.</p><p>How do I read the EPC memory bank using the Intent APIs?</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-54306" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              I
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Ian Hatton</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            8 months 2 weeks ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Not sure if the EPC memory is supported in the version of Datawedge on that unit - you can check by creating a new profile in the Datawedge menu , enabling the RFID plugin and then configure the reader.  If there is a Memory Bank option and you can select EPC then you can attach the profile to a test app in order to check that it works. If so, then the issue is likely to be in your DW profile creation code which would either need to be fixed or you could switch to using a pre-installed profile with the settings already configured (assuming you don't need to change the profile dynamically).</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/android-datawedge-how-read-epc-tag%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/android-datawedge-how-read-epc-tag%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

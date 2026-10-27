@@ -1,0 +1,267 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Trying to read NFC using ZC350, but getting &#x27;Unknown printer language&#x27; exception</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/trying-read-nfc-using-zc350-getting-unknown-printer-language-exception; snapshot threads/01020.html; SHA-256 7087c592b1f3a73f57d8ec038a026cbfd03eb48e3ba0f95af79b90e38a71cc52. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Trying to read NFC using ZC350, but getting 'Unknown printer language' exception</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            K
+          </div>
+          <div class="forum-topic__author-name">Kristian Thim</div>
+          <div class="forum-topic__timestamp">5 years 2 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            49
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            2
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello, I am REALLY trying to do a basic "Read tag/id and print card" proces to store the id of the NFC card, so that the ID card can be used for the door-lock system.</p>
+<p>I've concluded that NFC communication and ID card printing uses two different namespaces, or I don't see the necessary methods for doing it otherwise.<br>
+However, when I am trying to call my &lt;strong&gt;Zebra ZC350&lt;/strong&gt;, that has built-in NFC reader, I get the message: &lt;strong&gt;Zebra.Sdk.Printer.ZebraPrinterLanguageUnknownException: 'Unknown printer language'&lt;/strong&gt; when I try to get an instance of the ZebraPrinter object<br>
+&lt;code&gt;ZebraPrinter zebraPrinter = ZebraPrinterFactory.GetInstance(sczebraConnection);&lt;/code&gt;</p>
+<p>I'm guessing I am doing something I am not supposed to do, but there are not really many guidelines, or any, for using the NFC functionality on the ZC350.  What works, is that I can move the card to "SmartCardEncode". I assume that is where it can read or program the card.</p>
+<p>I've also tried using my existing connection for the ZebraCardPrinter class but then I get a mismatch in the classes.<br>
+&lt;strong&gt;cannot convert from 'Zebra.Sdk.Card.Printer.ZebraCardPrinter' to 'Zebra.Sdk.Printer.ZebraPrinter'&lt;/strong&gt;<br>
+&lt;h2&gt;Connection&lt;/h2&gt;<br>
+The connection in a TCP connection with the following details<br>
+&lt;code&gt;<br>
+ Address: "192.168.1.68"<br>
+    Connected: true<br>
+    ConnectionBuilderPrefix: "TCP"<br>
+    Manufacturer: ""<br>
+    MaxDataToWrite: 1024<br>
+    MaxTimeoutForRead: 5000<br>
+    MultipartTimeToWaitAfterSend: 250<br>
+    PortNumber: "9100"<br>
+    SimpleConnectionName: "192.168.1.68"<br>
+    TimeToWaitForMoreData: 500<br>
+    commLink: {Zebra.Sdk.Comm.Internal.ZebraNetworkSocket}<br>
+    inputStream: {System.IO.BinaryReader}<br>
+    isDeviceConnected: true<br>
+    maxTimeoutForRead: 5000<br>
+    multipartTimeToWaitAfterSend: 250<br>
+    myWriteLogStream: null<br>
+    outputStream: {System.IO.BinaryWriter}<br>
+    timeToWaitForMoreData: 500<br>
+    zebraConnector: {Zebra.Sdk.Comm.TcpZebraConnectorImpl}<br>
+    timeToWaitForMoreData: 500<br>
+&lt;/code&gt;<br>
+... Should I use USB instead?</p>
+<p>&lt;h2&gt; Full print method&lt;/h2&gt;<br>
+&lt;strong&gt;In this method I am simply removing the card instead of printing on it, for the ease of testing.&lt;/strong&gt;<br>
+&lt;code&gt;<br>
+public void Print(int copies)<br>
+        {<br>
+            try<br>
+            {<br>
+                OpenConnection();<br>
+                GetPrinter();<br>
+                SetJobSetting("smart_card.contactless", "hf");<br>
+                var jobid = zebraCardPrinter.SmartCardEncode(1);</p>
+<p>                JobStatusInfo status = zebraCardPrinter.GetJobStatus(jobid);<br>
+                var sczebraConnection = new TcpConnection(this.Connection.IPAddress, this.Connection.Port);<br>
+                sczebraConnection.Open();<br>
+                ZebraPrinter zebraPrinter = ZebraPrinterFactory.GetInstance(sczebraConnection);<br>
+                SmartcardReader reader = SmartcardReaderFactory.Create(zebraPrinter);<br>
+                var ATR = reader.GetATR();<br>
+                GraphicsInfo graphicsInfo = new GraphicsInfo();<br>
+                zebraCardPrinter.Resume();<br>
+               // var printJobNumber = zebraCardPrinter.Print(copies, graphicsInfos);<br>
+            }<br>
+            catch<br>
+            {<br>
+                throw;<br>
+            }<br>
+            finally<br>
+            {<br>
+                CloseQuietly(localConnection, zebraCardPrinter);<br>
+            }<br>
+        }<br>
+&lt;/code&gt;</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      2 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-48248" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Stephen Troup</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I think the SmartcardReaderFactory is for label printers. and I don't think the Elatec reader is accessible in the method you're attempting via ethernet. The reader has a PCSC firmware installed, atleast the ones I have access to, and you'll need to use a usb over ethernet connection that will then allow a PCSC connection to then be used to connect to the card. I use SX virtual link as a way to control this from a desktop app but there it's also possible from code in Windows.</p>
+<p>I'd suggest working with a usb connection at first to get the smartcard code working and then wrapping it in code to connect and disconnect via ethernet. The sdk for encoding over ethernet is called the EOE sdk which has the manual on how to it to establish a connection to the reader.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-50493" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              A
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Alfred Teixeira</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>The code you show is for a link-os printer; despite the printer's branding on the Support and Downloads webpage, the ZC-series card printer is not a Link-OS printer. I would recommend you download the Multi-platform SDK for this printer and review the appropriate Developer Demo for how to build/send jobs to the printer for purposes of positioning the card for smart card encoding. However, please be aware that the developer demos do not demonstrate how to communicate with the smart card reader; this is accomplished through the PC/SC API.</p>
+<p>As was posted earlier, you will need the EoE SDK as well if you wish to encode your NFC card over Ethernet. However, my recommendation is to use USB connectivity first and then move to encoding the card over an Ethernet connection.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/trying-read-nfc-using-zc350-getting-unknown-printer-language-exception%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/trying-read-nfc-using-zc350-getting-unknown-printer-language-exception%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

@@ -1,0 +1,315 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>AP-51xx Dynamic VLAN assignment though external RADIUS</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>AP-51xx Dynamic VLAN assignment though external RADIUS</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/23296; original snapshot: threads/01200.html; SHA-256: 7b133a1190c86d4c58b8f2b516d1582da088b1bdeafb3186710f9ca9cdb117f7</small><pre id="topic">
+
+    
+        AP-51xx Dynamic VLAN assignment though external RADIUS
+
+
+        
+      
+                        
+                    
+            Y
+          
+          Yoshihiro Sato
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            46
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi
+Can AP-51xx support the dynamic VLAN assignment though RADIUS authentication?If yes, which attributes are required for AP-51xx to set the expected VLAN?
+I want to assign dynamic VLANID “200”to the specific user name (device).I set the below.Tunnel-Type = VLANTunnel-Medium-Type = 802Tunnel-Private-Group-ID = test
+Is this enough to assign VLAN?
+I configured VLAN name “test” with VID “200” at AP-5131.I want AP-5131 to assign VID=200, based on the attribute “test from RADIUSI can not confirm the expected assign even if I changed the attribute to “200”.
+Has anyone configured this kind of setting? I am using now Steel Belted Radius server
+Thanks
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Sato, at Coop I run fw v. 1.3.1 on RFS7000 and v2.2.1 on AP5131.  On ACS, if I want to put a specific user on VLAN 8&amp;nbsp; -say- , I will set:  Attribute 64 (Tunnel-Type) to VLAN Attribute 65 (Tunnel-Medium-Type) to 802 Attribute 81 ( Tunnel Private Group ID) to 8  This is regardless of the name I give to VLAN 8 on AP5131.  Good luck Ugo
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              Y
+            
+          
+                
+          
+            Yoshihiro Sato
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi  Thank you for your input. I could confirm the dynamic VALN through&amp;nbsp;RADIUS authentication with Tunnel Private Group ID. I used IAS and AP-5131 V2.0.0.0-045R.  However, this seems to work if VID is set in this attribute. Setting AP-5131 VLAN name does not seem to assign VLANID. What our customer wants to assign VID=&quot;8&quot;, based on the returned attribute with &quot;VLAN8&quot;&amp;nbsp;. Anyway I could confirm dynamic VLAN at AP-51xx worked.  Thanks
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            We did it at customer Coop Italy last month.  Works like a charm.  From RFS7000, we set up an Independent WLAN (Adaptive AP) with Dynamic VLAN enabled on AP5131.  Radius Server was Cisco ACS v. 4.2 and on ACS attributes we set were the standard IETF attributes, namely 64, 65, 81.  Regards Ugo
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              Y
+            
+          
+                
+          
+            Yoshihiro Sato
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Ugo-san  Thank you for you input. So your configuration was assigning VID from Attribute with name? Also could you please tell me RFS7000 version or AAP version? I am trying V2.0.0.0-045R. (Or my setting at SBR might be incorrect.)  Thanks in advance Sato
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

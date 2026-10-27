@@ -1,0 +1,144 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Issues printing multiple copies on react native using ZPL</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Issues printing multiple copies on react native using ZPL</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/issues-printing-multiple-copies-react-native-using-zpl; original snapshot: threads/00067.html; SHA-256: c5902ce1e0d449f04926a91a0b5f43b52267d7d8defa364bb1a8fb38cce15bcc</small><pre id="topic">
+
+    
+        Issues printing multiple copies on react native using ZPL
+
+
+        
+      
+                        
+                    
+            J
+          
+          Jared Gomez
+          1 year 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            136
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I am having trouble printing multiple copies of a receipt. Currently developing on React Native using the Zebra SDK. I created this receipt on Zebra Design for Developer 3. I have attempted to use the PQ command, but there are multiple PQ commands in this receipt. Increasing the PQ count to 3 (PQ3), prints 3 copies of a particular section. For example, I increased PQ to 3 throughout the whole receipt and it prints 3 headers, 3 bodys, and 3 footers. I can&#x27;t figure out a way to print x amount of copies for the whole receipt.^FX------------------------------------^FS^FX               HEADER               ^FS^FX------------------------------------^FS﻿CT~~CD,~CC^~CT~^XA~TA000~JSN^LT0^MNN^MTD^PON^PMN^LH0,0^JMA^PR5,5~SD10^JUS^LRN^CI27^PA0,1,1,0^XZ^XA^MMT^PW822^LL368^LS0^PQ1,,,Y^XZ^FX------------------------------------^FS^FX               BODY                 ^FS^FX------------------------------------^FS﻿CT~~CD,~CC^~CT~^XA~TA000~JSN^LT0^MNN^MTD^PON^PMN^LH0,0^JMA^PR5,5~SD10^JUS^LRN^CI27^PA0,1,1,0^XZ^XA^MMT^PW822^LL589^LS0^PQ1,,,Y^XZ^FX------------------------------------^FS^FX               FOOTER               ^FS^FX------------------------------------^FS﻿CT~~CD,~CC^~CT~^XA~TA000~JSN^LT0^MNN^MTD^PON^PMN^LH0,0^JMA^PR5,5~SD10^JUS^LRN^CI27^PA0,1,1,0^XZ^XA^MMT^PW822^LL217^LS0^PQ1,,,Y^XZ
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              I
+            
+          
+                
+          
+            ISV Zebra
+          
+          
+            1 year 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            ^PQ specifies the number of labels to print. When printing receipt with template, we actually send the printer three labels, header, body and footer consecutively to form one receipt. To print three copies of the same receipt, we need to send the header, body &amp; footer three times. If you want to use ^PQ to control the copies of receipt, you need to remove the extra ^XA &amp; ^XZ in between, i.e., keep the very first ^XA and the very last ^XZ.  Put one ^PQ statement right before the ^XZ.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

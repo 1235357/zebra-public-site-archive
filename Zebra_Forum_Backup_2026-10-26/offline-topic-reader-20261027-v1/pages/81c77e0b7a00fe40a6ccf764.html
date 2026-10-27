@@ -1,0 +1,177 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Get notified when receipt has physically finished printing</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Get notified when receipt has physically finished printing</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/33294; original snapshot: threads/resume-00164.html; SHA-256: 5f4888c4ce43aa7d655811a70d7bed2aea779ffe6cf7b0d5490bf0d779547530</small><pre id="topic">
+
+    
+        Get notified when receipt has physically finished printing
+
+
+        
+      
+                        
+                    
+            D
+          
+          Del Brown
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            492
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  link-os SDK for iOS 1.4.957
+Zebra iMZ220
+ 
+I am currently using ZebraPrinterConnection&#x27;s write:error to print receipts.
+ 
+Is there a different approach that would inform me when the receipt has physically finished printing?  I think write:error just tells me if the write completed successfully and/or if it had an error.
+ 
+Thanks,
+Del
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Manuel Caicedo…
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Del, I am adding this method from our Xamarin sample code. You can review the logic behind it, and implement it directly in IOS. We do not have this code in IOS, so you will need to adapt this logic to your code. The main idea is that you can invoke this method once you sent your print job to the printer to check two statuses while the printer is printing. One is with the status.IsReadyToPrint and the second is with the status.NumberOfFormatsInReceiveBuffer. The second will tell you when the buffer is empty, it means that there is not a print-job, or the print-job just finalized. The other portions of the code are to check if printer found an error during the printing job (out of paper, etc).
+protected bool PostPrintCheckStatus(IZebraPrinter printer)
+{
+  // Check the status again to verify print happened successfully
+  IPrinterStatus status = printer.CurrentStatus;
+
+  // Wait while the printer is printing
+  while ((status.NumberOfFormatsInReceiveBuffer &gt; 0) &amp;&amp; (status.IsReadyToPrint))
+  {
+    // printing
+    status = printer.CurrentStatus;
+  }
+
+  // verify the print didn&#x27;t have errors like running out of paper
+  if (!status.IsReadyToPrint)
+  {
+    ShowErrorAlert(&quot;Error durring print. Printer is &quot; + status.Status);
+    return false;
+  }
+
+  // label(s) printed
+  return true;
+}Thanks, MC
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

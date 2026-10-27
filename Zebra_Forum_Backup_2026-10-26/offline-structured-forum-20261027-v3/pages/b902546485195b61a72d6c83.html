@@ -1,0 +1,298 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>com.symbol.emdk.emdkservice on Android 14 (TC26)</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/comsymbolemdkemdkservice-android-14-tc26; snapshot threads/00051.html; SHA-256 3048c0f39848dd13faeddc87bbdfca4c0929f25812613af3af669651f49ee342. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">com.symbol.emdk.emdkservice on Android 14 (TC26)</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            G
+          </div>
+          <div class="forum-topic__author-name">G Zondervan</div>
+          <div class="forum-topic__timestamp">1 year 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            459
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            3
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello,<br>We are using the <strong>TC26</strong> and <strong>TC27</strong>.</p><p><br>In our custom application, we utilize the EMDK and have adhered to the programming best practices outlined here: <span data-original-href="https://techdocs.zebra.com/emdk-for-android/13-0/guide/programming_practices/">Zebra EMDK Programming Practices</span>.<br>We want our application to run on both <strong>Zebra and Non-Zebra devices. </strong>So we do the check as described in the before mentiond Programming Practices.<br>However, after updating from Android 13 to Android 14, we've encountered an issue with the EMDK version check that employs the <code>PackageManager</code>. The following code snippet, recommended in the programming practices, no longer functions as expected, the EMDK service does not exist on the device:</p><pre><code class="language-plaintext">try {
+    String emdkPkgName = "com.symbol.emdk.emdkservice";
+        PackageInfo pinfo = getPackageManager().getPackageInfo(emdkPkgName, 0);
+        String emdkVersion = pinfo.versionName;
+} catch (PackageManager.NameNotFoundException e) {
+    // EMDK does not exists on the device.
+}</code></pre><p>With:</p><pre><code class="language-plaintext">&lt;uses-permission android:name="com.symbol.emdk.permission.EMDK" /&gt;
+&lt;queries&gt;
+    &lt;package android:name="com.symbol.emdk.emdkservice" /&gt;
+&lt;/queries&gt;</code></pre><p><br>Upon investigation, it appears that the <code>emdkservice</code> is no longer running on devices updated to Android 14. I've checked this with adb. </p><pre><code class="language-plaintext">adb shell dumpsys activity services com.symbol.datawedge.emdkservice </code></pre><p>Which returned 0 results on the latest Android 14 Zebra release. (it does on Android 13).<br><br>Now the Programming Practices documentation we have used and linked above have been written for Android 13.0, but these have not been changed since Android 11.0. There is no updated documentation page for Android 14.0 yet.</p><p>Could you please confirm whether this programming practice is still valid for programmatically checking the EMDK version on devices running Android 14? If not, what alternative method would you recommend for retrieving the EMDK version in this environment? I know it can be checked with the <span data-original-href="https://techdocs.zebra.com/emdk-for-android/13-0/faq/#qcanidetermineprogrammaticallywhichemdkversionisonadevice">EMDKManager</span>, but we need to do the check before this is initialized.</p><p><br>I have noticed there is a EMDKService running on Android 14: <em><strong> com.symbol.datawedge/.EMDKService</strong></em><br>Did the package name change?</p><p>Thank you for your assistance.</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      3 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-54005" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              N
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Nicola De Zolt</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi, </p>
+<ul>
+<li>The engineering team that owns EMDK confirmed the architectural change in Android 14</li>
+<li>
+<p>At the moment, a valid way to check the EMDK version is</p>
+<pre><code class="language-plaintext">        if(Build.MANUFACTURER.contains("Zebra")) {
+            Log.i(TAG, "This is a Zebra device");
+            versionManager = (VersionManager) emdkManager.getInstance(EMDKManager.FEATURE_TYPE.VERSION);
+            if (versionManager != null) {
+                String version = versionManager.getVersion(VersionManager.VERSION_TYPE.EMDK);
+                Log.i(TAG, "EMDK Version: " + version);
+            } else {
+                Log.e(TAG, "Failed to get EMDK Version");
+            }
+        }</code></pre></li>
+<li>Please elaborate more on the use case that requires to get the EMDK version before it is instantiated.</li>
+</ul>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-54013" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              G
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>G Zondervan</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Nicalo,<br>Thanks for your reply.<br> </p><blockquote><p><br>Please elaborate more on the use case that requires to get the EMDK version before it is instantiated.</p></blockquote><p>In our application, we’ve integrated built-in scanner functionality, but it also needs to run on a wide range of Android devices—not just Zebra devices. But also on Zebra devices that do not have a built-in scanner. We’re not particularly concerned about the specific EMDK version. What we do need to determine early on is:</p><ol><li>Whether the device is a Zebra device</li><li>Whether it includes a built-in scanner</li></ol><p>Based on these checks, we enable or disable certain scanner-related UI components in the app. For instance, if no scanner is present, we may display a camera view as a fallback for barcode scanning.</p><p>We used to be able to do these checks very early,  before attempting to instantiating any emdkManager classes—by checking for the presence of the <code>com.symbol.emdk.emdkservice</code> package. Unfortunately it seems that this is no longer possible on the Zebra Android 14 build. But maybe there is another way to determine of the device has a built in Scanner installed?</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-54021" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              N
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Nicola De Zolt</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi G, thanks for the details you shared above.</p>
+<ol>
+<li>The method you described did not guarantee the presence of an internal scanner anyway. Devices like EM45 only have a camera, but EMDK is still onboard.</li>
+<li>To check for a Zebra/non Zebra device, I'm confirming the  Build.MANUFACTURER option shown above.</li>
+<li>Once you are certain of the Zebra brand, one way to check for the scanner is
+<ol>
+<li>Instantiate EMDK (use emdkManager.getInstanceAsync so it works fine even at startup) </li>
+<li>Get a list of the available scanners by the barcodeManager.getSupportedDevicesInfo();  and look for "2D Barcode Imager"</li>
+</ol>
+</li>
+</ol>
+<p>Here is an example of what a TC58 would return</p>
+<p><img src="../assets/cf72abc4f609bdfcf4696a04e550e51985eb164d9fa7bdc323cd8f86aa496b32.png" data-source-url="https://developer.zebra.com/sites/default/files/inline-images/image_103.png"><br>and this is a EM45 -note the 2D Barcode Imager missing<br><img src="../assets/08f6c647c5ce9a49261c955fcee0b0a17b9ed67ded86824042839c5d6045929f.png" data-source-url="https://developer.zebra.com/sites/default/files/inline-images/image_102.png"></p>
+<p>If you are interested in the source code, let me know your github username and i will let you in here <span data-original-href="https://github.com/NDZL/EMDK-EXERCISER-2024/blob/eaebd8c8bae0c46794aa0dfff241d43781debab7/EMDK.BARCODE/src/main/java/com/zebra/emdk_barcode/ZebraEMDKBarcode.java#L50">https://github.com/NDZL/EMDK-EXERCISER-2024/blob/eaebd8c8bae0c46794aa0dfff241d43781debab7/EMDK.BARCODE/src/main/java/com/zebra/emdk_barcode/ZebraEMDKBarcode.java#L50</span> </p>
+<p> </p>
+<p>Hope this helps</p>
+<p> </p>
+<p>Nicola dzl.<br> </p>
+<p> </p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/comsymbolemdkemdkservice-android-14-tc26%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/comsymbolemdkemdkservice-android-14-tc26%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

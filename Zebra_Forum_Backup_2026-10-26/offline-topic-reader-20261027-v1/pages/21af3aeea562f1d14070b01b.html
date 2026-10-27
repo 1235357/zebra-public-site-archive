@@ -1,0 +1,213 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>SendFileToPrint API, 2 questions</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>SendFileToPrint API, 2 questions</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25595; original snapshot: threads/resume-00513.html; SHA-256: b9ef482b0060c036826ab62d2b0ec932a5a7a8099bddd78f7fb00a03e2cbe2b8</small><pre id="topic">
+
+    
+        SendFileToPrint API, 2 questions
+
+
+        
+      
+                        
+                    
+            R
+          
+          Robert Hood
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            147
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+I&#x27;m relatively new to the forum, so if these questions have already been asked, please do point me in the right direction of the answers. I have two questions regarding printing remotely with the cloud api:
+1) I saw that the old beta service was discontinued on 9/15/2020, and that the new SendFileToPrinter API is intended to take its place. The old api offered a way to get printer status, which I saw the new api seems to lack. Was it intended that this feature should be retired, or is this slated for perhaps a future release? Being able to remotely see a printer&#x27;s status is of interest to my project team.
+2) I successfully completed the zebra sandbox tutorial exercise to print the hello world label to a printer. During my attempt to replicate this for my project manager, I again successfully invoked the cloud api and received a success message, but looked down to find that I had beforehand switched off my printer. We were confused by the ostensible contradiction. When I later turned the printer on, no label was created. Should I infer that the success message indicated only that the call was successfully processed, or that the job was queued but aged out of the system before the printer&#x27;s connection was restored by turning it back on, or is this perhaps a bug in the API? The interpretation of the intended reply to my print request will have an impact on how the project takes shape around it.
+Thanks much in advance for your help!
+Robert
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            6 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Robert,
+Let me try to answer your questions.
+1. The discontinued service were built as a sandbox for the&amp;nbsp;proof-of-concept. The SendFileToPrinter API is the replacement for that as a product, however this API&amp;nbsp;is unidirectional. In the next phase, we will add a&amp;nbsp;printer status API, so the application will be able to check on the printer status.
+2. The successful message from the SendFileToPrinter API is an indication of the successful calling on this API. It doesn&#x27;t indicate whether the content has been delivered&amp;nbsp;or not. If the printer is offline when calling this API, the content will be queued until the printer&amp;nbsp;comes back online and reconnects to the cloud next time.
+If there is nothing printed out after turning on the printer, it could be that we didn&#x27;t wait&amp;nbsp;long enough&amp;nbsp;for the printer to re-connect to the Zebra Data Service cloud, or the content was ignored by the printer due to incorrect settings on the printer, or the printer is registered with a different tenant ID, etc. These are the conditions to look into to figure out why.
+Hope this helps.
+Regards,
+Steven Si
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Christine Wall
+          
+          
+            5 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            is there any update (18-Sep-2021) about an API service to know the status of a printer and its jobs?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

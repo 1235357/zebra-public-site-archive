@@ -1,0 +1,197 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Cannot run barcodesample1 on Android CAT S60</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Cannot run barcodesample1 on Android CAT S60</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/35946; original snapshot: threads/resume-00255.html; SHA-256: f8308ddc74da4f160f1ab53e459c5e52ad319ec5fde382bc5bdab4c943b48fed</small><pre id="topic">
+
+    
+        Cannot run barcodesample1 on Android CAT S60
+
+
+        
+      
+                        
+                    
+            D
+          
+          David Vuille
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            30
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+I&#x27;ve downloaded the &quot;barcodesample1&quot; from the site and imported the project on Android Studio.
+Everytime I try to run the app it crashes with a ClassNotFoundException. The thing is I don&#x27;t understand why, because we have another app using the EMDK for scanning barcodes and it works. Unfortunately I have no contacts with the person who developped it.
+I have installed the latest EMDK for Android v6.9 and did not modify the code of the sample. The code from the old app follows the guidelines provided in the Basic Scanning Tutorial from your site.
+Do you have any hints that I could check to make it work ?
+The stacktrace of the exception (note that my starting activity is WrapperActivity, I tried to use another activity to start the app and try to debug with no sucess, it is a simple view with a button that starts the MainActivity from the sample ) :
+08-21 11:18:12.790 9654-9660/? E/art: Failed sending reply to debugger: Broken pipe
+08-21 11:18:14.480 9654-9654/com.symbol.barcodesample1 E/AndroidRuntime: [ERB] Update app failure countmain
+08-21 11:18:14.480 9654-9654/com.symbol.barcodesample1 E/AndroidRuntime: [ERB] Update app failure - ActivityThread.currentProcessName : com.symbol.barcodesample1
+    [ERB] Update app failure - Process.myPid : 9654
+08-21 11:18:14.482 9654-9654/com.symbol.barcodesample1 E/AndroidRuntime: FATAL EXCEPTION: main
+    Process: com.symbol.barcodesample1, PID: 9654
+    java.lang.NoClassDefFoundError: Failed resolution of: Lcom/symbol/barcodesample1/MainActivity;
+        at com.symbol.barcodesample1.WrapperActivity$1.onClick(WrapperActivity.java:23)
+        at android.view.View.performClick(View.java:5205)
+        at android.view.View$PerformClick.run(View.java:21164)
+        at android.os.Handler.handleCallback(Handler.java:739)
+        at android.os.Handler.dispatchMessage(Handler.java:95)
+        at android.os.Looper.loop(Looper.java:148)
+        at android.app.ActivityThread.main(ActivityThread.java:5417)
+        at java.lang.reflect.Method.invoke(Native Method)
+        at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:726)
+        at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:616)
+     Caused by: java.lang.ClassNotFoundException: Didn&#x27;t find class &quot;com.symbol.barcodesample1.MainActivity&quot; on path: DexPathList[[zip file &quot;/data/app/com.symbol.barcodesample1-1/base.apk&quot;],nativeLibraryDirectories=[/data/app/com.symbol.barcodesample1-1/lib/arm64, /vendor/lib64, /system/lib64]]
+        at dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:56)
+        at java.lang.ClassLoader.loadClass(ClassLoader.java:511)
+        at java.lang.ClassLoader.loadClass(ClassLoader.java:469)
+        at com.symbol.barcodesample1.WrapperActivity$1.onClick(WrapperActivity.java:23)
+        at android.view.View.performClick(View.java:5205)
+        at android.view.View$PerformClick.run(View.java:21164)
+        at android.os.Handler.handleCallback(Handler.java:739)
+        at android.os.Handler.dispatchMessage(Handler.java:95)
+        at android.os.Looper.loop(Looper.java:148)
+        at android.app.ActivityThread.main(ActivityThread.java:5417)
+        at java.lang.reflect.Method.invoke(Native Method)
+        at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:726)
+        at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:616)
+    Suppressed: java.lang.NoClassDefFoundError: com.symbol.barcodesample1.MainActivity
+        at dalvik.system.DexFile.defineClassNative(Native Method)
+        at dalvik.system.DexFile.defineClass(DexFile.java:226)
+        at dalvik.system.DexFile.loadClassBinaryName(DexFile.java:219)
+        at dalvik.system.DexPathList.findClass(DexPathList.java:338)
+        at dalvik.system.BaseDexClassLoader.findClass(BaseDexClassLoader.java:54)
+        ... 12 more
+    Suppressed: java.lang.ClassNotFoundException: com.symbol.barcodesample1.MainActivity
+        at java.lang.Class.classForName(Native Method)
+        at java.lang.BootClassLoader.findClass(ClassLoader.java:781)
+        at java.lang.BootClassLoader.loadClass(ClassLoader.java:841)
+        at java.lang.ClassLoader.loadClass(ClassLoader.java:504)
+        ... 11 more
+     Caused by: java.lang.NoClassDefFoundError: Class not found using the boot class loader; no stack trace available
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi, the EMDK will only work on Zebra mobile devices, that is why you are seeing the class not found error.&amp;nbsp; You will need to use an SDK for the CAT S60 or if you want to discuss sales then please see this link: Contact Zebra | Zebra Technologies .
+Thanks.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

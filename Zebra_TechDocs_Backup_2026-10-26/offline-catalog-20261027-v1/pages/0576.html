@@ -1,0 +1,290 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>DataWedge APIs - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/datawedge/15-0/guide/api</code><br>Observed final URL: <code>https://techdocs.zebra.com/datawedge/15-0/guide/api/</code><br>Raw source: <code>raw/ed58fb99e1a9510be4f652ba.html</code><br>Raw SHA-256: <code>a693b81504b9b20b9257b5e02d3cf808755042df4fffc4840a0b6621ba02327d</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs Home
+                        
+                                            DataWedge
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Get Started
+                            
+                        
+                        
+                            
+                                    Profiles
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Feature Matrix
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            US - English
+                          
+                          
+                                 CN - 普通话
+                                 JP - 日本語
+                          
+                                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+
+    
+        
+
+
+
+
+    
+        DataWedge APIs
+        
+        DataWedge APIs operate through Android intents, serving as specific commands that enable other applications to control data capture and manaage DataWedge profiles and settings without needing direct access the DataWedge UI or underlying hardware. Intents are implemented as extras within an action intent, allowing multiple API calls to be sent via a single intent action. 
+
+Key Resources for developers:
+
+
+For detailed instructions on sending intents and receiving results, consult the Using DataWedge APIs guide.
+
+For guidance and best practices on using DataWedge Intent APIs, see the Programmer&#x27;s guide.
+
+The Developer Guides offer in-depth guidance on use of specific DataWedge features, such as Barcode Highlighting, Content Providers, Document Capture, and Workflow Input.
+
+To enhance security, restricted DataWedge API usage to approved apps only.
+
+Developer Articles and Blogs provide additional resources for DataWedge application development.
+
+Explore Samples for sample apps and source code.
+
+Visit the Frequently Asked Questions (FAQ) section for solutions to common issues and inquiries related to DataWedge. 
+
+
+Note: Starting with Android 14, there is a delay of approximately 500 milliseconds in receiving intents sent to DataWedge, due to changes in Android 14. For faster intent delivery, use the sendOrderedBroadcast() API instead of sendBroadcast().
+
+
+   If intents are sent to DataWedge before it is ready, such as immediately after device reboot, they may not be processed. To avoid this, Zebra recommends using the Get DataWedge Status API to poll DataWedge status until a response is received, indicating that DataWedge is ready.
+
+
+DataWedge APIs are categorized into 4 types:
+
+
+Configuration APIs - related to actions taken on configurations
+
+Notification APIs - related to retrieving status for scanner, profile, or configuration
+
+Query API - retrieve information or enumerate scanners
+
+Runtime APIs - related to functionality that can be changed at runtime
+
+
+
+Configuration APIs:
+        Clone Profile - Create a copy of an existing DataWedge Profile including all settings.
+        Create Profile - Create a new Profile without setting configurations.
+        Delete Profile - Delete an existing Profile.
+        Export Config - Export a Profile and/or Config file, which can contain multiple Profiles.
+        Import Config - Import a Profile and/or Config file, which can contain multiple Profiles.
+        Rename Profile - Rename an existing Profile.
+        Restore Config - Reset all user-configured settings and restore DataWedge to the factory-default settings.
+        Set Config - Create, update or replace a Profile and its settings.
+        Set Disabled App List - Add, remove or update an app/activity from the list which prevents the use of DataWedge.
+        Set Ignore Disabled Profiles - Prevent switching to a Profile that is disabled, including Profile0.
+
+
+Notification APIs:
+
+       Register/Unregister for Notifications enables apps to register or unregister to receive notifications of status changes related to:
+
+
+Profile switching
+
+Scanner status
+
+Configuration
+
+Workflow status - also applies to Barcode Highlighting
+
+
+
+Query APIs:
+        Enumerate Scanners - Generate an index of scanners available on the device.
+        Get Active Profile - Get the name of the profile currently in use by DataWedge.
+        Get Config - Gets the PARAM_LIST settings in the specified Profile, returned as a set of value pairs or a Plug-in config bundle. 
+        Get DataWedge Status - Return the DataWedge status, enabled or disabled.
+        Get Disabled App List - Return a list of apps and activities that are blocked from using DataWedge.
+        Get Ignore Disabled Profiles - Return the status of the &quot;Ignore Disabled Profiles&quot; parameter. If true, DataWedge cannot switch to any profile that is not enabled.
+        Get Profiles List - Return the list of DataWedge profiles.
+        Get Scanner Status - Return the status of the scanner currently selected as the default.
+        Get Version Info - Return the current version of DataWedge and Scanner Framework/Decoder library installed on the device.
+        Get Weight &amp; Set Scale to Zero - Retrieve the weight of the object on the connected scale, then reset the scale to zero to ready it for weighing the next object.
+
+
+Runtime APIs:
+        Enable/Disable DataWedge - Enable/disable DataWedge on the device.
+        Enable/Disable Scanner Input Plug-in - Enable/Disable the Scanner Input Plug-in in use by the current active profile, which effectively disables scanning.
+        Enumerate Triggers - Retrieve supported trigger list of a device.
+        Enumerate Workflows - Retrieve supported workflows on a device.
+        Notify (Bluetooth Scanner Notifications) - Play notification sound(s) and/or display a colored LED after a scan from a connected Bluetooth scanner with RSM (Remote Scanner Management).
+        Custom Bluetooth Scanner Notifications - Customize notifications for scans from a Bluetooth scanner by setting specific LED patterns, beep sounds, and vibration sequences.
+        Request Frame - Request a single image frame during an Imager Frames Streaming workflow.
+        Reset Default Profile - Reset the default profile to Profile0, the built-in profile used with unassociated apps.
+        Set Default Profile - Set the specified profile as the default profile.
+        Soft RFID Trigger - Start, stop or toggle a software RFID trigger. 
+        Soft Scan Trigger - Start, stop or toggle a software scanning trigger. 
+        Soft Trigger - Start, stop or toggle a software trigger for voice input. 
+        Switch Data Capture - Switch between barcode scanning and barcode highlighting, or switch between Workflow Input options at runtime. 
+        Switch Scanner - Switch to a specific scanner at runtime to enable an optimal scanning device for the app, requirement or situation. 
+        Switch Scanner Params - Temporarily update the settings of the active profile during runtime by passing one or more barcode, scanner and/or reader parameters as intent extras.
+        Switch to Profile - Change the app association to the specified profile.
+
+    
+
+
+
+    
+        
+                    
+                        
+                            Other Resources
+                        
+                     
+                        
+                            
+                                Getting Started
+                            
+                            
+                                Using Intents
+                            
+                            
+                                Using DataWedge APIs
+                            
+                            
+                                Using Intent Result Codes
+                            
+                            
+                                DataWedge API Benefits &amp; Usage (article)
+                            
+                            
+                                DataWedge Programmer&#x27;s Guide
+                            
+                            
+                                DataWedge Intent Demo App
+                            
+                            
+                                Application Development Guide
+                            
+                            
+                                Control Access to DataWedge Intent APIs
+                            
+                        
+                
+    
+
+  
+        
+    
+
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+      
+
+
+ --&gt;
+
+
+
+       
+ 
+
+       
+   
+     
+       
+     
+
+    Back to Top</pre></body></html>

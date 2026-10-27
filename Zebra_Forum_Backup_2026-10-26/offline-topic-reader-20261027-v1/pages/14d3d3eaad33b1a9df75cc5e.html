@@ -1,0 +1,256 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra TC56 Keep Reinit every couple Scan EMDK or DAtaWedge</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Zebra TC56 Keep Reinit every couple Scan EMDK or DAtaWedge</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25902; original snapshot: threads/resume-00584.html; SHA-256: 79338ff6cf1deb510d541bb487b30dece04581aa81dcbb802372568e8bb2a944</small><pre id="topic">
+
+    
+        Zebra TC56 Keep Reinit every couple Scan EMDK or DAtaWedge
+
+
+        
+      
+                        
+                    
+            H
+          
+          Hiran Coello
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            53
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Today, i created a simple inventory transfer location app in VS2019 with Xamarin forms (4.8Version), which it will be used in a Zebra TC56 Nougat, it is just one screen with couple of labels (Location to transfer, Serial to transfer, Item Code of serial, description of the item and the Qty of object ) the user scan the barcode of the location to transfer the material, and the serial, both using the Zebra barcode reader (Try both EMDK --4.0 and 6.0-- and Datawedge), the first is the location, it is get on the Android (EMDK) and send to the Xamarin using the messagingcenter, if the barcode start with 1L we remove the 1L and assign the remaining to the location label (We don&#x27;t want user type it). then the user will start scanning the serials of the items to transfer, in here if the scanned data start with &quot;S&quot; it sent to our DB to retrieve the data of the serial through a web service, using the HTTPClient Post. the information is retrieved the data is assigned to the labels ItemCode, Description, and Qty, if the current location of the object is not the recently scanned location it call another web service passing the new location and the serial.
+The app works, but after some scanning the app re-init (On-Create() Android runs again), i observe this on the Debug mode (Hook the TC56 to the computer, i put a stop on the call to the Enable of the Barcode reader, and see that the debug stop again on this section) and also on release mode (The App has a counter of how many serials has been transfer, but when the app re-init all labels get blank and the counter show 0).
+I don&#x27;t have any clue about what is causing the app to re-init, all functions have Try-Catch.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hiran Coello
+          
+          
+            5 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I come with good news, after many trials we ware able to resolve the issue upgrading the TC56 from 7 to 8.1.   with that the gun start working as expected, i also test the test program uploaded for this case and works.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Darryn Campbell
+          
+          
+            5 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I have a TC52 here, I can run your code and have put a break point in onCreate().&amp;nbsp; I can scan barcodes but I get a red message saying the URI format could not be determined (no problem, perhaps I am not enrolled in your system).&amp;nbsp; But I can continually scan barcodes without the onCreate() break point ever being hit again after the initial launch, so I am unable to reproduce the issue I&#x27;m afraid.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Darryn Campbell
+          
+          
+            5 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            onCreate() should not be getting called repeatedly.&amp;nbsp; My first question would be whether this happens whether you remove the EMDK library from your application but you say you have tested with DataWedge and still see this behaviour.&amp;nbsp; The recommendation is to use DataWedge for scanning as I am sure you have seen - how do you have DataWedge configured and what is the launchMode of your app?&amp;nbsp;&amp;nbsp;https://developer.android.com/guide/topics/manifest/activity-element&amp;nb…;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

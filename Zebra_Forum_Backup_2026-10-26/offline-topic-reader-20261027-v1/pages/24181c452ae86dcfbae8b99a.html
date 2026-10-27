@@ -1,0 +1,251 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra FX7500/9600 Write Error Codes</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Zebra FX7500/9600 Write Error Codes</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zebra-fx75009600-write-error-codes-0; original snapshot: threads/00239.html; SHA-256: 09e351bafe33c652070765a22514272f3b7133737296ab285bb1093a5fd372ab</small><pre id="topic">
+
+    
+        Zebra FX7500/9600 Write Error Codes
+
+
+        
+      
+                        
+                    
+            T
+          
+          Trooper Murphy
+          2 years 3 months ago
+        
+        
+      
+        
+            
+                  
+            
+            187
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,I have two FX7500 readers and one FX9600 reader, with firmware versions 2.7.19 (FX7500), 3.21.21 (FX7500), and 3.9.17 (FX9600). When using Zebra&#x27;s Windows Java SDK for Fixed Readers, I encounter different error messages when writing to tags. Specifically, with the FX7500 on firmware 2.7.19, I receive &quot;C1G2WriteOpSpecResult failed: Tag Memory Locked&quot; when writing to the EPC memory bank if it&#x27;s locked. However, on the FX7500 and FX9600 with newer firmware, the error message is &quot;C1G2WriteOpSpecResult failed: The Tag does not support error-specific codes.&quot;My use case requires specific error codes when writing to tags. I understand that downgrading the FX9600 might not be an option, as Zebra states that readers with firmware above 3.21.x cannot downgrade below that point. Is there a way to retrieve error-specific codes using Zebra&#x27;s SDK, or is there a method to downgrade the newer firmware?Here is my code for writing to tags. The line e2.getVendorMessage() prints the error code:checkPermalockingButton.addActionListener(new ActionListener() {   @Override   public void actionPerformed(ActionEvent e) {       antennaConfig.setTransmitPowerIndex((short) 200);       String columnName = &quot;PermaLock&quot;;       int columnIndex = tableModel.findColumn(columnName);       if (columnIndex == -1) {           tableModel.addColumn(columnName);       }       int rowCount = tableModel.getRowCount();       for (int i = 0; i &lt; rowCount; i++) {           String currlockStatus = (String) tableModel.getValueAt(i, 2);           if (currlockStatus == null) {               currlockStatus = &quot;null&quot;;           }           if (!currlockStatus.equals(&quot;Locked&quot;) &amp;&amp; !currlockStatus.equals(&quot;Not Locked&quot;)) {               String epc = (String) tableModel.getValueAt(i, 0);               System.out.println(&quot;EPC: &quot; + epc);               try {                   tagEPC = epc;                   TagAccess tagAccess = new TagAccess();                   TagAccess.WriteAccessParams writeAccessParams = tagAccess.new WriteAccessParams();                   String writeDataString = tagEPC.substring(8,12);                   byte[] writeData = hexStringToByteArray(writeDataString);                   writeAccessParams.setAccessPassword(0x00);                   writeAccessParams.setWriteDataLength(writeData.length);                   writeAccessParams.setMemoryBank(MEMORY_BANK.MEMORY_BANK_EPC);                   writeAccessParams.setByteOffset(8);                   writeAccessParams.setWriteData(writeData);                   System.out.println(Arrays.toString(writeData));                   System.out.println(tagEPC);                   System.out.println(Arrays.toString(tagEPC.getBytes()));                   System.out.println(writeAccessParams.getAccessPassword());                   reader.Actions.TagAccess.writeWait(tagEPC, writeAccessParams, null);                   allTagsAreLocked = false;                   tableModel.setValueAt(&quot;Not Locked&quot;, i, 2);               } catch (InvalidUsageException e2) {                   System.out.println(e2.getInfo());                   allTagsAreLocked = false;                   tableModel.setValueAt(&quot;Error IN&quot;, i, 2);               } catch (OperationFailureException e2) {                   if (!(e2.getVendorMessage().contains(&quot;Tag Memory Locked&quot;))) {                       TagAccess tagAccess2 = new TagAccess();                       TagAccess.WriteAccessParams writeAccessParams2 = tagAccess2.new WriteAccessParams();                       String writeDataString2 = tagEPC.substring(8,12);                       byte[] writeData2 = hexStringToByteArray(writeDataString2);                       writeAccessParams2.setAccessPassword(0x00);                       writeAccessParams2.setWriteDataLength(writeData2.length);                       writeAccessParams2.setMemoryBank(MEMORY_BANK.MEMORY_BANK_EPC);                       writeAccessParams2.setByteOffset(8);                       writeAccessParams2.setWriteData(writeData2);                       try {                           reader.Actions.TagAccess.writeWait(tagEPC, writeAccessParams2, null);                           allTagsAreLocked = false;                           tableModel.setValueAt(&quot;Not Locked&quot;, i, 2);                       } catch (InvalidUsageException ex) {                           System.out.println(ex.getInfo());                           allTagsAreLocked = false;                           tableModel.setValueAt(&quot;Error IN&quot;, i, 2);                       } catch (OperationFailureException ex) {                           if (!(e2.getVendorMessage().contains(&quot;Tag Memory Locked&quot;))) {                               allTagsAreLocked = false;                               tableModel.setValueAt(&quot;Error OP&quot;, i, 2);                           } else {                               tableModel.setValueAt(&quot;Locked&quot;, i, 2);                           }                       }                   } else {                       tableModel.setValueAt(&quot;Locked&quot;, i, 2);                   }                   System.out.println(e2.getResults());                   System.out.println(e2.getStatusDescription());                   System.out.println(e2.getTimeStamp());                   System.out.println(e2.getVendorMessage());                   System.out.println(e2.getLocalizedMessage());               }           }       }   }}); 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              T
+            
+          
+                
+          
+            Trooper Murphy
+          
+          
+            2 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello,I have two FX7500 readers and one FX9600 reader, with firmware versions 2.7.19 (FX7500), 3.21.21 (FX7500), and 3.9.17 (FX9600). When using Zebra&#x27;s Windows Java SDK for Fixed Readers, I encounter different error messages when writing to tags. Specifically, with the FX7500 on firmware 2.7.19, I receive &quot;C1G2WriteOpSpecResult failed: Tag Memory Locked&quot; when writing to the EPC memory bank if it&#x27;s locked. However, on the FX7500 and FX9600 with newer firmware, the error message is &quot;C1G2WriteOpSpecResult failed: The Tag does not support error-specific codes.&quot;My use case requires specific error codes when writing to tags. I understand that downgrading the FX9600 might not be an option, as Zebra states that readers with firmware above 3.21.x cannot downgrade below that point. Is there a way to retrieve error-specific codes using Zebra&#x27;s SDK, or is there a method to downgrade the newer firmware?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alex Lavie
+          
+          
+            2 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            hi there, I recommend using latest build for these readers : 3.26.90, hopefully it fixes issue.Open a case if it does not and ask support as they have a recepy to downgrade.v3.21.21 is not for production. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alex Lavie
+          
+          
+            2 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            hi there, I recommend using latest build for these readers : 3.26.90, hopefully it fixes issue.Open a case if it does not and ask support as they have a recepy to downgrade.v3.21.21 is not for production. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

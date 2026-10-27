@@ -1,0 +1,229 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Reading rfid tag from label printed from another host</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Reading rfid tag from label printed from another host</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/35215; original snapshot: threads/resume-00236.html; SHA-256: 1f8959bcf0b040b13e5b3ed009e740d1c01c16bcc9e6cae18b18b47c379c661a</small><pre id="topic">
+
+    
+        Reading rfid tag from label printed from another host
+
+
+        
+      
+                        
+                    
+            R
+          
+          Robert Tobin
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            44
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello, I have an enquiry about a project from a client with the following Zebra RFID Label Printer,
+ 
+Zt610RFID          ZT61043-T0E01C0Z
+ 
+They have an existing application which is printing labels to this printer across USB      (their existing system cannot  Encode RFID Labels)
+ 
+They have asked us to check if we can do the following:
+ 
+1)     Use RFID labels with a unique identifier already encoded on the label so that we don&#x27;t need to encode the labels when printed
+ 
+2)     As the labels are printed from Computer 1, can we connect Computer 2 at the same time to the printer using another connection (Serial?)
+ 
+3)     When Computer 1 sends a job to print 5 labels, Is it possible to read the RFID tags for these 5 labels as these are printed and send this to Computer 2 so that I can see the unique identifiers of the RFID Tags
+ 
+Would appreciate some feedback if this is possible,
+ 
+Thanks
+ 
+Rob
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            1)&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Use RFID labels with a unique identifier already encoded on the label so that we don&#x27;t need to encode the labels when printed
+Sure, we can do that by treating the RFID tag enabled labels as regular labels. But what&#x27;s the benefit of using an RFID enabled printer to printer labels on RFID tag enabled labels?
+2)&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; As the labels are printed from Computer 1, can we connect Computer 2 at the same time to the printer using another connection (Serial?)
+A serial port connection is kind of one-to-one connection. We cannot connect a printer to multiple computers over serial connection. If we want to have 1-to-many connection, we can connect a printer to the network. Then multiple computers on the network can connect to the same printer.
+3)&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; When Computer 1 sends a job to print 5 labels, Is it possible to read the RFID tags for these 5 labels as these are printed and send this to Computer 2 so that I can see the unique identifiers of the RFID Tags
+Yes, it&#x27;s possible. The ZPL Programming Guide has documented how to read the RFID tag through the SGD commands. If the computer 1 is used to send the printer commands to enable the RFID tags, there is no need to read the tag back, because Zebra RFID printer guarantees the encoded data on the tags matches with the data to be encoded. If they don&#x27;t match, a void label will be printed.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Robert Tobin
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks Steven,
+Yes I see the irony of using an RFID printer and not encoding the actual labels,
+Customer has these printers already and their existing system cannot encode rfid labels (they cannot make changes to this system) so we are looking at alternate solutions for them,
+Computer 1 will be connected to the printer over usb and will print the labels (no rfid encoding, just print labels)
+What I want to do then is to connect Computer 2 over Lan \ serial and read the rfid tags as they run through the printer (again no encoding, just read the tag as it runs through the printer)
+Rob
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

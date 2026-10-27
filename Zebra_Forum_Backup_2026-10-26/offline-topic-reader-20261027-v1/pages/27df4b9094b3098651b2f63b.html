@@ -1,0 +1,251 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Windows SDK Correct method to call to register a callback event for the barcode scanning</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Windows SDK Correct method to call to register a callback event for the barcode scanning</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/windows-sdk-correct-method-call-register-callback-event-barcode-scanning; original snapshot: threads/00104.html; SHA-256: ffab5b939b895b44231c7a46f1ea27fdc8d3f0ca3cc006d617508bcd2c2faae6</small><pre id="topic">
+
+    
+        Windows SDK Correct method to call to register a callback event for the barcode scanning
+
+
+        
+      
+                        
+                    
+            B
+          
+          Benjamin DELL
+          1 year 10 months ago
+        
+        
+      
+        
+            
+                  
+            
+            229
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi All I am a WinDev Developer, and Integrating with the Core Scanner .NET Api.  I need help finding the correct method to call to register a callback event for the barcode scanning.There is a Callback registered in Visual Studio for Scanning: // Add barcode data event handlercoreScannerObject.BarcodeEvent += CoreScannerObject_BarcodeEvent;In Visual Studio the Code is: ( shortened) // Initialize CoreScanner COM objectCoreScanner.CCoreScanner coreScannerObject = new CCoreScanner();   // Open CoreScanner COM Object  coreScannerObject.Open(appHandle, // Application handle           scannerTypes,                 // Array of scanner types          NumberOfScannerTypes,         // Length of scanner types array       out status);                  // Command execution success/failure return status  // Call register for eventscoreScannerObject.ExecCommand(opCode,      // Opcode: Register for events                              ref inXml,   // Input XML                              out outXml,  // Output XML                               out status); // Command execution success/failure return status   // Add barcode data event handlercoreScannerObject.BarcodeEvent += CoreScannerObject_BarcodeEvent;In WinDev I have : // Initialize CoreScanner objectMyRfIdReader            is CCoreScannerClass// Open CoreScanner  ObjectMyRfIdReader.Open(0,arrScannerTypes,nNumberOfScannerTypes,nStatus) // Call register for eventsMyRfIdReader.ExecCommand(nOpCode,pInXml,pInXml,nStatus)  // Add barcode data event handlerMyRfIdReader.add_BarcodeEvent(DotNetDelegate(&quot;CoreScannerObject_BarcodeEvent&quot;,&quot;_ICoreScannerEvents_BarcodeEventEventHandler&quot;)) My Problem is that  coreScannerObject.BarcodeEvent += CoreScannerObject_BarcodeEvent;  does not work in WinDev,  so I tried the find the BarcodeEvent Propperty filling Event, but it seems to be virtual Classes, and I cannot seem to Find The correct one to use. coreScannerObject.BarcodeEvent  seems to point to event _ICoreScannerEvents_BarcodeEventEventHandler BarcodeEvent. I tried using &quot;_ICoreScannerEvents_BarcodeEventEventHandler&quot; but there are many methods to call, and most of them also seems virtualized. I need help with which method to call to actually register a callback for when barcodes are scanned ( as a non .NET developer) Kind Regards     
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            1 year 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            This code explained it, in C# https://github.com/zebra-technologies/Scanner-SDK-for-Windows-Code-Snippets/blob/master/CSharp/RegisterUnregisterForEvents/Program.cs 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Benjamin DELL
+          
+          
+            1 year 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Dear Riad Benallou. That is the code I am referencing.   // Add barcode data event handlercoreScannerObject.BarcodeEvent += CoreScannerObject_BarcodeEvent;It only Works in C#, and not when trying to do it from other languages. It seems the &quot;coreScannerObject.BarcodeEvent&quot; is an array of .NET Objects and there should be a method for me to add an object into this array from a procedure in the  &quot;_ICoreScannerEvents_BarcodeEventEventHandler&quot; class/object..I just cannot find the correct method to call to achieve this. Kind Regards 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            1 year 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            in c# you cal register for event opcode 1001int opcode = 1001; // Method for Subscribe eventsstring outXML; // XML Outputstring inXML = &quot;&lt;inArgs&gt;&quot; +&quot;&lt;cmdArgs&gt;&quot; +&quot;&lt;arg-int&gt;1&lt;/arg-int&gt;&quot; + // Number of events you want to subscribe&quot;&lt;arg-int&gt;1&lt;/arg-int&gt;&quot; + // Comma separated event IDs&quot;&lt;/cmdArgs&gt;&quot; +&quot;&lt;/inArgs&gt;&quot;;cCoreScannerClass.ExecCommand(opcode, ref inXML, out outXML, out status);Console.WriteLine(outXML);1 in this case is for Barcode event suscription . try cCoreScannerClass.BarcodeEvent += new _ICoreScannerEvents_BarcodeEventEventHandler(OnBarcodeEvent);There is no support for Windev , if support communication over Serial . perhaps using SSI over USB CDC will be a better option for you since its low layer directly with scanner and no libraries /SDK involvement   
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

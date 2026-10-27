@@ -1,0 +1,446 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Printing multiple labels in Browser Print</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/printing-multiple-labels-browser-print; snapshot threads/00638.html; SHA-256 89707b0ff7b6bfd4fb950086d53e88e039706addf135996312c98d3eea8fd6df. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Printing multiple labels in Browser Print</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            J
+          </div>
+          <div class="forum-topic__author-name">Jeremy Deters</div>
+          <div class="forum-topic__timestamp">3 years 7 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            546
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            5
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>I am trying to print barcode labels for batches of items. My web API can return either a PDF document with all labels, or an array of label images.  I need to be able to print all labels in order from my web application (using BrowserPrint).<br>
+<br>
+First I tried printing the labels as a PDF document and that works for Windows clients running the Windows version of BrowserPrint.  But the same application on android is printing blank labels.<br>
+Here is the method I am using:</p>
+
+<pre><code class="language-javascript">function zebraPrintPdf(blob) {
+    return selected_device.sendFile(
+        blob
+        , function () { console.log("PDF printed using Zebra BrowserPrint") }
+        , function (error) { console.error("Failed to print PDF using Zebra BrowserPrint:" + error) }
+    );
+}</code></pre>
+
+<p><br>
+<br>
+Again, this works for Windows, but for Android the labels all come out as blank.  I have inspected the payload to the 'write' method that is sent from the browser to BrowserPrint and the PDF is being included.  It even prints the correct number of blank labels (one for each page).  I think this is an issue with the Android BrowserPrint app.  I have an email in to the developers so hopefully they can point me in the right direction.  I'll update if I hear back from them.<br>
+<br>
+Separately, I have tried printing the labels as images using the following ('labels' is an array of Uint8Arrays so it contains multiple images.  Blob type is 'images/bmp' because the images are in bmp format):</p>
+
+<pre><code class="language-javascript">function zebraPrintMultipleLabels(labels, blobType) {
+
+    var zebraPrinter = new Zebra.Printer(selected_device);
+    var options = {};
+    return zebraPrinter.isPrinterReady()
+        .then(() =&gt; {
+            for (const bytes of labels) {
+                const blob = new Blob([bytes], { type: blobType });
+                setTimeout(function() {
+                    zebraPrinter.printImageAsLabel(blob,
+                        options,
+                        function () {
+                            console.log("Image printed using Zebra BrowserPrint");
+                        },
+                        function (error) {
+                            console.error("Failed to print Image using Zebra BrowserPrint:" + error);
+                        });
+                    }, 500);
+                
+            }
+        }).catch((error) =&gt; {
+            console.error(error);
+            return false;
+        });
+}</code></pre>
+
+<p><br>
+This works (both on Windows and Android), but the labels don't seem to get printed in order, despite the images always being in the correct order. The order isn't even the same when printing the same 10 labels multiple times. Per the documentation, the 'Zebra.Printer.printImageAsLabel is supposed to use a queue to make sure that one command finishes before the next is sent.  But this doesn't seem to be working, even with the 500ms delay from the setTimeout method.<br>
+<br>
+Does anyone have any suggestions or see where I am messing up (with either PDF or printing multiple labels)?</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      5 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-51742" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              O
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Omar Gordon</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Did you ever find a solution I am having the same issue. I'm developing a web app and want to print batch labels from the clients end but no progress using Zebra Documentation </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-51743" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Jeremy Deters</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I never found a fix for printing a PDF from Android.  As far as I can tell the Android version of the ZebraPrint app is broken.  I emailed Zebra developer support on two separate occasions but never received a response.<br>
+<br>
+I was able to print multiple labels in the correct order.  I think the trick was to make it an async function and await the call to zebraPrinter.printImageAsLabel inside the foreach loop.  Awaiting the call to zebraPrinter.isPrinterReady also made sure my function did not return until all of the labels were printed.</p>
+
+<pre><code>async function zebraPrintMultipleLabels(labels, blobType) {
+    var zebraPrinter = new Zebra.Printer(selected_device);
+    var options = {};
+    return await zebraPrinter.isPrinterReady()
+        .then(async () =&gt; {
+            for (let i = 0; i &lt; labels.length; i++) {
+                console.log("Printing image " + i.toString());
+                const bytes = labels[i];
+                const blob = new Blob([bytes], { type: blobType });
+                await zebraPrinter.printImageAsLabel(blob, options).catch((error) =&gt; { console.error(`Image ${i.toString()} failed to print: ${error}`); });
+                console.log(`Image ${i.toString()} printed`);
+            }
+            return true;
+        }).catch((error) =&gt; {
+            console.error(error);
+            return false;
+        });
+}</code></pre>
+
+<p>Good luck<br>
+ </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-51750" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>"<em>First I tried printing the labels as a PDF document and that works for Windows clients running the Windows version of BrowserPrint.  But the same application on android is printing blank labels.</em>"</p>
+<p>Hi Jeremy,</p>
+<p>Are you sure that the Browser Print for Android app is the latest version? There was a bug in the older version of the Browser Print for Android app, which caused the PDF print didn't work when sending a PDF file to a PDF Direct enabled printer. The bug has been fixed in the latest version of the Browser Print for Android app, which can be downloaded from the <span data-original-href="https://www.zebra.com/us/en/support-downloads/printer-software/by-request-software.html">Browser Print Product Page</span>. </p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-51751" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Jeremy Deters</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Steven,<br>
+<br>
+I downloaded whatever version was available from the browser print product page at that time (version 1.3.0.158). I had only been working on it a week or so before I posted my issue so that would have been 3-4 months ago or so. When was this new version made available?<br>
+<br>
+I appreciate you letting me know there is a new version and that it should fix the issue.  I just wish I would have gotten a response sooner.  I have already re-worked all of my code to avoid using PDFs.<br>
+<br>
+Is there a way to get notified of new updates (mailing list, rss feed, etc)?  Any plans to publish these apps to their respective stores (Android Play, Apple store, Windows store) so they will update automatically?<br>
+<br>
+Thanks,<br>
+<br>
+Jeremy</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-51759" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Unfortunately, there is no mechanism in place to send out the notification. There is no plan to publish the Browser Print for Android app to Google Play. Because the Browser Print for Android app needs to be in sync with the Browser Print JavaScript libraries, which is recommended for maintaining the interoperability between the web app that uses the JavaScript libraries and the app on Android. As recommended, both the Browser Print JavaScript libraries and the Browser Print for Android app should be updated at the same time.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/printing-multiple-labels-browser-print%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/printing-multiple-labels-browser-print%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

@@ -1,0 +1,162 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>¿Is there any way to know if the printer paired to a device has zpl support using Zebra SDK?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>¿Is there any way to know if the printer paired to a device has zpl support using Zebra SDK?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/there-any-way-know-if-printer-paired-device-has-zpl-support-using-zebra-sdk; original snapshot: threads/02179.html; SHA-256: 3618b37dfed9b37d536e5d1e2ef06cf1fb85feaec0c29f37376b3409485a1601</small><pre id="topic">
+
+    
+        ¿Is there any way to know  if the printer paired to a device has zpl support using Zebra SDK?
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            65
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  We are using two models; iMZ320 and MZ320. Only iMZ320 supports zpl. If the printer paired has zpl support We&#x27;d like to use some features of zpl like sending and printing an image.
+&amp;nbsp;
+The app is installed on a EP10 windows mobile 6.5 device. We are using C# and Zebra SDK to connect printer by bluetooth.
+&amp;nbsp;
+Thanks,
+Ricardo
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Yes,
+The SDK has a API called SGD.&amp;nbsp; You can use that to call the setting &quot;device.languages&quot; and set to &quot;zpl&quot; .&amp;nbsp; If the response doesn&#x27;t include &quot;zpl&quot; in the response, it does not handle ZPL.&amp;nbsp; I think the response on iMZ is &#x27;hybrid_xml_zpl&#x27; but it definitely has zpl in it. The code would look like this:
+SGD.SET(&quot;device.languages&quot;, &quot;zpl&quot;, printerConnection);
+string language = SGD.GET(&quot;device.languages&quot;, printerConnection);
+if (language.Contains(&quot;zpl&quot;))
+{
+// printer is set to zpl
+}
+else
+{
+// printer is not capable of zpl
+}
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

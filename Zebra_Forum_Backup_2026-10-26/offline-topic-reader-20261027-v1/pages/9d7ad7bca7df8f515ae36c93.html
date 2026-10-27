@@ -1,0 +1,238 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Bluetooth MAC TC21</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Bluetooth MAC TC21</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/bluetooth-mac-tc21; original snapshot: threads/00776.html; SHA-256: a23f3c05b2747d47e2aa25d187ab389d9567c68427c390a12d0b9df224ac860a</small><pre id="topic">
+
+    
+        Bluetooth MAC TC21
+
+
+        
+      
+                        
+                    
+            M
+          
+          Michael Buelow
+          4 years 3 months ago
+        
+        
+      
+        
+            
+                  
+            
+            220
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello there,
+I&#x27;ve encountered some issues regarding the OEMInfo Content Provider. I am trying to read the bluetooth MAC of a TC21. For that I am using the code examples provided by this site: https://techdocs.zebra.com/oeminfo/consume/#samplecode. Hope you guys can help me.
+I do the following:
+1. Request permission to access the bluetooth MAC (as described here: https://techdocs.zebra.com/oeminfo/consume/#authorizationmechanism). I do that programmatically like in this example https://github.com/ZebraDevs/OEMIdentifiers-Java-Sample/blob/master/app….
+2. Then I actually try to read the bluetooth MAC (as described here: https://techdocs.zebra.com/oeminfo/consume/#samplecode).
+This works on my TC21 with Update 98 and MX 10.5.*. However, it doesn&#x27;t work on another TC21 with Update 14 and MX 10.2.*.
+On the working device I get the following Logcat output from the device (heavily cutted). This is from the exact moment I request permissions and fetch the bluetooth mac:
+2022-07-20 16:59:57.411 9791-9813/? I/DataLakeProvider: isCallerWhiteListed false
+2022-07-20 16:59:57.412 9791-9813/? D/DataLakeProvider: See if app is privileged through access manager
+2022-07-20 16:59:57.412 9791-9813/? D/b: isAppPrivilege content://oem_info/oem.zebra.secure/bt_mac :: packageName de.fadi.mde_apps_flutter
+2022-07-20 16:59:57.414 9791-9813/? D/b: processMxRequest called
+2022-07-20 16:59:57.444 3776-3803/? D/CommonUtils: &amp;gt;&amp;gt;&amp;gt;&amp;gt;&amp;gt;&amp;gt;packages is system packagecom.zebra.zebracontentprovider
+2022-07-20 16:59:57.509 9791-9813/? D/b: Got Mx response
+2022-07-20 16:59:57.509 9791-9813/? D/b: onMxResponse
+2022-07-20 16:59:57.510 9791-9813/? D/b: caller is privileged
+2022-07-20 16:59:57.510 9791-9813/? D/DataLakeProvider: Access Manager status = true
+2022-07-20 16:59:57.514 9791-9813/? W/RegisteredApis: Api =bt_mac is either not present or not lazyload
+I used the following filter: &quot;DataLakeProvider|isAppPrivilege|mx|whitelist|zebra|bt_mac&quot;
+On the device where it&#x27;s not working I get the following output:
+2022-07-20 16:55:58.236 7012-7029/? I/DataLakeProvider: isCallerWhiteListed false
+2022-07-20 16:55:58.236 7012-7029/? D/DataLakeProvider: See if app is privileged through access manager
+2022-07-20 16:55:58.236 7012-7029/? D/b: isAppPrivilege content://oem_info/oem.zebra.secure/bt_mac :: packageName de.fadi.mde_apps_flutter
+2022-07-20 16:55:58.279 2957-2985/? D/CommonUtils: &amp;gt;&amp;gt;&amp;gt;&amp;gt;&amp;gt;&amp;gt;packages is system packagecom.zebra.zebracontentprovider
+2022-07-20 16:55:58.357 7012-7029/? D/DataLakeProvider: Access Manager status = true
+2022-07-20 16:55:58.361 7012-7029/? E/Path: There is no DataLake for the group/api = bt_mac
+2022-07-20 16:55:58.364 7012-7029/? D/c: There is no data present in cache for provider = oem.zebra.secure
+As you can see, they differ in the last part. The first device just said &quot;Api =bt_mac is either not present or not lazyload&quot; and provided the bluetooth MAC anyway and the second device just threw some errors and and simply pointed out that there &quot;is no data present in cache for provider = oem.zebra.secure&quot;.
+Do you guys have any clue why the exact same code works on one device but not on the other? They are both enrolled by AirWatch. The working device is my main developer device and the non functional one comes from a production environment. However, my developer device got enrolled like the production one. I even wiped it, enrolled it again and just tried to read the bluetooth mac - no difference. The only difference I can spot is the Update- and MX-Version.
+Hope someone knows something,
+Kind regards,
+Michael
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Michael,
+BT Mac Address support was added to TC21 in LG Patch 44 so you&#x27;ll need to update to at least this version on your production devices.
+Thanks,
+James
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Michael Buelow
+          
+          
+            4 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello James,
+thank you very much for the fast reply!
+Kind regards,
+Michael
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

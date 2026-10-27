@@ -1,0 +1,209 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Alert information returning appended in the response of unrelated SGD.GET command.</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Alert information returning appended in the response of unrelated SGD.GET command.</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/alert-information-returning-appended-response-unrelated-sgdget-command; original snapshot: threads/00391.html; SHA-256: d022275d12727150b6269b551dbcdf84519bf0a4fd491c6522fb46ff41cde847</small><pre id="topic">
+
+    
+        Alert information returning appended in the response of unrelated SGD.GET command.
+
+
+        
+      
+                        
+                    
+            S
+          
+          SDK NDD
+          2 years 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            125
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                          //Solved
+        
+  
+
+    
+    
+        
+      
+            
+                  Hi, We are developing the capture of Alerts of Link-OS printers, via USB using SGD Commands, and noticed a strange behaviour:The alert information is returning appended on the response value of the first SGD.GET Command executed after the alert is created on the Printer. Here is how to reproduce the problem:The printer was previously configured to send alerts via USB with the command below: SGD.SET(&quot;alerts.add&quot;, &quot;HEAD OPEN,USB,Y,Y,,0,N,&quot;, Connection); Then the steps are these:1 - Open the Print Head2 - Execute a SGD command unrelated to Alert, like:String serialNumber = SGD.GET(&quot;device.unique_id&quot;, connection); The returned value of serialNumber comes like this: &quot;ERROR CONDITION: HEAD OPEN [2024-01-15 19:08:32] [T3J231401598]\r\nT3J231401598&quot; Instead of returning the Serial, its returning &quot;Alert info + Serial&quot;. If we run the SGD.GET again, the Alert information does not come appended anymore. This was done using a Zebra ZT231. Is this the expected behaviour or is a bug? Best regards, 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+        
+      
+        ✓ Accepted Solution
+      
+      
+          
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            This is an expected behavior. The printer was configured to send the alerts over USB. When open the printer head, an alert is generated and sent over USB. The alert will stay on the other end of USB until it&#x27;s read. Then an SGD.GET() is called to get the printer serial number. This will trigger the printer to send the serial number to the other end of USB. When the SGD.GET() tries to read the serial number from USB, the alert that is sent prior to the serial number will be read along with the serial number together. So, the SGD.SET() will get both the alert and the serial number off USB.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+      
+    
+  
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            This is an expected behavior. The printer was configured to send the alerts over USB. When open the printer head, an alert is generated and sent over USB. The alert will stay on the other end of USB until it&#x27;s read. Then an SGD.GET() is called to get the printer serial number. This will trigger the printer to send the serial number to the other end of USB. When the SGD.GET() tries to read the serial number from USB, the alert that is sent prior to the serial number will be read along with the serial number together. So, the SGD.SET() will get both the alert and the serial number off USB.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

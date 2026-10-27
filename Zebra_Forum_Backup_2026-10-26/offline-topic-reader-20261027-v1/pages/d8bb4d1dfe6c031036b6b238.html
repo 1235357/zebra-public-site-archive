@@ -1,0 +1,309 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Implementing Continuous Barcode Scanning with Zebra MC220J and Business Central App</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Implementing Continuous Barcode Scanning with Zebra MC220J and Business Central App</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/implementing-continuous-barcode-scanning-zebra-mc220j-and-business-central-app; original snapshot: threads/00204.html; SHA-256: 1bfc5f2b949422dfd85a78a0d1866114001d8af25651fa2d0632d20c8f64ad8e</small><pre id="topic">
+
+    
+        Implementing Continuous Barcode Scanning with Zebra MC220J and Business Central App
+
+
+        
+      
+                        
+                    
+            F
+          
+          Federico Pappalardo
+          2 years 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            599
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Good morning,I am working on implementing Scenario 3 as described in the official Microsoft documentation on adding barcode scanning to the mobile app. My objective is to enable continuous scanning using a Zebra MC220J device with the Business Central App installed. I want to intercept scanned barcodes for processing via custom code, without requiring any UI interaction from the warehouse operator.According to Microsoft&#x27;s documentation:With some barcode scanner devices, such as Zebra, you can&#x27;t modify the intent configuration. In this case, you can pass the intent data strings via AL.To achieve this, I attempted to implement the code by calling the `RequestBarcodeScannerAsync` function:                    if IsSupported then
+                        CurrPage.BarcodeControl.RequestBarcodeScannerAsync(&#x27;com.businesscentral.barcode.receive_barcode&#x27;,
+                                                                           &#x27;com.businesscentral.barcode.receive_category&#x27;,
+                                                                           &#x27;com.businesscentral.receive_barcode.barcode_string&#x27;,
+                                                                           &#x27;com.businesscentral.receive_barcode.barcode_format&#x27;); // Step 3Additionally, I configured a new profile on the Zebra DataWedge app, setting the &quot;Intent delivery mode&quot; to &quot;broadcast intent&quot;. However, the result has been that the `BarcodeReceived(Barcode: Text; Format: Text)` trigger is never raised, and the scanned barcode is not passed to the app.I have received support on other forum and basically they are telling me the solution would be to pass just the Data Action = &#x27;com.businesscentral.barcode.receive_barcode&#x27; and the Data Extra = &#x27;com.businesscentral.receive_barcode.barcode_string&#x27;.Unfortunately, it seems there is no way to pass the Data Extra anywhere inside the DataWedge app, so the only way should be to write a specific Android App for the Zebra Scanner. Is there a way in the Data Wedge setup to pass the Data Extra?I am probably looking for something like this:Intent i = new Intent();i.setAction(&quot;com.businesscentral.barcode.receive_barcode&quot;);i.putExtra(&quot;com.businesscentral.receive_barcode.barcode_string&quot;, &lt;mainbundle&gt;);But enabled directly from the DataWedge app.Thank you for any insight.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sergio Montanari
+          
+          
+            2 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Ciao Federico, ho lo stesso identico problema... tu hai risolto, per caso? :)
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Humberto Mcfarland
+          
+          
+            2 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            This already functions similarly to the application&#x27;s default configuration. If it doesn&#x27;t work, look at other barcode scanner apps. For more information, here is the link to visit: https://developer.zebra.com/latest-discussions slope game
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Dekean Loinse
+          
+          
+            1 year 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            It seems this link does not provide the useful information I am looking for. https://developer.zebra.com/latest-discussions/subway surfers
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            salim nl
+          
+          
+            1 year 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

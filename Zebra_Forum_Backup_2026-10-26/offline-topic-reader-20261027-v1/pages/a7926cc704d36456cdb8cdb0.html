@@ -1,0 +1,747 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to perform RFID inventory in real time on Android</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to perform RFID inventory in real time on Android</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/how-perform-rfid-inventory-real-time-android; original snapshot: threads/00601.html; SHA-256: 7a34196fd9a0494939c3ce45c6fa8d32d8247c3558fdc83a57e8b13c77a54582</small><pre id="topic">
+
+    
+        How to perform RFID inventory in real time on Android
+
+
+        
+      
+                        
+                    
+            G
+          
+          Grégory Reiser
+          3 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            423
+          
+                
+                  
+            
+            8
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi everyone, 
+
+I would like to implement the android RFID SDK. I successful implement the RFD90 long range device but when I use the “Actions.Inventory.perform()” method, it works only one time on click.
+
+In fact, when I press the trigger, it read the tags available in the range of the device and after nothing is scanned until I release the trigger button and press again on it. After this it will work just one time again.
+
+I need to have the reading session active during all the time I have the trigger pressed. I know it’s possible because your sample app work like this but I don’t  know why, I’m not able to reproduce this behaviour on my app. (Maybe a missing configuration)
+
+I precise I disable the Batch_Mode :
+
+(Below my config set)
+
+ 
+
+reader.Events.setTagReadEvent(true); // application will collect tag using getReadTags API 
+
+reader.Events.setAttachTagDataWithReadEvent(false); 
+
+TriggerInfo triggerInfo = new TriggerInfo(); 
+
+triggerInfo.StartTrigger.setTriggerType(START_TRIGGER_TYPE.START_TRIGGER_TYPE_IMMEDIATE); 
+
+triggerInfo.StopTrigger.setTriggerType(STOP_TRIGGER_TYPE.STOP_TRIGGER_TYPE_IMMEDIATE); // set start and stop triggers 
+
+reader.Config.setStartTrigger(triggerInfo.StartTrigger); 
+
+reader.Config.setStopTrigger(triggerInfo.StopTrigger); // receive events from reader 
+
+reader.Events.addEventsListener(eventHandler); // HH event 
+
+reader.Events.setHandheldEvent(true); // tag event with tag data 
+
+reader.Events.setTagReadEvent(true); 
+
+reader.Events.setAttachTagDataWithReadEvent(false); // set trigger mode as rfid so scanner beam will not come 
+
+reader.Config.setTriggerMode(ENUM_TRIGGER_MODE.RFID_MODE, true); // set start and stop triggers 
+
+reader.Config.setStartTrigger(triggerInfo.StartTrigger); 
+
+reader.Config.setStopTrigger(triggerInfo.StopTrigger); // power levels are index based so maximum power supported get the last one 
+
+maxPower = reader.ReaderCapabilities.getTransmitPowerLevelValues().length - 1; // set antenna configurations 
+
+Antennas.AntennaRfConfig config = reader.Config.Antennas.getAntennaRfConfig(1); 
+
+config.setTransmitPowerIndex(maxPower); 
+
+config.setrfModeTableIndex(0); 
+
+config.setTari(0); 
+
+reader.Config.Antennas.setAntennaRfConfig(1, config); // Set the singulation control 
+
+Antennas.SingulationControl s1_singulationControl = reader.Config.Antennas.getSingulationControl(1); 
+
+s1_singulationControl.setSession(SESSION.SESSION_S0); 
+
+s1_singulationControl.setTagPopulation((short) 30); 
+
+s1_singulationControl.Action.setInventoryState(INVENTORY_STATE.INVENTORY_STATE_A); 
+
+s1_singulationControl.Action.setSLFlag(SL_FLAG.SL_ALL); 
+
+reader.Config.Antennas.setSingulationControl(1, s1_singulationControl); 
+
+reader.Config.setUniqueTagReport(false); 
+
+reader.Config.setBatchMode(BATCH_MODE.DISABLE); 
+
+reader.Actions.PreFilters.deleteAll();
+
+ 
+
+Can you help me ? It’s really important to be able to sell more REFID scanner to our client if it works.
+
+You can call me any time if it’s easier for you.
+
+ 
+
+Thank you for your time and your help.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      8 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            RFD90 - And using 123RFID Mobile app for Android - demonstrates the correct way to setup and configure and then Use the RFD90 for RFID Inventory.
+
+I would recommend using 123RFID Mobile app with the Balanced Performance profile setup. To mirror what you are attempting to setup above.
+
+Your code above does not reveal what is being done to the RFD90 - its just a code snippet that you are working with and max power is a giveaway that it likely is setting the RFD90 the 123RFID Mobile app Profile Defaults (Fastest read) which I would try to use the &quot;Balanced Performance&quot; profile Like I mention above.
+
+123RFID Mobile app also comes with Source Code.  And the Android RFID SDK for Android Studio also contains the SDKSample - ( Try to use the latest V2.0.2.114 of the SDK the older versions had trouble with RFD90 running up-to-date Firmware. The latest V114 should work with the RFD90 well.  (The sample also contains a button where you can adjust the power settings and singulation as well. 
+
+Give that app a try, in addition to 123RFID Mobile - and see if there is something else causing issues. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Grégory Reiser
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you for your answer.
+
+I search on the RFID123 android sample code an tried to set the correct configuration, but I&#x27;m not able to maintain the inventory perform precess.
+
+In fact when I pressed on the trigger, I receive the &quot;INVENTORY_START_EVENT&quot; but 1 second after, I receive the &quot;INVENTORY_STOP_EVENT&quot; without release the trigger.
+
+It&#x27;s like if the &quot;Inventory.perform()&quot; was just a one shot read.
+
+Do we have a way to maintain the reading during all the time I have the trigger pressed ? Do we need to manually loop on the &quot;Inventory.perform()&quot; while the trigger is pressed ? 
+
+Thank you for your help.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There may be a temporary check you can perform: ( Make a change and then change it back )
+
+In the 123RFID Mobile app - take a look at the ( Settings --&gt; RFID menu --&gt; Advanced reader options menu --&gt; Start/Stop Triggers menu )
+
+Change Both of the Triggers from &quot;Immeadiate&quot; to &quot;Handheld&quot;.  And leave the check marks and timeout setting to default.
+
+Click Back three times to return to the Settings Main Menu - then change over to the RFID interface.
+
+Press the On-screen button to &quot;arm&quot; the RFID Read process.  Press and Release the RFID trigger.  RFID Inventory should turn on / turn off.
+
+Go back to the ( Settings --&gt; RFID menu --&gt; Advanced reader options menu --&gt; Start/Stop Triggers menu )
+
+Change Both of the Triggers from &quot;Handheld&quot; to &quot;Immeadiate&quot;.
+
+Click Back three times to return to the Settings Main Menu - then change over to the RFID interface.
+
+Pull the trigger and see if you are able to do perform the RFID Inventory on-demand.
+
+If this fails.  Goto ( Settings --&gt; General menu --&gt; Factory reset menu --&gt; &quot;Reset to Factory Defaults&quot; (radio button = &quot;FactoryReset&quot;)
+
+Press the [ Reset ] Button. ( The RFD90 will reset )
+
+Re-Pair to the RFD90 and connect - 123RFID Mobile will ask you a regulatory question - set the correct region that the RFD90 will operating in. Click [ Next ] button. The Profile will then be asked. I would suggest changing to the &quot;Balanced Performance&quot; profile. Tap [Finish] button.
+
+Try the Inventory here and let this thread know how you fared.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Grégory Reiser
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you so mush for your quick answer !
+
+I tested the trigger Start trigger switch and yes, on RFID123 app, it works because the &quot;Trigger type&quot; is set to Handheld and to to Immediate.
+
+The problem is, on my application, when I set to &quot;Immediate&quot;, the inventory perform process only on the the pressed event but if I set to others (&quot;handheld&quot;, &quot;periodic&quot;), the event &quot;INEVNTORY_START_EVENT&quot; not occurred and I have directly the event &quot;INVENTORY_STOP_EVENT&quot;.
+
+I verified, the Inventory.perform() is called but it seems that nothing perform.
+
+Do you have an idea of what would be my problem ?
+
+ 
+
+Thank you for your time
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Your code above, does not have any &quot;reader.Config.getStartTrigger  /  reader.Config.getStopTrigger&quot; calls to establish what is in effect.
+
+It also seems you are duplicating the &quot;.setStartTrigger&quot; calls twice which leads me to suggest - to comment out only what you need, and then test again.
+
+The SDKSample / 123RFID Mobile demo apps - leaves these settings - as-is - so if you are not changing them - is there other settings causing the problem?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Grégory Reiser
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you for your answer.
+
+Sorry, yes I updated my code since my first comment.
+
+After some updates, this is my actual code (where I have the issue): 
+
+-----------------------------------------------------------------------------
+
+// Antenna
+Antennas.AntennaRfConfig antennaRfConfig = reader.Config.Antennas.getAntennaRfConfig(1);
+antennaRfConfig.setTransmitPowerIndex(270);
+antennaRfConfig.setTari(0);
+antennaRfConfig.setrfModeTableIndex(0);
+reader.Config.Antennas.setAntennaRfConfig(1, antennaRfConfig);
+
+// Singulation
+Antennas.SingulationControl singulationControl;
+singulationControl = reader.Config.Antennas.getSingulationControl(1);
+singulationControl.setSession(SESSION.GetSession(1));
+singulationControl.Action.setInventoryState(INVENTORY_STATE.INVENTORY_STATE_A);
+reader.Config.Antennas.setSingulationControl(1, singulationControl);
+
+// DPO
+reader.Config.setDPOState(DYNAMIC_POWER_OPTIMIZATION.ENABLE);
+
+// Enable Events
+reader.Events.addEventsListener(eventHandler);
+reader.Events.setTagReadEvent(true);
+reader.Events.setBatteryEvent(true);
+reader.Events.setHandheldEvent(true);
+reader.Events.setInventoryStopEvent(true);
+reader.Events.setInventoryStartEvent(true);
+reader.Events.setTagReadEvent(true);
+reader.Events.setWPAEvent(true);
+reader.Events.setScanDataEvent(true);
+reader.Events.setAttachTagDataWithReadEvent(false);
+
+// Trigger
+StartTrigger startTrigger = reader.Config.getStartTrigger();
+startTrigger.setTriggerType(START_TRIGGER_TYPE.START_TRIGGER_TYPE_HANDHELD);
+//startTrigger.Periodic.setPeriod(100);
+//startTrigger.Handheld.setHandheldTriggerTimeout(10000);
+startTrigger.Handheld.setHandheldTriggerEvent(HANDHELD_TRIGGER_EVENT_TYPE.HANDHELD_TRIGGER_PRESSED);
+reader.Config.setStartTrigger(startTrigger);
+
+StopTrigger stopTrigger = reader.Config.getStopTrigger();
+stopTrigger.setTriggerType(STOP_TRIGGER_TYPE.STOP_TRIGGER_TYPE_IMMEDIATE);
+stopTrigger.Handheld.setHandheldTriggerEvent(HANDHELD_TRIGGER_EVENT_TYPE.HANDHELD_TRIGGER_RELEASED);
+stopTrigger.Handheld.setHandheldTriggerTimeout(10000);
+reader.Config.setStopTrigger(stopTrigger);
+
+reader.Config.setTriggerMode(ENUM_TRIGGER_MODE.RFID_MODE, false);
+
+// Behaviour
+reader.Config.setUniqueTagReport(false);
+reader.Config.getDeviceStatus(true, true, true); 
+
+
+-----------------------------------------------------------------------------
+
+ 
+
+I hope it&#x27;s more clear for you.
+
+ 
+
+Thanks for you help
+
+ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Grégory Reiser
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi everyone,
+
+After some investigations, i better understand the issue. It&#x27;s not caused by the trigger type but by something else.
+
+In fact, after compared the behaviour with the RFID123 android app, I don&#x27;t have the same things event with the trigger type &quot;immediate&quot;.
+
+The problem is, when I start the Inventory.perfom, something stop it directly. I received the &quot;INVENTORY_STOP_EVENT&quot; direct after the start event.
+
+If someone has an idea of why... I&#x27;m really blocked.
+
+ 
+
+Thank you so mush for your time
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Can you check the Tag reporting  ( Settings --&gt; RFID --&gt; Advanced Reader options --&gt; Tag Reporting)
+Please try the following:
+
+BT Batchmode = Disable.
+
+USB Batchmode = Disable.
+
+As well - go into the &quot;Power Management&quot; menu setting - and uncheck the &quot;Dynamic Power&quot; check mark.
+
+Try RFID scanning with that config on 123RFID Mobile app.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,168 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Convert image to Ascii hexadecimal code in Net Core</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Convert image to Ascii hexadecimal code in Net Core</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/convert-image-ascii-hexadecimal-code-net-core; original snapshot: threads/00796.html; SHA-256: 70f7f57f636aca5946e8491fd1345978d5801943fb3058e2cd82c6adbb36a9ec</small><pre id="topic">
+
+    
+        Convert image to Ascii hexadecimal code in Net Core
+
+
+        
+      
+                        
+                    
+            R
+          
+          Ricardo Vivas
+          4 years 5 months ago
+        
+        
+      
+        
+            
+                  
+            
+            614
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi. I currently have a problem converting an image to hex code to be displayed in the ZPL code. I&#x27;ve tried many code snippets to no avail
+public static string ByteArrayToString(byte[] ba)
+        {
+            StringBuilder hex = new StringBuilder(ba.Length * 2);
+            for (int i = 0; i &amp;lt; ba.Length; i++)       // &amp;lt;-- Use for loop is faster than foreach
+                hex.Append(ba[i].ToString(&quot;X2&quot;));   // &amp;lt;-- ToString is faster than AppendFormat
+            return hex.ToString();
+        }
+I am using Net Core 3.1
+Any idea how to convert the image?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+Maybe you could try this method
+private static final char[] HEX_ARRAY = &quot;0123456789ABCDEF&quot;.toCharArray();
+public static String bytesToHex(byte[] bytes) {
+    char[] hexChars = new char[bytes.length * 2];
+    for (int j = 0; j &lt; bytes.length; j++) {
+        int v = bytes[j] &amp; 0xFF;
+        hexChars[j * 2] = HEX_ARRAY[v &gt;&gt;&gt; 4];
+        hexChars[j * 2 + 1] = HEX_ARRAY[v &amp; 0x0F];
+    }
+    return new String(hexChars);
+}Thanks,
+James
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,218 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Maximising BLE/GATT transfer rate</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Maximising BLE/GATT transfer rate</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/maximising-blegatt-transfer-rate; original snapshot: threads/00724.html; SHA-256: 1aa99d6f81a9a46cafc30795e36525b22f21b625749215927189d625d30bfd3d</small><pre id="topic">
+
+    
+        Maximising BLE/GATT transfer rate
+
+
+        
+      
+                        
+                    
+            J
+          
+          Joe Westcott
+          4 years ago
+        
+        
+      
+        
+            
+                  
+            
+            218
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi there,
+I have both a ZD621 &amp;amp; ZD421, and I&#x27;d like some help with maximising the data transfer rate for printing. I don&#x27;t have the ability to use Bluetooth Classic/SPP.
+I&#x27;m achieving BLE printing by splitting up the payload into chunks and repeatedly writing to the &quot;To Printer Data&quot; characteristic. [0]
+To my knowledge, there&#x27;s two ways of writing to a GATT characteristic:
+1. writeWithResponse, which (due to packet ACKs) is not the fastest. This gives me around 2KBp/s.
+2. writeWithoutResponse which gives a reliable 4.2KBp/s on the 621*
+*Frustratingly, the 621 claims writeWithoutResponse isn&#x27;t a supported attribute of the characteristic, but using it anyway works. I cannot use writeWithoutResponse at all on the ZD421.
+Questions:
+1. Why does the 621 support withWithoutResponse when it&#x27;s not shown as supported in the characteristic&#x27;s attributes?
+2. What kind of bandwidth is possible with these printers? Am I approaching their bottleneck, or is my bottleneck in another part of the Bluetooth stack?
+3. Both of my devices support Bluetooth v5 which allows for data rate increases over previous versions. [1] Are they utilising this?
+[0] https://www.zebra.com/content/dam/zebra/software/en/application-notes/A…
+[1] https://interrupt.memfault.com/blog/ble-throughput-primer
+Kind Regards &amp;amp; many many many thanks.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Joe Westcott
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Steven Si could I have assistance please!
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Joe,
+Normally, the write-without-response is not recommended, as there is a potential overrun of the internal space, which could cause the drop of the packets that the user of the GATT may not know. If you are sure about the highest data rate the application writes to the GATT that doesn&#x27;t cause the packet drop, then you can try to use the write-without-response. Just be cautious.
+Both ZD621 and ZD421 are on the Bluetooth v5. Make sure both the ZD621 and ZD421 are on their latest firmware. If not, please update them to the latest firmware, which can be found on the Zebra support site.
+If you still see the difference between the ZD621 and ZD421 after updating the firmware to the latest, then we would like to know the printer configuration. You can get the printer configuration output from the Zebra Printer Setup Utility for Windows tool, by issuing the following command, and attach the output to this discussion thread.
+! U1 getvar &quot;allcv&quot;
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

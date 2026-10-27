@@ -1,0 +1,145 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Tag Write Operation</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Tag Write Operation</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/tag-write-operation; original snapshot: threads/00389.html; SHA-256: db38fc5624ab6b76981b4cc401bcfaa746d3bac639c9a009ddef11a94c49e949</small><pre id="topic">
+
+    
+        Tag Write Operation
+
+
+        
+      
+                        
+                    
+            M
+          
+          Mugileeshwaran Sugumar
+          2 years 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            165
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi, i just grabbed the piece of code from the devloper docs, while performing the write, it giving only one beep sound, i cant able to receive any exceptions or results from the tag data, can anyone tell me what am i missing?In my case both the TargetEPC values is the same value i want to writeI also set the antenna and other configurtions as mentioned in the docs public void WriteTag(){    try    {        if(mReader != null &amp;&amp; mReader.IsConnected)        {            TagData tagData = null;            String tagId = QctrackSettings.RFIDEPCValue;            TagAccess tagAccess = new TagAccess();            TagAccess.WriteAccessParams writeAccessParams = new TagAccess.WriteAccessParams(tagAccess);            String writeData = QctrackSettings.RFIDEPCValue;             writeAccessParams.AccessPassword = 0;            writeAccessParams.MemoryBank = MEMORY_BANK.MemoryBankEpc;            writeAccessParams.Offset = 2; //offset is 2 for EPCID            writeAccessParams.SetWriteData(writeData);            // data length in words            writeAccessParams.WriteDataLength = writeData.Length / 4;            // synchronous write            mReader.Actions.TagAccess.WriteWait(tagId,writeAccessParams,null,tagData);            if (tagData != null)            {                if (tagData.OpStatus == ACCESS_OPERATION_STATUS.AccessSuccess)                {                    Console.WriteLine(&quot;Write operation successful&quot;);                }                else                {                    Console.WriteLine(&quot;Write operation failed. Error code: &quot; + tagData.OpStatus);                }                Console.WriteLine(&quot;Operation Code: &quot; + tagData.OpCode);                Console.WriteLine(&quot;Number of words written: &quot; + tagData.NumberOfWords);            }            else            {                Console.WriteLine(&quot;TagData is null. Write operation might not have been performed.&quot;);            }        }                   }    catch(Exception ex)    {    }    }
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            2 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            So if you are working with TechDocs and the sample code - please understand that code snippets by themselves do not reveal what you need to know / understand.I recommend for Android Studio developers - to use / look at the 123RFID Mobile app and Source code.https://www.zebra.com/us/en/support-downloads/software/demo/123rfid-mobile.htmlFor Xamarin - the RFID SDK for Xamarin Android Devices - has the sample code in the SDK - Look for the &quot;ZebraRFIDXamarinDemo&quot; project in the SDK.  (There is also a signed APK if you want to just sideload / run the app and look at code offline / not debugging.)https://www.zebra.com/us/en/support-downloads/software/developer-tools/zebra-rfid-xamarin-sdk-and-demoapp-for-android.html For Either - you are looking at the &quot;Tag Write&quot; Activity / operation - and you will then understand all the surrounding code you need to work with to make an effective RFID app.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

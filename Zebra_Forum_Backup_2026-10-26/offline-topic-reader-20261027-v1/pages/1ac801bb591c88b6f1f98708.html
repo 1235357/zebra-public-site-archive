@@ -1,0 +1,421 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MC9190 RegMerge not working with Error Message</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MC9190 RegMerge not working with Error Message</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/28844; original snapshot: threads/01950.html; SHA-256: 13a42d2d0fa937aa1c3ce86d793acc478234b6c44312a2f9006a17003fa413f1</small><pre id="topic">
+
+    
+        MC9190 RegMerge not working with Error Message
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            419
+          
+                
+                  
+            
+            6
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We have a customer that is trying to make 1 simple Registry setting change.  I instructed him how to do it.  From my experience it always works, but not this time.  The REG file is correct.  When he placed it in the \application directory then cold booted an error was presented.  Checking with regedit revealed that the REG setting did not occur.   I was able to reproduce the same error on a separate device using the same OS image files.   Error  Msg Details:    DwnldApp Error    Error during update:    Cause: Package file not found,   Function: PostDownload, Line: 2799,   Hr: 0x1, GetLastError: 6 
+When NO reg file is in the \application directory, no error is presented.  If any legitimate REG file is in the \application directory, we get the same error.  This tells me that RegMerge is executing and seeing the file then failing to merge the setting due to the error.  But if NO REG file is present, RegMerge must be checking but finding no REG file, then ending without error.  So it is the execution of the Merging function that is failing.  Missing dll or something?
+I have never seen this before.  However, if one was to tap the REG file on the device, it merges fine without error.  It is only when it supposed to happen during a cold boot do we get the error.
+Has anyone seen this or have any ideas?
+Thank you.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      6 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mark Mann
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Does the issue happen when you do it manually?    If so maybe the Registry file has the wrong attribute or has the wrong encoding style (Unicode vs ANSI - should be ANSI).    Hope this helps.    Mark
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            As it turns out, based on the link below:  http://devcentral.motorola.com/view/1717/view.aspx  Cold Boot does not force .REG files to be merged on WM5 and up.  We were forcing a &#x27;cold boot&#x27; by going into the UPDATE mode and cancelling to force a cold boot.&amp;nbsp; That does not work properly and it was giving us the Dwnld Error.&amp;nbsp; This is how the problem was getting confused with 2 issues.  As it turns out, just as Allen Herrod&#x27;s post indicates, we needed to set the flag to 0, then reboot.  [HKEY_LOCAL_MACHINE\Drivers\BuiltIn\REGMERGE]  &quot;SkipMerge&quot;=dword:0  Only after this flag was set, then the REG file got read in and merged.  However, this kind of defeats the purpose.&amp;nbsp; We did not want to do a &#x27;clean boot&#x27;, We wanted to merge a reg file without any user interaction.&amp;nbsp; In order to force a regmerge on boot without a &#x27;clean boot&#x27;, we will&amp;nbsp;need to interact and set the SkipMerge flag to 0.&amp;nbsp; Then what is the point?&amp;nbsp; We might as well tap our REG file we have been trying to merge all along.  The only way I can see us getting this REG file merged without clean booting&amp;nbsp;is by using symscript on Windows startup.&amp;nbsp; We can push the file to the device remotely, then warm boot.&amp;nbsp; No user interaction required.  Thank you everyone for your assistance.&amp;nbsp; I apologize for confusing the issue.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            As Richard said, these sound like OSupdate errors.&amp;nbsp; Is it possible that you have OSupdate files in the root of your SD card or in \temp that are having some effect here?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Some suggest it is the OS Update error.&amp;nbsp; But I ask, if it is, then why is there no error when no &#x27;.REG&#x27; file is present in the \application directory?&amp;nbsp; This error is only seen when it needs to process a &#x27;.REG&#x27; file and it fails to do so.&amp;nbsp; Could the RegMerge.dll be corrupted? or perhaps device.exe?    I tried to take a copy of the dll from a different MC device, but I can not able to copy it into the MC9190.&amp;nbsp; I don&#x27;t know how to update the RegMerge.dll or device.exe.&amp;nbsp; I guess it is time to bump it up to tech support?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I used UltraEdit32 and specifically saved it as a UTF-8 file like you suggested.&amp;nbsp; Still get the same error.&amp;nbsp; This error occurs even&amp;nbsp;if you export the Fusion Options and Profiles to the \application directly.&amp;nbsp; Meaning, those files should be in the correct format since they were generated by Fusion on the device itself.  Thank you for the suggestion, it was worth a try,&amp;nbsp;but it must be something else causing the problem.   Something else to note:&amp;nbsp;&amp;nbsp;I decided to use SymScript to force a &#x27;cold boot&#x27;.&amp;nbsp; I did not get the error, but the REG file settings were never merged, as if it were a &#x27;warm boot&#x27; rather than a cold one.&amp;nbsp; So that&amp;nbsp;tells me that RegMerge did not even fire during a SymScript cold boot. &amp;nbsp;Something is amuck with this OS load I suspect.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Here is the file of the error (screen shot)&amp;nbsp;that failed to stay attached on my original&amp;nbsp;post.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

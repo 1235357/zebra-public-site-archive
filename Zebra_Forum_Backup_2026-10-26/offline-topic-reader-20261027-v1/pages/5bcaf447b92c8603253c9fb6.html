@@ -1,0 +1,358 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Error 500 when trying to send file to printer via API</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Error 500 when trying to send file to printer via API</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/error-500-when-trying-send-file-printer-api; original snapshot: threads/00986.html; SHA-256: ccfc81acb75dd62f3e051f3b0683cca6f7ac78aed77fbc6f271b67cd7e1c63c9</small><pre id="topic">
+
+    
+        Error 500 when trying to send file to printer via API
+
+
+        
+      
+                        
+                    
+            T
+          
+          Tim Schelpe
+          5 years ago
+        
+        
+      
+        
+            
+                  
+            
+            951
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi
+I&#x27;m trying to send files to the printer from Microsoft Business central (AL coding language).
+My request contains the apikey and tenant headers and my body looks like this:
+--ac75c5016-d2f8-41a2-a2d5-494b247babcbf
+Content-Disposition: form-data; name=&quot;sn&quot;
+D6J211603681
+--ac75c5016-d2f8-41a2-a2d5-494b247babcbf
+Content-Disposition: form-data; name=&quot;zpl_file&quot;; filename=&quot;label.txt&quot;
+Content-Type: text/plain
+^XA ^FO50,50^ADN,36,20^FDHello World^FS ^XZ
+--ac75c5016-d2f8-41a2-a2d5-494b247babcbf--
+I get following error in return:
+{&quot;fault&quot;:{&quot;faultstring&quot;:&quot;Execution of JS-ExtractPrinterList failed with error: Javascript runtime error:
+&quot;TypeError: Cannot read property
+&quot;1
+&quot; from null. (JS-ExtractPrinterList.js:7)
+&quot;&quot;,&quot;detail&quot;:{&quot;errorcode&quot;:&quot;steps.javascript.ScriptExecutionFailed&quot;}}}
+which is a server-side (500) error.
+Can anyone tell me if I&#x27;m missing something or did something wrong?
+Thanks in advance for any help
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            First, make sure you are able to print through the Curl command with your apikey, tenant ID, printer SN and the file. The Curl format is shown below. This is to ensure that we have everything set up properly. You can also verify your settings with the JavaScript demo code, which can be downloaded from GitHub - Print From the Cloud Demo. Then we can focus on the AL code.
+curl -v -H &quot;apikey: yourApikey&quot; \
+     -H &quot;tenant: yourTenantID&quot; \
+     -F &quot;sn=XXRBJ143300207&quot; \
+     -F &quot;zpl_file=@HelloWorld.txt&quot; \
+     https://stage-api.zebra.com/v2/devices/printers/sendBy just looking at the multipart form-data body, I don&#x27;t see any wrong. But I definitely would look into the AL code to see if any extra headers being added before it sends the request out.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              T
+            
+          
+                
+          
+            Tim Schelpe
+          
+          
+            5 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I was able to send files to the printer form postman, which does the same as curl as far as I&#x27;m aware.
+The headers in AL are added like this: (apikey and tenant left empty for obvious reasons)
+vHttpContent.GetHeaders(vHttpHeaders);
+        vHttpHeaders.Add(&#x27;apikey&#x27;, &#x27;&#x27;);
+        vHttpHeaders.Add(&#x27;tenant&#x27;, &#x27;&#x27;);
+        vHttpHeaders.Remove(&#x27;Content-Type&#x27;);
+        vBoundary := generateBoundary();
+        vHttpHeaders.Add(&#x27;Content-Type&#x27;, &#x27;multipart/form-data; boundary=--&#x27; + vBoundary);
+the request itself is configured like this:
+        vHttpRequest.Method(&#x27;POST&#x27;);
+        vHttpRequest.SetRequestUri(&#x27;https://api.zebra.com/v2/devices/printers/send&amp;#039;);
+and I send the request like this:
+       vHttpClient.Post(&#x27;https://api.zebra.com/v2/devices/printers/send&amp;#039;, vHttpContent, vHttpResponse);
+The response then contains the error with status code 500
+When debugging the code, the debugger only shows the headers I manually added. Debugging APIs is kind of a mess in AL.
+Thank you for your help and let me know if I need to provide more information.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I am unfamiliar with AL language. The 500 error indicates a server internal error, which means that the server cannot process the request. In most cases, the 500 error is caused by the request body. Is there a way to output the request body from the code above, so that we can visually check if anything is missing or extra in the multipart form-data?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              T
+            
+          
+                
+          
+            Tim Schelpe
+          
+          
+            5 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            --ac75c5016-d2f8-41a2-a2d5-494b247babcbf
+Content-Disposition: form-data; name=&quot;sn&quot;
+D6J211603681
+--ac75c5016-d2f8-41a2-a2d5-494b247babcbf
+Content-Disposition: form-data; name=&quot;zpl_file&quot;; filename=&quot;label.txt&quot;
+Content-Type: text/plain
+^XA ^FO50,50^ADN,36,20^FDHello World^FS ^XZ
+--ac75c5016-d2f8-41a2-a2d5-494b247babcbf--
+this is an exact output of the body
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

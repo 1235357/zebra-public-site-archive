@@ -1,0 +1,206 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>What is the easiest way for me to print to a Zebra printer from a Java Web application</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>What is the easiest way for me to print to a Zebra printer from a Java Web application</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/26087; original snapshot: threads/resume-00399.html; SHA-256: 0982a74c0d664357fdf8e7e4007e0a60c4c49778c0151c1a03dd9517bb5fb874</small><pre id="topic">
+
+    
+        What is the easiest way for me to print to a Zebra printer from a Java Web application
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            1191
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We have a Java Web application that uses Spring MVC and Hibernate on the back end and JSP/JavaScript/jQuery on the front end. We have developed a web service integration with a FedEx web service that produces labels in various formats including ZPL2 and EPL2 format.
+It produces other, non-Zebra formats, but our users need to print to some Zebra printers that are attached to their PCs. I&#x27;m told these are model ZP505 printers. We have a solution for all the non-Zebra printers, which is to just send the image data to the browser, let it render it, then open up a printer dialog in JavaScript. However, we can&#x27;t do this with Zebra printers because we have no &quot;helper apps&quot; or plug-ins for the browsers that understand the Zebra format and can render the image.
+So a different means of sending the image data (which we store in our database as a Blob) to the printer is needed. I thought maybe your Browser Print product might be the way to do it, but when I found out the model of printers our users are using are not in the list of supported printers for that format, I gave up on that product.
+I saw some posts from as recent as 2019 about a Java API. That might work. Or we could possibly do JavaScript. We can probably get the Zebra commands over to the web page, but what we need is a way to send those to the printer, unadulterated. After all, they are only text, but they need to go straight to the printer w/o modification.
+What would be the Developer Teams recommendation for this? We have already spent a great deal of time on the FedEx integration because it didn&#x27;t seem to follow the normal SOAP protocols and we had lots of problems being behind a firewall that no one seemed to be aware of and seemed to think could be taken care of with just certificates. I don&#x27;t want to spend weeks or months writing yet another interface just to get the Zebra printers working. The other problem is I have no access to a Zebra printer myself as a developer, so this makes things even trickier.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            David Garratt
+          
+          
+            5 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Could you &quot;share&quot; the printer queue on the local PC using either a Generic Text Only Driver or one from Seagul Scientific - then send ZPL directly from the server to the queue ? I assume the printer does not have a network card ?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            ZP505 is a model designated to FedEx. This model has USB connection, but doesn&#x27;t have Wi-Fi or internet connection. It&#x27;s equivalent to GK420 printer model. It should work for Browser Print. If your objective is to serve the customers who use ZP505 printers only, then Browser Print is probably the only solution for your web app.
+Nowadays, most of Zebra printers are Link-OS printers, which are cloud-connect capable. If your customers would like to upgrade their printers to Link-OS printers, then you could use a cloud-based printing solution (Use the SendFileToPrinter API for Your Cloud-Based Printing Needs) in stead of Browser Print. With SendFileToPrinter, a REST API, you can send print jobs in ZPL&amp;nbsp;from anywhere (computers or mobile devices) to any of your Link-OS printers in the cloud. Hope this helps.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,151 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>TC78 + EMDK Strange behavior after reboot</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>TC78 + EMDK Strange behavior after reboot</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/tc78-emdk-strange-behavior-after-reboot; original snapshot: threads/00348.html; SHA-256: 83665ca870497489890993ea789ba794cb046a1dfe42801852c9b9aaa156ae8a</small><pre id="topic">
+
+    
+        TC78 + EMDK Strange behavior after reboot
+
+
+        
+      
+                        
+                    
+            C
+          
+          christophe bernard
+          9 months 4 weeks ago
+        
+        
+      
+        
+            
+                  
+            
+            347
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello all,we have an applicaiton who used again the emdk for scanning barcode.We need to migrate to datawedge but actually it&#x27;s not possible to find the time ..This app was used on a TC75X under android 7.1.2 without any problem.The same app on the device TC78 under android 13 meet some problem.After a reboot -&gt; if i start the app when android is load, and try to scan the app try to make a back :)After a reboot -&gt; if i wait little time more or less 10 / 15 seconds, open the app and scan the apps work ..Any one have an idea maybe ..How to solve this ?I&#x27;ve try to find some parameter inside the TC78 FAST BOOT or something like this but actually I don&#x27;t have any solution ..thanks a lot and I wish the best for 26 all the best on Zebra :)christophe
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              N
+            
+          
+                
+          
+            Nicola De Zolt
+          
+          
+            9 months 3 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Christophe, use https://techdocs.zebra.com/emdk-for-android/14-0/api/reference/com/symbol/emdk/emdkmanager#getInstanceAsync-com.symbol.emdk.EMDKManager.FEATURE_TYPE-com.symbol.emdk.EMDKManager.StatusListener-
+getInstanceAsync takes care of the startup delay: This method is an asynchronous call and requests object instance for the specified feature type and object is returned through the status listener callback when the feature is initialized and ready to use. Ex:The Profile Manager related components will take few seconds to initialize for it to be used after device booted. Refer to this example where I used the getInstanceAsync  https://github.com/NDZL/EMDK-EXERCISER-2024/blob/eaebd8c8bae0c46794aa0dfff241d43781debab7/EMDK.BARCODE/src/main/java/com/zebra/emdk_barcode/ZebraEMDKBarcode.java#L50 
+ 
+ If the application tries to use the getInstance(com.symbol.emdk.EMDKManager.FEATURE_TYPE) instead to get the profile manager object and sets the profile during the device boot will result in error because the underlying Profile manager is not ready. In such a scenario, EMDK sends an error FEATURE_NOT_READY_TO_USE. Where application can capture this re-try later.
+https://techdocs.zebra.com/emdk-for-android/14-0/api/reference/com/symbol/emdk/emdkresults.status_code#FEATURE_NOT_READY_TO_USE 
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

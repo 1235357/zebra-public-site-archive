@@ -1,0 +1,328 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>TC21 / TC26 app crash after several days idle</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>TC21 / TC26 app crash after several days idle</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/tc21-tc26-app-crash-after-several-days-idle; original snapshot: threads/00980.html; SHA-256: 6ce7ce8637babed12ff1faf786cce8e71446a1f934dc5d901de4f53805ad31d4</small><pre id="topic">
+
+    
+        TC21 / TC26 app crash after several days idle
+
+
+        
+      
+                        
+                    
+            T
+          
+          Tim Coulter
+          5 years ago
+        
+        
+      
+        
+            
+                  
+            
+            43
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We have a Xamarin app that runs on iOS and Android and has been stable and in widespread use for a couple of years.
+When running on Zebra TC21 / TC26, this app exhibits several several strange behaviours:
+[1] It fails to log any activity to our Loggly account (whereas it logs correctly when running on all other device types).
+[2] It fails to log crashes to App Center (whereas crash data is correctly captured from other device types)
+[3] It crashes on startup if left idle for a few days, apparently because Zebra&#x27;s Android has recycled the main activity. It is not entirely clear what is happening here, and the complete lack of any log data makes this very difficult to diagnose.
+On the assumption that the crash issue is occurring during a suspend / resume cycle, I have tried to reproduce it by setting the Android background process limit to 1 and switching to another app and back again. This correctly suspends and resumes our failing app, without any crash. However, the app will reliably crash if the device is left idle for 3 or 4 days.
+So, I have a couple of questions:
+[1] Does Zebra TC21 / TC26 use a customized version of Android that might explain this difference in behaviour (compared with generic Android devices)?
+[2] Can you suggest a procedure that would help me to reproduce the crash in real time, while debugging?
+Thanks, in advance, for any suggestions.
+Tim
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            5 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Tim,
+My guess would be that there could be some sort of memory leak that, after a few days, causes a crash in your application. I&#x27;m not aware of any significant changes to the TC21/26 OS builds that might cause the behavior you&#x27;re describing.
+In terms of debugging, I&#x27;d recommend use RXLogger to capture device logs and review those to see if it sheds any light on the cause.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              T
+            
+          
+                
+          
+            Tim Coulter
+          
+          
+            5 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you for your response and your suggestions, JS6845.
+Since posting my original question, I have succeeded in getting logging to work on the device (which I achieved on my test device simply by factory resetting it). This means that I am now able to track exactly what the app is doing, when in the idle state. As far as I know, it should be doing nothing - just waiting to be resumed - so I am sceptical that a memory leak is the culprit, but hopefully the logs will reveal all.
+I will also definitely experiment with RXLogger. I wasn&#x27;t even aware that this existed, but it could be very helpful.
+I will post here again when I have a better understanding of what&#x27;s happening. Thanks again.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              T
+            
+          
+                
+          
+            Tim Coulter
+          
+          
+            5 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            On an unrelated issue, it&#x27;s pretty disappointing to see that this website publishes my email address on a publicly visible page. I wonder if that&#x27;s in the Zebra privacy policy?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Tim,
+Thanks for your feedback - I believe you can change this via your account page (display name) though I do agree that ideally this should not default to your email address. I&#x27;ll be sure to pass your feedback on.
+Edit: A fix has been created for this and will be pushed live in the next couple of weeks.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

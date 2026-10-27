@@ -1,0 +1,254 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>EB 1.4 on TC8000 - Controlling Sound Issue</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>EB 1.4 on TC8000 - Controlling Sound Issue</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/32979; original snapshot: threads/resume-00132.html; SHA-256: 477f23a32d76a43dbd366100caa9396753411f5aac55c23c7097d64341b9a296</small><pre id="topic">
+
+    
+        EB 1.4 on TC8000 - Controlling Sound Issue
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            141
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi All,
+ 
+With EB 1.4 on a TC8000, I am having some trouble with sound.
+ 
+#1) I cannot turn off the default sound for when a bar code is scanned.
+I&#x27;ve tried both in the config.xml file, and with the following JavaScript:
+  
+EB.Barcode.decodeSound = &quot;&quot;;
+  
+ EB.Barcode.decodeDuration = 0;
+  
+ EB.Barcode.decodeFrequency = 0;
+   
+ EB.Barcode.decodeVolume = 0;
+and with Duration / Frequency / Value all = 1.
+But I always get the default beep when scanning any bar code.
+ 
+#2) There is a delay when attempting to play WAV files.
+I&#x27;ve added a file to the top of my page&#x27;s javascript: var badScanSound = new Audio(&#x27;/sounds/badscan.wav&#x27;);
+and then when I need to play it, I simply do badScanSound.play();
+But it delays about 500 milliseconds before the sounds actually plays. I&#x27;ve edited the wav to ensure that it has no leading space whatsoever, but there is a significant delay.
+ 
+What I want to do, is to turn OFF the default sound when any bar code is scanned, and issue either a good scan sound or a bad scan sound based on whether the bar code is a valid code at that particular time.
+ 
+I&#x27;m writing a warehouse picking app, and really only want a good sound to play when the user scans a product that is valid for the pick, and issue a bad scan sound when any other/unknown bar code is scanned.
+ 
+But without being able to turn off the default bar code scan sound, and with the delay before any of my sound wav&#x27;s play, I&#x27;m unable to get this sort of behavior to occur and occur fast enough.
+ 
+Anyone have any ideas?
+ 
+Thank you.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Abhineet Agarwal
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Dear Gord,
+Please check the below details :
+Applicable for all version of EB and upcoming release EB 1.5:
+TC8000 Android KK version is supported as of now from EB application.
+Sound tags such as , , does not take effect on any Android devices from EB application.
+Barcode properties like &#x27;decodeVolume&#x27;, &#x27;decodeFrequency&#x27;, &#x27;decodeDuration&#x27; and &#x27;scanTimeout&#x27; which is being accessed through EB namespace does not take effect on any Android devices from EB application.
+From Upcoming Release EB 1.5: 
+Slight delay will occur on every enable if the custom decode sound is set either via config tag  or via &#x27;decodeSound&#x27; property of Barcode API.
+The &#x27;decodeSound&#x27; property of Barcode API does not take effect on Android device for external scanner hardware such as RS507.
+Config tag  and &#x27;decodeSound&#x27; property of Barcode API are not supported on Android JB and WT6000 Android L device.
+&amp;nbsp;&amp;nbsp; Note: 
+&amp;nbsp; Config tag  and &#x27;decodeSound&#x27; property of Barcode API was not supported till date on Android platform on any version of EB. Last released version is EB 1.4
+&amp;nbsp; The support for config tag  and &#x27;decodeSound&#x27; property of Barcode API will only be available from upcoming EB 1.5 release.
+For your query, please check the below details:
+1. Properties like EB.Barcode.decodeDuration, EB.Barcode.decodeFrequency &amp;amp; EB.Barcode.decodeVolume is not supported on Android Platform from EB application.
+2. From upcoming EB 1.5 release, one can set custom decode sound when barcode is scanned using EB 1.X Barcode API. One can do the following as mentioned below:
+Either set EB.Barcode.decodeSound = &#x27;file:///sdcard/.wav&#x27;;
+Or set configuration tag  to valid filename in Config.xml as mentioned in below example:
+Please let me know if there are any further doubts.
+Please also let me know if you need EB 1.5 beta binaries or else you need to wait till EB 1.5 is released and available in Launchpad.
+Thanks &amp;amp; Regards,
+Abhineet
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              E
+            
+          
+                
+          
+            Edward Correia
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Gord- Sorry you&#x27;re having trouble. There&#x27;s a bug in the decodeSound method that prevents apps made with EB 1.4 and earlier from using it.&amp;nbsp; EB 1.5 fixes this and will support the decodeSound method. It&#x27;s expected to be released any day now.&amp;nbsp; Hope that helps. 
+Regards,
+Eddie Correia
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

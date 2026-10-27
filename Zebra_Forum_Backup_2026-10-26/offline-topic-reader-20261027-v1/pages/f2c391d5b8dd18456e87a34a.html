@@ -1,0 +1,274 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Error writing to connection: Broken pipe</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Error writing to connection: Broken pipe</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/33117; original snapshot: threads/resume-00147.html; SHA-256: e8df095b96d5d9fe87ce1a8849f73298014e019b1e45414dd870321dfe40a436</small><pre id="topic">
+
+    
+        Error writing to connection: Broken pipe
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            1203
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi!
+I occasionally run into an issue where my Android is apparently paired (verified by looking in Android settings, and also had just accepted via the dialog on both the TC70 and the QLn320). Also, the Link.OS connection is connected and open (similar to below):
+  if (connection != null)  {    if (!connection.IsConnected)        connection.Open ();
+ 
+But when sending a connection.Write command, I receive an error:
+Message: Error writing to connection: Broken pipe
+ 
+Part of the stack trace:
+at Zebra.Sdk.Comm.ConnectionA.Write (System.Byte[] p0) [0x0005c] in C:\repos\xamarin-sdk\Binding          Libraries\ZSDK_ANDROIDX\ZSDK_ANDROIDX\obj\Release\generated\src\Zebra.Sdk.Comm.ConnectionA.cs:921
+ at LinkOS.Plugin.ConnectionImplementation.Write (System.Byte[] data) [0x00000] in C:\repos\xamarin-sdk\Link_OS_SDK_for_Xamarin_Portable\LinkOS\LinkOS.Plugin.Android\ConnectionImplementation.cs:162
+ 
+Any suggestions on how to handle this smoothly? Thanks!
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anderson Pinheiro
+          
+          
+            7 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello, after 3 years ...
+You can check the bluetooth connection.
+I had the same issue and the problem was that the bluetooth connection was closed and reopened before the print connection was closed. So when I call the write method to print another string, the errors are thrown.
+I solved the error by creating and closing the two connections together.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Peter,
+This is usually caused by the printer powering off unexpectedly or going out of range.&amp;nbsp; I&#x27;m not sure if this applies to you.&amp;nbsp; The IsConnected() code shows it as open because the connection was not specifically closed properly (Android native functionality).&amp;nbsp; The way to handle this properly is to catch the exception and dispose of the connection object, then recreate it.&amp;nbsp;
+Robin
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Manuel Caicedo…
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Peter,
+Are you using the LINK-OS Xamarin component?&amp;nbsp; Otherwise, could you give us more details about the version of the LINK-OS you are using in your integration project. Also, The version of the firmware of the printer will be useful to analyze the context of the error generated. 
+Thanks, 
+MC
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

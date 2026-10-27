@@ -1,0 +1,221 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>[C#.NET] PrintStoredFormat doesn&#x27;t make printer print the stored format file</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/forum/26079; snapshot threads/resume-00395.html; SHA-256 018cecd6a00cf0abbe2043be0aaa07c6177957714040e2c94a797eaeb05da128. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">[C#.NET] PrintStoredFormat doesn't make printer print the stored format file</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            A
+          </div>
+          <div class="forum-topic__author-name">Anonymous</div>
+          <div class="forum-topic__timestamp">5 years 4 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            273
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>I am using Zebra SDK v2.15.2634 to develop Xamarin.Android application. It looks good until I try to execute following line:<br>
+                var btAddress = "48:A4:93:89:63:97";<br>
+                Connection connection = new BluetoothConnection(btAddress);<br>
+                connection.MaxTimeoutForRead = 30000;<br>
+                ZebraPrinter printer;<br>
+                try<br>
+                {<br>
+                    connection.Open();<br>
+                    // Successful printed.<br>
+                    //var bytes = Encoding.UTF8.GetBytes("^PON^LH0,0^FWN^XA^FO150,200^FDHelloWorld^FS^XZ");<br>
+                    //connection.Write(bytes);<br>
+                    printer = ZebraPrinterFactory.GetInstance(connection);<br>
+                    Dictionary vars = new Dictionary<br>
+                    {<br>
+                    };<br>
+                    printer.PrintStoredFormat("E:HELLO2.ZPL", vars, "utf-8");<br>
+                }<br>
+                catch (ConnectionException e)<br>
+                {<br>
+                    Console.WriteLine(e.ToString());<br>
+                }<br>
+                catch (ZebraPrinterLanguageUnknownException e)<br>
+                {<br>
+                    Console.WriteLine(e.ToString());<br>
+                }<br>
+                catch (Exception e)<br>
+                {<br>
+                    Console.WriteLine(e.ToString());<br>
+                }<br>
+                finally<br>
+                {<br>
+                    connection.Close();<br>
+                }<br>
+The printer showed it got bluetooth activity by flashing the icon on display. But nothing print out.<br>
+Environment:<br>
+- Printer model: ZQ520<br>
+- Zebra SDK v2.15.2634<br>
+- Visual Studio 2019<br>
+- Xamarin.Android<br>
+FYI:<br>
+- There is HELLO2.ZPL file on the printer's flash storage.<br>
+- Successfully printed, if I send this file to printer via Printer Tools Program.<br>
+- There is no problem with connection, my app can connect to printer successfully.<br>
+- I can execute BluetoothConnection.Write() method successfully with printed slip, on following code:<br>
+var bytes = Encoding.UTF8.GetBytes("^PON^LH0,0^FWN^XA^FO150,200^FDHelloWorld^FS^XZ");<br>
+connection.Write(bytes);<br>
+The stored file is the problem.<br>
+- I used both manual created ZPL file and from Zebra Designer 3, both stored on the printer.<br>
+- I tried to PrintStoredFormat() with both of them. Nothing happened.<br>
+- The code has no exception and the connection was closed successfully.<br>
+How to reproduce the project and file I attached:<br>
+- Please store "HELLO2.ZPL" (manually created) and GT.ZPL (Zebra Designer generated) on the ZQ520<br>
+Additional question<br>
+- Do we have to name file in capital letter before send to printer? for ex. hello2.zpl<br>
+- if not, do we still to put its into capital letter when we refer to its path? for ex. printer.PrintStoredFormat("E:HELLO2.ZPL", vars, "utf-8");</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-47908" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Based on the code snippet above, there are a few things I'd like to comment on.<br>
+1. The filenames of the files stored on the printer are&amp;nbsp;case insensitive. You can use either uppercase, lowercase or mixed cases. They all should work.<br>
+2. It's unclear if the try{} block is executed on a UI thread or a background thread. When interacting with the printer, such as getting printer status or executing print functions via Link-OS SDK API, please do not use the UI thread. Always spin off a separate thread when interacting with the printer.<br>
+3. After calling printer.PrintStoredFormat() API, please add a delay before closing the connection to make sure that the data has been transmitted to the printer at Bluetooth link layer. The return of&amp;nbsp;printer.PrintStoredFormat() API doesn't necessary mean that the entire data has been sent to the printer at the link layer. The suggested code is below. Hope this helps.</p>
+<p>await Task.Run(async () =&amp;gt; {<br>
+    try {</p>
+<p>        connection.Open();</p>
+<p>        ZebraPrinter printer = ZebraPrinterFactory.GetInstance(connection);</p>
+<p>        Dictionary vars = new Dictionary { };</p>
+<p>        printer.PrintStoredFormat("E:HELLO2.ZPL", vars, "utf-8");</p>
+<p>        await Task.Delay(1000);</p>
+<p>    } catch (Exception e) {<br>
+        await DisplayConnectionStatusAsync($"Error: {e.Message}", Color.Red, 3000);<br>
+    } finally {<br>
+        try {<br>
+            connection?.Close();</p>
+<p>        } catch (ConnectionException) { }<br>
+    }<br>
+});&amp;nbsp;</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/forum/26079%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/forum/26079%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

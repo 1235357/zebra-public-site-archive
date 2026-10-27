@@ -1,0 +1,215 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Elemez must be turned off</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Elemez must be turned off</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/30129; original snapshot: threads/02115.html; SHA-256: 3af0478f8e4c82b5fc875c8afc96e7b015b83b9fc054380b3b39df0194e200eb</small><pre id="topic">
+
+    
+        Elemez must be turned off
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            32
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  This is actually similar to the topic raised earlier by Horst.
+Russian beta-customer has reported today that they have spent ~$500 extra on cellular connetivity during two weeks of field test because the device sends extra kilobytes each two-three minutes and they quickly got out of their quite limited plan. I believe this is because of Elemez and probably other hidden things enabled by default. Because of this the customer had to completely turn off mobile internet access which limits the functionality of their applcation and narrows the field test scope.
+Thus:
+1. I need an approved way to turn Elemez off together with other hidden things (if any) that send the diag data over network in background - now and ASAP.
+2. I believe this functionality must be disabled by default and can be turned on only manually and only by customer&#x27;s permission. Apart from the extra traffic cost these things create privacy concerns. We&#x27;re promoting our MX in particular as a way to protect customers from Google services and at the same time introduce the similar (as it seen by customers at least)
+Thanks,
+Valery
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Herbert De Jong
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            CQ 167694 was created today, to get an automated method to turn off elemez even when the system app had updated itself and raw internet is avaiable on the terminal.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Valery,
+ You can try using the method detailed below which will allow time restriction on the use of WAN for Elemez data transfer. One additonal point - if you use AccessMgr (via the EMDK or StageNow) to create a whitelist for apps to run on the unit, it will automatically stop Elemez and other non-whitelisted apps from running or being restarted/reinstalled.
+Create a text file called exactly “elemez.properties” with the following text and place it in either /Internal for devices without a physical SD card or the root of the SD card.&amp;nbsp; The file is read upon reboot .
+# the name used for the group of devices using this configuration set.
+name = TC75
+# the time range that elemez should not send cellular data. The times are specified as 24 hour clock, and refer to device local time.
+# This example blackout cellular data between 0600 AM and 0700 AM in device local time. This means NO data will be sent over cellular connections between 6 and 7 AM.
+cellular-blackout = 0600-0700
+# To completely block WAN data use: cellular-blackout = 0000-2359
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

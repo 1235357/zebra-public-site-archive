@@ -1,0 +1,572 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Zebra EMDK Setup - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/emdk-for-android/latest/guide/setup/</code><br>Observed final URL: <code>https://techdocs.zebra.com/emdk-for-android/latest/guide/setup/</code><br>Raw source: <code>raw/0650bf94029ee912b8b01329.html</code><br>Raw SHA-256: <code>8715f59c614a91f53e8457e316cf3a093228da6d816244eb0c084b55d5293d0b</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                           EMDK For Android 15.1
+                          
+                          
+                                EMDK For Android 4.2
+                                EMDK For Android 4.0
+                          
+                                            
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Set Up
+                            
+                        
+                        
+                            
+                                    Tutorials
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Profile Manager
+                            
+                        
+                        
+                            
+                                    FAQs
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Zebra EMDK Setup
+                        
+                    OverviewPrerequisitesEnable EMDK SDKBuild ConfigurationEMDK-A 9.1.1 and OlderEMDK-A 9.1.1 and NewerInstall/Update EMDK PluginTo set up the EMDK Plugin:Android Studio JellyfishUninstall EMDKWindowsMac OSTo unhide Mac OS folders:
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Zebra EMDK Setup
+                                    
+                                            EMDK For Android
+                                            15.1
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+This document describes how to set up macOS and Windows computers running Android Studio to work with Zebra&#x27;s EMDK for Android software development kit. Android Studio enables Java developers to easily create powerful line-of-business apps for Android. EMDK extends Android Studio with tools to interface with and configure Zebra Android devices and their scanners, ports and other peripherals needed for data acquisition or other enterprise application requirements.
+
+Prerequisites
+
+The following software is required to use EMDK for Android:
+
+Windows
+
+
+Windows 7, 8, 8.1, 10 (32- or 64-bit)
+
+Android Studio 2.2 or later
+
+A Java Development Kit (JDK)
+
+
+macOS
+
+
+macOS 10.10.5 Yosemite or later
+
+Android Studio 2.2 or later
+
+A Java Development Kit (JDK)
+
+
+Targeting Android 11
+
+IMPORTANT: Due to package visibility restrictions imposed by Android 11 (API 30), EMDK apps targeting A-11 (or later) must include the following &lt;queries&gt; element in their AndroidManifest.xml file:
+
+  
+  &lt;queries&gt;
+     ...
+     &lt;package android:name=&quot;com.symbol.emdk.emdkservice&quot; /&gt;
+     ...
+  &lt;/queries&gt;
+
+Apps targeting API 29 (or earlier) have no such restriction; no change to the &lt;queries&gt; element is required.
+
+
+
+Enable EMDK SDK
+
+
+  IMPORTANT: • Please install Android Studio before proceeding. • Be sure to read and understand the licensing agreement(s) of any selected JDK or SDK.
+
+
+This section includes the minimum steps for enabling EMDK to build productivity apps targeting Zebra devices running Android. To add the capability to also configure device settings from a new or existing app, complete this section and the EMDK Plugin section.
+
+To enable the EMDK SDK in Android Studio:
+
+
+a. In Android Studio, go to the app module in the Android project in which to use EMDK.
+b. Navigate to the build.gradle file:
+
+Click to enlarge; ESC to exit.
+c. Add the following line to the dependencies section:
+
+    
+        dependencies {
+        compileOnly &#x27;com.symbol:emdk:x.x.x&#x27; //  e.g. ‘com.symbol:emdk:7.6.10’
+            ...
+        }
+
+From the menu bar, go to Android Studio &gt; Preferences &gt; Build, Execution, Deployment &gt; Compiler.
+
+Check the &quot;Sync project with Gradle...&quot; box shown below:
+
+Click to enlarge; ESC to exit.
+
+Enable Android permissions by modifying the application&#x27;s Manifest.xml file:
+
+ 
+ &lt;manifest xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot; package=&quot;com.symbol.basicscansample1&quot;&gt;
+ &lt;uses-permission android:name=&quot;com.symbol.emdk.permission.EMDK&quot; /&gt;
+    &lt;application&gt;
+ ...
+    &lt;/application&gt;
+ &lt;/manifest&gt;
+
+For apps targeting devices running Android 11 (API 30) or later, add the following line in the &lt;queries&gt; element of the app&#x27;s Manifest.xml file:
+
+ 
+ &lt;queries&gt;
+    ...
+   &lt;package android:name=&quot;com.symbol.emdk.emdkservice&quot; /&gt;
+ &lt;/queries&gt;
+
+Enable the EMDK library in the application node of the manifest:
+        :::xml
+        
+            
+            
+            ...
+            
+         
+
+
+
+EMDK APIs are now ready to use.
+
+
+
+ Build configuration updates might be required. See next section.
+
+
+
+
+
+Build Configuration
+
+ The public repository for Zebra’s EMDK-for-Android API SDK binaries has changed from JFrog&#x27;s JCenter to Maven.
+
+This repo change might require updates to a project&#x27;s build.gradle and/or other configuration files to resolve SDK dependencies. Developers can to continue to use JCenter as a read-only mirror for Java packages, but JCenter is deprecated, and will no longer accept new packages or updated versions. Changes for all possible build scenarios are detailed below, and are divided according to EMDK-A version 9.1.1 and later, and versions prior to v9.1.1.
+
+ To help provide a seamless transition, EMDK for Android 9.1.1 binaries are currently available in both JCenter and Maven repos. The new mavenCentral() entry should allow EMDK to resolve dependencies for older releases successfully without any further change in the build.gradle file.
+
+
+
+EMDK-A 9.1.1 and Older
+
+Apps Already Compiled
+
+If the Gradle plugin hasn&#x27;t been updated in the SDK, the recent repo changes will have no affect on binaries already compiled with older EMDK releases and deployed to devices.
+
+
+
+Compiling With Older Gradle
+
+Apps compiling with Gradle versions prior to v7.0 should be able to continue to resolve EMDK dependencies successfully without any change to the JCenter repo reference, and there should be no deprecation warnings during compilation.
+
+ Zebra recommends adopting the latest options as soon as possible to avoid possible build and/or SDK dependency issues in the future.
+
+  repositories {
+      google()
+      jcenter()
+  }
+  dependencies {
+      classpath &#x27;com.android.tools.build:gradle:3.1.2&#x27;
+  }
+  dependencies {
+      compileOnly &#x27;com.symbol:emdk:9.1.1&#x27;
+  }
+
+ Note that EMDK for Android 9.1.1 was the last version to be available on JCenter.
+
+
+
+Compiling With Latest Gradle
+
+Gradle plugin v7.0 (or later) is now included with Android Studio and is configured as the default Gradle plugin. The JCenter repo entry has been updated to work with the Maven repository. Therefore, the build.gradle files of new and existing apps must be set as below:
+
+  repositories {
+      google()
+      mavenCentral() /* &lt;- formerly &quot;jcenter()&quot;
+  }
+
+  dependencies {
+      classpath &quot;com.android.tools.build:gradle:7.0.3&quot;
+  }
+
+  dependencies {
+      compileOnly &#x27;com.symbol:emdk:9.1.1&#x27;
+  }
+
+If the new version of Gradle is present, the build.gradle file should appear as in the image below, with the mavenCentral() reference added and the jcenter() reference struck out. The jcenter() should be deleted.
+
+
+Click image to enlarge; ESC to exit.
+
+
+
+EMDK-A 9.1.1 and Newer
+
+If an app is not compiling successfully, try modifying the build.gradle file to point to the Maven URL (see below). Zebra recommends adopting the latest options as soon as possible to avoid possible build and SDK dependency issues in the future.
+
+ To help provide a seamless transition, EMDK for Android 9.1.1 binaries are currently available in both JCenter and Maven repos. The new Maven entry should allow EMDK to resolve dependencies for older releases successfully without any further change in the build.gradle file.
+
+  dependencies {
+      compileOnly &#x27;com.symbol:emdk:9.1.1&#x27;
+  }
+
+Compiling With Older Gradle
+
+To resolve the EMDK dependencies, projects with older Gradle plugins require the Maven reference to be added in the repositories section of the project build.gradle file.
+
+Repo reference for EMDK releases prior to 9.1.1:
+
+  repositories {
+      jcenter()
+  }
+
+Repo reference for EMDK 9.1.1 and later:
+
+  repositories {
+      maven {
+          url = &quot;https://zebratech.jfrog.io/artifactory/EMDK-Android/&quot;
+      }
+  }
+
+Compiling With Latest Gradle
+
+Projects configured with the latest Gradle plugins (such as 7.0.3) require the Maven reference to be added under dependencyResolutionManagement block in the settings.gradle file to resolve the EMDK dependency for new releases:
+
+  dependencyResolutionManagement {
+      repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+      repositories {
+          google()
+          mavenCentral()
+          jcenter() // Warning: this repository is deprecated; no updates allowed
+          maven {
+              url = &quot;https://zebratech.jfrog.io/artifactory/EMDK-Android/&quot;
+          }
+      }
+  }
+
+Notes:
+
+
+In the build.gradle, a plus sign (&quot;+&quot;) can be substituted for a major or minor version number in the dependencies section. For example, declaring com.symbol:emdk:7.6+ uses SDK versions 7.6 and newer.
+
+The Java version used to compile a project is based on the compileSdkVersion selected for the project. Different versions of Android support different versions of Java. If necessary, the default Java version can be overridden. Learn more.
+
+
+
+
+Install/Update EMDK Plugin
+
+The optional EMDK Plugin adds Profile Manager, a graphical UI for accessing the Zebra MX device-configuration layer built into every Zebra device.  Zebra strongly recommends using the EMDK Plugin if the app is intended to configure the settings of a Zebra device.
+
+
+   Dialog boxes of Android Studio might vary slightly between versions for macOS and Windows.
+
+
+To set up the EMDK Plugin:
+
+
+Uninstall prior EMDK installations and related files, if any.
+
+Select a Project SDK:
+a. Open an Android Studio project (if not already open).
+b. Select File -&gt; Project Structure.
+c. In the left-hand pane under Project Settings, select &quot;Project&quot; (if not already selected).
+d. In the right-hand pane under &quot;Project SDK,&quot; select an SDK from the drop-down or add or download one, as in the image below.
+NOTE: The Android development community recommends using the latest OpenJDK.
+
+Click to enlarge; ESC to exit.
+e. Click &quot;Apply&quot; and then &quot;OK&quot; to close.
+
+Install the EMDK for Android plugin:
+a. Go to Android Studio -&gt; Preferences.
+b. In the left-hand pane, select &quot;Plugins&quot; to show Installed Plugins and the Plugin Marketplace:
+
+Click to enlarge; ESC to exit.
+c. Click &quot;Marketplace&quot; (if necessary) to show available Plugins.
+d. Enter &quot;emdk&quot; in the search box and hit ENTER.
+e. Click &quot;Install&quot; button.
+
+Click to enlarge; ESC to exit.
+f. Click &quot;Apply&quot; to activate the Plugin, then Click &quot;OK&quot; to close.
+
+Click to enlarge; ESC to exit.
+
+
+The EMDK Plugin adds an &quot;EMDK&quot; menu in the Android Studio menu bar:
+
+Click to enlarge; ESC to exit.
+
+ The EMDK Plugin is now ready to use.
+
+Android Studio Jellyfish
+
+For those that have updated to Android Studio 2023.3.1 (Jellyfish) and cannot see the EMDK menu by default, follow the steps below to display it. 
+
+To display the EMDK menu manually:
+
+
+While inside of a Project, click the magnifiying glass in the upper-right corner.
+
+Enter &quot;EMDK&quot; in the &quot;Search Everywhere&quot; box. 
+
+Select EMDK from the results list that appears.
+
+
+ The EMDK &quot;floating menu&quot; should now be visible, similar to the image below:
+
+
+Click to enlarge; ESC to exit.
+
+
+
+
+
+Uninstall EMDK
+
+Windows
+
+
+Close Android Studio, if open.
+
+From Windows -&gt; All Programs -&gt; EMDK for Android [vX.X], select &quot;Uninstall.&quot;
+
+Follow prompts to complete the uninstallation.
+
+
+Mac OS
+
+Note: This process references folders that are hidden by default. To unhide, see section below.
+
+In the macOS Finder:
+
+
+Remove SDK add-ons:
+
+
+
+Navigate to the /Users/[userName]/Library/Android/sdk/add-ons directory.
+
+Remove all addon-symbol_emdk-symbol-XX folders, if present.
+
+
+Remove Wizard Core:
+
+
+
+Navigate to the /Users/Shared directory.
+
+Remove the &quot;EMDK for Android&quot; folder, if present.
+
+
+Remove Wizard plugin:
+
+
+
+Open Applications folder.
+
+Locate and right-click Android Studio app.
+
+Select &quot;Show Package Contents&quot; from the menu.
+
+Navigate to Contents -&gt; plugins directory.
+
+Remove com.symbol.emdk.wizard.intellijIdea folder, if present.
+
+
+
+
+
+To unhide Mac OS folders:
+
+
+Open Terminal app (in Finder -&gt; Applications -&gt; Utilities).
+
+Paste the following into Terminal window (and hit RETURN):
+
+:::term
+defaults write com.apple.finder AppleShowAllFiles YES
+
+Right-click on the Finder icon (in the Dock) while holding the &quot;Option/alt&quot; key.
+
+Select &quot;Relaunch&quot; from the menu to make hidden files visible.
+
+To reverse, replace &quot;YES&quot; with &quot;NO&quot; in the Terminal command and repeat Step 3.
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

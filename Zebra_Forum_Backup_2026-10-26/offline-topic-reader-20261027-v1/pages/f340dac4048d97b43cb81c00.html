@@ -1,0 +1,265 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Printing to a ZQ521 from Xamarin Forms via Bluetooth</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Printing to a ZQ521 from Xamarin Forms via Bluetooth</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/printing-zq521-xamarin-forms-bluetooth; original snapshot: threads/00945.html; SHA-256: f62c56244c5966205beba2972a9555483358daa18b253c3beb1c10a22a4c9ed6</small><pre id="topic">
+
+    
+        Printing to a ZQ521 from Xamarin Forms via Bluetooth
+
+
+        
+      
+                        
+                    
+            N
+          
+          Nathan Perrin
+          4 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            267
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I am having trouble printing to a Zebra ZQ521 from a Xamarin Forms 3.4 app via Bluetooth from a Zebra TC20. I’m using the Zebra.Printer.SDK NuGet package version 2.15.2634.
+When I call Zebra.Sdk.Printer.XmlPrinter.Print(), the Bluetooth symbol on the printer’s LCD is displayed, then after a few seconds it blinks and goes out.
+The following exception is raised:
+Zebra.Sdk.Comm.ConnectionException: Could not open connection
+  at Zebra.Sdk.Comm.MultichannelBluetoothConnection.Open () [0x00034] in :0
+  at Zebra.Sdk.Printer.CsvPrinter.OpenConnection (System.String destinationDevice) [0x00007] in :0
+  at Zebra.Sdk.Printer.CsvPrinter.Print (System.String destinationDevice, System.IO.Stream sourceDataStream, System.String templateFilename, System.String defaultQuantityString, System.IO.Stream outputDataStream, System.Boolean verbose) [0x00160] in :0
+  at Zebra.Sdk.Printer.XmlPrinter.Print (System.String destinationDevice, System.IO.Stream sourceDataStream, System.String templateFilename, System.String defaultQuantityString, System.IO.Stream outputDataStream, System.Boolean verbose) [0x00038] in :0
+I have verified that the correct Bluetooth address is being passed to the Print() method.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            By just looking at the exception trace, it&#x27;s difficult to figure out what could went wrong. The source code snippet would be helpful.
+Have you tried the XamarinDevDemo project, which comes with the Link-OS SDK release package. The path of the XamarinDevDemo is: link_os_sdk\PC-.NET\v2.15.2634\demos-xamarin\Source. It&#x27;s been verified that the XamarinDevDemo works with TC20 Bluetooth. Take a look at the code that uses Bluetooth in the XamarinDevDemo project.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              N
+            
+          
+                
+          
+            Nathan Perrin
+          
+          
+            4 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            How do you build this solution? I cannot find a .sln file and tried opening the project file in the XamarinDevDemo folder but this would not build. I updated the NuGet references and it builds OK but cannot run as its output type is Class Library. Am I missing something obvious here?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You simply create a new solution named as XamarinDevDemo in Visual Studio. This will create a top level folder called XamarinDevDemo and its XamarinDevDemo.sln file, etc. Within this newly created XamarinDevDemo solution, you simply add the 4 projects that come with the SDK release, i.e. XamarinDevDemo, XamarinDevDemo.Android, XamarinDevDemo.iOS and XamarinDevDemo.WPF, through Visual Studio. Then you should be able to compile.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

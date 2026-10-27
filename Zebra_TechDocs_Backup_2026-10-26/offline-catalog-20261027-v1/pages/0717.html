@@ -1,0 +1,735 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>IrDA Intents APIs - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/emdk-for-android/latest/intents/irda</code><br>Observed final URL: <code>https://techdocs.zebra.com/emdk-for-android/latest/intents/irda/</code><br>Raw source: <code>raw/383ef40423c2cd52f5e7b718.html</code><br>Raw SHA-256: <code>5c1aec834e2f2ba7bf173ebf7649535aac01cbf17df00bf4d1623165361035ca</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                           EMDK For Android 15.1
+                          
+                          
+                                EMDK For Android 4.2
+                                EMDK For Android 4.0
+                          
+                                            
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Set Up
+                            
+                        
+                        
+                            
+                                    Tutorials
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Profile Manager
+                            
+                        
+                        
+                            
+                                    FAQs
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            IrDA Intents APIs
+                        
+                    
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    IrDA Intents APIs
+                                    
+                                            EMDK For Android
+                                            15.1
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+EMDK for Android 7.3 (and later) contains interfaces for controlling hardware that conforms to the Infrared Data Association (IrDA) specification, an infrared line-of-sight technology that&#x27;s used for data transfer between small portable devices such as mobile computers, printers, handheld remote controls and some medical devices. IrDA also refers to the protocols used for wireless data transfer using IrDA-equipped devices.
+
+Zebra&#x27;s IrDA implementation supports the following protocols:
+
+
+TinyTP
+
+IrLMP
+
+IrLAP/LSAP
+
+IrSIR
+
+IrDA:RAW
+
+
+Zebra IrDA APIs operate through Android intents – specific commands that can be used by Android applications to control IrDA hardware on IrDA-equipped Zebra devices. This guide explains how to communicate wirelessly between IrDA devices using IrDA Intent APIs on Zebra mobile devices.
+
+Requirements
+
+Use of IrDA APIs requires experience with Java and Android app development, and familiarity with Android intents. For successful IrDA communication, target device(s) must contain:
+
+
+One or more IrDA-equipped Zebra devices
+
+DataWedge version 7.3.11 or later on the device
+
+IrDA transceivers in clear line of sight during data transmission
+
+
+
+
+IrDA Intent APIs
+
+
+  IMPORTANT: To avoid synchronization errors when sending IrDA intent API calls, wait for feedback from each API call before sending the next intent.
+
+
+IrDA intent APIs can be used in applications that require control of IrDA communication. Supported intent actions and commands are listed below.
+
+IrDA Intents and Actions:
+
+
+com.symbol.irda.api.ACTION_DO:
+
+Send data
+
+
+
+com.symbol.irda.api.ACTION_GET:
+
+Get server name
+
+Get driver version
+
+Get connection idle time
+
+Get configuration
+
+
+
+com.symbol.irda.api.ACTION_REGISTER:
+
+Register/Unregister callbacks
+
+
+
+com.symbol.irda.api.ACTION_UPDATE:
+
+Set server name
+
+Set connection idle time
+
+Set configuration
+
+
+
+Usage information for each command follows in the sections below.
+
+
+
+Send Data
+
+To send data over IrDA, data must be converted to byte arrays. Large data is broken into small chunks of bytes prior to delivery to the receiving device. The first SEND_DATA command typically requires extra time to complete; SEND_DATA commands sent within 30 seconds of the first complete more quickly. The 30-second time frame is adjustable; see Set Connection Idle Time section for details.
+
+Sample Code
+
+To send data via IrDA:
+
+    
+    Intent intent = new Intent(); //Create new intent
+
+    //Specify the IrDA action
+    intent.setAction(&quot;com.symbol.irda.api.ACTION_DO&quot;);
+
+    //Set to run at foreground priority, with a shorter timeout interval
+    intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+
+    //Text to be sent over IrDA
+    String text = &quot;Hello IrDA&quot;;
+
+    //Convert to byte array to be accepted by SEND_DATA
+    byte[] byteArray = text.getBytes();
+
+    //Supported value up to 1024 bytes
+    intent.putExtra(&quot;SEND_DATA&quot;, byteArray);
+
+    //Designate the broadcast receiver to receive the response
+    Intent responseIntent = new Intent(getApplicationContext(), MyBroadcastReceiver.class);
+
+    //Set to run at foreground priority, with a shorter timeout interval
+    responseIntent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+
+    //Any extras are useful to identify feedback
+    responseIntent.putExtra(&quot;COMMAND&quot;, &quot;SEND_DATA&quot;);
+
+    //Create pending intent
+    PendingIntent piResponse = PendingIntent.getBroadcast(getApplicationContext().getApplicationContext(), REQUEST_CODE, responseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+    //Send pending intent as CALLBACK_RESPONSE
+    //IrDA API responds to the pending intent specified here
+    intent.putExtra(&quot;CALLBACK_RESPONSE&quot;, piResponse);
+
+    //Send the broadcast
+    sendBroadcast(intent);
+
+
+To determine command success, see Get Feedback for Commands.
+
+
+
+Set Server Name
+
+For IrDA communication, the Zebra device serves as the “client” and the device it communicates with is the “server.&quot; To identify the device it communicates with, set the server name of the device. If a server name is not specified, the default “IrDA:TinyTP” is used.
+
+Sample Code
+
+Set the server name:
+
+    
+    //Create new intent
+    Intent intent = new Intent();
+
+    //Specify the IrDA action
+    intent.setAction(&quot;com.symbol.irda.api.ACTION_UPDATE&quot;);
+
+    //Set to run at foreground priority with a shorter timeout interval
+    intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+
+    //Server name to be used
+    intent.putExtra(&quot;SERVER_NAME&quot;, &quot;&lt;NEW SERVER NAME&gt;&quot;);
+
+    //Mention the broadcast receiver to receive the response
+    Intent responseIntent = new Intent(getApplicationContext(), MyBroadcastReceiver.class);
+
+    //Set to run at foreground priority with a shorter timeout interval
+    responseIntent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+
+    //Any extras are useful to identify feedback
+    responseIntent.putExtra(&quot;COMMAND&quot;, &quot;SET_SERVER_NAME&quot;);
+
+    //Create pending intent
+    PendingIntent piResponse = PendingIntent.getBroadcast(getApplicationContext().getApplicationContext(), REQUEST_CODE, responseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+    //Send pending intent as CALLBACK_RESPONSE
+    //IrDA API responds to the pending intent specified here
+    intent.putExtra(&quot;CALLBACK_RESPONSE&quot;, piResponse);
+
+    //Send the broadcast
+    sendBroadcast(intent);
+
+
+The new server name is kept in device memory until device restart, after which the server name is reset to the “IrDA:TinyTP” default server name. To determine command success, see Get Feedback for Commands.
+
+
+
+Register Callbacks
+
+The application must be registered for callbacks to receive messages or responses from the server. Once the callback is processed, the application can act accordingly depending on the response received.
+
+Sample Code
+
+Register and receive callbacks from the server:
+
+    
+    //Create new intent
+    Intent intent = new Intent();
+
+    //Specify the IrDA action
+    intent.setAction(&quot;com.symbol.irda.api.ACTION_REGISTER&quot;);
+
+    //Set to run at foreground priority, with a shorter timeout interval
+    intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+
+    //Intent to be sent back with status (via explicit broadcast)
+    Intent responseIntent = new Intent(this, MyBroadcastReceiver.class);
+
+    //Cross-check the extras specified here vs the intent received to the broadcast receiver to identify the related response
+    responseIntent.putExtra(&quot;COMMAND&quot;, &quot;REGISTER_CALLBACK_CALL&quot;);
+
+    //Set to run at foreground priority, with a shorter timeout interval
+    responseIntent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+    PendingIntent piResponse = PendingIntent.getBroadcast(getApplicationContext(), REQUEST_CODE, responseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+    //Send pending intent as CALLBACK_RESPONSE
+    //IrDA API responds to the pending intent specified here
+    intent.putExtra(&quot;CALLBACK_RESPONSE&quot;, piResponse);
+
+    //Intent called whenever data is received from the server
+    int flags2 = 0;
+    int requestCode2 = 3;
+    Intent dataCallBackIntent = new Intent(this, MyBroadcastReceiver.class);
+    dataCallBackIntent.putExtra(&quot;COMMAND&quot;, &quot;REGISTERED_CALLBACK_DATA&quot;);
+
+    //Set to run at foreground priority, with a shorter timeout interval
+    dataCallBackIntent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+    PendingIntent piDataCallback = PendingIntent.getBroadcast(getApplicationContext(), requestCode2, dataCallBackIntent, flags2);
+
+    //Send pending intent as DATA_CALLBACK
+    //IrDA API responds to the pending intent specified here when a data is received from the server
+    intent.putExtra(&quot;DATA_CALLBACK&quot;, piDataCallback);
+
+    //Send the broadcast
+    sendBroadcast(intent);
+
+
+After executing the code above, callbacks from the server are delivered to the broadcast receiver.
+
+The extras specified for the dataCallBackIntent versus the broadcast receiver intent can be cross-checked to identify the related response as follows:
+
+Check the COMMAND parameter:
+
+    
+    public class MyBroadcastReceiver extends BroadcastReceiver {
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+
+        String command = intent.getStringExtra(&quot;COMMAND&quot;);
+
+        String status = &quot;&quot;;
+        if(command != null &amp;&amp; command.equalsIgnoreCase(&quot;REGISTERED_CALLBACK_DATA&quot;)) {
+            byte[] data = intent.getByteArrayExtra(&quot;DATA_CALLBACK&quot;);
+            status += &quot; &quot;+ data.length + &quot; bytes received!&quot;;
+        }
+        Log.d(&quot;TAG&quot;,status);
+    }
+}
+
+
+To receive the response from the server, extract the information from DATA_CALLBACK.
+
+
+
+Unregister Callbacks
+
+For each callback that is registered, a corresponding call is needed to unregister the callback. Set the DATA_CALLBACK parameter to NULL to unregister the callback.
+
+Sample Code
+
+Unregister the callback:
+
+    
+    //Create new intent
+    Intent intent = new Intent();
+
+    //Specify the IrDA action
+    intent.setAction(&quot;com.symbol.irda.api.ACTION_REGISTER&quot;);
+
+    //Set to run at foreground priority, with a shorter timeout interval
+    intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+
+    //Mention the broadcast receiver to receive the response
+    Intent responseIntent = new Intent(this, MyBroadcastReceiver.class);
+
+    /Any extras are useful
+    responseIntent.putExtra(&quot;COMMAND&quot;, &quot;UNREGISTER_CALLBACK_CALL&quot;); /
+
+
+Identify the feedback at broadcast receiver
+
+    
+    //Create pending intent
+    PendingIntent piResponse = PendingIntent.getBroadcast(getApplicationContext(), REQUEST_CODE, responseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+    //Send pending intent as CALLBACK_RESPONSE
+    //IrDA API responds to the pending intent specified here
+    intent.putExtra(&quot;CALLBACK_RESPONSE&quot;, piResponse);
+
+    //Send DATA_CALLBACK as null to stop receiving callbacks from the server
+    intent.putExtra(&quot;DATA_CALLBACK&quot;, (String)null);
+
+    //Send the broadcast
+    sendBroadcast(intent);
+
+
+
+
+Set Connection Idle Time
+
+The IrDA port is opened when the first SEND_DATA command is received. The port is kept open for 30 seconds by default. Within this time frame, subsequent SEND_DATA commands are not needed to open the port again. After 30 seconds from the last IrDA API call, the port is closed. This time frame is adjustable by setting the connection idle time.
+
+Sample Code
+
+Set connection idle time:
+
+    
+    //Create new intent
+    Intent intent = new Intent();
+
+    //Specify the IrDA action
+    intent.setAction(&quot;com.symbol.irda.api.ACTION_UPDATE&quot;);
+
+    //Set to run at foreground priority, with a shorter timeout interval.
+    intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+
+    //Set idle time to 15 seconds
+    intent.putExtra(&quot;CONNECTION_IDLE_TIME&quot;, 15);
+
+    //Mention the broadcast receiver to receive the response
+    Intent responseIntent = new Intent(getApplicationContext(), MyBroadcastReceiver.class);
+
+    //Set to run at foreground priority, with a shorter timeout interval.
+    responseIntent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+
+    //Any extras are useful to identify the feedback at the broadcast receiver
+    responseIntent.putExtra(&quot;COMMAND&quot;, &quot;SET_CONNECTION_IDLE_TIME&quot;);
+    PendingIntent piResponse = PendingIntent.getBroadcast(getApplicationContext().getApplicationContext(), REQUEST_CODE, responseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+    //Send pending intent as CALLBACK_RESPONSE
+    //IrDA API responds to the pending intent specified here
+    intent.putExtra(&quot;CALLBACK_RESPONSE&quot;, piResponse);
+
+    //Send the broadcast
+    sendBroadcast(intent);
+
+
+To determine command success, see Get Feedback for Commands.
+
+
+
+Get Command
+
+The Get command retrieves the following properties:
+
+CONNECTION_IDLE_TIME - Returns the time (in seconds) the connection remains open before automatically closing
+SERVER_NAME - Returns the current server name
+DRIVER_VERSION - Driver version
+
+Sample Code
+
+Get driver version:
+
+    
+    //Create new intent
+    Intent intent = new Intent();
+
+    //Specify the IrDA action
+    intent.setAction(&quot;com.symbol.irda.api.ACTION_GET&quot;);
+
+    //Set to run at foreground priority, with a shorter timeout interval
+    intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+
+    //Mention the properties to Retrieve
+    String[] propertiesToRetrieve = {&quot;DRIVER_VERSION&quot;, &quot;CONNECTION_IDLE_TIME&quot;, &quot;SERVER_NAME&quot;};
+
+    //Assign the properties to retrieve to PROPERTIES_TO_GET extra
+    intent.putExtra(&quot;PROPERTIES_TO_GET&quot;, propertiesToRetrieve);
+
+    //Mention the broadcast receiver to receive the response
+    Intent responseIntent = new Intent(getApplicationContext(), MyBroadcastReceiver.class);
+
+    //Set to run at foreground priority, with a shorter timeout interval
+    responseIntent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+
+    //Any extras are useful to identify the feedback at the broadcast receiver
+    responseIntent.putExtra(&quot;COMMAND&quot;, &quot;GET_DRIVER_VERSION&quot;);
+
+    //Create pending intent
+    PendingIntent piResponse = PendingIntent.getBroadcast(getApplicationContext().getApplicationContext(), REQUEST_CODE, responseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+    //Send pending intent as CALLBACK_RESPONSE
+    //IrDA API responds to the pending intent specified here.
+    intent.putExtra(&quot;CALLBACK_RESPONSE&quot;, piResponse);
+
+    //Send the broadcast
+    sendBroadcast(intent);
+
+
+Decode the Get command response
+
+The Get command response is delivered to the broadcast receiver in the pending intent to retrieve the queried data.
+
+Retrieve data from the Get command:
+
+    
+    public class MyBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+        String status = &quot;&quot;;
+        String command = intent.getStringExtra(&quot;COMMAND&quot;);
+        if(command != null) {
+            switch (command) {
+                case &quot;GET_SERVER_NAME&quot;:
+                    status += &quot; &quot;+ intent.getStringExtra(&quot;SERVER_NAME&quot;);
+                    break;
+                case &quot;GET_CONNECTION_IDLE_TIME&quot;:
+                    status += &quot; &quot;+ intent.getIntExtra(&quot;CONNECTION_IDLE_TIME&quot;,0);
+                    break;
+                case &quot;GET_DRIVER_VERSION&quot;:
+                    status += &quot; &quot;+ intent.getStringExtra(&quot;DRIVER_VERSION&quot;);
+                    break;
+
+            }
+        }
+        Log.d(&quot;TAG&quot;,status);
+    }
+}
+
+
+
+
+Get Feedback for Commands
+
+The ACTION_DO and ACTION_UPDATE methods send a RESULT_CODE and a RESULT_MESSAGE back to the client app with feedback about whether the specified command succeeded. This response is delivered to the broadcast receiver and passed to the pending intent.
+
+Sample Code
+
+Get feedback from commands:
+
+    
+    public class MyBroadcastReceiver extends BroadcastReceiver {
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+
+        String status = &quot;&quot;;
+        String command = intent.getStringExtra(&quot;COMMAND&quot;);
+        String resultCode = intent.getStringExtra(&quot;RESULT_CODE&quot;);
+        String resultMessage = intent.getStringExtra(&quot;RESULT_MESSAGE&quot;);
+
+        if(command != null)
+            status += &quot;&quot; + command + &quot;: &quot;;
+
+        if(resultCode != null)
+            status += &quot;&quot; + resultCode;
+
+        if(resultMessage != null)
+            status += &quot;\nMessage: &quot; + resultMessage;
+
+        Log.d(&quot;TAG&quot;,status);
+
+    }
+}
+
+
+
+
+Set/Get Configurations
+
+Used to set the configuration of the IrDA port. Only the IrDA:RAW protocol supports setting configurations at this time. Use the intent extra CONFIG to set the baud rate. The parameter key, data type and supported values are shown below.
+
+
+Key: BAUD_RATES
+
+Data Type: String
+
+Supported values: 1200, 2400, 9600, 19200, 38400, 57600, 115200
+
+
+SET_CONFIGURATION_FAILED - returned if an error occurrs while setting a configuration. Note: Unsupported values are ignored (no error is returned).
+
+Sample Code
+
+Set configuration:
+
+    
+    Intent intent = new Intent();
+    intent.setAction(&quot;com.symbol.irda.api.ACTION_UPDATE&quot;);
+
+    Bundle bundle = new Bundle();
+    bundle.putString(&quot;BAUD_RATES&quot;,&quot;2400&quot;);
+    intent.putExtra(&quot;CONFIG&quot;, bundle);
+
+    Intent responseIntent = new Intent(getApplicationContext(), MyBroadcastReceiver.class);
+    responseIntent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+    responseIntent.putExtra(&quot;COMMAND&quot;, &quot;SET_CONFIG&quot;);
+    PendingIntent piResponse = PendingIntent.getBroadcast(getApplicationContext().getApplicationContext(), REQUEST_CODE, responseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+    intent.putExtra(&quot;CALLBACK_RESPONSE&quot;, piResponse);
+    sendBroadcast(intent);
+
+
+Get configuration:
+
+    
+    Intent intent = new Intent();
+    intent.setAction(&quot;com.symbol.irda.api.ACTION_GET&quot;);
+    String[] propertiesToRetrieve = {&quot;CONFIG&quot;};
+    intent.putExtra(&quot;PROPERTIES_TO_GET&quot;, propertiesToRetrieve);
+
+    Intent responseIntent = new Intent(getApplicationContext(), MyBroadcastReceiver.class);
+    responseIntent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+    responseIntent.putExtra(&quot;COMMAND&quot;, &quot;GET_CONFIGURATIONS&quot;);
+    PendingIntent piResponse = PendingIntent.getBroadcast(getApplicationContext().getApplicationContext(), REQUEST_CODE, responseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+    intent.putExtra(&quot;CALLBACK_RESPONSE&quot;, piResponse);
+    sendBroadcast(intent);
+
+
+Get configuration broadcast receiver:
+
+
+public class IrDABroadcastReceiver extends BroadcastReceiver {
+
+@Override
+public void onReceive(Context context, Intent intent) {
+    String config = &quot;&quot;;
+    if(intent.hasExtra(&quot;CONFIG&quot;)) {
+        Bundle bundleConfig = intent.getExtras().getBundle(&quot;CONFIG&quot;);
+        if(bundleConfig != null) {
+            for (String key : bundleConfig.keySet()) {
+                config += &quot;\n&quot; + key + &quot;: &quot; + bundleConfig.getString(key);
+                }
+            }
+        }
+    }
+}
+
+
+
+
+Also See
+
+
+Data capture intent APIs
+
+Battery intent APIs
+
+Native APIs
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    </pre></body></html>

@@ -1,0 +1,262 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Printing Arabic text from Zebra ZQ220 via Bluetooth</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Printing Arabic text from Zebra ZQ220 via Bluetooth</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/printing-arabic-text-zebra-zq220-bluetooth; original snapshot: threads/00668.html; SHA-256: e4271548e6cb52708dc6d4e2d2e90124733db310cd0ed7c3c5211fdedd48e90e</small><pre id="topic">
+
+    
+         Printing Arabic text from Zebra ZQ220 via Bluetooth
+
+
+        
+      
+                        
+                    
+            A
+          
+          Aya Elshershaby
+          3 years 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            350
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello everybody,
+
+I face an issue when I tried to print Arabic text using Zebra ZQ220 via Bluetooth, but the printer prints strange symbols.
+
+As a programming language, Dart 2.18.2 is used, and Flutter Framework version 3.3.6 is used as a framework.
+
+The default configuration for Android is as follows:
+
+
+	    minSdkVersion 21
+	    targetSdkVersion 31
+
+
+Also, we mainly depend on below packages :
+
+
+	  esc_pos_utils: ^1.1.0
+	  flutter_pos_printer_platform: ^1.0.12
+
+
+ 
+
+Can someone please suggest how to overcome this? Regards.
+              
+
+                    
+          
+      
+              
+ Zebra ZQ220.png
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            ZQ220 is a CPCL printer model. Make sure the CPCL script for the label prints the Arabic text properly via the USB. Then move the script to the app to print. If the USB prints properly but the app doesn&#x27;t, then we need to make sure the encoding of the Arabic characters in the app comply with the encoding requirement specified in CPCL.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Aya Elshershaby
+          
+          
+            3 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The printer prints Arabic successfully via USB. but when we send it from the app, it prints strange characters.
+
+we tried two ways to send encoded string :
+
+First:
+
+ final arabicText = utf8.encode(&#x27;شركه هنا&#x27;);
+
+ Uint8List uint8List = Uint8List.fromList(arabicText);
+
+bytes += generator.textEncoded(uint8List);
+
+  output in the printer is :  
+
+
+
+Second:
+
+final List&lt;int&gt; codeUnits = &#x27;شركه هنا&#x27;.codeUnits;    
+
+final Uint8List unit8List = Uint8List.fromList(codeUnits);
+
+bytes += generator.textEncoded(unit8List);
+
+  output in the printer is:  
+
+
+
+ 
+
+ Also, I set the Code page to &quot;CP1252&quot;, but this code page works fine in English not Arabic 
+
+Thanks very much in advance.
+
+ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,314 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MC7094 WM6.1 WAN connectivity issues.</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MC7094 WM6.1 WAN connectivity issues.</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/23904; original snapshot: threads/01277.html; SHA-256: cf6d749e883484904007c7ee34fd602021c68e70bae83527e37f369597cff12a</small><pre id="topic">
+
+    
+        MC7094 WM6.1 WAN connectivity issues.
+
+
+        
+      
+                        
+                    
+            H
+          
+          Howard Laser
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            19
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  15:00/10-06-2009] MC7094 WM6.1 1975114  Customer upgraded multiple MC7094 to WM6.1 to alleviate a DLL crunch issue. Since the upgrade they report intermittent connectivity issues over their GPRS data conenction with AT&amp;T. Customer has deployed latest RIL 1.1.3.19. Mainly the issue seems to be failure to reconnect (or receive e-mails from their custom Cheetah application)  which requires the end users to warm/cold boot numerous times. Multiple analyses of RIL logs have  not uncovered any faulty modem activity, and eMscript was suggested as the next troubleshooting option. The attached emScript came with the following dexription of problem from the end user with some comments by their Project Manager: Can someone please analyze the attached eMscript and post comment.
+His report is as follows:  
+ I went to my storage and needed to send an email.  I could not.  This was 09:00.  I then sent an email to myself at 09:19. From there I went across town to complete a stop.  And then on the way back I drove through parts of my route I normally take that I get good signal in.  The device still would not send the emails.  I ended up at my residence where the signal is good and gave it about 30 minutes before rebooting.  This was at 10:45 - 11:00 am.  It took me three tries to reboot. 
+    However, I have a second test device without the RIL upgrade installed and it did send emails once it was in a good service area. 
+   From PM:: So as you can see by his report, the device is non-responsive when it is out of coverage – normal.  But when it returns to coverage it fails to reacquire the service and operate properly.  Over 90% of our users in the field have the RIL upgrade installed. 
+    
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Howard Laser
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            My question is , Can someone read the attached emScript logs for the time specified, and see if there is anything remarkable which may shed light on customers complaint of failure to reconnect to WAN,&amp;nbsp;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Herbert De Jong
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Howard, &amp;nbsp;if they are using a Email client based on ActivSync Exchange on the device.  You can look for Ctlrlog files on ProgramFiles\ActivSync&amp;nbsp; they tell you how and what was synchronized.  Here in EMEA we have a couple of case similar were on WM6.1 AS Exchange stops to send or recieve emails.  We are trying to gather logs with ConnectionManager status and Rillogs and Ctrllogs  see attached doc and program
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            George Dellaratta
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Is there a question in there someplace?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gene Niles
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I took a very brief look at the logs. There was no logging around 9am where the problem was reported so can&#x27;t really tell much. I did however see their were several reboots before the sytem got an IP address. Is it possible the use just didn&#x27;t wait long enough?  I also see that the CPU load at 100% in the logs. I didn&#x27;t go deep enough to see where it was in all cases but did see areas where the file system was using the majority (not sure of this a result of the boot ups, applcation run or realted to a similar SPR) but is worth montioring in addition to the lack of connectivity.  If newer logs can be obtained during the failures and without the frequent reboots, we may be able to give it a try. Also try the latest emScript which collects intenal retail message data as well if you can.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

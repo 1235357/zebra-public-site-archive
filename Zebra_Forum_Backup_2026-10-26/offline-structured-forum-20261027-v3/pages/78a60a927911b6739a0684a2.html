@@ -1,0 +1,403 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Creating ZPL files from a .nlbl template using .net</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/creating-zpl-files-nlbl-template-using-net; snapshot threads/00752.html; SHA-256 cdc00f5885b384281ec9bc0216c8e7926b77341e3c71090a9ea182019eb7adaa. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Creating ZPL files from a .nlbl template using .net</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            J
+          </div>
+          <div class="forum-topic__author-name">Jordon Pilling</div>
+          <div class="forum-topic__timestamp">4 years 2 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            8199
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            5
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>We have multiple templates ready in ZebraDesigner and saved as *.nlbl files - i.e. with placholder textboxes and barcodes all in the correct locations / sizes etc</p>
+<p>We need to use .net to open this *.nlbl files, populate the placeholder textboxes and barcodes with real data then save as a zpl file.</p>
+<p>Stackoverflow and general googling gives a barrage of outdated / conflicting information on this topic.</p>
+<p>Please can you confirm the "pest practice" way for us to acheive the above? Is there an SDK that will open an nlbl file and allow the export to zpl file?</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      5 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-50837" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Dougie Birrell</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 2 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Not the most elegant solution, but I've printed the nlbl file I'd designed to a zpl file, by changing the print port to "Print to File".  I then opened and pasted the ZPL file into a string. (example below) This allowed me to add in variables (assetID, location, item, category) from a database allowing me to to print custom labels. C# Example</p>
+<p>private static string CreateLabel(string assetID, string item, string category, string location)<br>
+        {<br>
+            byte[] assetByte = Encoding.Default.GetBytes(assetID);<br>
+            var assetHex = BitConverter.ToString(assetByte);<br>
+            assetHex = assetHex.Replace("-", "");<br>
+            string label = "CT~~CD,~CC^~CT~" +<br>
+                "^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR2,2~SD10^JUS^LRN^CI0^XZ" +<br>
+                "^XA" +<br>
+                "^MMT" +<br>
+                "^PW607" +<br>
+                "^LL0198" +<br>
+                "^LS0" +<br>
+                "^FO0,0^GFA,02048,02048,00016,:Z64:" +<br>
+                "....long string of hex which was an image" +<br>
+                "^BY3,3,43^FT149,167^BCN,,Y,N" +<br>
+                "^FD&amp;gt;:" + assetID + "^FS" +<br>
+                "^FT25,130^AAN,27,10^FH\\^FD" + assetID + "^FS" +<br>
+                "^FT115,23^A0N,23,26^FB468,1,0,R^FH\\^FD_MYCOMPANY_NAME^FS" +<br>
+                "^FT489,44^A0N,17,16^FH\\^FDEH54 5DJ, UK^FS" +<br>
+                "^FT146,92^AAN,18,10^FH\\^FDCat: " + category + "^FS" +<br>
+                "^FT146,112^AAN,18,10^FH\\^FDLoc: " + location + "^FS" +<br>
+                "^FT134,71^AAN,18,10^FH\\^FDItem: ^FS" +<br>
+                "^FT208,71^AAN,18,5^FH\\^FD" + item + "^FS" +<br>
+                "^PQ1,0,1,Y^XZ";<br>
+            return label;<br>
+        }</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-50841" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Jordon Pilling</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 2 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thank you for the example.<br>
+This is pretty risky if your variables (category, location, item etc) contain ZPL control characters such as ^ or \\<br>
+Is there an authoritative list of illegal characters that need to be escaped in ZPL / do you have a function already that does this?<br>
+This is why i was asking about SDK, this concatenation method appears very crude / reminds me of SQL injection lol.<br>
+That said, if it's the only option, i can figure out the escape logic from scratch by adding ^ and \\ in ZebreaDesigner labels and saving as prn files i suppose – I just don’t want to re-invent the wheel when smarter and more knowledgeable people have surly already tackled this issue :)<br>
+Thanks again, and would love to hear how other people have approached the escaping issue with concatenation / string replace method.<br>
+J.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-50843" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Dougie Birrell</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 2 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>These were labels with a barcode and certain areas for the text. The values for the text came from a SQL table, in which had the safety measures to only allow letters and numbers when entered into the database, so it by passed the risky aspect.</p>
+<p>\\ was a C# specific change, they were originally \ but C# treats that as a special character so needed to be changed to \\ in the code. </p>
+<p>Yeah I totally get about not reinventing the wheel! Hope you can find what you're looking for, if not this will help! :)</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div></div>  
+
+
+
+<article id="comment-50838" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 2 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>There is no need to deal with the *.nlbl file directly, which is in a proprietary format. The ZebraDesigner can export the *.nlbl into the *.prn file, called as the template file in ZPL (or in XML with the ZebraDesigner for Developers). Your .NET application only needs to work with the *.prn file to populate the values. There are two ways to populate the values for the template. You can either replace the variables (or the placeholders) in the template and send the resulted ZPL file to the printer to print. Or you can send the template first as the stored format onto the printer and then send the recall format (with the values) to the printer. The printer will replace the variables with the values passed in the recall format and print the label.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-53945" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              V
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Vali Maties</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi.</p><p>This approach will not work if you use custom fonts for text fields, because as we know, Zebra Designer will convert the text into the prn file for the placeholders, the text will be converter to image and you will see ^GF instead of ^FD .<br><br>So we need to find other solution for this!</p><p>Is there another solution?</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/creating-zpl-files-nlbl-template-using-net%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/creating-zpl-files-nlbl-template-using-net%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

@@ -1,0 +1,174 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Issue connecting to ZT410 using Zebra Printer SDK</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/forum/26092; snapshot threads/resume-00402.html; SHA-256 165daed27bebfdedb2ace4ad52fc6a34b37ebcf981fbc0eb27d6fe058bd3eac8. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Issue connecting to ZT410 using Zebra Printer SDK</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            A
+          </div>
+          <div class="forum-topic__author-name">Anonymous</div>
+          <div class="forum-topic__timestamp">5 years 4 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            65
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>First, we connect successfully to the Printer API using the following lines:<br>
+Zebra.Sdk.Comm.Connection _ZebraApiConnection = ConnectionBuilder.Build("TCP_MULTI:10.100.120.236:9100:9200");<br>
+_ZebraApiConnection.Open();<br>
+Next, with an open connection to the Zebra Printer API, we attempt to call ZebraPrinterFactory.GetLinkOsPrinter(_ZebraApiConnection) which returns null.<br>
+We can access the printer through the web ui and says:<br>
+Status: READY<br>
+This issue happens on multiple ZT410 printers with the latest sdk (V2.15.2634), firmware (V75.20.21Z) and link-os (V6.2).<br>
+We are using C# .NET.<br>
+Link to SDK here <span data-original-href="https://www.nuget.org/packages/Zebra.Printer.SDK/2.15.2634?_src=template">https://www.nuget.org/packages/Zebra.Printer.SDK/2.15.2634?_src=template</span><br>
+Separate from above issue, on one of the printers when executing the following code:<br>
+Zebra.Sdk.Comm.Connection _ZebraApiConnection = ConnectionBuilder.Build("TCP_MULTI:10.100.120.237:9100:9200");<br>
+_ZebraApiConnection.Open();<br>
+We receive the following exception:<br>
+Zebra.Sdk.Comm.ConnectionException: Could not open connection<br>
+  at Zebra.Sdk.Comm.MultichannelConnection.Open()<br>
+The printer throwing the connection exception is available through the web ui and shows the following status:<br>
+Status: PAUSED<br>
+ERROR CONDITION PAPER OUT<br>
+Both of these issues happen consistently every time the code is executed. Has anyone else had this issue and any luck resolving. Happy to provide additional details if helpful.</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-47938" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Do the two issues happen only to the particular printers or&amp;nbsp;happen to all printers in your network?<br>
+Before calling ZebraPrinterFactory.GetLinkOsPrinter(_ZebraApiConnection), could&amp;nbsp;you check if&amp;nbsp;_ZebraApiConnection is truly open, i.e.&amp;nbsp;_ZebraApiConnection.Connected is true.&amp;nbsp;</p>
+<p>Zebra.Sdk.Comm.Connection _ZebraApiConnection = ConnectionBuilder.Build("TCP_MULTI:10.100.120.236:9100:9200");<br>
+_ZebraApiConnection.Open();</p>
+<p>ZebraPrinterLinkOs printer = null;</p>
+<p>if (_ZebraApiConnection.Connected) {<br>
+  printer = ZebraPrinterFactory.GetLinkOsPrinter(_ZebraApiConnection);<br>
+}Regarding the 2nd issue, it looks like a different manifest of the first issue. I suspect that your network configuration may have restrictions on accessing the printers.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/forum/26092%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/forum/26092%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

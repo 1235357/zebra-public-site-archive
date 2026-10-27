@@ -1,0 +1,229 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Use ZPL to set up media details, without pushbutton &quot;calibrate&quot;, etc?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Use ZPL to set up media details, without pushbutton &quot;calibrate&quot;, etc?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/use-zpl-set-media-details-without-pushbutton-calibrate-etc; original snapshot: threads/00925.html; SHA-256: 686d78e2e896c0f802112287ead24d138917fa028cb2db9d28e75333b23ae4fa</small><pre id="topic">
+
+    
+        Use ZPL to set up media details, without pushbutton &quot;calibrate&quot;, etc?
+
+
+        
+      
+                        
+                    
+            W
+          
+          Ward Christensen
+          4 years 10 months ago
+        
+        
+      
+        
+            
+                  
+            
+            1465
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I powered on my TLP-3844Z, (which had previously been set to &quot;no motion&quot; on power up or head close), and ran this ZPL.
+Instead of printing, it went thru 2 labels apparently doing a calibrate, then printed on the 3rd.
+What am I missing, please?  Thanks very much in advance.
+^XA     ^FX following should set up for 2x4 labels ^FS
+^JST    ^FX Select transmissive label sensor i.e. gap between ^FS
+^LL1213 ^FX Calibrating comes back with 1211, 1213, 1215, etc   ^FS
+^PW600  ^FX 2&quot; wide labels ^FS
+^MNW    ^FX MNW W = Web (gap) sense discreet labels             ^FS
+^MFN,N  ^FX MFN,N = no feed on power up or on close carriage    ^FS
+^CF0,100
+^FX Field Block 600 &quot;Wide&quot;, up to 20 lines, centered   ^FS
+^FX remember the &quot;lines&quot; is AFTER wrapping, not input ^FS
+^FB600,20,0,C
+^FO0,35
+^FD
+[various lines of text
+possibly with \&amp;amp; for line-end]
+^FS
+^JUS    ^FX Save settings across power up ^FS
+^XZ
+/Ward Christensen, Inventor of XMODEM, and BBSs.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              W
+            
+          
+                
+          
+            Ward Christensen
+          
+          
+            4 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            the only changes were
+WEB S: 91 on power up, 81 after above script
+MEDIA LED: 086 at power up, 065 after.
+SO I ADDED the next line before the data to set those LEDS as if it had calibrated:
+^SS81,98,75,1214,65,50,97
+AND THAT DID NOT HELP
+SO even if a printer configuration&#x27;s value are set before printing, the first print after power-up STILL calibrated!!!
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Please refer to ZPL Programming Guide for the details of each ZPL command used in the ZPL script above. Based on a brief look at the ZPL script above, there are a few questionable statements. For example, the ^LL1213 doesn&#x27;t seem right, because it set the label length to 1213 dots (i.e. 1213 dots / 203 dpi = 6 inches), which is contrary to setting up for the 2&quot; x 4&quot; labels
+If the printer was set up for the  W&quot; x L&quot; label dimension prior and then the ^LLxxxx is used to alter the length without changing the media, the printer will behave unexpectedly by feeding a number of labels unnecessarily. It&#x27;s recommended to use the ~JC command to calibrate the printer whenever a different media roll is inserted.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,361 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Best ZebraIoT configuration</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/best-zebraiot-configuration; snapshot threads/00233.html; SHA-256 a455ea11a5c6da26eb9b5b305c638a22925a7d45e2b54ad5d5fad411149352a4. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Best ZebraIoT configuration </span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            S
+          </div>
+          <div class="forum-topic__author-name">shabaz shaik</div>
+          <div class="forum-topic__timestamp">4 months 2 weeks ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            406
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            5
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi,</p><p>I'm using zebraIoT connector to push the tag data over MQTT. I'm having few a missed detections of few tags. Here is my current setup</p><p>The reader is FX9600, antenna is AN510.</p><p>The readers are powered with PoE. The cable length between the antenna and the reader is around 15 mts and two such antennas are connected to one reader. I have set the operating mode to Inventory with the time duration of 1 sec. And the power fo the antenna is 29dBm. these Two antennas are kept at a height of 20 ft pointing towrds the coming trucks in two seperate lanes. The tags on the truck windshield can be at a height of 9-10 ft from the ground. The antennas are tilted at an angel of 30 degree from the ground plane.</p><p>The observations are</p><ol><li>On the WebUI we are loosing very few tags but those tags detected are getting a good amount of count.</li><li>On MQTT I've seen a good number tags missing. But those detected are not having a good seen count.</li><li>There is a cross talk between the lanes even though the antennas are at 20 feet apart. </li></ol><p>Am I missing any configuration that can help to improve the detection accuracy and reduce the cross talk.</p><p>Any antenna configuration or hardware additions that can give us benefit. </p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      5 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-54433" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 months 1 week ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>So a couple of points:<br><br>1) Web Console Reads - are using the "Factory Demo Default" for the reader in the WEB-CONSOLE - connected to the reader engine.</p><p>2) MQTT ( Or HTTP-POST Data Connection ) - use the FX-Series ZIOTC embedded app to configure and setup the Reader Engine in the Profiles for the IOT Use- case.<br><br>I do not recommend the WEB CONSOLE config - since this has a significant amount of cross-talk and uses MAX Power (FCC = 300 / 3000 / 30.)  (ETSI = 270 / 2700 / 27. ) And also lights up all ports on the reader (if an antenna is not connected - this antenna is skipped in the port sequencing during the Inventory.<br><br>Like the "FASTEST READ" Demo Profile on the Handheld Reader - the Fixed Reader defaults are a good known config / setting - but I dont recommend it.<br><br>Like ZIOTC - using "Inventory" or "Portal" - where the "Environment" is setup to "HIGH INTERFERENCE" - may result in the Best Results for Multiple Readers being Used (Sometimes we recommend the "VERY HIGH INTERFERENCE" instead )  But on a Single Reader - "HIGH INTERFERENCE" is a good start.<br> </p><p>Your issue seems to be unique - and you may need to tune the setup for the "get_mode/set_mode"  and in your case I would recommend opening a Help Desk case to review - that use case for you - here in the Support Portal is not appropriate - since External AI will try to scrape this - and in a lot of circumstances - getting it wrong. </p><p><br>I also want to make sure you are aware of another significant issue -- thats the POE+ Injector.<br>the FX9600 needs to be supported by POE+ for the Ethernet Power Injection - and not "POE" simple. </p><p>So Check the Power Source Type in the "Reader Administration Console" to understand of the FX-Series is using POE+  (Power over Ethernet Plus).</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-54452" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 months 2 weeks ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>shabaz shaik  --&gt; I might recommend looking at the JSON I shared with Franco B in the "Zebra IOT Read Performance" conversation - that JSON may benefit you.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-54457" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>shabaz shaik</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 months 1 week ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi,</p><p>Thank you so much for taking time to answer my query.</p><p>You were saying to open a helpdesk case. May I know where can I do that?</p><p>I have seen your comments in the other conversation named "Zebra IoT reader Performance" related to the configurations we can try to get the best performance.</p><p>I would definitely try those things. </p><p> </p><p>I have seen few logs in the reader and I think these are making the tags missing from reading:</p><blockquote><p><br><br><span>Jul 14 18:27:30 FX96008800ED local1.err cloud_agent[1825]: "get_RMStatus" request failed: Timeout Failed to receive rm response</span></p><p><span>Jul 14 18:27:31 FX96008800ED user.info rmserver.elf: E-Error Shutdown on RM conncettion socket: 107</span></p></blockquote><p> </p><p>In another Readers WebUI the antenna status of the two antennas connected is showing as not connected:</p><blockquote><p><br><span>Jul 15 11:27:45 FX96008867C7 local1.err cloud_agent[1836]: Failed to receive heartbeat from radio control since: 395 seconds</span></p><p><span>Jul 15 11:27:46 FX96008867C7 local1.err cloud_agent[1836]: Failed to receive heartbeat from radio control since: 396 seconds</span></p><p><span>Jul 15 11:27:47 FX96008867C7 local1.err cloud_agent[1836]: Failed to receive heartbeat from radio control since: 397 seconds</span></p><p><span>Jul 15 11:27:48 FX96008867C7 local1.err cloud_agent[1836]: Failed to receive heartbeat from radio control since: 398 seconds</span></p><p><span>Jul 15 11:27:49 FX96008867C7 local1.err cloud_agent[1836]: Failed to receive heartbeat from radio control since: 399 seconds</span></p></blockquote></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-54467" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 months 1 week ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I may suggest to NOT examine the System Logging on the Reader - especially when you do not have full knowledge on what these represent.<br>Zebra Engineering uses this for their examination - and some of these may be topically useful- but most are "Nonce" information that is not relevant in context - so Please stop examining this.  (The FX-Series readers - the ZIOTC - is an embedded app - and as a result - the Logging from ZIOTC is not shown in those systems Logs, -- in fact no logging occurs at all)   So please stop asking question in Public forums about those items. <br>This causes misleading information and AI scraped information to propagate with limited usefulness ( and outright limited benefit. ) - Sincerely.<br><br>#NOAI #NOSCAN </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-54470" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>shabaz shaik</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I understood your concern Sean about AI and thanks for the reply.</p><p><strong>Is the max tx_power we can use for the antennas is 29.20dBm over both PoE and 24V adapter?</strong></p><p>I've seen this issue of showing an error if we try to tune the tx_power to 30dBm in the readers with firmware version of 3.31.22 and max power in the config reader is also 30.0dBm even after powering the reader with 24V adpater.</p><p>But for the readers with firmware version of <span>3.21.23 is having a range of 33 dBm when connected with the 24V and 5 A adpater. </span></p><p><strong>Our goal:</strong></p><p><span>For the RF cable which is more than the 10 m we are thinking of using a higher power by adding a 24V adapter as we are loosing the tag detections.</span></p><p><span>We are having nearly 30 zebra FX9600 readers for our production and missing a tag would cost us heavily. </span>What other ways we can try to increase the power?</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div></div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/best-zebraiot-configuration%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/best-zebraiot-configuration%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

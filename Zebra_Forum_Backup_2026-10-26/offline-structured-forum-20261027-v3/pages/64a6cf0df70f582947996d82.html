@@ -1,0 +1,276 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra RFID Enteprise Browser</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/forum/26003; snapshot threads/resume-00355.html; SHA-256 d96f91b726c50c82f6c205ab81ba916783f5e16e6078ef0e92f97bf028b3dbfa. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Zebra RFID Enteprise Browser</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            S
+          </div>
+          <div class="forum-topic__author-name">System Admin</div>
+          <div class="forum-topic__timestamp">5 years 4 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            108
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            2
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>After calling rfid.enumerate I get this error:<br>
+Error code 2004: RFID service is not installed or available Failure in resolving dependency.</p>
+<p>       v1 </p>
+<p>    var log = function(s){<br>
+        document.getElementById("output").innerHTML += s + "";<br>
+    }<br>
+    function initRfid() {<br>
+      rfid.statusEvent = "statusHandler(%json)";<br>
+      log("set enumerate handler");<br>
+      rfid.enumRFIDEvent = "enumerateRFIDHandler(%json)";<br>
+      log("calling enumerate");<br>
+      rfid.enumerate();<br>
+    }<br>
+    function enumerateRFIDHandler(enumRFIDJSON) {<br>
+      log("EnumResult:" + JSON.stringify(enumRFIDJSON));<br>
+      rfid.connect();<br>
+      performAdvancedInventory1();<br>
+    }<br>
+    function TagHandlerAdvanced1(tagReportJSON) {<br>
+      log(<br>
+        "TagID :" +<br>
+        tagReportJSON.TagData[0].tagID +<br>
+        " Seen Count: " +<br>
+        tagReportJSON.TagData[0].tagSeenCount +<br>
+        " First seen Timestamp:" +<br>
+        tagReportJSON.TagData[0].firstSeenTimeStamp);<br>
+      log(<br>
+        "TagID :" +<br>
+        tagReportJSON.TagData[1].tagID +<br>
+        " Seen Count: " +<br>
+        tagReportJSON.TagData[1].tagSeenCount +<br>
+        " First seen Timestamp:" +<br>
+        tagReportJSON.TagData[1].firstSeenTimeStamp);<br>
+      log(<br>
+        "TagID :" +<br>
+        tagReportJSON.TagData[2].tagID +<br>
+        " Seen Count: " +<br>
+        tagReportJSON.TagData[2].tagSeenCount +<br>
+        " First seen Timestamp:" +<br>
+        tagReportJSON.TagData[2].firstSeenTimeStamp);<br>
+      log(<br>
+        "TagID :" +<br>
+        tagReportJSON.TagData[3].tagID +<br>
+        " Seen Count: " +<br>
+        tagReportJSON.TagData[3].tagSeenCount +<br>
+        " First seen Timestamp:" +<br>
+        tagReportJSON.TagData[3].firstSeenTimeStamp);<br>
+      log(<br>
+        "TagID :" +<br>
+        tagReportJSON.TagData[4].tagID +<br>
+        " Seen Count: " +<br>
+        tagReportJSON.TagData[4].tagSeenCount +<br>
+        " First seen Timestamp:" +<br>
+        tagReportJSON.TagData[4].firstSeenTimeStamp);<br>
+    }<br>
+    function statusHandler(statusJSON) {<br>
+      log("Status: " + statusJSON.method + "  " + statusJSON.errorCode);<br>
+      log("Status: " + JSON.stringify(statusJSON));<br>
+    }<br>
+    function performAdvancedInventory1() {<br>
+      rfid.tagEvent = "TagHandlerAdvanced1(%json)";<br>
+      rfid.reportUniqueTags = false;<br>
+      rfid.reportTrigger = 5;<br>
+      rfid.enableTagSeenCount = true;<br>
+      rfid.enableTagUTCTimeStamp = true;<br>
+      rfid.startTriggerType = "triggerPress";<br>
+      rfid.stopTriggerType = "duration";<br>
+      rfid.stopDuration = 10000; // Duration in milliseconds.<br>
+      rfid.performInventory();<br>
+    }<br>
+    log("about to init");<br>
+    setTimeout(()=&gt;{<br>
+    initRfid();<br>
+    }, 5000);</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      2 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-48046" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              F
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>faul knernolan</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I don't see any convincing answer. You can contact the admin for help or post on many forums to get the most effective answer. <span data-original-href="https://iogames.onl/battledudes-io">https://iogames.onl/battledudes-io</span></p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-47756" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Darryn Campbell</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 7 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi,<br>
+Do any of the native RFID samples at&amp;nbsp;<span data-original-href="https://www.zebra.com/us/en/support-downloads/rfid/rfid-handhelds/rfd-85">https://www.zebra.com/us/en/support-downloads/rfid/rfid-handhelds/rfd-85</span>... work?&amp;nbsp; The RFID capability should be pre-installed with Enterprise Browser version 3.0+ and there are more caveats available at&amp;nbsp;<span data-original-href="https://techdocs.zebra.com/enterprise-browser/3-0/api/re2x/rfid/#remarks">https://techdocs.zebra.com/enterprise-browser/3-0/api/re2x/rfid/#remarks</span> but that error does not look like it is coming from Enterprise Browser to me, hence why I ask if native apps can access the RFID.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/forum/26003%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/forum/26003%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

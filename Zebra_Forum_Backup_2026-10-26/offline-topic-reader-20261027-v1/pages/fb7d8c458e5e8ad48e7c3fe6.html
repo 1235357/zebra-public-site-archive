@@ -1,0 +1,158 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Android EMDK Stripping Leading 0 on EAN13 Barcodes</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Android EMDK Stripping Leading 0 on EAN13 Barcodes</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/android-emdk-stripping-leading-0-ean13-barcodes; original snapshot: threads/00914.html; SHA-256: d574601548912559249b30fa21db79f95db4acbaea4521a94d34b4ab27d6addd</small><pre id="topic">
+
+    
+        Android EMDK Stripping Leading 0 on EAN13 Barcodes
+
+
+        
+      
+                        
+                    
+            L
+          
+          Lindsey Sleeth
+          4 years 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            346
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  My team is working with UPC-A and EAN-13 barcodes and would like to retain the leading 0 as part of the EAN-13 barcodes. We are using the EMDK for Android and currently are enabling the decoderParams for both UPC-A and EAN-13 as shown below. 
+decoderParams.upca.enabled = true
+decoderParams.ean13.enabled = true
+With this configuration, scanning an EAN-13 barcode with a leading zero (ex: 0745114240422) will return the barcode without the zero (745114240422). We have searched for a way to stop this from happening but cannot find a solution. One possible solution we found was to enable the COUNTRY and SYS_CHAR as part of the Preamble for the UPC-A barcodes, so our configuration then looks like this:
+decoderParams.upca.preamble = ScannerConfig.Preamble.COUNTRY_AND_SYS_CHAR
+decoderParams.upca.enabled = true
+decoderParams.ean13.enabled = true
+This configuration does prevent the leading zero from being stripped off of the EAN-13 barcodes, however, it adds a leading zero to the UPC-A barcodes (Ex: 745114240422 becomes 0745114240422), which is not something that we would like. 
+Is this our only option for resolution or is there an additional parameter or solution that we are overlooking? 
+Thank you!
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Lindsey,
+Unfortunately I believe this is indeed your only option. You could potentially add an ADF rule to datawedge which says &quot;If barcode symbology is UPC-A, strip the leading zero&quot; which would achieve your desired outcome. Alternatively you could handle this with logic in your app, too.
+Please see here for ADF documentation: https://techdocs.zebra.com/datawedge/6-3/guide/process/adf/
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,271 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>ZD500R Font Scaling</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/zd500r-font-scaling; snapshot threads/00322.html; SHA-256 b8e4acc3be348423af0aaae97d74f274319001012c2eca5378600ae2414ccbdd. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">ZD500R Font Scaling</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            G
+          </div>
+          <div class="forum-topic__author-name">Greg Kujawa</div>
+          <div class="forum-topic__timestamp">6 months 1 week ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            97
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            3
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>So I am using a third party .NET library to ease sending ZPL-based print jobs to the printer (https://github.com/rkone/sharpzebra). Everything is working for my project, based on the requirements. The challenge is slight differences in printhead models based on what I originally developed, tested, and put into production.</p><p>Specifically, the 203dpi model renders the font as expected. Our staff has sourced newer printers with a 300dpi printhead. This renders the font a bit hard to read, since it's squeezed down smaller on these already-small jewelry tags. This includes the font for a QR code value, likewise shrunk down with the 300dpi model. </p><p>I am going to dig into this SharpZebra library to look for a potential conditional configuration setting I can define for the 300dpi model. So the fonts are up-scaled a bit if possible. The majority of the deployed printers have 203dpi printheads, so my code would conceivably define the 300dpi model with a custom command or two to send along with the rest of the print job.</p><p>Any suggestions on how this would be passed along, in terms of ZPL commands? I am assuming that whatever is being sent along now would be the default with respect to font type or font scaling. My ZPL commands that are printing things is just passing along x/y positioning, text, height, and rotation. </p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      3 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-54373" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Shreyas Purohit</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><div class="markdown-document">
+<p><span>Hi Greg,</span></p>
+<p><span>Since you are dealing with a mixed fleet and need to handle this conditionally in your .NET app, there are two standard ways to solve this 203dpi vs 300dpi resolution mismatch.</span></p>
+<p><span><strong>Option 1: The Native ZPL Approach (Quickest to implement)</strong></span><br><span>You can inject the </span><code class="inline-code"><span><strong>^MU</strong></span></code><span><strong> (Set Units of Measurement)</strong></span><span> command into your string right after your opening </span><code class="inline-code"><span>^XA</span></code><span> tag:</span><br><code class="inline-code"><span>^MUd,200,300</span></code></p>
+<ul>
+<li><span><strong>How it works:</strong></span><span> It acts as a translator. It tells the printer's firmware: </span><em><span>"These coordinates are formatted for 203dpi (represented as 200 in ZPL), please scale them up to fit a 300dpi printhead."</span></em><span> The printer will automatically multiply your incoming coordinates, font sizes, and barcode dimensions by 1.5.</span></li>
+<li><span><strong>The Catch:</strong></span><span> You must apply this conditionally in your code (</span><code class="inline-code"><span>if is300dpiPrinter</span></code><span>). If you send this to a 203dpi printer, it will still try to scale it by 1.5x, and the text will bleed off the tag. Also, test your QR codes carefully since firmware auto-scaling can occasionally be quirky with 2D barcodes depending on the printer OS.</span></li>
+</ul>
+<p><span><strong>Option 2: The C# Mathematical Approach (Most precise)</strong></span><br><span>Instead of relying on the printer's firmware to perform the translation, you mathematically scale your values in your .NET code </span><em><span>before</span></em><span> passing them to SharpZebra.</span></p>
+<ul>
+<li><span><strong>How it works:</strong></span><span> Set a conditional flag for the target printer. If it is 300dpi, apply a multiplier of </span><span><strong>~1.478</strong></span><span> (</span><code class="inline-code"><span>300.0 / 203.0</span></code><span>) to all your X/Y positions, font heights, and barcode magnification values.</span><br><em><span>Example:</span></em><span> </span><code class="inline-code"><span>int adjustedX = (int)Math.Round(originalX * 1.478);</span></code></li>
+<li><span><strong>The Catch:</strong></span><span> It requires slightly more code setup. However, this is the safest bet for tiny jewelry tags because it guarantees perfect dot-for-dot rendering of your fonts and QR codes without any firmware interpolation.</span></li>
+</ul>
+<p><span>Both methods are fully supported (the </span><code class="inline-code"><span>^MU</span></code><span> command behavior is thoroughly detailed in the official Zebra ZPL II Programming Guide). Option 2 is generally the bulletproof choice for precise QR codes, but Option 1 is great if you just want to inject one line of code and test it immediately.</span></p>
+<p><span>Hope this was helpful.</span></p>
+</div>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-54375" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              G
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Greg Kujawa</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thanks so much for the insight! I wasn't aware of the ^MU ZPL command. This is really interesting. Thankfully we have adequate stock of the 203dpi model to keep the standard code in place. For future reference I would probably implement Option 2 that you described in your response.</p><p>What's nice is that these small tags don't have a lot of printed elements on them. And since I'm leveraging the SharpZebra .NET library to pass along the ZPL, I can just wrap those calls in a method that preceeds them. Applying that conditional multiplier before passing the calls to SharpZebra. Shouldn't be too involved for the most part. I hadn't looked at the nitty gritty code in awhile, and totally forgot that the ZPL commands being sent involve positions and fonts measured in dots. Kind of a basic concept...lol.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-54386" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Shreyas Purohit</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 months 3 weeks ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Glad this helped. Let us know if you need anything else down the road!</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/zd500r-font-scaling%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/zd500r-font-scaling%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

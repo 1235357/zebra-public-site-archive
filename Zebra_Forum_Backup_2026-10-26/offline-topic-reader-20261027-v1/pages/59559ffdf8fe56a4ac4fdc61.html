@@ -1,0 +1,198 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>ZD420t issue with printing over android API</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>ZD420t issue with printing over android API</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25501; original snapshot: threads/resume-00496.html; SHA-256: 33c1387bbd02c0d56bd241003e5efa4dd712386d597c3b52a1545eba8e40d22f</small><pre id="topic">
+
+    
+        ZD420t issue with printing over android API
+
+
+        
+      
+                        
+                    
+            S
+          
+          System Admin
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            47
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello All,
+I have Zebra ZD420t and I&#x27;ve developed simple app for printing. I&#x27;ve developed below code using Android API and samples from Zebra repo:
+public class ZebraPrinterHandler extends Handler {
+    private Connection printerConnection;
+	public ZebraPrinterHandler(String macAddress){
+        printerConnection = new BluetoothConnectionInsecure(macAddress);
+    }
+	private void tryToPrintLabel(Message msg) {
+			try {
+				String zplData = message.getZplData();
+				printerConnection.open();
+				//below code same label twice on purpose- it is not a mistake ;)
+				printerConnection.write(zplData.getBytes());
+				SystemClock.sleep(2000);
+				printerConnection.write(zplData.getBytes());
+				SystemClock.sleep(2000);
+				//perform important stuff only if label is printed correctly
+			} catch (ConnectionException e) {
+				//do some stuff
+			}
+				//do other stuff
+			}
+		}
+}
+In general it works perfectly. Labels are printed as desired and sometimes, when there are connection issues, exception is thrown and I can perform appropriate code to handle it.
+If no exception is thrown, I assume label was printed correctly and line &quot;//perform important stuff only if label is printed correctly&quot; is executed.
+Unfortunately, in very rare cases (once every few hundreds labels) situation happens, that no label is printed and no exception is thrown. This is serious issue for me because code in line &quot;//perform important stuff ...&quot; shouldn&#x27;t be executed in case no label was printed- this create system inconsistency.
+I was trying to find a way in API, how to receive confirmation that label was printed successfully (other than lack of exception) but I don&#x27;t see any option for that.
+Can you please advice on programmatic way to confirm the label was printed other than observing that no exception was thrown- this doesn&#x27;t work correctly.
+Regards
+Andrzej
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            6 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Reformatted your code snippet as below for better readability.
+public class ZebraPrinterHandler extends Handler {
+    private Connection printerConnection;
+	public ZebraPrinterHandler(String macAddress){
+        printerConnection = new BluetoothConnectionInsecure(macAddress);
+    }
+	private void tryToPrintLabel(Message msg) {
+			try {
+				String zplData = message.getZplData();
+				printerConnection.open();
+				//below code same label twice on purpose- it is not a mistake ;)
+				printerConnection.write(zplData.getBytes());
+				SystemClock.sleep(2000);
+				printerConnection.write(zplData.getBytes());
+				SystemClock.sleep(2000);
+				//perform important stuff only if label is printed correctly
+			} catch (ConnectionException e) {
+				//do some stuff
+			}
+				//do other stuff
+	}
+}There are a few things missing in your code snippets. Before sending each&amp;nbsp;print job to the printer, we should check the connection status and the printer status (printerConnection.isConnected(), getCurrentStatus()) to ensure that the printer is ready before we send anything to the printer. After the printing is done, the connection should be closed (printerConnection.close()) to ensure we return the resource so we can have a clean start next time. Adding 2,000 ms delay is not ideal. I&#x27;d suggest to check the printer status (getCurrentStatu()). Only when the printer is in ready state, we send the next print job.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

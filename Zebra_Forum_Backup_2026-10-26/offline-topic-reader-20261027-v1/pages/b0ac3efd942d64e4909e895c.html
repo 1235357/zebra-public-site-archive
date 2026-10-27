@@ -1,0 +1,312 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra Designer 3 For Developers Receipts malfunction</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Zebra Designer 3 For Developers Receipts malfunction</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25901; original snapshot: threads/resume-00583.html; SHA-256: 9bb9fd06973aca1ea59b87e93051c2c3b4a3cb5c161b04fd6aa85d8646b99a4e</small><pre id="topic">
+
+    
+        Zebra Designer 3 For Developers Receipts malfunction
+
+
+        
+      
+                        
+                    
+            P
+          
+          Paul Thompson
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            93
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  So, I’m not sure if it’s something I’m doing wrong, but I’m finding that when I print a receipt file created with ZD3fD, either directly to my iMZ320 or to a file, all the elements have their y location coordinate set to 0, stacking everything at the bottom. Additionally, the LL for the header is always set to some really small number. On other observation that might be linked is that in the configuration I’m unable to set the label orientation to 0 degrees, and it is locked at 180. The text elements are all set as inverted, rather than the labels themselves being inverted. Can anyone verify what I’m seeing? Does the pro version do this as well? Anyone have any known good receipt examples in zpl they could share for me to see how things SHOULD work?
+Edit: I should mention that the label type documents behave as I expect them to, it’s only the receipt type documents that seem bugged.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Paul,
+There might be some issues with the Test Print in the tool. I would suggest to select the Generic Printer with the proper resolution (200dpi or 300dpi, etc.) to match with the resolution of the printer you have. The iMZ320 is a 200dpi printer. Once the design of the label or receipt is done, export the template to a file. For receipt, the template has header, body and footer. Each of them is a separate ZPL. The header should be called only once at the beginning, followed by the body for a number of times based on the number of items on the receipt and then followed by the footer at last. Don’t manually edit the output, except copy and paste the header, body &amp;amp; footer sections into separate files, as they are independent ZPL formats. The &quot;~CT~~CD,~CC^~CT~&quot; has its special meaning in formatting (If you want the detail about them, you can refer to the ZPL manual.)
+When generating the output, there are three options “Store template to printer”, “Store template to printer then recall” and “Generate print file with variables”. We usually use the 2nd option, i.e. “Store template to printer then recall”. Once the output is generated in a file on the local disk, you can open it in a text editor, e.g. Notepad++. In the output, there are 6 ZPL sections. The first 3 sections are the header, body &amp;amp; footer templates. You can copy them into a separate file and send it once to the printer, so that they will be stored on the printer, either on the flash or in the DRAM, depending on the selections you choose when generating the output.
+The last 3 sections are the ZPL “recall formats” to the header, body &amp;amp; footer. They should be used in the application to call out the header, body and footer respectively. There is a recorded tutorial about how to generate the template from ZebraDesigner for Developers - https://www.youtube.com/watch?v=NZq0CvWr6Yc. It’s in the last part of the video. Hope this helps.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Take a look at the Receipt.nlbl template that comes with the ZebraDesigner for Developers. It can be found through the Sample Files on the main window of the tool. This sample receipt file gives a sense of how the receipt template works. In general, there is no need to make any manual changes in the output text file(s). The purpose of having ZebraDesigner tool is for people who posess little or no&amp;nbsp;knowledge about ZPL.
+ZDesigner for Developers.png
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jhon Wilson
+          
+          
+            2 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            If you&#x27;re encountering issues with Zebra Designer 3 for Developers Receipts malfunction, it&#x27;s crucial to troubleshoot effectively. Ensure your software is updated and check for compatibility issues. Forums and the official support channel for Zebra Designer 3 may offer insights into common problems and solutions. In a similar vein, when navigating how to use CapCut, another software tool, consult tutorials and online communities for guidance. Both troubleshooting the Zebra Designer 3 issue and learning how to use CapCut can benefit from community-driven support and online resources to streamline your experience.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            ben Jelin
+          
+          
+            2 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            If you&#x27;re encountering issues with Zebra Designer 3 for Developers Receipts malfunction, it&#x27;s crucial to troubleshoot effectively. Ensure your software is updated and check for compatibility issues. Forums and the official support channel for Zebra Designer 3 may offer insights into common problems and solutions. Furthermore, if you are into capcut video editing then you must know that capcutproapk is providing mod version of the CapCut app.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

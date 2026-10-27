@@ -1,0 +1,933 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Using Relay Mode - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/lifeguard/relaymode</code><br>Observed final URL: <code>https://techdocs.zebra.com/lifeguard/relaymode/</code><br>Raw source: <code>raw/0312366f7a96d593e651f4fa.html</code><br>Raw SHA-256: <code>d7256248f9359dc6d4c1dfb76c6b71011b567aa08486ad7be1c7f6cbc5e368ff</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            LifeGuard for Android
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Device Update
+                            
+                        
+                        
+                            
+                                    Relay Mode
+                            
+                        
+                        
+                            
+                                    A13+ Upgrade (SD660)
+                            
+                        
+                        
+                            
+                                    A14+ Upgrade (others)
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Using Relay Mode
+                        
+                    OverviewRequirementsRelay Server SetupUsage NotesI. Download OS Update FilesII. Retrieve SPLsIII. Create Hash ValuesIV. Create Filedata.xml FileV. Configure DevicesDevice NotificationsServer ConfigurationHost Name FormattingDevice MonitoringBest PracticesTroubleshootingBuild Update IssuesFrequently Asked QuestionsIs Relay Mode automatically enabled on managed devices?Where are Relay Mode deployment failures and debug logs stored?What is the maximum number of devices that can be updated concurrently?Can Relay Mode be enabled while a LifeGuard OTA deployment is actively in progress?If Relay Mode is no longer desired, how can Zebra-managed LifeGuard OTA deployments be resumed?Can devices be enrolled in Zebra DNA Cloud if they&#x27;re configured for Relay Mode?Do Relay Mode-enabled devices still appear on the ZDNA Cloud OS update page?Does the Zebra LifeGuard OTA system know if a device is configured in Relay Mode?How is the required FOTA client installed on the devices?
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Using Relay Mode
+                                    
+                                            LifeGuard for Android
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        
+   LAST UPDATED: Sept. 10, 2026 
+
+
+
+
+Overview
+
+Relay Mode allows Zebra devices to receive LifeGuard updates from a customer-hosted FTP/S or HTTP/S file server, eliminating reliance on Zebra-owned servers for pushing updates to individual devices. This provides Zebra customers with a do-it-yourself option of maintaining localized control of their own servers for deployment of updates currently delivered through the Zebra LifeGuard service, 
+which includes Android OS updates, security patches and firmware. Configuration of Relay Mode can be maintained by the company&#x27;s existing Enterprise Mobility Management (EMM) system and Zebra OEMConfig. Once configured, the system operates autonomously, periodically polling the designated server for updates and installing them to devices according to established policies, all with on-device logging. 
+
+Requirements
+
+
+Supported server protocols:
+
+
+
+FTP or FTPS
+
+HTTP or HTTPS
+
+
+Network recommendations: 
+
+
+
+Minimum 3 Mbps dedicated bandwidth per device
+
+
+Required server components: 
+
+
+
+Highly scalable server software for HTTP, HTTPS, FTP, or FTPS
+
+Directory dedicated to repository storage
+
+Index file to catalog each stored update file and its hash and security patch level (SPL)
+
+
+Supported device minimums: 
+
+
+
+Android 14 with April, 2026, update
+
+Android 15 with May, 2026, update
+
+FOTA 15.0.0.88 client
+
+OEMConfig 15.3 client
+
+
+
+ All devices to receive updates from a company&#x27;s Relay Server must be specifically configured to do so. See  Device Updates section below for details.  
+
+
+
+
+
+Relay Server Setup
+
+Setup Synopsis
+
+
+Download* and store &quot;Full Update&quot; .zip files‡ for deployed devices from Zebra support site.
+
+Generate hash values for each of the (.zip) files.
+
+Extract security patch level (SPL, a date) for each of the (.zip) files from its release notes.
+
+Create, validate and store the filedata.xml file on the server. 
+
+Configure all devices to receive updates from the Relay Server.  
+
+
+*  Zebra.com login required for download. 
+
+‡  Relay Mode supports only updates designated with &quot;STD&quot; in the file name. 
+
+
+   Zebra recommends including only the latest update for each product in the filedata.xml file.
+
+
+
+
+Usage Notes
+
+
+Device Enrollment 
+
+
+
+After Relay Mode is configured, LifeGuard Over-the-Air updates fail with error code 5151 (&quot;Unable to perform OS update as LifeGuard OTA is configured in Relay mode&quot;).
+
+
+Security
+
+
+
+For enhanced security, Zebra strongly recommends using encrypted passwords for server authentication. 
+
+The Zebra DET tool can be used to generate encrypted passwords.
+
+Encrypted and non-encrypted passwords are supported in the same text field. The FOTA client automatically detects encrypted passwords.
+
+
+Full URL Support
+
+
+
+A full URL (e.g., ftps://username:password@ipaddress:portno/) can be provided in the Server Host field. 
+
+If a full URL is provided, the Username and Password fields can be left blank.
+
+
+Update Package Constraints
+
+
+
+Relay Mode supports only updates designated with &quot;STD&quot; in the file name.
+
+Updates for &quot;hotfixes&quot; and custom packages are not supported.
+
+Baseline (U00) delta update packages are not supported.
+
+OS downgrades are not supported.
+
+
+Network Connectivity
+
+
+
+Devices must be connected to a Wi-Fi network to access the FTP/FTPS server and download updates.
+
+
+
+
+
+I. Download OS Update Files
+
+1. Download* the newest &quot;Full Update&quot; .zip file(s) for devices deployed in your organization from one of these Zebra sites:
+
+ NOTE: Relay Mode supports only updates designated with &quot;STD&quot; in the file name. 
+
+     See updates by device type: 
+  
+  Click image to enlarge; ESC to exit.
+  
+
+
+
+     See updates by device model:
+  
+  Click image to enlarge; ESC to exit.
+  
+
+2. Before navigating to the next file to download, consider following the instructions in Section II for the current file now. 
+
+ PRO TIP: Store all downloaded files in a single directory on a Windows PC to simplify steps in Section III, below. 
+
+3. Repeat this section until all required updates are downloaded. 
+
+ NOTE: Update files are required ONLY for devices deployed within your organization. It is not necessary to obtain updates for all Zebra devices.  
+
+*  Zebra.com login required for download. 
+
+
+
+II. Retrieve SPLs
+
+Service patch level information for a given update is found in its accompanying release notes document (usually found on the same page as the download link itself). Dates are extracted from the relevant release notes, converted to a specific date format and saved for later use.
+
+Get Security Patch Levels
+
+1. Locate and display the release notes for the update: 
+  
+  Click image to enlarge; ESC to exit.
+  
+
+2. Scroll (or search) to find the Security Patch level:
+  
+  Click image to enlarge; ESC to exit.
+  
+
+3. Format the date as YYYY-MM-DD and record it for use in Section IV. 
+
+
+
+III. Create Hash Values
+
+To verify the validity downloaded files, a hash value must be generated for all update files in the repository. To assist in this process, follow the instructions below on a Windows PC to automate the creation of the required SHA-1 hash values for the .zip files downloaded in Section I.
+
+Generate Hash Values
+
+
+Create a new text file in the same directory as the OS update .zip files downloaded in Section I.
+
+Copy the script below and paste it into the text file.
+
+Save the file with a descriptive name and a .bat extension (e.g., &quot;Generate_Hashes.bat&quot;).
+
+Double-click the file to execute it.
+A terminal window opens and the script generates hash values for each downloaded file, compiling them into a new file called &quot;SHA1List.txt&quot;.
+
+
+Hash Collection Script
+
+
+@echo off
+del SHA1List.txt 2&gt;nul
+echo Generating SHA1 values....
+echo All values will be saved in SHA1List.txt
+echo Please wait.
+for %%i in (*.zip) do (
+PowerShell -NoProfile -NoLogo -ExecutionPolicy unrestricted -Command &quot;&amp; Get-FileHash &#x27;%%i&#x27; -Algorithm SHA1&quot; &gt;&gt; SHA1List.txt
+)
+echo Generation complete.
+pause 
+
+
+
+IV. Create Filedata.xml File
+
+The Filedata.xml file is to contain a catalog of the available OS updates on the Relay Server. Each file entry must be wrapped within a root &lt;filedata&gt; element, and each OS update package must include a child &lt;file&gt; element containing the three required parameters shown below.
+
+
+Required Parameters:
+
+
+
+&lt;value&gt; - The name of the update file itself downloaded in Section I.
+
+&lt;hash&gt; - The hash generated specifically for that file in Section III.
+
+&lt;spl&gt; - The service patch level extracted from the file&#x27;s release notes in Section II.
+
+
+
+Create the catalog file
+
+
+Using a text editor, create a file called &quot;Filedata.xml&quot; and save it. 
+
+Using the information collected in the sections above, assemble an XML-structured document using one of the formats below. 
+
+Store the completed file in the same directory as the downloaded update files.  
+
+
+XML Examples
+
+Example A: Single OS update image
+
+
+&lt;filedata&gt;
+    &lt;file&gt;
+        &lt;value&gt;NE_FULL_UPDATE_14-15-22.00-UG-U142-STD-NEM-04.zip&lt;/value&gt;
+        &lt;hash&gt;F832ABB95DB09D867F297B88D02138B710C2E3DF&lt;/hash&gt;
+        &lt;spl&gt;2026-05-01&lt;/spl&gt;
+    &lt;/file&gt;
+&lt;/filedata&gt;
+
+Example B: Multiple OS update images and device models
+
+
+&lt;filedata&gt;
+&lt;!-- Device Model 1 (e.g., NEM) --&gt;
+  &lt;file&gt;
+    &lt;value&gt;NE_FULL_UPDATE_14-15-22.00-UG-U142-STD-NEM-04.zip&lt;/value&gt;
+    &lt;hash&gt;F832ABB95DB09D867F297B88D02138B710C2E3DF&lt;/hash&gt;
+    &lt;spl&gt;2026-05-01&lt;/spl&gt;
+  &lt;/file&gt;
+
+&lt;!-- Device Model 2 (e.g., ATH) --&gt;
+  &lt;file&gt;
+    &lt;value&gt;AT_FULL_UPDATE_14-35-10.00-UG-U26-STD-ATH-04.zip&lt;/value&gt;
+    &lt;hash&gt;3689EA562AC62AF262E8969EFE62CF2E2F876B2D&lt;/hash&gt;
+      &lt;spl&gt;2025-11-05&lt;/spl&gt;
+  &lt;/file&gt;
+&lt;/filedata&gt;
+
+
+
+V. Configure Devices
+
+Devices must be running Android 14 (or later) with specific LifeGuard updates. See  device requirements section for further details. 
+
+Configure Devices for Relay Mode
+
+1. Download OEMConfig client app 15.3 (or later) and push to target device(s) through an EMM system with Zebra OEMConfig Powered by MX. 
+
+2. In an EMM system with Zebra OEMConfig:
+    a. Navigate to System Configuration &gt; Configure. 
+    b. Navigate further to LifeGuard Configuration &gt; Relay Mode.
+    c. Enable Relay Mode and configure server details.‡ 
+     (Available fields and sample data shown in the image below).
+    d. When fields are populated as needed, save and apply the policy to device(s).
+  
+  Click image to enlarge; ESC to exit.
+  
+
+3. Successful policy deployment is indicated by a device notification similar to the image below: 
+
+
+  Click image to enlarge; ESC to exit.
+  
+
+*  If specifying a full HTTP/S URL as the host name, fields for port number, username, password, file location, etc., can be left blank. 
+
+‡  Selecting FTP or FTPS limits device-update downloads to Wi-Fi only. 
+
+ After completing all five sections above, Relay Mode is ready.
+
+
+
+Device Notifications
+
+
+Relay Mode is running - Device is configured to receive updates from a non-Zebra relay server:
+
+Click image to enlarge; ESC to exit.
+
+
+An update package is downloading - An update is being downloaded to the device:
+
+Click image to enlarge; ESC to exit.
+
+
+Ready to update - An update has been downloaded and is ready to be applied:
+
+Click image to enlarge; ESC to exit.
+
+
+
+
+
+
+
+Server Configuration
+
+The table below contains parameters and available options for configuring a server for Relay Mode. 
+
+
+
+
+ 
+Parameter
+Description
+Default Value
+Example(s)
+
+
+
+Relay Mode State
+Used to select whether the Relay Mode feature is activated on the device.
+Do not change
+&quot;Enable&quot;&quot;Disable&quot;
+
+
+
+Server Protocol
+The communication protocol to be used on the server for hosting update files and by devices for accessing them.Supported protocols:• FTP• FTPS• HTTP• HTTPS Selecting FTP or FTPS limits device-update downloads to Wi-Fi only.
+FTP
+&quot;HTTP&quot;
+
+
+
+Server Port
+The port number for the specified server protocol. 
+FTP: 21FTPS: 990*FTPS: 21‡HTTP: 80HTTPS: 443
+
+
+
+
+Server Host
+The host name of the server hosting OS Update files. Can be a full URL, IP address or domain name. Proper host-name formatting is critical.  See below
+none
+&quot;ftp.zebra-updates.com&quot;&quot;123.134.22.44&quot;
+
+
+
+Username
+Log-in name of a valid user on the server hosting the update files with access to the relevant directory.
+none
+&quot;ftp_user&quot;
+
+
+
+Password
+Password of a valid user. Supports plain text or encrypted text.Zebra recommends using encrypted passwords. Learn how.
+none
+none
+
+
+
+Update File Location
+The directory path on the server where update files are stored.
+/ (root)
+&quot;/zebra/firmware/updates/&quot;
+
+
+
+Update Frequency
+The length of time (in minutes) the device waits between checks for an update.Minimum = 15. Recommended value: 1440 (24 hours). 
+1440
+&quot;720&quot; (2x per day)&quot;10080&quot; (weekly)
+
+
+
+Postponed Update Frequency
+The length of time (in minutes) to display the &quot;Update Postponed&quot; window.Zebra recommends a value between five and 60.
+1
+&quot;5&quot;
+
+
+
+User Notification Attempts
+The number of times an update can be postponed before it is forced.
+5
+&quot;3&quot;
+
+
+
+Logging
+Used to select whether update-activity logs are collected.When saved, device logs are accessible using Zebra RxLogger.
+Do not change
+&quot;Enable&quot;&quot;Disable&quot;
+
+
+
+
+
+*  Implicit FTPS: Supports only secure connections; drops unencrypted requests. 
+
+‡  Explicit FTPS: Supports encrypted or unencrypted connections.  
+
+
+
+Host Name Formatting
+
+To ensure reliable and error-free device updates, it&#x27;s important to correctly input and format all device configuration data, including the Relay Server host name, login credentials and port information. Some examples of valid and invalid data are shown below.  In some cases, percent-encoding must be used in place of special characters. See Special Character Encoding, below. 
+
+
+   While supported, Zebra recommends AGAINST storing update files in the server&#x27;s root directory.
+
+
+
+
+
+Valid FTP/FTPS URLs: 
+
+
+
+ftp://user:pass@12.34.56.78:2121/ 
+
+ftp://host.com/pub/ 
+
+ftp://user:pass%401234@12.34.56.78:2121/ 
+
+ftp://username:password@ipaddress:portno/ 
+
+ftps://user:pass@12.34.56.78:2121/filelocation/
+
+
+Valid HTTP/HTTPS URLs:
+
+
+
+https://example.com/ 
+
+http://192.168.1.100/admin/ 
+
+http://localhost:8080/dashboard/ 
+
+
+INVALID URLs:
+
+
+
+https://example.com (trailing slash missing)
+
+http://192.168.1.100/admin (trailing slash missing)
+
+http://localhost:8080/dashboard/ (inaccessible server)
+
+ftp://user:pass@12.34.56.78:2121 (missing path to file repo)
+
+
+
+
+
+Special Character Encoding
+
+When including special characters within a URL, they must be percent-encoded, which replaces the special character with a percent sign (%) plus two hexadecimal digits representing the ASCII value of the character. For example, a space (not shown below) is encoded as %20. Other common special characters are shown below with their percent-encoded equivalents. 
+
+
+Special characters and their percent-encoded equivalents:
+
+
+
+@ -&gt; %40
+
+: -&gt; %3A 
+
+$ -&gt; %24 
+
+% -&gt; %25
+
+! -&gt; %21 
+
+; -&gt; %3B 
+
+, -&gt; %2C 
+
+? -&gt; %3F 
+
++ -&gt; %2B  
+
+* -&gt; %2A
+
+
+
+
+
+Device Monitoring
+
+As a localized solution, Relay Mode does not provide centralized status reporting for update successes or failures.
+
+Best Practices
+
+Validation
+
+Administrators should use their existing EMM-system console to validate the active OS version on managed devices and confirm successful deployments.
+
+Debugging Logs
+
+For detailed troubleshooting, Zebra RxLogger can be used to extract logs from individual devices. For help retrieving device logs, see the  RxLogger User Guide. 
+
+
+
+Troubleshooting
+
+This section describes some common error notifications and their possible resolutions. 
+
+ Please read this section before contacting Zebra for support.  
+
+
+
+&quot;FTP server connection unsuccessful&quot;
+
+Resolution: Double-check the configuration settings. Ensure that the server protocol, port number, and host name are entered correctly.
+
+
+  Click image to enlarge; ESC to exit.
+  
+
+Status and relay-server settings are visible on the device in Settings &gt; System &gt; System Update:
+  
+  Click image to enlarge; ESC to exit.
+  
+
+
+
+&quot;Failed to download&quot;
+
+
+  Click image to enlarge; ESC to exit.
+  
+
+
+Possible resolutions:
+
+
+
+Verify that the device has an active and stable network connection.
+
+Check your network security settings to ensure a firewall is not blocking the download.
+
+Ensure the device has enough free space; low memory can block downloads.
+
+
+
+
+
+&quot;Download file is corrupted&quot;
+
+
+  Click image to enlarge; ESC to exit.
+  
+
+
+Possible resolutions:
+
+
+
+Verify that the device has an active and stable network connection.
+
+Check that the SHA-1 hash provided in Filedata.xml is correct.
+
+
+
+
+
+&quot;OS Update cannot be started due to low battery&quot;
+
+
+  Click image to enlarge; ESC to exit.
+  
+
+
+Possible resolution:
+
+
+
+Connect the device to a charger and wait until the battery level reaches at least 30 percent.
+
+
+
+
+
+&quot;Job interval is not in valid range&quot;
+
+
+  Click image to enlarge; ESC to exit.
+  
+
+
+Possible resolution:
+
+
+
+Ensure the update frequency is configured to be at least 15 minutes.
+
+
+
+
+
+Build Update Issues
+
+If the device does not contain the correct build following an update cycle, perform the following checks. 
+
+1. Check the relay server.
+
+Verify the following before investigating the device:
+
+    a. The relay server is up and running properly.
+    b. The build/package is available on the server. 
+    c. The device is correctly configured and assigned to receive the build. 
+    d. There are no connectivity or network issues between the device and the server. 
+
+2. Enable RxLogger on the device.
+
+
+If no issues are found on the server: 
+
+
+
+Enable RxLogger on the device. 
+
+Enable the RxLogger TCPdump Module.
+
+
+
+3. Wait for configured interval.
+
+The update frequency can be configured to any supported interval, for example, 24 or 48 hours (1440 or 2880 min). At the end of each interval, the device polls the server for the latest build and automatically downloads and applies the update within the next configured interval. 
+
+4. Collect logs if the issue persists. 
+
+If the issue persists after 24 hours, collect the RxLogger logs from the device. 
+
+5. Contact support.
+
+Contact Zebra Customer Support and raise a ticket. Share the collected logs with the Zebra Technical Support Team for further investigation. 
+
+
+
+Frequently Asked Questions
+
+Is Relay Mode automatically enabled on managed devices?
+
+A: No, Relay Mode is disabled by default. It must be explicitly enabled using managed configurations created and deployed to devices with Zebra OEMConfig. See the  Configure Devices section above.
+
+
+
+Where are Relay Mode deployment failures and debug logs stored?
+
+A: Logs are captured and stored within each device&#x27;s logcat logs. For help retrieving device logs, see the  Zebra RxLogger User Guide.
+
+
+
+What is the maximum number of devices that can be updated concurrently?
+
+A: Relay Mode imposes no hard limit on concurrent device updates. The maximum number of simultaneous downloads depends on the bandwidth and capacity limitations of the customer-hosted server and network infrastructure.
+
+ CAUTION: Relay Mode does not support download staggering. Zebra recommends small-scale testing of the solution before ramping up to full-scale deployment.
+
+
+
+Can Relay Mode be enabled while a LifeGuard OTA deployment is actively in progress?
+
+A: The answer depends on the current state of a given LifeGuard deployment. 
+
+
+If an update was created by Zebra but not yet scheduled for deployment, that update is cancelled (returning error code 5151) and Relay Mode takes precedence.
+
+If an update is scheduled or in progress, the update is allowed to complete, after which Relay Mode is enabled after the next device reboot.
+
+
+
+
+If Relay Mode is no longer desired, how can Zebra-managed LifeGuard OTA deployments be resumed?
+
+A: Relay Mode is disabled simply by changing a setting in the OEMConfig device client pushing the updated configuration to the devices and rebooting. Updates from Zebra servers resume on the next update cycle. 
+
+
+
+Can devices be enrolled in Zebra DNA Cloud if they&#x27;re configured for Relay Mode?
+
+A: Yes, but the LifeGuard Update feature is disabled and attempting to update from DNA Cloud fail with error code 5151. Devices enrolled in DNA Cloud otherwise function normally.
+
+
+
+Do Relay Mode-enabled devices still appear on the ZDNA Cloud OS update page?
+
+A: Yes, enrolled devices configured for Relay Mode appear in the ZDNA console, but Relay Mode does not report progress back to DNA Cloud. Therefore, devices sometimes appear as &quot;out-of-date&quot; in status reports despite having the current update.
+
+
+
+Does the Zebra LifeGuard OTA system know if a device is configured in Relay Mode?
+
+A: No, the LifeGuard OTA system is not aware of the device&#x27;s Relay Mode status, and the switch to Relay Mode disables a device&#x27;s calls to Zebra servers for updates. Relay Mode is a localized configuration and managed entirely by your company.
+
+
+
+How is the required FOTA client installed on the devices?
+
+A: The FOTA client is installed and kept up to date in one of two ways:
+
+
+The FOTA client automatically updates itself if configured to do so.  Learn how. 
+
+The Relay Mode-ready FOTA client is scheduled to be built into Zebra&#x27;s version of Android starting with the Sept., 2026, LifeGuard update.
+
+
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

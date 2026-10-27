@@ -1,0 +1,323 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>EMDK Android ... INSTALL_FAILED_MISSING_SHARED_LIBRARY</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>EMDK Android ... INSTALL_FAILED_MISSING_SHARED_LIBRARY</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/emdk-android-installfailedmissingsharedlibrary; original snapshot: threads/00576.html; SHA-256: 2298dc84caefc43735a9471a78169ac197cf17166dfaa160c4c4cf2a9e69db10</small><pre id="topic">
+
+    
+        EMDK Android ... INSTALL_FAILED_MISSING_SHARED_LIBRARY
+
+
+        
+      
+                        
+                    
+            J
+          
+          Jack Toke
+          3 years 5 months ago
+        
+        
+      
+        
+            
+                  
+            
+            424
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+
+I&#x27;m having issue getting started with EMDK Android.
+
+I am having problem with enabling EMDK library.  I&#x27;ve added the uses-permission tag, but it doesn&#x27;t seem to be able to find the library.  It complained about the library not available.
+
+&quot;Installation failed due to: &#x27;INSTALL_FAILED_MISSING_SHARED_LIBRARY: Reconciliation failed...: Reconcile failed: Package au.com.amesystems.zebraapp requires unavailable shared library com.symbol.emdk; failing!&#x27;&quot;
+
+ 
+
+ This is my AndroidManifest.xml file.
+
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;manifest xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;&gt;
+    &lt;uses-permission android:name=&quot;com.symbol.emdk.permission.EMDK&quot; /&gt;
+    &lt;application
+        android:allowBackup=&quot;true&quot;
+        android:dataExtractionRules=&quot;@xml/data_extraction_rules&quot;
+        android:fullBackupContent=&quot;@xml/backup_rules&quot;
+        android:icon=&quot;@mipmap/ic_launcher&quot;
+        android:label=&quot;@string/app_name&quot;
+        android:roundIcon=&quot;@mipmap/ic_launcher_round&quot;
+        android:supportsRtl=&quot;true&quot;
+        android:theme=&quot;@style/Theme.ZebraApp&quot;
+        tools:targetApi=&quot;33&quot;&gt;
+        &lt;uses-library android:name=&quot;com.symbol.emdk&quot;/&gt;
+        &lt;activity
+            android:name=&quot;.MainActivity&quot;
+            android:exported=&quot;true&quot;&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&quot;android.intent.action.MAIN&quot; /&gt;
+
+                &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot; /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+    &lt;/application&gt;
+    &lt;queries&gt;
+        &lt;package android:name=&quot;com.symbol.emdk.emdkservice&quot; /&gt;
+    &lt;/queries&gt;
+&lt;/manifest&gt;
+
+ 
+
+This is my settings.gradle file.
+
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+        maven {
+            url = &quot;https://zebratech.jfrog.io/artifactory/EMDK-Android/&quot;
+        }
+    }
+}
+rootProject.name = &quot;ZebraApp&quot;
+include &#x27;:app&#x27;
+
+
+ 
+
+This is my build.gradle file.
+
+plugins {
+    id &#x27;com.android.application&#x27;
+    id &#x27;org.jetbrains.kotlin.android&#x27;
+}
+
+android {
+    namespace &#x27;au.com.amesystems.zebraapp&#x27;
+    compileSdk 33
+
+    defaultConfig {
+        applicationId &quot;au.com.amesystems.zebraapp&quot;
+        minSdk 29
+        targetSdk 33
+        versionCode 1
+        versionName &quot;1.0&quot;
+
+        testInstrumentationRunner &quot;androidx.test.runner.AndroidJUnitRunner&quot;
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile(&#x27;proguard-android-optimize.txt&#x27;), &#x27;proguard-rules.pro&#x27;
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = &#x27;1.8&#x27;
+    }
+}
+
+dependencies {
+
+    implementation &#x27;androidx.core:core-ktx:1.10.0&#x27;
+    implementation &#x27;androidx.appcompat:appcompat:1.6.1&#x27;
+    implementation &#x27;com.google.android.material:material:1.9.0&#x27;
+    implementation &#x27;androidx.constraintlayout:constraintlayout:2.1.4&#x27;
+    compileOnly &#x27;com.symbol:emdk:11.0.134&#x27;
+    testImplementation &#x27;junit:junit:4.13.2&#x27;
+    androidTestImplementation &#x27;androidx.test.ext:junit:1.1.5&#x27;
+    androidTestImplementation &#x27;androidx.test.espresso:espresso-core:3.5.1&#x27;
+}
+              
+
+                    
+          
+      
+              
+ error.png
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Daniel Neamtu
+          
+          
+            3 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi there, 
+Are you trying to use the EMDK library on a non-Zebra device?
+If so, that&#x27;s not possible.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              K
+            
+          
+                
+          
+            Kishore Kumar
+          
+          
+            2 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi I got the issue resolved. We have to declare as follows to install in both Zebra and non-zebra devices.&lt;uses-library android:name=&quot;com.symbol.emdk&quot; android:required=&quot;false&quot;/&gt;
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

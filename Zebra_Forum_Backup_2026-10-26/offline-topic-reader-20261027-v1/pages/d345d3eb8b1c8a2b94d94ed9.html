@@ -1,0 +1,239 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Best practice to use the scanner across multiple activities</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Best practice to use the scanner across multiple activities</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/33004; original snapshot: threads/resume-00131.html; SHA-256: 998aeaf2d5dba56e7c7d837e4678eb691d7923babc4b3ed1477949bd64288532</small><pre id="topic">
+
+    
+        Best practice to use the scanner across multiple activities
+
+
+        
+      
+                        
+                    
+            M
+          
+          Mike Bedford
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            478
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello all, I have an issue that is somewhat related to a previous post of mine here: https://developer.zebra.com/thread/32976
+ 
+While, based on the answer of that thread, there were some known issues with the older EMDK service and updating to the latest did help a lot; my implementation of the scanner just does not seem right. It is working and with the EMDK update, working a lot better but I wanted to ask those more experienced to weigh in on a possible more efficient approach.
+ 
+Basically, my application has two main activities. I need to be able to scan on both actvities. What I have done so far is taken the scanner code, very similar to the EMDK docs and the sample application and wrapped it all in a singleton class. The idea is that activity A can get the instance to my singleton scanner class (and since this will typically be first lauch, the singleton can instantiate itself). From activity A, a user can switch to activity B. Activity A is not finished but rather, backgrounded as the two activities can switch back and forth. I know one of the biggest concerns with a singleton is thread safety. Let me say that I don&#x27;t have to worry about that here but by all means, if there is a better way feel free to give your suggestion.
+ 
+So, here are the questions or issues I am having so far:
+1. If I just get the instance to the singleton with each onResume of the activity (which I tried first), do I have to pass in or update the context each time? GetEMDKManager call requires me to pass in a context. If it is called and instantiated from activity A, the instance will continue to have activity A context. Doesn&#x27;t this present a problem when I am trying to use it in activity B? Should I update the context when I get instance?
+2. I assume you cannot simply update the context because the EMDKManager was created with the other context. Therefore, you would need to completely dispose everything when switching activities so you can call GetEMDKManager again and pass in the new context. Is that correct? This is how I am doing it now. More on that below.
+3. I was having issues where, if I just call to pause the scanner during the onPause of activity A, then when you switch to activity B, you get the singleton and call to resume the scanner (which is basically InitScanner) during the onResume, it acted like I had two instances of the class even though it is a singleton because I was getting double scan result event handler raising on activity B.
+ 
+All that said, I am basically doing this now:
+1. Activity A launches and gets the instance of the singleton, it is null so it instantiates itself. It does this in onResume
+2. In onPause of Activity A, I call to pause the scanner, then destroy and then dispose the singleton instance.
+3. In onResume of Activity B, I call to get the instance of the singleton and again, it is null since I disposed everything during onPause of activity A. This allows me to pass in the new context.
+4. In onPause of Activity B, I do the same thing as Activity A so that the scanner is paused and the singleton instance is disposed so that activity A can get the instance again but pass in context when switching back.
+ 
+Maybe this is the best way but it just feels clunky. Seems that passing the scanner back and forth between activities should be easier. Maybe I am missing something.
+ 
+Thanks!
+ 
+Mike
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mike Bedford
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello all, 
+Okay, in an attempt to figure this problem out and/or get some assistance, I create a spin off sample project from the &quot;Barcode Scanning Tutorial&quot; demo project which can be downloaded from Zebra, from the EMDK scanning documents.
+My spin off project is attached. I modified the project to have two activities that you can switch back and forth between. I also created a wrapper class for the scanner, not using a singleton for now (although that could be an option) and then stripped out all of the barcode scanning calls from the activities and instead instantiated and called the wrapper.
+This project seems to work okay, performance is also okay. However, it is just a start. I would like others in the community and/or Zebra to look this over so we can build off of it. Please suggest or make improvements. I am far from an expert so this would really help not only me but the community to get a clean scanning wrapper and sample for multiple activities.
+Some examples of thoughts I have:
+1. Should the wrapper be a singleton?
+2. Can the initialization and lifecycle calls be handled better?
+3. When I check if scanner is null during lifecycle, should I also re-instantiate if it is?
+4. The event handlers seem to be working fine but is there a better way? 
+I did notice one bug and I believe it exists in the raw Barcode Scanning Tutorial (ie before I modified it). If you scan slowly or at a normal pace, everything works fine. However, if you scan very quickly, just keep mashing on the button, you can get the app to die and a popup that states the EMDK service has stopped. This is not a high priority because I realize that most users will never mash the button that fast. However, when time permits, it should be investigated because it should not just crash. Maybe there is something that can be done now to prevent it that I am not aware of? I think a test would be to disable the scanner while reading and re-enable after a read? Along those lines, note that I added a way to enable and disable the scanner in the wrapper. 
+Hope this helps and helps to get this sample wrapped up. Zebra, once it is clean and you give it your blessing, I hope you continue to use it and include it in the demos/docs to help others that need a good example of scanning from multiple activities or with a wrapper.
+Also, I hope to get help soon as this has been lingering for a few weeks for me (and longer for others). I want to get this finalized.
+Thanks!
+Mike
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mike Bedford
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Is there any ideas on this? It is still a real problem for me. I have the EMDK service in a singleton wrapper per another post but is this the best way? I am still having random issues with:
+1. Taking too long to initialize and get instance, particularly when switching activities.
+2. OnScanData event raises twice at times, which leads me to believe somehow wrapper was instantiated twice.
+3. Scanner appears to be instantiated but clearly is not. I do not get scans (or LED aim).
+I think maybe the wrapper is the right way to go but maybe the problem now is knowing what things to do and when during the lifecycle. In other words, do I just pause and resume the scanner on both activites? Should I destroy the instance of the singleton when switching activities? Etc...
+Thanks!
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

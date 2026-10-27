@@ -1,0 +1,161 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Printing Barcodes using Variable Fields Cuts off first 3 Characters</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/forum/24898; snapshot threads/resume-00373.html; SHA-256 f4b4946c2a35fc37de690253d68fa225bf2aacba69f3fa3c127606a821e2c6f3. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Printing Barcodes using Variable Fields Cuts off first 3 Characters</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            S
+          </div>
+          <div class="forum-topic__author-name">System Admin</div>
+          <div class="forum-topic__timestamp">5 years 4 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            516
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi there,<br>
+We have implemented the Zebra SDK into our iOS and Android application and we are hitting an issue where the first 3 characters are getting cut off when printing out QR Code information using a variable field.<br>
+I have reached out to Zebra Support on this and they recommended that I come here. They do have this article but this resolution does not work when using variable fields Link (<span data-original-href="https://supportcommunity.zebra.com/s/article/QR-code-missing-first-three">https://supportcommunity.zebra.com/s/article/QR-code-missing-first-three</span>...)<br>
+In our scenario we are doing the following:<br>
+When using variable fields, you query the printer to get a list of the variable fields for a specific zpl file. All the data that comes back from that call is the field number (which zebra generates in the zpl file) and the field name (the name the label creator gives it, ie what you enter in the prompt text box). The sdk doesn’t give a way to determine if the variable field is for a text or for a barcode object. If it gave that (along with the barcode type) I could add the missing characters, but realistically, the sdk should add those characters when replacing actual data for a barcode variable field.<br>
+Has anyone experienced this and found a resolution on this. We did try this on Zebras printing app on the store and it has the same problem. So it sounds like this is a core problem with the SDK.<br>
+Thoughts?<br>
+Thanks in advance<br>
+-Ben</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-46523" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            6 years 9 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Ben,<br>
+Thanks for sharing the finding. It looks like an issue to me too. This is because we need to pass the Switch Code to the template for the QR code encoding. This Switch Code is an extra characters in addition to the text to be encoded in the QR code. The only solution that I can come up with is to ask the people who creates the template to name the variable for QR code in the template with a special prefix or suffix, such as qr_xxxx or xxxx_qr. So that your application can differentiate the QR code variable from regular variables, then the application can attach the extra characters of Switch Code in front of the text that to be encoded by QR code.<br>
+Would this be a resonable workaround?<br>
+Regards,<br>
+Steven</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/forum/24898%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/forum/24898%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

@@ -1,0 +1,265 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>xamarin android EMDK ProcessProfile always return checkXml !</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/thread/34796; snapshot threads/resume-00212.html; SHA-256 656b25fd6b736259f1938243b5396ec211520721b0f863e8ce816fb3f0e6a52a. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">xamarin android EMDK ProcessProfile always return checkXml !</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            A
+          </div>
+          <div class="forum-topic__author-name">Anonymous</div>
+          <div class="forum-topic__timestamp">5 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            98
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            2
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello,<br>
+i work with visual studio 2015 and xamarin.<br>
+ <br>
+I have a device zebra TC 75 with android version 6.0.<br>
+I've a zebra tutorial for to create a profil and load it when user click on a button on the app.<br>
+ <br>
+On this profil i set just the wifi never sleep and screen off to 30 min that's all<br>
+I've follow this link : Your First EMDK For Xamarin Application - Zebra Technologies TechDocs<br>
+ <br>
+well, when i run my app i check that the screen off is set to 15 second for testing it.<br>
+ <br>
+when i run the app, click on button the EMDKResults return always check xml BUT my profil is set !!!!<br>
+Never time the EMDKResults return Success ....<br>
+ <br>
+Here is it the code i used , anyone have an idea ?<br>
+the code is the same than the article, i've add the necessary in the manifest file, i've reboot my device ...<br>
+ <br>
+I can't understand why the EMDKResults is always set to check xml ...argh !!!!<br>
+ <br>
+on my mainActivity =&gt; onCreate method<br>
+protected override void OnCreate(Bundle bundle)<br>
+        {<br>
+            base.OnCreate(bundle);<br>
+ <br>
+            // Set our view from the "main" layout resource<br>
+            SetContentView(Resource.Layout.Main);<br>
+ <br>
+            tvStatus = FindViewById(Resource.Id.textViewStatus);<br>
+            button = FindViewById(Resource.Id.MyButton);<br>
+            button.Click += delegate { ApplyProfile(); };<br>
+            //<br>
+            EMDKResults result = EMDKManager.GetEMDKManager(this, this);<br>
+            if (result.StatusCode == EMDKResults.STATUS_CODE.Success)<br>
+                tvStatus.Text = "RESULT IS OK";<br>
+            else<br>
+                tvStatus.Text = "EMDK MANAGER NOT LOAD";<br>
+        }<br>
+ <br>
+Next, on button i do that :<br>
+void ApplyProfile()<br>
+        {<br>
+            if (profileManager != null)<br>
+            {<br>
+                EMDKResults results = profileManager.ProcessProfile("ClockProfile", ProfileManager.PROFILE_FLAG.Set, new String[] { "" });<br>
+                if (results.StatusCode == EMDKResults.STATUS_CODE.Success)<br>
+                    tvStatus.Text = "Status: Profile applied successfully ...";<br>
+                else<br>
+                {<br>
+                    if (results.StatusCode == EMDKResults.STATUS_CODE.CheckXml)<br>
+                    {<br>
+                        using (XmlReader reader = XmlReader.Create(new StringReader(results.StatusString)))<br>
+                        {<br>
+                            String checkXmlStatus = "Status:\n\n";<br>
+                            while (reader.Read())<br>
+ <br>
+thanks for your time</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      2 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-42034" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              C
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Charitha Malla…</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Christophe,</p>
+<p>Billie has explained you the reason above why it is happening.</p>
+<p>If you want to analyze the return xml, you can refer to the existing samples Zebra has provided. Refer the CheckXmlError private method of the below sample.<br>
+WiFi Configuration - Zebra Technologies TechDocs </p>
+<p>Hope this helps.</p>
+<p>Thanks,<br>
+Charith.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-42016" class="comment forum-topic__reply js-comment by-anonymous forum-topic__reply--comment by-viewer">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              A
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Anonymous (not verified)</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Christophe,<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; That is expected behavior,&amp;nbsp; Success will only be returned when using the Profile Manager Data Capture features. All other Profile Manager features will return CheckXml. You will need to inspect the XML to see if there any errors in the XML</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/thread/34796%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/thread/34796%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

@@ -1,0 +1,483 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>zec 500 usbmgr</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>zec 500 usbmgr</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zec-500-usbmgr; original snapshot: threads/00118.html; SHA-256: c583e779a419ddce0d6f7051bc95caedf3ae88a49d61c0f8b896d56003e64276</small><pre id="topic">
+
+    
+        zec 500 usbmgr
+
+
+        
+      
+                        
+                    
+            C
+          
+          César Araújo
+          2 months 2 weeks ago
+        
+        
+      
+        
+            
+                  
+            
+            306
+          
+                
+                  
+            
+            6
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  On ZEC500, Android 15, MX 15.2.0.10 — UsbMgr/HostModePeripherals accepts 0 and 2, but 1 (Custom rules list) is always rejected with parm-error … desc=&quot;Invalid configuration rule&quot;, at CSP versions 11.6, 13.0 and 15.2, with and without a CustomRules payload  even including with no rules at all. UsbADBUsage on the same characteristic succeeds. Is Custom-rules mode supported on ZEC500, and if not, what is the supported way to pre-grant a signed app USB permission for a fixed VID/PID? 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      6 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              I
+            
+          
+                
+          
+            Ian Hatton
+          
+          
+            2 months 2 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            UsbMgr custom rules should be working on the ZEC500 - can you share the exported XML of your rule so that we can take a look ?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            César Araújo
+          
+          
+            2 months 2 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Ian, How you doing?First of all thanks for the help.Our goal here is to pre-grant usb permissions for printers, usb serial reader, and other usb devices we may use in future, we also need to suppress the popups regarding usb, where android will ask to confirm to open the app when the usb device is connected. This is the xml we used, and then the response obtained.&lt;characteristic type=&quot;Profile&quot;&gt;
+    &lt;parm name=&quot;ProfileName&quot; value=&quot;KioskUsbPrinter&quot;/&gt;
+    &lt;characteristic version=&quot;11.6&quot; type=&quot;UsbMgr&quot;&gt;
+        &lt;parm name=&quot;HostModePeripherals&quot; value=&quot;1&quot;/&gt;
+        &lt;parm name=&quot;CustomRules&quot; value=&quot;&amp;lt;popupsuppress&amp;gt;&amp;lt;rule&amp;gt;&amp;lt;pkg&amp;gt;pt.xarevision.android.xarepoint&amp;lt;/pkg&amp;gt;&amp;lt;cert&amp;gt;MIID3DCCAsSgAwIBAgIJAJa7I6wMHhoBMA0GCSqGSIb3DQEBCwUAMIGCMQswCQYDVQQGEwJDTjERMA8GA1UECAwIU2hhbmdoYWkxETAPBgNVBAcMCFNoYW5naGFpMQ4wDAYDVQQKDAVMenRlazEPMA0GA1UECwwGVGVhbUhEMRAwDgYDVQQDDAdMaWFva2FpMRowGAYJKoZIhvcNAQkBFgtsa0BsenRlay5jbjAeFw0xODA5MDYwMTIwMjJaFw00NjAxMjIwMTIwMjJaMIGCMQswCQYDVQQGEwJDTjERMA8GA1UECAwIU2hhbmdoYWkxETAPBgNVBAcMCFNoYW5naGFpMQ4wDAYDVQQKDAVMenRlazEPMA0GA1UECwwGVGVhbUhEMRAwDgYDVQQDDAdMaWFva2FpMRowGAYJKoZIhvcNAQkBFgtsa0BsenRlay5jbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANSiqs5Mvso8d7P3+c9kcSf31hwk8dIonWMXb1WJChrUHKFMJXEkkB+8m2Z7zyToxeVLwlXKRNEpPygSQSrepoTZNoa3AomHSX73xEzYxWnJA7m+Otf1491FPYY2+PmhvyRxx6nLtmJlbQdStYrjsoavkRuTW9rV7iv7p2q8dIUFJ4+Ga5rSiKtULxrOKYbVU9JMK/6j1XyL07Nd8XuJ1dCQLV4FBJMwajdJPWDLjqC7yMZHW53czgDSCld1jhpzUA+BLZ6pqb8+4eNz5CFxcGAr43Bh9XMHUTp3Zb1uQbN6yaGdQ2Xf5V+qbI1kbrq8U5GIPot5q2GaQvqOgJ9+HUECAwEAAaNTMFEwHQYDVR0OBBYEFOp/CYeApguKujnO1n2zaZNPUo2QMB8GA1UdIwQYMBaAFOp/CYeApguKujnO1n2zaZNPUo2QMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAEEMG+3sZppkCqCHdzokfgwjqes2DYvQvuGyuTBYxLI3TFb2E4fxqgm8OFigbEExmF4XjivIEgk+xgFzmEbQocbu57DXDxQIEkiyrJ+qu9KwiIH7R4DPOYJ9tVzyO0j2gGmS0jApIJB5ClhJMHyAgGsjZm1cW73SGyLi13QRLUt1hty5PRUQ6h6UH2ccI5CzHxqyYz1lAAD5x1wZez6xmYMBplSLRvArwTl5bnqrwix+cTRwJdNhWRHG075JjxOykyy+IjuBkVwJX9jZ9kIk/Pr2+QOqLXwpsup1ojdNDa/9H5RjToNG9P1DTxcZa3iksNRzxhP0ZoRnp1D7XacjFig=&amp;lt;/cert&amp;gt;&amp;lt;vid vendorid=&amp;quot;1208&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;514&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;autoLaunch&amp;gt;false&amp;lt;/autoLaunch&amp;gt;&amp;lt;/rule&amp;gt;&amp;lt;rule&amp;gt;&amp;lt;pkg&amp;gt;pt.xarevision.android.xarepoint&amp;lt;/pkg&amp;gt;&amp;lt;cert&amp;gt;MIID3DCCAsSgAwIBAgIJAJa7I6wMHhoBMA0GCSqGSIb3DQEBCwUAMIGCMQswCQYDVQQGEwJDTjERMA8GA1UECAwIU2hhbmdoYWkxETAPBgNVBAcMCFNoYW5naGFpMQ4wDAYDVQQKDAVMenRlazEPMA0GA1UECwwGVGVhbUhEMRAwDgYDVQQDDAdMaWFva2FpMRowGAYJKoZIhvcNAQkBFgtsa0BsenRlay5jbjAeFw0xODA5MDYwMTIwMjJaFw00NjAxMjIwMTIwMjJaMIGCMQswCQYDVQQGEwJDTjERMA8GA1UECAwIU2hhbmdoYWkxETAPBgNVBAcMCFNoYW5naGFpMQ4wDAYDVQQKDAVMenRlazEPMA0GA1UECwwGVGVhbUhEMRAwDgYDVQQDDAdMaWFva2FpMRowGAYJKoZIhvcNAQkBFgtsa0BsenRlay5jbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANSiqs5Mvso8d7P3+c9kcSf31hwk8dIonWMXb1WJChrUHKFMJXEkkB+8m2Z7zyToxeVLwlXKRNEpPygSQSrepoTZNoa3AomHSX73xEzYxWnJA7m+Otf1491FPYY2+PmhvyRxx6nLtmJlbQdStYrjsoavkRuTW9rV7iv7p2q8dIUFJ4+Ga5rSiKtULxrOKYbVU9JMK/6j1XyL07Nd8XuJ1dCQLV4FBJMwajdJPWDLjqC7yMZHW53czgDSCld1jhpzUA+BLZ6pqb8+4eNz5CFxcGAr43Bh9XMHUTp3Zb1uQbN6yaGdQ2Xf5V+qbI1kbrq8U5GIPot5q2GaQvqOgJ9+HUECAwEAAaNTMFEwHQYDVR0OBBYEFOp/CYeApguKujnO1n2zaZNPUo2QMB8GA1UdIwQYMBaAFOp/CYeApguKujnO1n2zaZNPUo2QMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAEEMG+3sZppkCqCHdzokfgwjqes2DYvQvuGyuTBYxLI3TFb2E4fxqgm8OFigbEExmF4XjivIEgk+xgFzmEbQocbu57DXDxQIEkiyrJ+qu9KwiIH7R4DPOYJ9tVzyO0j2gGmS0jApIJB5ClhJMHyAgGsjZm1cW73SGyLi13QRLUt1hty5PRUQ6h6UH2ccI5CzHxqyYz1lAAD5x1wZez6xmYMBplSLRvArwTl5bnqrwix+cTRwJdNhWRHG075JjxOykyy+IjuBkVwJX9jZ9kIk/Pr2+QOqLXwpsup1ojdNDa/9H5RjToNG9P1DTxcZa3iksNRzxhP0ZoRnp1D7XacjFig=&amp;lt;/cert&amp;gt;&amp;lt;vid vendorid=&amp;quot;1027&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;24577&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;autoLaunch&amp;gt;false&amp;lt;/autoLaunch&amp;gt;&amp;lt;/rule&amp;gt;&amp;lt;/popupsuppress&amp;gt;&amp;lt;usbconfig mode=&amp;quot;whitelist&amp;quot;&amp;gt;&amp;lt;class&amp;gt;AINPUT_SOURCE_KEYBOARD&amp;lt;/class&amp;gt;&amp;lt;class&amp;gt;AINPUT_SOURCE_MOUSE&amp;lt;/class&amp;gt;&amp;lt;class&amp;gt;AINPUT_SOURCE_TOUCHSCREEN&amp;lt;/class&amp;gt;&amp;lt;class&amp;gt;USB_CLASS_PRINTER&amp;lt;/class&amp;gt;&amp;lt;vid vendorid=&amp;quot;1208&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;514&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;vid vendorid=&amp;quot;1027&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;24577&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;/usbconfig&amp;gt;&quot;/&gt;
+    &lt;/characteristic&gt;
+&lt;/characteristic&gt;And the response:&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;wap-provisioningdoc&gt;&lt;characteristic type=&quot;status&quot;&gt;&lt;parm name=&quot;code&quot; value=&quot;6&quot;/&gt;&lt;parm name=&quot;description&quot; value=&quot;Review the XML for details&quot;/&gt;&lt;characteristic type=&quot;extended_status&quot;&gt;&lt;parm name=&quot;code&quot; value=&quot;0&quot;/&gt;&lt;parm name=&quot;description&quot; value=&quot;&quot;/&gt;&lt;/characteristic&gt;&lt;/characteristic&gt;&lt;characteristic-error type=&quot;UsbMgr&quot; version=&quot;11.6&quot; desc=&quot;ERROR&quot;&gt;&lt;parm name=&quot;UsbADBUsage&quot; value=&quot;1&quot;/&gt;&lt;parm-error name=&quot;HostModePeripherals&quot; value=&quot;1&quot; desc=&quot;Invalid configuration rule&quot;/&gt;&lt;parm name=&quot;CustomRules&quot; value=&quot;&amp;amp;lt;popupsuppress&amp;amp;gt;&amp;amp;lt;rule&amp;amp;gt;&amp;amp;lt;pkg&amp;amp;gt;pt.xarevision.android.xarepoint&amp;amp;lt;/pkg&amp;amp;gt;&amp;amp;lt;cert&amp;amp;gt;MIID3DCCAsSgAwIBAgIJAJa7I6wMHhoBMA0GCSqGSIb3DQEBCwUAMIGCMQswCQYDVQQGEwJDTjERMA8GA1UECAwIU2hhbmdoYWkxETAPBgNVBAcMCFNoYW5naGFpMQ4wDAYDVQQKDAVMenRlazEPMA0GA1UECwwGVGVhbUhEMRAwDgYDVQQDDAdMaWFva2FpMRowGAYJKoZIhvcNAQkBFgtsa0BsenRlay5jbjAeFw0xODA5MDYwMTIwMjJaFw00NjAxMjIwMTIwMjJaMIGCMQswCQYDVQQGEwJDTjERMA8GA1UECAwIU2hhbmdoYWkxETAPBgNVBAcMCFNoYW5naGFpMQ4wDAYDVQQKDAVMenRlazEPMA0GA1UECwwGVGVhbUhEMRAwDgYDVQQDDAdMaWFva2FpMRowGAYJKoZIhvcNAQkBFgtsa0BsenRlay5jbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANSiqs5Mvso8d7P3+c9kcSf31hwk8dIonWMXb1WJChrUHKFMJXEkkB+8m2Z7zyToxeVLwlXKRNEpPygSQSrepoTZNoa3AomHSX73xEzYxWnJA7m+Otf1491FPYY2+PmhvyRxx6nLtmJlbQdStYrjsoavkRuTW9rV7iv7p2q8dIUFJ4+Ga5rSiKtULxrOKYbVU9JMK/6j1XyL07Nd8XuJ1dCQLV4FBJMwajdJPWDLjqC7yMZHW53czgDSCld1jhpzUA+BLZ6pqb8+4eNz5CFxcGAr43Bh9XMHUTp3Zb1uQbN6yaGdQ2Xf5V+qbI1kbrq8U5GIPot5q2GaQvqOgJ9+HUECAwEAAaNTMFEwHQYDVR0OBBYEFOp/CYeApguKujnO1n2zaZNPUo2QMB8GA1UdIwQYMBaAFOp/CYeApguKujnO1n2zaZNPUo2QMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAEEMG+3sZppkCqCHdzokfgwjqes2DYvQvuGyuTBYxLI3TFb2E4fxqgm8OFigbEExmF4XjivIEgk+xgFzmEbQocbu57DXDxQIEkiyrJ+qu9KwiIH7R4DPOYJ9tVzyO0j2gGmS0jApIJB5ClhJMHyAgGsjZm1cW73SGyLi13QRLUt1hty5PRUQ6h6UH2ccI5CzHxqyYz1lAAD5x1wZez6xmYMBplSLRvArwTl5bnqrwix+cTRwJdNhWRHG075JjxOykyy+IjuBkVwJX9jZ9kIk/Pr2+QOqLXwpsup1ojdNDa/9H5RjToNG9P1DTxcZa3iksNRzxhP0ZoRnp1D7XacjFig=&amp;amp;lt;/cert&amp;amp;gt;&amp;amp;lt;vid vendorid=&amp;amp;quot;1208&amp;amp;quot;&amp;amp;gt;&amp;amp;lt;pid&amp;amp;gt;514&amp;amp;lt;/pid&amp;amp;gt;&amp;amp;lt;/vid&amp;amp;gt;&amp;amp;lt;autoLaunch&amp;amp;gt;false&amp;amp;lt;/autoLaunch&amp;amp;gt;&amp;amp;lt;/rule&amp;amp;gt;&amp;amp;lt;rule&amp;amp;gt;&amp;amp;lt;pkg&amp;amp;gt;pt.xarevision.android.xarepoint&amp;amp;lt;/pkg&amp;amp;gt;&amp;amp;lt;cert&amp;amp;gt;MIID3DCCAsSgAwIBAgIJAJa7I6wMHhoBMA0GCSqGSIb3DQEBCwUAMIGCMQswCQYDVQQGEwJDTjERMA8GA1UECAwIU2hhbmdoYWkxETAPBgNVBAcMCFNoYW5naGFpMQ4wDAYDVQQKDAVMenRlazEPMA0GA1UECwwGVGVhbUhEMRAwDgYDVQQDDAdMaWFva2FpMRowGAYJKoZIhvcNAQkBFgtsa0BsenRlay5jbjAeFw0xODA5MDYwMTIwMjJaFw00NjAxMjIwMTIwMjJaMIGCMQswCQYDVQQGEwJDTjERMA8GA1UECAwIU2hhbmdoYWkxETAPBgNVBAcMCFNoYW5naGFpMQ4wDAYDVQQKDAVMenRlazEPMA0GA1UECwwGVGVhbUhEMRAwDgYDVQQDDAdMaWFva2FpMRowGAYJKoZIhvcNAQkBFgtsa0BsenRlay5jbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANSiqs5Mvso8d7P3+c9kcSf31hwk8dIonWMXb1WJChrUHKFMJXEkkB+8m2Z7zyToxeVLwlXKRNEpPygSQSrepoTZNoa3AomHSX73xEzYxWnJA7m+Otf1491FPYY2+PmhvyRxx6nLtmJlbQdStYrjsoavkRuTW9rV7iv7p2q8dIUFJ4+Ga5rSiKtULxrOKYbVU9JMK/6j1XyL07Nd8XuJ1dCQLV4FBJMwajdJPWDLjqC7yMZHW53czgDSCld1jhpzUA+BLZ6pqb8+4eNz5CFxcGAr43Bh9XMHUTp3Zb1uQbN6yaGdQ2Xf5V+qbI1kbrq8U5GIPot5q2GaQvqOgJ9+HUECAwEAAaNTMFEwHQYDVR0OBBYEFOp/CYeApguKujnO1n2zaZNPUo2QMB8GA1UdIwQYMBaAFOp/CYeApguKujnO1n2zaZNPUo2QMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAEEMG+3sZppkCqCHdzokfgwjqes2DYvQvuGyuTBYxLI3TFb2E4fxqgm8OFigbEExmF4XjivIEgk+xgFzmEbQocbu57DXDxQIEkiyrJ+qu9KwiIH7R4DPOYJ9tVzyO0j2gGmS0jApIJB5ClhJMHyAgGsjZm1cW73SGyLi13QRLUt1hty5PRUQ6h6UH2ccI5CzHxqyYz1lAAD5x1wZez6xmYMBplSLRvArwTl5bnqrwix+cTRwJdNhWRHG075JjxOykyy+IjuBkVwJX9jZ9kIk/Pr2+QOqLXwpsup1ojdNDa/9H5RjToNG9P1DTxcZa3iksNRzxhP0ZoRnp1D7XacjFig=&amp;amp;lt;/cert&amp;amp;gt;&amp;amp;lt;vid vendorid=&amp;amp;quot;1027&amp;amp;quot;&amp;amp;gt;&amp;amp;lt;pid&amp;amp;gt;24577&amp;amp;lt;/pid&amp;amp;gt;&amp;amp;lt;/vid&amp;amp;gt;&amp;amp;lt;autoLaunch&amp;amp;gt;false&amp;amp;lt;/autoLaunch&amp;amp;gt;&amp;amp;lt;/rule&amp;amp;gt;&amp;amp;lt;/popupsuppress&amp;amp;gt;&amp;amp;lt;usbconfig mode=&amp;amp;quot;whitelist&amp;amp;quot;&amp;amp;gt;&amp;amp;lt;class&amp;amp;gt;AINPUT_SOURCE_KEYBOARD&amp;amp;lt;/class&amp;amp;gt;&amp;amp;lt;class&amp;amp;gt;AINPUT_SOURCE_MOUSE&amp;amp;lt;/class&amp;amp;gt;&amp;amp;lt;class&amp;amp;gt;AINPUT_SOURCE_TOUCHSCREEN&amp;amp;lt;/class&amp;amp;gt;&amp;amp;lt;class&amp;amp;gt;USB_CLASS_PRINTER&amp;amp;lt;/class&amp;amp;gt;&amp;amp;lt;vid vendorid=&amp;amp;quot;1208&amp;amp;quot;&amp;amp;gt;&amp;amp;lt;pid&amp;amp;gt;514&amp;amp;lt;/pid&amp;amp;gt;&amp;amp;lt;/vid&amp;amp;gt;&amp;amp;lt;vid vendorid=&amp;amp;quot;1027&amp;amp;quot;&amp;amp;gt;&amp;amp;lt;pid&amp;amp;gt;24577&amp;amp;lt;/pid&amp;amp;gt;&amp;amp;lt;/vid&amp;amp;gt;&amp;amp;lt;/usbconfig&amp;amp;gt;&quot;/&gt;&lt;/characteristic-error&gt;&lt;/wap-provisioningdoc&gt;
+Did we miss something here?Thanks in advance for the help 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            César Araújo
+          
+          
+            1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Any hint on what am i failing?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mahesh Eranda …
+          
+          
+            1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Araujo,The submitted XML uses the parm name CustomRules. That name does not exist in the UsbMgr schema. The actual parm is ControlRules. Can you try below modified XML and confirm the results? &lt;characteristic type=&quot;Profile&quot;&gt;
+    &lt;parm name=&quot;ProfileName&quot; value=&quot;KioskUsbPrinter&quot;/&gt;
+    &lt;characteristic version=&quot;11.6&quot; type=&quot;UsbMgr&quot;&gt;
+        &lt;parm name=&quot;HostModePeripherals&quot; value=&quot;1&quot;/&gt;
+        &lt;parm name=&quot;ControlRules&quot; value=&quot;&amp;lt;popupsuppress&amp;gt;&amp;lt;rule&amp;gt;&amp;lt;pkg&amp;gt;pt.xarevision.android.xarepoint&amp;lt;/pkg&amp;gt;&amp;lt;cert&amp;gt;MIID3DCCAsSgAwIBAgIJAJa7I6wMHhoBMA0GCSqGSIb3DQEBCwUAMIGCMQswCQYDVQQGEwJDTjERMA8GA1UECAwIU2hhbmdoYWkxETAPBgNVBAcMCFNoYW5naGFpMQ4wDAYDVQQKDAVMenRlazEPMA0GA1UECwwGVGVhbUhEMRAwDgYDVQQDDAdMaWFva2FpMRowGAYJKoZIhvcNAQkBFgtsa0BsenRlay5jbjAeFw0xODA5MDYwMTIwMjJaFw00NjAxMjIwMTIwMjJaMIGCMQswCQYDVQQGEwJDTjERMA8GA1UECAwIU2hhbmdoYWkxETAPBgNVBAcMCFNoYW5naGFpMQ4wDAYDVQQKDAVMenRlazEPMA0GA1UECwwGVGVhbUhEMRAwDgYDVQQDDAdMaWFva2FpMRowGAYJKoZIhvcNAQkBFgtsa0BsenRlay5jbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANSiqs5Mvso8d7P3+c9kcSf31hwk8dIonWMXb1WJChrUHKFMJXEkkB+8m2Z7zyToxeVLwlXKRNEpPygSQSrepoTZNoa3AomHSX73xEzYxWnJA7m+Otf1491FPYY2+PmhvyRxx6nLtmJlbQdStYrjsoavkRuTW9rV7iv7p2q8dIUFJ4+Ga5rSiKtULxrOKYbVU9JMK/6j1XyL07Nd8XuJ1dCQLV4FBJMwajdJPWDLjqC7yMZHW53czgDSCld1jhpzUA+BLZ6pqb8+4eNz5CFxcGAr43Bh9XMHUTp3Zb1uQbN6yaGdQ2Xf5V+qbI1kbrq8U5GIPot5q2GaQvqOgJ9+HUECAwEAAaNTMFEwHQYDVR0OBBYEFOp/CYeApguKujnO1n2zaZNPUo2QMB8GA1UdIwQYMBaAFOp/CYeApguKujnO1n2zaZNPUo2QMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAEEMG+3sZppkCqCHdzokfgwjqes2DYvQvuGyuTBYxLI3TFb2E4fxqgm8OFigbEExmF4XjivIEgk+xgFzmEbQocbu57DXDxQIEkiyrJ+qu9KwiIH7R4DPOYJ9tVzyO0j2gGmS0jApIJB5ClhJMHyAgGsjZm1cW73SGyLi13QRLUt1hty5PRUQ6h6UH2ccI5CzHxqyYz1lAAD5x1wZez6xmYMBplSLRvArwTl5bnqrwix+cTRwJdNhWRHG075JjxOykyy+IjuBkVwJX9jZ9kIk/Pr2+QOqLXwpsup1ojdNDa/9H5RjToNG9P1DTxcZa3iksNRzxhP0ZoRnp1D7XacjFig=&amp;lt;/cert&amp;gt;&amp;lt;vid vendorid=&amp;quot;1208&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;514&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;autoLaunch&amp;gt;false&amp;lt;/autoLaunch&amp;gt;&amp;lt;/rule&amp;gt;&amp;lt;rule&amp;gt;&amp;lt;pkg&amp;gt;pt.xarevision.android.xarepoint&amp;lt;/pkg&amp;gt;&amp;lt;cert&amp;gt;MIID3DCCAsSgAwIBAgIJAJa7I6wMHhoBMA0GCSqGSIb3DQEBCwUAMIGCMQswCQYDVQQGEwJDTjERMA8GA1UECAwIU2hhbmdoYWkxETAPBgNVBAcMCFNoYW5naGFpMQ4wDAYDVQQKDAVMenRlazEPMA0GA1UECwwGVGVhbUhEMRAwDgYDVQQDDAdMaWFva2FpMRowGAYJKoZIhvcNAQkBFgtsa0BsenRlay5jbjAeFw0xODA5MDYwMTIwMjJaFw00NjAxMjIwMTIwMjJaMIGCMQswCQYDVQQGEwJDTjERMA8GA1UECAwIU2hhbmdoYWkxETAPBgNVBAcMCFNoYW5naGFpMQ4wDAYDVQQKDAVMenRlazEPMA0GA1UECwwGVGVhbUhEMRAwDgYDVQQDDAdMaWFva2FpMRowGAYJKoZIhvcNAQkBFgtsa0BsenRlay5jbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANSiqs5Mvso8d7P3+c9kcSf31hwk8dIonWMXb1WJChrUHKFMJXEkkB+8m2Z7zyToxeVLwlXKRNEpPygSQSrepoTZNoa3AomHSX73xEzYxWnJA7m+Otf1491FPYY2+PmhvyRxx6nLtmJlbQdStYrjsoavkRuTW9rV7iv7p2q8dIUFJ4+Ga5rSiKtULxrOKYbVU9JMK/6j1XyL07Nd8XuJ1dCQLV4FBJMwajdJPWDLjqC7yMZHW53czgDSCld1jhpzUA+BLZ6pqb8+4eNz5CFxcGAr43Bh9XMHUTp3Zb1uQbN6yaGdQ2Xf5V+qbI1kbrq8U5GIPot5q2GaQvqOgJ9+HUECAwEAAaNTMFEwHQYDVR0OBBYEFOp/CYeApguKujnO1n2zaZNPUo2QMB8GA1UdIwQYMBaAFOp/CYeApguKujnO1n2zaZNPUo2QMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAEEMG+3sZppkCqCHdzokfgwjqes2DYvQvuGyuTBYxLI3TFb2E4fxqgm8OFigbEExmF4XjivIEgk+xgFzmEbQocbu57DXDxQIEkiyrJ+qu9KwiIH7R4DPOYJ9tVzyO0j2gGmS0jApIJB5ClhJMHyAgGsjZm1cW73SGyLi13QRLUt1hty5PRUQ6h6UH2ccI5CzHxqyYz1lAAD5x1wZez6xmYMBplSLRvArwTl5bnqrwix+cTRwJdNhWRHG075JjxOykyy+IjuBkVwJX9jZ9kIk/Pr2+QOqLXwpsup1ojdNDa/9H5RjToNG9P1DTxcZa3iksNRzxhP0ZoRnp1D7XacjFig=&amp;lt;/cert&amp;gt;&amp;lt;vid vendorid=&amp;quot;1027&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;24577&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;autoLaunch&amp;gt;false&amp;lt;/autoLaunch&amp;gt;&amp;lt;/rule&amp;gt;&amp;lt;/popupsuppress&amp;gt;&amp;lt;usbconfig mode=&amp;quot;whitelist&amp;quot;&amp;gt;&amp;lt;class&amp;gt;AINPUT_SOURCE_KEYBOARD&amp;lt;/class&amp;gt;&amp;lt;class&amp;gt;AINPUT_SOURCE_MOUSE&amp;lt;/class&amp;gt;&amp;lt;class&amp;gt;AINPUT_SOURCE_TOUCHSCREEN&amp;lt;/class&amp;gt;&amp;lt;class&amp;gt;USB_CLASS_PRINTER&amp;lt;/class&amp;gt;&amp;lt;vid vendorid=&amp;quot;1208&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;514&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;vid vendorid=&amp;quot;1027&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;24577&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;/usbconfig&amp;gt;&quot;/&gt;
+    &lt;/characteristic&gt;
+&lt;/characteristic&gt;Thanks,Mahesh
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            César Araújo
+          
+          
+            2 weeks 3 days ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Mahesh,Thank you for spotting the parameter name. You are right: we were sending &quot;CustomRules&quot;. We have renamed it to &quot;ControlRules&quot; and kept the rest of the profile exactly as in your XML. Unfortunately MX still rejects HostModePeripherals=1 with the same &quot;Invalid configuration rule&quot; error. The exact XML we sent and MX&#x27;s exact response are below. Both were captured on the device as passed to and returned by processProfile.DEVICE USED FOR THE RETESTModel: CC610 (CC610LC), serial 21026524300471Build: 14-44-28.00-UG-U00-STD-HEL-04 (Android 14, patch 2026-09-01)MX: 15.3.0.23Applied via: EMDK ProfileManager.processProfile(name, PROFILE_FLAG.SET, xml), from our own appCalling app: pt.xarevision.android.factorymode, holds com.symbol.emdk.permission.EMDK(The original report was from a ZEC500, Android 15, MX 15.2.0.10, serial 25279525100404. We have not yet re-run the ControlRules version on that unit.)1) UsbMgr PROFILE SENT (exact):&lt;characteristic type=&quot;Profile&quot;&gt;&lt;parm name=&quot;ProfileName&quot; value=&quot;FactoryModeUsb&quot;/&gt;&lt;characteristic version=&quot;11.6&quot; type=&quot;UsbMgr&quot;&gt;&lt;parm name=&quot;HostModePeripherals&quot; value=&quot;1&quot;/&gt;&lt;parm name=&quot;ControlRules&quot; value=&quot;&amp;lt;popupsuppress&amp;gt;&amp;lt;rule&amp;gt;&amp;lt;pkg&amp;gt;pt.xarevision.android.factorymode&amp;lt;/pkg&amp;gt;&amp;lt;cert&amp;gt;MIIDcTCCAlmgAwIBAgIEE9nzfjANBgkqhkiG9w0BAQsFADBoMQswCQYDVQQGEwJQVDEOMAwGA1UECBMFUG9ydG8xDjAMBgNVBAcTBVBvcnRvMRYwFAYDVQQKEw1YYXJldmlzaW9uIFNBMQwwCgYDVQQLEwNFbmcxEzARBgNVBAMTClhhcmV2aXNpb24wIBcNMTYxMDI4MTAxOTE3WhgPMjExNjEwMDQxMDE5MTdaMGgxCzAJBgNVBAYTAlBUMQ4wDAYDVQQIEwVQb3J0bzEOMAwGA1UEBxMFUG9ydG8xFjAUBgNVBAoTDVhhcmV2aXNpb24gU0ExDDAKBgNVBAsTA0VuZzETMBEGA1UEAxMKWGFyZXZpc2lvbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPtXXl08xLie8ap0ELf4hEGMrMV6ZdiMFZ6P8aGfrH6iZD7TLehEYLFe1jteZ3fYGJ+yu9y7lRledi/7jFQAt7Kcj03dP/V9GExZxmqpgxcPSZnD2FEOM+r6J+iopm/7sswncKZAwY4vUEH4y9g8PVmBEMTxMiMpugPXYpO20F5oVUFa+gYfmxBCrJmD+MvF/+kwsUtGNOXhfFUH6bPd4Ojz6kPRI/WgM23h/v32cdt5OfSAvdDJublciWoDavx0TR9h5OAAiwneYDlAcGftgSV5mTpQBX9D/Ic1s/q99K+c4opH5dJgC9vbe5c1tFe922yZF4SGNmkwwgCg0E7nRBsCAwEAAaMhMB8wHQYDVR0OBBYEFL8LhorZplbg5lsFhxQNNDxjCvAXMA0GCSqGSIb3DQEBCwUAA4IBAQDXIHKQQAx6wRh3HUYmLIsU2U0zGqjW5prl8Ru1zzM/5ZIChV7YT4IDORB24Gxm0B4br1teBnUuT+Ju4uwSrdyzoXPIPRYAyO2KnaGZBV0x/7CjkeVMebnYRPfs8xgxMzW4eVVrLFb7MdLjgxh6OMZHu8cK9KRycj/OQor6/DAiXfwPW70H+xtawtcaKFR9e/1MU3tMt344uut1OfwVF80OBmTxEDj5cb/Te8kvzTFMKFb4LBYQLXsmWPOeSwDORYA2ma0T00aNGJQ6jWIct886g3gHaLS7EYdEclC1ife/Vekkic/QjTQ8+2satmVbWcV19eeaAf30X2PHLtewJybW&amp;lt;/cert&amp;gt;&amp;lt;vid vendorid=&amp;quot;1060&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;29952&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;autoLaunch&amp;gt;false&amp;lt;/autoLaunch&amp;gt;&amp;lt;/rule&amp;gt;&amp;lt;rule&amp;gt;&amp;lt;pkg&amp;gt;pt.xarevision.android.factorymode&amp;lt;/pkg&amp;gt;&amp;lt;cert&amp;gt;MIIDcTCCAlmgAwIBAgIEE9nzfjANBgkqhkiG9w0BAQsFADBoMQswCQYDVQQGEwJQVDEOMAwGA1UECBMFUG9ydG8xDjAMBgNVBAcTBVBvcnRvMRYwFAYDVQQKEw1YYXJldmlzaW9uIFNBMQwwCgYDVQQLEwNFbmcxEzARBgNVBAMTClhhcmV2aXNpb24wIBcNMTYxMDI4MTAxOTE3WhgPMjExNjEwMDQxMDE5MTdaMGgxCzAJBgNVBAYTAlBUMQ4wDAYDVQQIEwVQb3J0bzEOMAwGA1UEBxMFUG9ydG8xFjAUBgNVBAoTDVhhcmV2aXNpb24gU0ExDDAKBgNVBAsTA0VuZzETMBEGA1UEAxMKWGFyZXZpc2lvbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPtXXl08xLie8ap0ELf4hEGMrMV6ZdiMFZ6P8aGfrH6iZD7TLehEYLFe1jteZ3fYGJ+yu9y7lRledi/7jFQAt7Kcj03dP/V9GExZxmqpgxcPSZnD2FEOM+r6J+iopm/7sswncKZAwY4vUEH4y9g8PVmBEMTxMiMpugPXYpO20F5oVUFa+gYfmxBCrJmD+MvF/+kwsUtGNOXhfFUH6bPd4Ojz6kPRI/WgM23h/v32cdt5OfSAvdDJublciWoDavx0TR9h5OAAiwneYDlAcGftgSV5mTpQBX9D/Ic1s/q99K+c4opH5dJgC9vbe5c1tFe922yZF4SGNmkwwgCg0E7nRBsCAwEAAaMhMB8wHQYDVR0OBBYEFL8LhorZplbg5lsFhxQNNDxjCvAXMA0GCSqGSIb3DQEBCwUAA4IBAQDXIHKQQAx6wRh3HUYmLIsU2U0zGqjW5prl8Ru1zzM/5ZIChV7YT4IDORB24Gxm0B4br1teBnUuT+Ju4uwSrdyzoXPIPRYAyO2KnaGZBV0x/7CjkeVMebnYRPfs8xgxMzW4eVVrLFb7MdLjgxh6OMZHu8cK9KRycj/OQor6/DAiXfwPW70H+xtawtcaKFR9e/1MU3tMt344uut1OfwVF80OBmTxEDj5cb/Te8kvzTFMKFb4LBYQLXsmWPOeSwDORYA2ma0T00aNGJQ6jWIct886g3gHaLS7EYdEclC1ife/Vekkic/QjTQ8+2satmVbWcV19eeaAf30X2PHLtewJybW&amp;lt;/cert&amp;gt;&amp;lt;vid vendorid=&amp;quot;1208&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;514&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;autoLaunch&amp;gt;false&amp;lt;/autoLaunch&amp;gt;&amp;lt;/rule&amp;gt;&amp;lt;rule&amp;gt;&amp;lt;pkg&amp;gt;pt.xarevision.android.factorymode&amp;lt;/pkg&amp;gt;&amp;lt;cert&amp;gt;MIIDcTCCAlmgAwIBAgIEE9nzfjANBgkqhkiG9w0BAQsFADBoMQswCQYDVQQGEwJQVDEOMAwGA1UECBMFUG9ydG8xDjAMBgNVBAcTBVBvcnRvMRYwFAYDVQQKEw1YYXJldmlzaW9uIFNBMQwwCgYDVQQLEwNFbmcxEzARBgNVBAMTClhhcmV2aXNpb24wIBcNMTYxMDI4MTAxOTE3WhgPMjExNjEwMDQxMDE5MTdaMGgxCzAJBgNVBAYTAlBUMQ4wDAYDVQQIEwVQb3J0bzEOMAwGA1UEBxMFUG9ydG8xFjAUBgNVBAoTDVhhcmV2aXNpb24gU0ExDDAKBgNVBAsTA0VuZzETMBEGA1UEAxMKWGFyZXZpc2lvbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPtXXl08xLie8ap0ELf4hEGMrMV6ZdiMFZ6P8aGfrH6iZD7TLehEYLFe1jteZ3fYGJ+yu9y7lRledi/7jFQAt7Kcj03dP/V9GExZxmqpgxcPSZnD2FEOM+r6J+iopm/7sswncKZAwY4vUEH4y9g8PVmBEMTxMiMpugPXYpO20F5oVUFa+gYfmxBCrJmD+MvF/+kwsUtGNOXhfFUH6bPd4Ojz6kPRI/WgM23h/v32cdt5OfSAvdDJublciWoDavx0TR9h5OAAiwneYDlAcGftgSV5mTpQBX9D/Ic1s/q99K+c4opH5dJgC9vbe5c1tFe922yZF4SGNmkwwgCg0E7nRBsCAwEAAaMhMB8wHQYDVR0OBBYEFL8LhorZplbg5lsFhxQNNDxjCvAXMA0GCSqGSIb3DQEBCwUAA4IBAQDXIHKQQAx6wRh3HUYmLIsU2U0zGqjW5prl8Ru1zzM/5ZIChV7YT4IDORB24Gxm0B4br1teBnUuT+Ju4uwSrdyzoXPIPRYAyO2KnaGZBV0x/7CjkeVMebnYRPfs8xgxMzW4eVVrLFb7MdLjgxh6OMZHu8cK9KRycj/OQor6/DAiXfwPW70H+xtawtcaKFR9e/1MU3tMt344uut1OfwVF80OBmTxEDj5cb/Te8kvzTFMKFb4LBYQLXsmWPOeSwDORYA2ma0T00aNGJQ6jWIct886g3gHaLS7EYdEclC1ife/Vekkic/QjTQ8+2satmVbWcV19eeaAf30X2PHLtewJybW&amp;lt;/cert&amp;gt;&amp;lt;vid vendorid=&amp;quot;1137&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;41234&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;autoLaunch&amp;gt;false&amp;lt;/autoLaunch&amp;gt;&amp;lt;/rule&amp;gt;&amp;lt;rule&amp;gt;&amp;lt;pkg&amp;gt;pt.xarevision.android.factorymode&amp;lt;/pkg&amp;gt;&amp;lt;cert&amp;gt;MIIDcTCCAlmgAwIBAgIEE9nzfjANBgkqhkiG9w0BAQsFADBoMQswCQYDVQQGEwJQVDEOMAwGA1UECBMFUG9ydG8xDjAMBgNVBAcTBVBvcnRvMRYwFAYDVQQKEw1YYXJldmlzaW9uIFNBMQwwCgYDVQQLEwNFbmcxEzARBgNVBAMTClhhcmV2aXNpb24wIBcNMTYxMDI4MTAxOTE3WhgPMjExNjEwMDQxMDE5MTdaMGgxCzAJBgNVBAYTAlBUMQ4wDAYDVQQIEwVQb3J0bzEOMAwGA1UEBxMFUG9ydG8xFjAUBgNVBAoTDVhhcmV2aXNpb24gU0ExDDAKBgNVBAsTA0VuZzETMBEGA1UEAxMKWGFyZXZpc2lvbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPtXXl08xLie8ap0ELf4hEGMrMV6ZdiMFZ6P8aGfrH6iZD7TLehEYLFe1jteZ3fYGJ+yu9y7lRledi/7jFQAt7Kcj03dP/V9GExZxmqpgxcPSZnD2FEOM+r6J+iopm/7sswncKZAwY4vUEH4y9g8PVmBEMTxMiMpugPXYpO20F5oVUFa+gYfmxBCrJmD+MvF/+kwsUtGNOXhfFUH6bPd4Ojz6kPRI/WgM23h/v32cdt5OfSAvdDJublciWoDavx0TR9h5OAAiwneYDlAcGftgSV5mTpQBX9D/Ic1s/q99K+c4opH5dJgC9vbe5c1tFe922yZF4SGNmkwwgCg0E7nRBsCAwEAAaMhMB8wHQYDVR0OBBYEFL8LhorZplbg5lsFhxQNNDxjCvAXMA0GCSqGSIb3DQEBCwUAA4IBAQDXIHKQQAx6wRh3HUYmLIsU2U0zGqjW5prl8Ru1zzM/5ZIChV7YT4IDORB24Gxm0B4br1teBnUuT+Ju4uwSrdyzoXPIPRYAyO2KnaGZBV0x/7CjkeVMebnYRPfs8xgxMzW4eVVrLFb7MdLjgxh6OMZHu8cK9KRycj/OQor6/DAiXfwPW70H+xtawtcaKFR9e/1MU3tMt344uut1OfwVF80OBmTxEDj5cb/Te8kvzTFMKFb4LBYQLXsmWPOeSwDORYA2ma0T00aNGJQ6jWIct886g3gHaLS7EYdEclC1ife/Vekkic/QjTQ8+2satmVbWcV19eeaAf30X2PHLtewJybW&amp;lt;/cert&amp;gt;&amp;lt;vid vendorid=&amp;quot;1027&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;24577&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;autoLaunch&amp;gt;false&amp;lt;/autoLaunch&amp;gt;&amp;lt;/rule&amp;gt;&amp;lt;/popupsuppress&amp;gt;&amp;lt;usbconfig mode=&amp;quot;whitelist&amp;quot;&amp;gt;&amp;lt;class&amp;gt;AINPUT_SOURCE_KEYBOARD&amp;lt;/class&amp;gt;&amp;lt;class&amp;gt;AINPUT_SOURCE_MOUSE&amp;lt;/class&amp;gt;&amp;lt;class&amp;gt;AINPUT_SOURCE_TOUCHSCREEN&amp;lt;/class&amp;gt;&amp;lt;class&amp;gt;USB_CLASS_PRINTER&amp;lt;/class&amp;gt;&amp;lt;class&amp;gt;USB_CLASS_MASS_STORAGE&amp;lt;/class&amp;gt;&amp;lt;class&amp;gt;USB_CLASS_AUDIO&amp;lt;/class&amp;gt;&amp;lt;vid vendorid=&amp;quot;1060&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;29952&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;vid vendorid=&amp;quot;1208&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;514&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;vid vendorid=&amp;quot;1137&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;41234&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;vid vendorid=&amp;quot;1027&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;24577&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;/usbconfig&amp;gt;&quot;/&gt;&lt;/characteristic&gt;&lt;/characteristic&gt;2) MX RESPONSE (exact):&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;wap-provisioningdoc&gt;&lt;characteristic type=&quot;status&quot;&gt;&lt;parm name=&quot;code&quot; value=&quot;6&quot;/&gt;&lt;parm name=&quot;description&quot; value=&quot;Review the XML for details&quot;/&gt;&lt;characteristic type=&quot;extended_status&quot;&gt;&lt;parm name=&quot;code&quot; value=&quot;0&quot;/&gt;&lt;parm name=&quot;description&quot; value=&quot;&quot;/&gt;&lt;/characteristic&gt;&lt;/characteristic&gt;&lt;characteristic-error type=&quot;UsbMgr&quot; version=&quot;11.6&quot; desc=&quot;ERROR&quot;&gt;&lt;parm-error name=&quot;HostModePeripherals&quot; value=&quot;1&quot; desc=&quot;Invalid configuration rule&quot;/&gt;&lt;parm name=&quot;ControlRules&quot; value=&quot;&amp;amp;lt;popupsuppress&amp;amp;gt;&amp;amp;lt;rule&amp;amp;gt;&amp;amp;lt;pkg&amp;amp;gt;pt.xarevision.android.factorymode&amp;amp;lt;/pkg&amp;amp;gt;&amp;amp;lt;cert&amp;amp;gt;MIIDcTCCAlmgAwIBAgIEE9nzfjANBgkqhkiG9w0BAQsFADBoMQswCQYDVQQGEwJQVDEOMAwGA1UECBMFUG9ydG8xDjAMBgNVBAcTBVBvcnRvMRYwFAYDVQQKEw1YYXJldmlzaW9uIFNBMQwwCgYDVQQLEwNFbmcxEzARBgNVBAMTClhhcmV2aXNpb24wIBcNMTYxMDI4MTAxOTE3WhgPMjExNjEwMDQxMDE5MTdaMGgxCzAJBgNVBAYTAlBUMQ4wDAYDVQQIEwVQb3J0bzEOMAwGA1UEBxMFUG9ydG8xFjAUBgNVBAoTDVhhcmV2aXNpb24gU0ExDDAKBgNVBAsTA0VuZzETMBEGA1UEAxMKWGFyZXZpc2lvbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPtXXl08xLie8ap0ELf4hEGMrMV6ZdiMFZ6P8aGfrH6iZD7TLehEYLFe1jteZ3fYGJ+yu9y7lRledi/7jFQAt7Kcj03dP/V9GExZxmqpgxcPSZnD2FEOM+r6J+iopm/7sswncKZAwY4vUEH4y9g8PVmBEMTxMiMpugPXYpO20F5oVUFa+gYfmxBCrJmD+MvF/+kwsUtGNOXhfFUH6bPd4Ojz6kPRI/WgM23h/v32cdt5OfSAvdDJublciWoDavx0TR9h5OAAiwneYDlAcGftgSV5mTpQBX9D/Ic1s/q99K+c4opH5dJgC9vbe5c1tFe922yZF4SGNmkwwgCg0E7nRBsCAwEAAaMhMB8wHQYDVR0OBBYEFL8LhorZplbg5lsFhxQNNDxjCvAXMA0GCSqGSIb3DQEBCwUAA4IBAQDXIHKQQAx6wRh3HUYmLIsU2U0zGqjW5prl8Ru1zzM/5ZIChV7YT4IDORB24Gxm0B4br1teBnUuT+Ju4uwSrdyzoXPIPRYAyO2KnaGZBV0x/7CjkeVMebnYRPfs8xgxMzW4eVVrLFb7MdLjgxh6OMZHu8cK9KRycj/OQor6/DAiXfwPW70H+xtawtcaKFR9e/1MU3tMt344uut1OfwVF80OBmTxEDj5cb/Te8kvzTFMKFb4LBYQLXsmWPOeSwDORYA2ma0T00aNGJQ6jWIct886g3gHaLS7EYdEclC1ife/Vekkic/QjTQ8+2satmVbWcV19eeaAf30X2PHLtewJybW&amp;amp;lt;/cert&amp;amp;gt;&amp;amp;lt;vid vendorid=&amp;amp;quot;1060&amp;amp;quot;&amp;amp;gt;&amp;amp;lt;pid&amp;amp;gt;29952&amp;amp;lt;/pid&amp;amp;gt;&amp;amp;lt;/vid&amp;amp;gt;&amp;amp;lt;autoLaunch&amp;amp;gt;false&amp;amp;lt;/autoLaunch&amp;amp;gt;&amp;amp;lt;/rule&amp;amp;gt;&amp;amp;lt;rule&amp;amp;gt;&amp;amp;lt;pkg&amp;amp;gt;pt.xarevision.android.factorymode&amp;amp;lt;/pkg&amp;amp;gt;&amp;amp;lt;cert&amp;amp;gt;MIIDcTCCAlmgAwIBAgIEE9nzfjANBgkqhkiG9w0BAQsFADBoMQswCQYDVQQGEwJQVDEOMAwGA1UECBMFUG9ydG8xDjAMBgNVBAcTBVBvcnRvMRYwFAYDVQQKEw1YYXJldmlzaW9uIFNBMQwwCgYDVQQLEwNFbmcxEzARBgNVBAMTClhhcmV2aXNpb24wIBcNMTYxMDI4MTAxOTE3WhgPMjExNjEwMDQxMDE5MTdaMGgxCzAJBgNVBAYTAlBUMQ4wDAYDVQQIEwVQb3J0bzEOMAwGA1UEBxMFUG9ydG8xFjAUBgNVBAoTDVhhcmV2aXNpb24gU0ExDDAKBgNVBAsTA0VuZzETMBEGA1UEAxMKWGFyZXZpc2lvbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPtXXl08xLie8ap0ELf4hEGMrMV6ZdiMFZ6P8aGfrH6iZD7TLehEYLFe1jteZ3fYGJ+yu9y7lRledi/7jFQAt7Kcj03dP/V9GExZxmqpgxcPSZnD2FEOM+r6J+iopm/7sswncKZAwY4vUEH4y9g8PVmBEMTxMiMpugPXYpO20F5oVUFa+gYfmxBCrJmD+MvF/+kwsUtGNOXhfFUH6bPd4Ojz6kPRI/WgM23h/v32cdt5OfSAvdDJublciWoDavx0TR9h5OAAiwneYDlAcGftgSV5mTpQBX9D/Ic1s/q99K+c4opH5dJgC9vbe5c1tFe922yZF4SGNmkwwgCg0E7nRBsCAwEAAaMhMB8wHQYDVR0OBBYEFL8LhorZplbg5lsFhxQNNDxjCvAXMA0GCSqGSIb3DQEBCwUAA4IBAQDXIHKQQAx6wRh3HUYmLIsU2U0zGqjW5prl8Ru1zzM/5ZIChV7YT4IDORB24Gxm0B4br1teBnUuT+Ju4uwSrdyzoXPIPRYAyO2KnaGZBV0x/7CjkeVMebnYRPfs8xgxMzW4eVVrLFb7MdLjgxh6OMZHu8cK9KRycj/OQor6/DAiXfwPW70H+xtawtcaKFR9e/1MU3tMt344uut1OfwVF80OBmTxEDj5cb/Te8kvzTFMKFb4LBYQLXsmWPOeSwDORYA2ma0T00aNGJQ6jWIct886g3gHaLS7EYdEclC1ife/Vekkic/QjTQ8+2satmVbWcV19eeaAf30X2PHLtewJybW&amp;amp;lt;/cert&amp;amp;gt;&amp;amp;lt;vid vendorid=&amp;amp;quot;1208&amp;amp;quot;&amp;amp;gt;&amp;amp;lt;pid&amp;amp;gt;514&amp;amp;lt;/pid&amp;amp;gt;&amp;amp;lt;/vid&amp;amp;gt;&amp;amp;lt;autoLaunch&amp;amp;gt;false&amp;amp;lt;/autoLaunch&amp;amp;gt;&amp;amp;lt;/rule&amp;amp;gt;&amp;amp;lt;rule&amp;amp;gt;&amp;amp;lt;pkg&amp;amp;gt;pt.xarevision.android.factorymode&amp;amp;lt;/pkg&amp;amp;gt;&amp;amp;lt;cert&amp;amp;gt;MIIDcTCCAlmgAwIBAgIEE9nzfjANBgkqhkiG9w0BAQsFADBoMQswCQYDVQQGEwJQVDEOMAwGA1UECBMFUG9ydG8xDjAMBgNVBAcTBVBvcnRvMRYwFAYDVQQKEw1YYXJldmlzaW9uIFNBMQwwCgYDVQQLEwNFbmcxEzARBgNVBAMTClhhcmV2aXNpb24wIBcNMTYxMDI4MTAxOTE3WhgPMjExNjEwMDQxMDE5MTdaMGgxCzAJBgNVBAYTAlBUMQ4wDAYDVQQIEwVQb3J0bzEOMAwGA1UEBxMFUG9ydG8xFjAUBgNVBAoTDVhhcmV2aXNpb24gU0ExDDAKBgNVBAsTA0VuZzETMBEGA1UEAxMKWGFyZXZpc2lvbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPtXXl08xLie8ap0ELf4hEGMrMV6ZdiMFZ6P8aGfrH6iZD7TLehEYLFe1jteZ3fYGJ+yu9y7lRledi/7jFQAt7Kcj03dP/V9GExZxmqpgxcPSZnD2FEOM+r6J+iopm/7sswncKZAwY4vUEH4y9g8PVmBEMTxMiMpugPXYpO20F5oVUFa+gYfmxBCrJmD+MvF/+kwsUtGNOXhfFUH6bPd4Ojz6kPRI/WgM23h/v32cdt5OfSAvdDJublciWoDavx0TR9h5OAAiwneYDlAcGftgSV5mTpQBX9D/Ic1s/q99K+c4opH5dJgC9vbe5c1tFe922yZF4SGNmkwwgCg0E7nRBsCAwEAAaMhMB8wHQYDVR0OBBYEFL8LhorZplbg5lsFhxQNNDxjCvAXMA0GCSqGSIb3DQEBCwUAA4IBAQDXIHKQQAx6wRh3HUYmLIsU2U0zGqjW5prl8Ru1zzM/5ZIChV7YT4IDORB24Gxm0B4br1teBnUuT+Ju4uwSrdyzoXPIPRYAyO2KnaGZBV0x/7CjkeVMebnYRPfs8xgxMzW4eVVrLFb7MdLjgxh6OMZHu8cK9KRycj/OQor6/DAiXfwPW70H+xtawtcaKFR9e/1MU3tMt344uut1OfwVF80OBmTxEDj5cb/Te8kvzTFMKFb4LBYQLXsmWPOeSwDORYA2ma0T00aNGJQ6jWIct886g3gHaLS7EYdEclC1ife/Vekkic/QjTQ8+2satmVbWcV19eeaAf30X2PHLtewJybW&amp;amp;lt;/cert&amp;amp;gt;&amp;amp;lt;vid vendorid=&amp;amp;quot;1137&amp;amp;quot;&amp;amp;gt;&amp;amp;lt;pid&amp;amp;gt;41234&amp;amp;lt;/pid&amp;amp;gt;&amp;amp;lt;/vid&amp;amp;gt;&amp;amp;lt;autoLaunch&amp;amp;gt;false&amp;amp;lt;/autoLaunch&amp;amp;gt;&amp;amp;lt;/rule&amp;amp;gt;&amp;amp;lt;rule&amp;amp;gt;&amp;amp;lt;pkg&amp;amp;gt;pt.xarevision.android.factorymode&amp;amp;lt;/pkg&amp;amp;gt;&amp;amp;lt;cert&amp;amp;gt;MIIDcTCCAlmgAwIBAgIEE9nzfjANBgkqhkiG9w0BAQsFADBoMQswCQYDVQQGEwJQVDEOMAwGA1UECBMFUG9ydG8xDjAMBgNVBAcTBVBvcnRvMRYwFAYDVQQKEw1YYXJldmlzaW9uIFNBMQwwCgYDVQQLEwNFbmcxEzARBgNVBAMTClhhcmV2aXNpb24wIBcNMTYxMDI4MTAxOTE3WhgPMjExNjEwMDQxMDE5MTdaMGgxCzAJBgNVBAYTAlBUMQ4wDAYDVQQIEwVQb3J0bzEOMAwGA1UEBxMFUG9ydG8xFjAUBgNVBAoTDVhhcmV2aXNpb24gU0ExDDAKBgNVBAsTA0VuZzETMBEGA1UEAxMKWGFyZXZpc2lvbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPtXXl08xLie8ap0ELf4hEGMrMV6ZdiMFZ6P8aGfrH6iZD7TLehEYLFe1jteZ3fYGJ+yu9y7lRledi/7jFQAt7Kcj03dP/V9GExZxmqpgxcPSZnD2FEOM+r6J+iopm/7sswncKZAwY4vUEH4y9g8PVmBEMTxMiMpugPXYpO20F5oVUFa+gYfmxBCrJmD+MvF/+kwsUtGNOXhfFUH6bPd4Ojz6kPRI/WgM23h/v32cdt5OfSAvdDJublciWoDavx0TR9h5OAAiwneYDlAcGftgSV5mTpQBX9D/Ic1s/q99K+c4opH5dJgC9vbe5c1tFe922yZF4SGNmkwwgCg0E7nRBsCAwEAAaMhMB8wHQYDVR0OBBYEFL8LhorZplbg5lsFhxQNNDxjCvAXMA0GCSqGSIb3DQEBCwUAA4IBAQDXIHKQQAx6wRh3HUYmLIsU2U0zGqjW5prl8Ru1zzM/5ZIChV7YT4IDORB24Gxm0B4br1teBnUuT+Ju4uwSrdyzoXPIPRYAyO2KnaGZBV0x/7CjkeVMebnYRPfs8xgxMzW4eVVrLFb7MdLjgxh6OMZHu8cK9KRycj/OQor6/DAiXfwPW70H+xtawtcaKFR9e/1MU3tMt344uut1OfwVF80OBmTxEDj5cb/Te8kvzTFMKFb4LBYQLXsmWPOeSwDORYA2ma0T00aNGJQ6jWIct886g3gHaLS7EYdEclC1ife/Vekkic/QjTQ8+2satmVbWcV19eeaAf30X2PHLtewJybW&amp;amp;lt;/cert&amp;amp;gt;&amp;amp;lt;vid vendorid=&amp;amp;quot;1027&amp;amp;quot;&amp;amp;gt;&amp;amp;lt;pid&amp;amp;gt;24577&amp;amp;lt;/pid&amp;amp;gt;&amp;amp;lt;/vid&amp;amp;gt;&amp;amp;lt;autoLaunch&amp;amp;gt;false&amp;amp;lt;/autoLaunch&amp;amp;gt;&amp;amp;lt;/rule&amp;amp;gt;&amp;amp;lt;/popupsuppress&amp;amp;gt;&amp;amp;lt;usbconfig mode=&amp;amp;quot;whitelist&amp;amp;quot;&amp;amp;gt;&amp;amp;lt;class&amp;amp;gt;AINPUT_SOURCE_KEYBOARD&amp;amp;lt;/class&amp;amp;gt;&amp;amp;lt;class&amp;amp;gt;AINPUT_SOURCE_MOUSE&amp;amp;lt;/class&amp;amp;gt;&amp;amp;lt;class&amp;amp;gt;AINPUT_SOURCE_TOUCHSCREEN&amp;amp;lt;/class&amp;amp;gt;&amp;amp;lt;class&amp;amp;gt;USB_CLASS_PRINTER&amp;amp;lt;/class&amp;amp;gt;&amp;amp;lt;class&amp;amp;gt;USB_CLASS_MASS_STORAGE&amp;amp;lt;/class&amp;amp;gt;&amp;amp;lt;class&amp;amp;gt;USB_CLASS_AUDIO&amp;amp;lt;/class&amp;amp;gt;&amp;amp;lt;vid vendorid=&amp;amp;quot;1060&amp;amp;quot;&amp;amp;gt;&amp;amp;lt;pid&amp;amp;gt;29952&amp;amp;lt;/pid&amp;amp;gt;&amp;amp;lt;/vid&amp;amp;gt;&amp;amp;lt;vid vendorid=&amp;amp;quot;1208&amp;amp;quot;&amp;amp;gt;&amp;amp;lt;pid&amp;amp;gt;514&amp;amp;lt;/pid&amp;amp;gt;&amp;amp;lt;/vid&amp;amp;gt;&amp;amp;lt;vid vendorid=&amp;amp;quot;1137&amp;amp;quot;&amp;amp;gt;&amp;amp;lt;pid&amp;amp;gt;41234&amp;amp;lt;/pid&amp;amp;gt;&amp;amp;lt;/vid&amp;amp;gt;&amp;amp;lt;vid vendorid=&amp;amp;quot;1027&amp;amp;quot;&amp;amp;gt;&amp;amp;lt;pid&amp;amp;gt;24577&amp;amp;lt;/pid&amp;amp;gt;&amp;amp;lt;/vid&amp;amp;gt;&amp;amp;lt;/usbconfig&amp;amp;gt;&quot;/&gt;&lt;/characteristic-error&gt;&lt;/wap-provisioningdoc&gt;3) The same ControlRules value, unescaped for readability (certificate shortened):&lt;popupsuppress&gt;
+&lt;rule&gt;
+&lt;pkg&gt;pt.xarevision.android.factorymode&lt;/pkg&gt;
+&lt;cert&gt;MIIDcTCCAlmg...(base64 DER of the APK signing certificate, 1,180 chars)...&lt;/cert&gt;
+&lt;vid vendorid=&quot;1060&quot;&gt;
+&lt;pid&gt;29952&lt;/pid&gt;
+&lt;/vid&gt;
+&lt;autoLaunch&gt;false&lt;/autoLaunch&gt;
+&lt;/rule&gt;
+&lt;rule&gt;
+&lt;pkg&gt;pt.xarevision.android.factorymode&lt;/pkg&gt;
+&lt;cert&gt;MIIDcTCCAlmg...(base64 DER of the APK signing certificate, 1,180 chars)...&lt;/cert&gt;
+&lt;vid vendorid=&quot;1208&quot;&gt;
+&lt;pid&gt;514&lt;/pid&gt;
+&lt;/vid&gt;
+&lt;autoLaunch&gt;false&lt;/autoLaunch&gt;
+&lt;/rule&gt;
+&lt;rule&gt;
+&lt;pkg&gt;pt.xarevision.android.factorymode&lt;/pkg&gt;
+&lt;cert&gt;MIIDcTCCAlmg...(base64 DER of the APK signing certificate, 1,180 chars)...&lt;/cert&gt;
+&lt;vid vendorid=&quot;1137&quot;&gt;
+&lt;pid&gt;41234&lt;/pid&gt;
+&lt;/vid&gt;
+&lt;autoLaunch&gt;false&lt;/autoLaunch&gt;
+&lt;/rule&gt;
+&lt;rule&gt;
+&lt;pkg&gt;pt.xarevision.android.factorymode&lt;/pkg&gt;
+&lt;cert&gt;MIIDcTCCAlmg...(base64 DER of the APK signing certificate, 1,180 chars)...&lt;/cert&gt;
+&lt;vid vendorid=&quot;1027&quot;&gt;
+&lt;pid&gt;24577&lt;/pid&gt;
+&lt;/vid&gt;
+&lt;autoLaunch&gt;false&lt;/autoLaunch&gt;
+&lt;/rule&gt;
+&lt;/popupsuppress&gt;
+&lt;usbconfig mode=&quot;whitelist&quot;&gt;
+&lt;class&gt;AINPUT_SOURCE_KEYBOARD&lt;/class&gt;
+&lt;class&gt;AINPUT_SOURCE_MOUSE&lt;/class&gt;
+&lt;class&gt;AINPUT_SOURCE_TOUCHSCREEN&lt;/class&gt;
+&lt;class&gt;USB_CLASS_PRINTER&lt;/class&gt;
+&lt;class&gt;USB_CLASS_MASS_STORAGE&lt;/class&gt;
+&lt;class&gt;USB_CLASS_AUDIO&lt;/class&gt;
+&lt;vid vendorid=&quot;1060&quot;&gt;
+&lt;pid&gt;29952&lt;/pid&gt;
+&lt;/vid&gt;
+&lt;vid vendorid=&quot;1208&quot;&gt;
+&lt;pid&gt;514&lt;/pid&gt;
+&lt;/vid&gt;
+&lt;vid vendorid=&quot;1137&quot;&gt;
+&lt;pid&gt;41234&lt;/pid&gt;
+&lt;/vid&gt;
+&lt;vid vendorid=&quot;1027&quot;&gt;
+&lt;pid&gt;24577&lt;/pid&gt;
+&lt;/vid&gt;
+&lt;/usbconfig&gt;Peripherals in the rules: 1208/514 Epson TM-T70 printer, 1060/29952 LAN7500 Ethernet, 1137/41234 card reader, 1027/24577 FTDI FT232R serial.Afterwards UsbManager.hasPermission() is still false for all four devices, and Android still shows the &quot;Allow access to the USB device?&quot; dialog.WHAT WORKS AND WHAT DOES NOTWorks:UsbADBUsage on the same UsbMgr characteristic: no parm-error.HostModePeripherals=0 and =2: no parm-error.AccessMgr ServiceAccessAction (OEM info provider): takes effect, and we can read the serial number and MAC addresses afterwards.Does not work:HostModePeripherals=1 with ControlRules, as shown above: &quot;Invalid configuration rule&quot;.Earlier, on the ZEC500, we got the same error with HostModePeripherals=1 and no rules at all; with CSP versions 11.6, 13.0 and 15.2; and with popupsuppress only, whitelist only, or a single &lt;class&gt; entry. Those tests used the wrong &quot;CustomRules&quot; name, so they may need repeating.Separate issue, same CC610 build: AccessMgr PermissionAccessAction=1 throws an internal exception for both permissions we sent (ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION). The first of the two is shown below; the second is identical apart from the permission name.4) AccessMgr characteristic sent (exact, first of two):&lt;characteristic type=&quot;AccessMgr&quot; version=&quot;10.1&quot;&gt;&lt;parm name=&quot;emdk_name&quot; value=&quot;&quot;/&gt;&lt;parm name=&quot;PermissionAccessAction&quot; value=&quot;1&quot;/&gt;&lt;parm name=&quot;PermissionAccessPermissionName&quot; value=&quot;android.permission.ACCESS_FINE_LOCATION&quot;/&gt;&lt;parm name=&quot;PermissionAccessPackageName&quot; value=&quot;pt.xarevision.android.factorymode&quot;/&gt;&lt;parm name=&quot;PermissionAccessSignature&quot; value=&quot;MIIDcTCCAlmgAwIBAgIEE9nzfjANBgkqhkiG9w0BAQsFADBoMQswCQYDVQQGEwJQVDEOMAwGA1UECBMFUG9ydG8xDjAMBgNVBAcTBVBvcnRvMRYwFAYDVQQKEw1YYXJldmlzaW9uIFNBMQwwCgYDVQQLEwNFbmcxEzARBgNVBAMTClhhcmV2aXNpb24wIBcNMTYxMDI4MTAxOTE3WhgPMjExNjEwMDQxMDE5MTdaMGgxCzAJBgNVBAYTAlBUMQ4wDAYDVQQIEwVQb3J0bzEOMAwGA1UEBxMFUG9ydG8xFjAUBgNVBAoTDVhhcmV2aXNpb24gU0ExDDAKBgNVBAsTA0VuZzETMBEGA1UEAxMKWGFyZXZpc2lvbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPtXXl08xLie8ap0ELf4hEGMrMV6ZdiMFZ6P8aGfrH6iZD7TLehEYLFe1jteZ3fYGJ+yu9y7lRledi/7jFQAt7Kcj03dP/V9GExZxmqpgxcPSZnD2FEOM+r6J+iopm/7sswncKZAwY4vUEH4y9g8PVmBEMTxMiMpugPXYpO20F5oVUFa+gYfmxBCrJmD+MvF/+kwsUtGNOXhfFUH6bPd4Ojz6kPRI/WgM23h/v32cdt5OfSAvdDJublciWoDavx0TR9h5OAAiwneYDlAcGftgSV5mTpQBX9D/Ic1s/q99K+c4opH5dJgC9vbe5c1tFe922yZF4SGNmkwwgCg0E7nRBsCAwEAAaMhMB8wHQYDVR0OBBYEFL8LhorZplbg5lsFhxQNNDxjCvAXMA0GCSqGSIb3DQEBCwUAA4IBAQDXIHKQQAx6wRh3HUYmLIsU2U0zGqjW5prl8Ru1zzM/5ZIChV7YT4IDORB24Gxm0B4br1teBnUuT+Ju4uwSrdyzoXPIPRYAyO2KnaGZBV0x/7CjkeVMebnYRPfs8xgxMzW4eVVrLFb7MdLjgxh6OMZHu8cK9KRycj/OQor6/DAiXfwPW70H+xtawtcaKFR9e/1MU3tMt344uut1OfwVF80OBmTxEDj5cb/Te8kvzTFMKFb4LBYQLXsmWPOeSwDORYA2ma0T00aNGJQ6jWIct886g3gHaLS7EYdEclC1ife/Vekkic/QjTQ8+2satmVbWcV19eeaAf30X2PHLtewJybW&quot;/&gt;&lt;/characteristic&gt;5) MX response for it (exact, second characteristic-error omitted):&lt;wap-provisioningdoc&gt;&lt;characteristic type=&quot;status&quot;&gt;&lt;parm name=&quot;code&quot; value=&quot;6&quot;/&gt;&lt;parm name=&quot;description&quot; value=&quot;Review the XML for details&quot;/&gt;&lt;characteristic type=&quot;extended_status&quot;&gt;&lt;parm name=&quot;code&quot; value=&quot;0&quot;/&gt;&lt;parm name=&quot;description&quot; value=&quot;&quot;/&gt;&lt;/characteristic&gt;&lt;/characteristic&gt;&lt;characteristic-error type=&quot;AccessMgr&quot; version=&quot;10.1&quot; desc=&quot;EXCEPTION&quot;&gt;&lt;parm-error name=&quot;PermissionAccessAction&quot; value=&quot;1&quot; desc=&quot;mDevAdminService.setPerm….MODE_ALLOWED.toString()) must not be null&quot;/&gt;&lt;parm name=&quot;PermissionAccessPermissionName&quot; value=&quot;android.permission.ACCESS_FINE_LOCATION&quot;/&gt;&lt;parm name=&quot;PermissionAccessPackageName&quot; value=&quot;pt.xarevision.android.factorymode&quot;/&gt;&lt;parm name=&quot;PermissionAccessSignature&quot; value=&quot;MIIDcTCCAlmgAwIBAgIEE9nzfjANBgkqhkiG9w0BAQsFADBoMQswCQYDVQQGEwJQVDEOMAwGA1UECBMFUG9ydG8xDjAMBgNVBAcTBVBvcnRvMRYwFAYDVQQKEw1YYXJldmlzaW9uIFNBMQwwCgYDVQQLEwNFbmcxEzARBgNVBAMTClhhcmV2aXNpb24wIBcNMTYxMDI4MTAxOTE3WhgPMjExNjEwMDQxMDE5MTdaMGgxCzAJBgNVBAYTAlBUMQ4wDAYDVQQIEwVQb3J0bzEOMAwGA1UEBxMFUG9ydG8xFjAUBgNVBAoTDVhhcmV2aXNpb24gU0ExDDAKBgNVBAsTA0VuZzETMBEGA1UEAxMKWGFyZXZpc2lvbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPtXXl08xLie8ap0ELf4hEGMrMV6ZdiMFZ6P8aGfrH6iZD7TLehEYLFe1jteZ3fYGJ+yu9y7lRledi/7jFQAt7Kcj03dP/V9GExZxmqpgxcPSZnD2FEOM+r6J+iopm/7sswncKZAwY4vUEH4y9g8PVmBEMTxMiMpugPXYpO20F5oVUFa+gYfmxBCrJmD+MvF/+kwsUtGNOXhfFUH6bPd4Ojz6kPRI/WgM23h/v32cdt5OfSAvdDJublciWoDavx0TR9h5OAAiwneYDlAcGftgSV5mTpQBX9D/Ic1s/q99K+c4opH5dJgC9vbe5c1tFe922yZF4SGNmkwwgCg0E7nRBsCAwEAAaMhMB8wHQYDVR0OBBYEFL8LhorZplbg5lsFhxQNNDxjCvAXMA0GCSqGSIb3DQEBCwUAA4IBAQDXIHKQQAx6wRh3HUYmLIsU2U0zGqjW5prl8Ru1zzM/5ZIChV7YT4IDORB24Gxm0B4br1teBnUuT+Ju4uwSrdyzoXPIPRYAyO2KnaGZBV0x/7CjkeVMebnYRPfs8xgxMzW4eVVrLFb7MdLjgxh6OMZHu8cK9KRycj/OQor6/DAiXfwPW70H+xtawtcaKFR9e/1MU3tMt344uut1OfwVF80OBmTxEDj5cb/Te8kvzTFMKFb4LBYQLXsmWPOeSwDORYA2ma0T00aNGJQ6jWIct886g3gHaLS7EYdEclC1ife/Vekkic/QjTQ8+2satmVbWcV19eeaAf30X2PHLtewJybW&quot;/&gt;&lt;/characteristic-error&gt;...&lt;/wap-provisioningdoc&gt;QUESTIONSIs HostModePeripherals=1 supported on CC610 (MX 15.3) and ZEC500 (MX 15.2)? If it is, what is still wrong in the profile above?Since &quot;Invalid configuration rule&quot; is reported on the mode parm, does it point to a specific rule, or to something else, such as a precondition on the device?In which format does MX expect &lt;cert&gt;: base64 DER of the signing certificate, hex, or a SHA-256 fingerprint?If this mode is not available on these devices, what is the supported way to pre-grant USB permission to a signed app for fixed VID/PIDs on an unattended kiosk, with no runtime dialog?Is the AccessMgr PermissionAccessAction exception a known issue on this build, and is there a fixed build or a workaround?Thanks again for your help, 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            CHAITRA G V
+          
+          
+            2 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Copied the rules list from the developer portal and generated xml from StageNow and submitted on device, got the success responseBelow is the xml used&lt;wap-provisioningdoc&gt;
+  &lt;characteristic version=&quot;13.2&quot; type=&quot;UsbMgr&quot;&gt;
+    &lt;parm name=&quot;HostModePeripherals&quot; value=&quot;1&quot; /&gt;
+    &lt;parm name=&quot;ControlRules&quot; value=&quot;&amp;lt;popupsuppress&amp;gt;&amp;lt;rule&amp;gt;&amp;lt;pkg&amp;gt;pt.xarevision.android.xarepoint&amp;lt;/pkg&amp;gt;&amp;lt;cert&amp;gt;MIID3DCCAsSgAwIBAgIJAJa7I6wMHhoBMA0GCSqGSIb3DQEBCwUAMIGCMQswCQYDVQQGEwJDTjERMA8GA1UECAwIU2hhbmdoYWkxETAPBgNVBAcMCFNoYW5naGFpMQ4wDAYDVQQKDAVMenRlazEPMA0GA1UECwwGVGVhbUhEMRAwDgYDVQQDDAdMaWFva2FpMRowGAYJKoZIhvcNAQkBFgtsa0BsenRlay5jbjAeFw0xODA5MDYwMTIwMjJaFw00NjAxMjIwMTIwMjJaMIGCMQswCQYDVQQGEwJDTjERMA8GA1UECAwIU2hhbmdoYWkxETAPBgNVBAcMCFNoYW5naGFpMQ4wDAYDVQQKDAVMenRlazEPMA0GA1UECwwGVGVhbUhEMRAwDgYDVQQDDAdMaWFva2FpMRowGAYJKoZIhvcNAQkBFgtsa0BsenRlay5jbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANSiqs5Mvso8d7P3+c9kcSf31hwk8dIonWMXb1WJChrUHKFMJXEkkB+8m2Z7zyToxeVLwlXKRNEpPygSQSrepoTZNoa3AomHSX73xEzYxWnJA7m+Otf1491FPYY2+PmhvyRxx6nLtmJlbQdStYrjsoavkRuTW9rV7iv7p2q8dIUFJ4+Ga5rSiKtULxrOKYbVU9JMK/6j1XyL07Nd8XuJ1dCQLV4FBJMwajdJPWDLjqC7yMZHW53czgDSCld1jhpzUA+BLZ6pqb8+4eNz5CFxcGAr43Bh9XMHUTp3Zb1uQbN6yaGdQ2Xf5V+qbI1kbrq8U5GIPot5q2GaQvqOgJ9+HUECAwEAAaNTMFEwHQYDVR0OBBYEFOp/CYeApguKujnO1n2zaZNPUo2QMB8GA1UdIwQYMBaAFOp/CYeApguKujnO1n2zaZNPUo2QMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAEEMG+3sZppkCqCHdzokfgwjqes2DYvQvuGyuTBYxLI3TFb2E4fxqgm8OFigbEExmF4XjivIEgk+xgFzmEbQocbu57DXDxQIEkiyrJ+qu9KwiIH7R4DPOYJ9tVzyO0j2gGmS0jApIJB5ClhJMHyAgGsjZm1cW73SGyLi13QRLUt1hty5PRUQ6h6UH2ccI5CzHxqyYz1lAAD5x1wZez6xmYMBplSLRvArwTl5bnqrwix+cTRwJdNhWRHG075JjxOykyy+IjuBkVwJX9jZ9kIk/Pr2+QOqLXwpsup1ojdNDa/9H5RjToNG9P1DTxcZa3iksNRzxhP0ZoRnp1D7XacjFig=&amp;lt;/cert&amp;gt;&amp;lt;vid vendorid=&amp;quot;1208&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;514&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;autoLaunch&amp;gt;false&amp;lt;/autoLaunch&amp;gt;&amp;lt;/rule&amp;gt;&amp;lt;rule&amp;gt;&amp;lt;pkg&amp;gt;pt.xarevision.android.xarepoint&amp;lt;/pkg&amp;gt;&amp;lt;cert&amp;gt;MIID3DCCAsSgAwIBAgIJAJa7I6wMHhoBMA0GCSqGSIb3DQEBCwUAMIGCMQswCQYDVQQGEwJDTjERMA8GA1UECAwIU2hhbmdoYWkxETAPBgNVBAcMCFNoYW5naGFpMQ4wDAYDVQQKDAVMenRlazEPMA0GA1UECwwGVGVhbUhEMRAwDgYDVQQDDAdMaWFva2FpMRowGAYJKoZIhvcNAQkBFgtsa0BsenRlay5jbjAeFw0xODA5MDYwMTIwMjJaFw00NjAxMjIwMTIwMjJaMIGCMQswCQYDVQQGEwJDTjERMA8GA1UECAwIU2hhbmdoYWkxETAPBgNVBAcMCFNoYW5naGFpMQ4wDAYDVQQKDAVMenRlazEPMA0GA1UECwwGVGVhbUhEMRAwDgYDVQQDDAdMaWFva2FpMRowGAYJKoZIhvcNAQkBFgtsa0BsenRlay5jbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANSiqs5Mvso8d7P3+c9kcSf31hwk8dIonWMXb1WJChrUHKFMJXEkkB+8m2Z7zyToxeVLwlXKRNEpPygSQSrepoTZNoa3AomHSX73xEzYxWnJA7m+Otf1491FPYY2+PmhvyRxx6nLtmJlbQdStYrjsoavkRuTW9rV7iv7p2q8dIUFJ4+Ga5rSiKtULxrOKYbVU9JMK/6j1XyL07Nd8XuJ1dCQLV4FBJMwajdJPWDLjqC7yMZHW53czgDSCld1jhpzUA+BLZ6pqb8+4eNz5CFxcGAr43Bh9XMHUTp3Zb1uQbN6yaGdQ2Xf5V+qbI1kbrq8U5GIPot5q2GaQvqOgJ9+HUECAwEAAaNTMFEwHQYDVR0OBBYEFOp/CYeApguKujnO1n2zaZNPUo2QMB8GA1UdIwQYMBaAFOp/CYeApguKujnO1n2zaZNPUo2QMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAEEMG+3sZppkCqCHdzokfgwjqes2DYvQvuGyuTBYxLI3TFb2E4fxqgm8OFigbEExmF4XjivIEgk+xgFzmEbQocbu57DXDxQIEkiyrJ+qu9KwiIH7R4DPOYJ9tVzyO0j2gGmS0jApIJB5ClhJMHyAgGsjZm1cW73SGyLi13QRLUt1hty5PRUQ6h6UH2ccI5CzHxqyYz1lAAD5x1wZez6xmYMBplSLRvArwTl5bnqrwix+cTRwJdNhWRHG075JjxOykyy+IjuBkVwJX9jZ9kIk/Pr2+QOqLXwpsup1ojdNDa/9H5RjToNG9P1DTxcZa3iksNRzxhP0ZoRnp1D7XacjFig=&amp;lt;/cert&amp;gt;&amp;lt;vid vendorid=&amp;quot;1027&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;24577&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;autoLaunch&amp;gt;false&amp;lt;/autoLaunch&amp;gt;&amp;lt;/rule&amp;gt;&amp;lt;/popupsuppress&amp;gt;&amp;lt;usbconfig mode=&amp;quot;whitelist&amp;quot;&amp;gt;&amp;lt;class&amp;gt;AINPUT_SOURCE_KEYBOARD&amp;lt;/class&amp;gt;&amp;lt;class&amp;gt;AINPUT_SOURCE_MOUSE&amp;lt;/class&amp;gt;&amp;lt;class&amp;gt;AINPUT_SOURCE_TOUCHSCREEN&amp;lt;/class&amp;gt;&amp;lt;class&amp;gt;USB_CLASS_PRINTER&amp;lt;/class&amp;gt;&amp;lt;vid vendorid=&amp;quot;1208&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;514&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;vid vendorid=&amp;quot;1027&amp;quot;&amp;gt;&amp;lt;pid&amp;gt;24577&amp;lt;/pid&amp;gt;&amp;lt;/vid&amp;gt;&amp;lt;/usbconfig&amp;gt;&quot; /&gt;
+  &lt;/characteristic&gt;
+&lt;/wap-provisioningdoc&gt;	Below rules got applied in USB manager test app after applying the above xmlIn the xml used by developer, below tags are not valid:&lt;characteristic type=&quot;Profile&quot;&gt;&lt;parm name=&quot;ProfileName&quot; value=&quot;KioskUsbPrinter&quot;/&gt;Valid xml has to start with below tag:&lt;wap-provisioningdoc&gt;Can you please try with the above xml format 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

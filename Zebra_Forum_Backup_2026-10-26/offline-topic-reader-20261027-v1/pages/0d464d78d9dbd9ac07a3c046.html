@@ -1,0 +1,171 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra RS5100 scanner and</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Zebra RS5100 scanner and</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25840; original snapshot: threads/resume-00339.html; SHA-256: fef2c49d35c229abb57cccf63e742ee85039f5f5042f837b05472c7840c6c81d</small><pre id="topic">
+
+    
+        Zebra RS5100 scanner and 
+
+
+        
+      
+                        
+                    
+            M
+          
+          Mika Salminen
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            216
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+we have Zebra RS5100 scanners that we are developing ipad apps for.
+We are able to connect the scanner with application made with &quot;Zebra Scanner SDK for iOS&quot;  and we are able to connect the scanner with Zebra Scanner Control 1.4.19.
+We are able to change the color of the leds. We can also trigger the scanning from the software. BUT, we are not able to trigger scanning by pressing the hardware trigger on RS5100
+We have tried enabling the scanner in software with SBT_DEVICE_SCAN_ENABLE, but it does not help.
+DS3678 scanner is working without issues with the same software.
+The firmware version of the scanner is:
+*RS5100 FIRMWARE RELEASE 001-R07
+*SDK is: &quot;Zebra Scanner SDK for iOS with example sources 1.4.19&quot;
+*iOS 14.3 on iPad is the device we are testing with
+Any ideas?
+-Mika
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            5 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Your probably need to  change the host trigger mode .
+The parameter to control the trigger mode is #790.
+Set it to 1 for EMC mode. (the host gets a trigger event from the scanner and decides to turn on the scanner beam) This is the default on RS5100.
+Set to 0 for DCS mode. (the scanner turns on the scan beam when the trigger is pressed)
+you can also use barcode parameter
+From the manual page 50
+https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/mobile-comp...
+Host Trigger Event Mode
+Parameter #790
+RS5100 is compatible with the STB3678 cradle and apps that utilize Zebra Scanner SDK, as well as Zebra host
+terminals apps that use EMDK. However, appropriate host trigger event mode has to be selected when partnering
+with those devices. RS5100 selects appropriate mode automatically, based on the pairing barcode, but it can be
+also manually set in case an appropriate pairing barcode is not used.
+Use Host Trigger Event disabled mode for pairing with STB3678 cradle or Zebra Scanner SDK apps and utilities running on Windows, Android, or Apple iOS.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,240 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Bluetooth MAC TC21</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/bluetooth-mac-tc21; snapshot threads/00776.html; SHA-256 a23f3c05b2747d47e2aa25d187ab389d9567c68427c390a12d0b9df224ac860a. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Bluetooth MAC TC21</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            M
+          </div>
+          <div class="forum-topic__author-name">Michael Buelow</div>
+          <div class="forum-topic__timestamp">4 years 3 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            220
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            2
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello there,</p>
+<p>I've encountered some issues regarding the OEMInfo Content Provider. I am trying to read the bluetooth MAC of a TC21. For that I am using the code examples provided by this site: <span data-original-href="https://techdocs.zebra.com/oeminfo/consume/#samplecode">https://techdocs.zebra.com/oeminfo/consume/#samplecode</span>. Hope you guys can help me.</p>
+<p>I do the following:<br>
+1. Request permission to access the bluetooth MAC (as described here: <span data-original-href="https://techdocs.zebra.com/oeminfo/consume/#authorizationmechanism">https://techdocs.zebra.com/oeminfo/consume/#authorizationmechanism</span>). I do that programmatically like in this example <span data-original-href="https://github.com/ZebraDevs/OEMIdentifiers-Java-Sample/blob/master/app/src/main/java/com/zebra/jamesswinton/savedeviceidentifierstofile/deviceidentifiermanager/RetrieveOemInfo.java">https://github.com/ZebraDevs/OEMIdentifiers-Java-Sample/blob/master/app…</span>.<br>
+2. Then I actually try to read the bluetooth MAC (as described here: <span data-original-href="https://techdocs.zebra.com/oeminfo/consume/#samplecode">https://techdocs.zebra.com/oeminfo/consume/#samplecode</span>).</p>
+<p>This works on my TC21 with Update 98 and MX 10.5.*. However, it doesn't work on another TC21 with Update 14 and MX 10.2.*.</p>
+<p>On the working device I get the following Logcat output from the device (heavily cutted). This is from the exact moment I request permissions and fetch the bluetooth mac:<br>
+2022-07-20 16:59:57.411 9791-9813/? I/DataLakeProvider: isCallerWhiteListed false<br>
+2022-07-20 16:59:57.412 9791-9813/? D/DataLakeProvider: See if app is privileged through access manager<br>
+2022-07-20 16:59:57.412 9791-9813/? D/b: isAppPrivilege content://oem_info/oem.zebra.secure/bt_mac :: packageName de.fadi.mde_apps_flutter<br>
+2022-07-20 16:59:57.414 9791-9813/? D/b: processMxRequest called<br>
+2022-07-20 16:59:57.444 3776-3803/? D/CommonUtils: &amp;gt;&amp;gt;&amp;gt;&amp;gt;&amp;gt;&amp;gt;packages is system packagecom.zebra.zebracontentprovider<br>
+2022-07-20 16:59:57.509 9791-9813/? D/b: Got Mx response<br>
+2022-07-20 16:59:57.509 9791-9813/? D/b: onMxResponse<br>
+2022-07-20 16:59:57.510 9791-9813/? D/b: caller is privileged<br>
+2022-07-20 16:59:57.510 9791-9813/? D/DataLakeProvider: Access Manager status = true<br>
+2022-07-20 16:59:57.514 9791-9813/? W/RegisteredApis: Api =bt_mac is either not present or not lazyload</p>
+<p>I used the following filter: "DataLakeProvider|isAppPrivilege|mx|whitelist|zebra|bt_mac"</p>
+<p>On the device where it's not working I get the following output:<br>
+2022-07-20 16:55:58.236 7012-7029/? I/DataLakeProvider: isCallerWhiteListed false<br>
+2022-07-20 16:55:58.236 7012-7029/? D/DataLakeProvider: See if app is privileged through access manager<br>
+2022-07-20 16:55:58.236 7012-7029/? D/b: isAppPrivilege content://oem_info/oem.zebra.secure/bt_mac :: packageName de.fadi.mde_apps_flutter<br>
+2022-07-20 16:55:58.279 2957-2985/? D/CommonUtils: &amp;gt;&amp;gt;&amp;gt;&amp;gt;&amp;gt;&amp;gt;packages is system packagecom.zebra.zebracontentprovider<br>
+2022-07-20 16:55:58.357 7012-7029/? D/DataLakeProvider: Access Manager status = true<br>
+2022-07-20 16:55:58.361 7012-7029/? E/Path: There is no DataLake for the group/api = bt_mac<br>
+2022-07-20 16:55:58.364 7012-7029/? D/c: There is no data present in cache for provider = oem.zebra.secure</p>
+<p>As you can see, they differ in the last part. The first device just said "Api =bt_mac is either not present or not lazyload" and provided the bluetooth MAC anyway and the second device just threw some errors and and simply pointed out that there "is no data present in cache for provider = oem.zebra.secure".</p>
+<p>Do you guys have any clue why the exact same code works on one device but not on the other? They are both enrolled by AirWatch. The working device is my main developer device and the non functional one comes from a production environment. However, my developer device got enrolled like the production one. I even wiped it, enrolled it again and just tried to read the bluetooth mac - no difference. The only difference I can spot is the Update- and MX-Version.</p>
+<p>Hope someone knows something,</p>
+<p>Kind regards,<br>
+Michael</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      2 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-50680" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>James Swinton-Bland</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 3 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Michael,</p>
+<p>BT Mac Address support was added to TC21 in <span data-original-href="file:///C:/Users/JS6845/Downloads/HE_DELTA_UPDATE_10-16-10.00-QG-U98-STD-HEL-04%20(1).pdf">LG Patch 44</span> so you'll need to update to at least this version on your production devices.</p>
+<p>Thanks,</p>
+<p>James</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-50685" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              M
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Michael Buelow</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 3 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hello James,</p>
+<p>thank you very much for the fast reply!</p>
+<p>Kind regards,<br>
+Michael</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/bluetooth-mac-tc21%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/bluetooth-mac-tc21%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

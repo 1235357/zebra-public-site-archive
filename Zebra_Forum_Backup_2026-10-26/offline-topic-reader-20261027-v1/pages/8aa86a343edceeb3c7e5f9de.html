@@ -1,0 +1,251 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Manifest Merger Conflict Due to Duplicate Namespace in Zebra RFID SDK AARs</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Manifest Merger Conflict Due to Duplicate Namespace in Zebra RFID SDK AARs</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/manifest-merger-conflict-due-duplicate-namespace-zebra-rfid-sdk-aars; original snapshot: threads/00332.html; SHA-256: a623a846dd3366a8d185943ce1049d4aead53783201e77a75829ec2a4559c473</small><pre id="topic">
+
+    
+        Manifest Merger Conflict Due to Duplicate Namespace in Zebra RFID SDK AARs
+
+
+        
+      
+                        
+                    
+            K
+          
+          Kalpesh Patel
+          7 months 2 weeks ago
+        
+        
+      
+        
+            
+                  
+            
+            403
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Dear Zebra Technologies Support Team,I am writing to report a critical issue encountered while integrating the Zebra RFID SDK for Android (API3) into my Android application.---Environment Details:• Device: Zebra RFD40 Premium• SDK: Zebra RFID SDK for Android (API3) v2.0.5.238• Gradle Version: gradle-9.2.1-bin.zip• Android Studio: Latest Stable• Android Target SDK: Android 14/15---Issue Description:All Zebra SDK AAR files (API3_READER, API3_CMN, API3_INTERFACE, API3_TRANSPORT, etc.) share the same namespace/package name.In Gradle 9.2.1, a unique namespace is strictly required for each AAR library module. When multiple AARs share the same namespace, it causes a Manifest Merger Conflict at build time, making it impossible to compile the application successfully.Error observed during build:• &quot;Manifest merger failed: Attribute application@namespace value conflict&quot;• &quot;Each library must have a unique namespace&quot;• Build fails completely — app cannot be compiled---Steps to Reproduce:1. Create a new Android project with Gradle 9.2.12. Add the following Zebra RFID SDK AARs to /libs folder:  - API3_READER.aar  - API3_CMN.aar  - API3_INTERFACE.aar  - API3_TRANSPORT.aar3. Sync Gradle and attempt to Build4. Manifest merger conflict error appears immediately---Expected Behavior:Each AAR should have a unique namespace so that Gradle 9.2.1 can successfully merge manifests without conflict.Actual Behavior:Build fails due to duplicate namespace across multiple Zebra SDK AAR files.---Request:Kindly provide:1. An updated SDK build where each AAR has a unique namespace2. Or a recommended workaround for Gradle 9.2.1 compatibility3. Official timeline for a fix if a patch is plannedThis issue is blocking our development completely. Your prompt response would be greatly appreciated.Thank you for your support.Best Regards,Kalpesh PatelKalpesh.patel@sculptsoft.com
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            7 months 2 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Kalpesh.I believe the RFID Development team may be aware of this already - but I do not have an estimate for the correction at this time (2026-03-11) since this issue affects new use cases of Gradle - and legacy support (older gradle version used supported as workaround) still allows a developer to build.For now - due to the Multiple AAR + Namespace issues with Newer Gradle Platforms - as you have witnessed, a workaround suggestion is to not conduct the Gradle upgrade of the project without knowing / understanding which Gradle update can be performed and then get a successful build.I am aware (Since I do not run the Up-to-Date version of Android Studio - for similar / Legacy Platform Support as you have encountered here) that allowing the Gradle Updater to automatically update is not a wise option - but if you can update to a version that allows you to build the RFID SDK - support - and get a version of Gradle to support other project aspects - you can test for that depending on your use case.If you have a requisite need - and you are also stymied by this problem - And you are a Zebra Partner - you can connect with Technical Support and open a Help Desk case to look into this matter.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              K
+            
+          
+                
+          
+            Kalpesh Patel
+          
+          
+            7 months 2 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Dear Zebra Support Team,Thank you for your prompt response and for the detailed explanation regarding the namespace conflict issue.I understand the following from your reply:1. The RFID Development team may already be aware of this issue.2. No fix timeline is available as of 2026-03-11.3. The recommended workaround is to use an older/compatible Gradle version instead of Gradle 9.2.1.4. Auto-updating Gradle is not recommended when using Zebra RFID SDK.---Follow-up Questions:Could you please help us with the following:1. Which specific Gradle version is confirmed to work successfully with Zebra RFID SDK for Android (API3) v2.0.5.238?2. Which Android Studio version do you recommend for stable builds with the current SDK?3. Is there an official compatibility matrix (Gradle version vs SDK version) available that we can refer to?---Our Situation:We have a production timeline and need to move forward with development for our RFD40 Premium integration. Knowing the exact supported Gradle version will help us unblock our build immediately.We appreciate your continued support on this matter.Thank you,Kalpesh PatelKalpesh.patel@sculptsoft.com
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            7 months 1 week ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I my circumstance I will relate as follows. -- Sorry the specifications you are requesting above is not available.With  RFID SDK V2.0.5.238 -- I am using (Successfully)  Android Studio KOALA  V2024.1.2Gradle I Used ( working / compiling / debugging ) for the HHSampleApp project in this same Android Studio RFID SDK - V8.5.2 A1: See above. A2: Above worked for me. A3: No.  No Such Document/Matrix exists. (also not going to) - Mainly since  this is a community forum and you can do the requisite work if needed on your side, since the issues are Google Platform advancement, and not explicitly Zebra per-se. A quick word as to why my setup has such older platforms for the Above. My Role at Zebra is to assist with Development Support including Legacy platforms. So for Oreo and platforms of that generation - I found newer Android Studio environments were moving past the ability to support legacy A8 and A10 platforms.Because the KOALA android studio I found to be very effective with both that and the legacy Gradle capability - this as helpful for Diagnosis &amp; Debugging. - There is a DRAWBACK.  - If you publish to Google Play Store - the GMS platform requirements - may overrride the considerations I pose with the above.  But the above is a starting point that you can then carefully incrementally update to newer Android Studio and to newer Gradle blends to find the combination that may work for you.I am stuck in the above situation I use for support (Legacy)  - but I also do not publish to Google Play - so I am unaffected by those requirements.If you have a requirement to resolve your issue - I will recommend that you open a Help Desk case to address that.This forum is not the place to attempt to have that level of interactions to your needs/requests.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,410 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Notify (Bluetooth Scanner Notifications) - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/notify</code><br>Observed final URL: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/notify/</code><br>Raw source: <code>raw/96df3f0221c62bfd39c9e1e3.html</code><br>Raw SHA-256: <code>4d64b316e6b738cd477ea38150242468f4e73149230be6194363ed4e84d0f001</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs Home
+                        
+                                            DataWedge
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Get Started
+                            
+                        
+                        
+                            
+                                    Profiles
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Feature Matrix
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            US - English
+                          
+                          
+                                 CN - 普通话
+                                 JP - 日本語
+                          
+                                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Notify (Bluetooth Scanner Notifications)
+                        
+                    NOTIFYFunction PrototypeParametersResult CodesExample Code
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Notify (Bluetooth Scanner Notifications)
+                                    
+                                            DataWedge
+                                            15.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        NOTIFY
+
+Used to play notification sound(s) and/or display a colored LED after a scan from a connected Bluetooth scanner with RSM (Remote Scanner Management). Multiple notifications can be played in succession.
+
+Supported notifications:
+
+
+green LED on/off
+
+red LED on/off
+
+short/long beep
+
+fast/slow warble beep
+
+high/low beep
+
+low-high beep
+
+high-low-high beep
+
+low-high-low beep
+
+high-high-low-low beep
+
+multiple beeps in succession, from 1 to 5 times
+
+double short burst vibration *
+
+long burst vibration *
+
+
+ * Note: Double short burst vibration and long burst vibration are supported only on RS5100, RS6000, and RS6100 Bluetooth scanners. This functionality is available starting with the following DataWedge versions:
+     • Android 13: DataWedge v14.1.40 or later
+     • Android 14: DataWedge v15.0.19 or later 
+
+Supported Bluetooth Scanners with Device Identifiers:
+
+
+  
+    Bluetooth Scanner
+    Device Identifier
+  
+  
+    DS3678
+    BLUETOOTH_DS3678
+  
+  
+    RS5100
+    BLUETOOTH_RS5100
+  
+   
+    RS6000
+    BLUETOOTH_RS6000
+  
+  
+    RS6100
+    BLUETOOTH_GENERIC
+  
+
+
+Function Prototype
+
+Bundle bundleNotify = new Bundle();
+Bundle bundleNotificationConfig = new Bundle();
+i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+
+bundleNotificationConfig.putString(&quot;DEVICE_IDENTIFIER&quot;, &lt;Device Identifier&gt;);
+bundleNotificationConfig.putIntArray(&quot;NOTIFICATION_SETTINGS&quot;, int[]);
+bundleNotify.putBundle(&quot;NOTIFICATION_CONFIG&quot;, bundleNotificationConfig);
+
+i.putExtra(&quot;com.symbol.datawedge.api.notification.NOTIFY&quot;, bundleNotify);
+this.sendBroadcast(i);
+
+Parameters
+
+ACTION [string]: &quot;com.symbol.datawedge.api.ACTION&quot;
+
+EXTRA_DATA [string]: &quot;com.symbol.datawedge.api.notification.NOTIFY&quot;
+
+DEVICE IDENTIFIER [string]: Device identifier of the supported Bluetooth scanner.
+
+NOTIFICATION_SETTINGS [integer]: Integer array of the notification RSM attributes. If multiple attributes are specified, notifications are played one after another in ascending order of the integer array.
+
+Notification RSM attributes for LED/Beep:
+
+
+1 high short beep            0
+
+2 high short beeps          1
+
+3 high short beeps          2
+
+4 high short beeps          3
+
+5 high short beeps          4
+
+1 low short beep              5
+
+2 low short beeps            6
+
+3 low short beeps            7
+
+4 low short beeps            8
+
+5 low short beeps            9
+
+1 high long beep              10
+
+2 high long beeps            11
+
+3 high long beeps            12
+
+4 high long beeps            13
+
+5 high long beeps            14
+
+1 low long beep               15
+
+2 low long beeps             16
+
+3 low long beeps             17
+
+4 low long beeps             18
+
+5 low long beeps             19
+
+Fast warble beep             20
+
+Slow warble beep            21
+
+High-low beep                  22
+
+Low-high beep                  23
+
+High-low-high beep          24
+
+Low-high-low beep           25
+
+High-high-low-low beep   26
+
+Green LED off                    42
+
+Green LED on                    43
+
+Red LED on                        47
+
+Red LED off                       48
+
+Double Short Burst Vibration        50500
+
+Long Burst Vibration                       50501
+
+
+Result Codes
+
+DataWedge returns the following error codes if the app includes the intent extras SEND_RESULT and COMMAND_IDENTIFIER to enable the app to get results using the DataWedge result intent mechanism. See Example, below.
+
+
+DATAWEDGE_DISABLED - DataWedge is disabled
+
+DEVICE_NOT_SUPPORTED - Device does not support notifications
+
+PARAMETER_INVALID - No values are specified in the RSM attribute array
+
+DEVICE_NOT_CONNECTED - Scanner is not connected
+
+
+Example Code
+
+This sample code turns on the red LED, plays 3 low long beeps, and triggers a long burst of vibration.
+
+Intent i = new Intent();
+Bundle bundleNotify = new Bundle();
+Bundle bundleNotificationConfig = new Bundle();
+i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+
+bundleNotificationConfig.putString(&quot;DEVICE_IDENTIFIER&quot;, &quot;BLUETOOTH_RS6000&quot;);
+bundleNotificationConfig.putIntArray(&quot;NOTIFICATION_SETTINGS&quot;, new int[]{17, 47, 50501});
+bundleNotify.putBundle(&quot;NOTIFICATION_CONFIG&quot;, bundleNotificationConfig);
+
+i.putExtra(&quot;com.symbol.datawedge.api.notification.NOTIFY&quot;, bundleNotify);
+this.sendBroadcast(i);
+
+
+
+SEE ALSO:
+
+Zebra Support Central | Integrator Guides, Product Manuals, Software Downloads and Support
+
+LaunchPad | Zebra Developer Community
+
+Intent | Android Developers
+
+Intents and Intent Filters | Android Developers
+
+Android Intents | Tutorial
+
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2025 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+      
+
+
+
+Back to Top</pre></body></html>

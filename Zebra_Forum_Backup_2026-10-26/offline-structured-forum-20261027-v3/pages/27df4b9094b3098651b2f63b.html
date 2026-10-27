@@ -1,0 +1,253 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Windows SDK Correct method to call to register a callback event for the barcode scanning</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/windows-sdk-correct-method-call-register-callback-event-barcode-scanning; snapshot threads/00104.html; SHA-256 ffab5b939b895b44231c7a46f1ea27fdc8d3f0ca3cc006d617508bcd2c2faae6. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Windows SDK Correct method to call to register a callback event for the barcode scanning</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            B
+          </div>
+          <div class="forum-topic__author-name">Benjamin DELL</div>
+          <div class="forum-topic__timestamp">1 year 10 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            229
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            3
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi All <br><br>I am a WinDev Developer, and Integrating with the Core Scanner .NET Api.  I need help finding the correct method to call to register a callback event for the barcode scanning.<br><br>There is a Callback registered in Visual Studio for Scanning:<br> // Add barcode data event handler<br>coreScannerObject.BarcodeEvent += CoreScannerObject_BarcodeEvent;<br><br>In Visual Studio the Code is: ( shortened) <br><br>// Initialize CoreScanner COM object<br>CoreScanner.CCoreScanner coreScannerObject = new CCoreScanner();<br>   // Open CoreScanner COM Object<br>  coreScannerObject.Open(appHandle, // Application handle     <br>      scannerTypes,                 // Array of scanner types    <br>      NumberOfScannerTypes,         // Length of scanner types array <br>      out status);                  // Command execution success/failure return status <br> // Call register for events<br>coreScannerObject.ExecCommand(opCode,      // Opcode: Register for events<br>                              ref inXml,   // Input XML<br>                              out outXml,  // Output XML <br>                              out status); // Command execution success/failure return status  <br> // Add barcode data event handler<br>coreScannerObject.BarcodeEvent += CoreScannerObject_BarcodeEvent;<br><br>In WinDev I have : <br>// Initialize CoreScanner object<br>MyRfIdReader            is CCoreScannerClass<br>// Open CoreScanner  Object<br>MyRfIdReader.Open(0,arrScannerTypes,nNumberOfScannerTypes,nStatus)<br> // Call register for events<br>MyRfIdReader.ExecCommand(nOpCode,pInXml,pInXml,nStatus) <br> // Add barcode data event handler<br>MyRfIdReader.add_BarcodeEvent(DotNetDelegate("CoreScannerObject_BarcodeEvent","_ICoreScannerEvents_BarcodeEventEventHandler")) <br><br>My Problem is that  coreScannerObject.BarcodeEvent += CoreScannerObject_BarcodeEvent;  does not work in WinDev,  so I tried the find the BarcodeEvent Propperty filling Event, but it seems to be virtual Classes, and I cannot seem to Find The correct one to use. <br><br>coreScannerObject.BarcodeEvent  seems to point to event _ICoreScannerEvents_BarcodeEventEventHandler BarcodeEvent. <br><br>I tried using "_ICoreScannerEvents_BarcodeEventEventHandler" but there are many methods to call, and most of them also seems virtualized. <br><br>I need help with which method to call to actually register a callback for when barcodes are scanned ( as a non .NET developer) <br><br>Kind Regards <br><br><br><br><br><br><br><br>    </p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      3 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-53673" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              R
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Riad Benallou</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 10 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p><span>This code explained it, in C#</span></p><p><span> </span><span data-original-href="https://github.com/zebra-technologies/Scanner-SDK-for-Windows-Code-Snippets/blob/master/CSharp/RegisterUnregisterForEvents/Program.cs"><span>https://github.com/zebra-technologies/Scanner-SDK-for-Windows-Code-Snippets/blob/master/CSharp/RegisterUnregisterForEvents/Program.cs</span></span></p><p> </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-53676" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              B
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Benjamin DELL</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 10 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Dear Riad Benallou. <br><br>That is the code I am referencing.  <br><br><span> // Add barcode data event handler</span><br><span>coreScannerObject.BarcodeEvent += CoreScannerObject_BarcodeEvent;</span><br><br><span>It only Works in C#, and not when trying to do it from other languages. </span><br><br><span>It seems the "coreScannerObject.BarcodeEvent" is an array of .NET Objects and there should be a method for me to add an object into this array from a procedure in the  "_ICoreScannerEvents_BarcodeEventEventHandler" class/object..</span><br><br><span>I just cannot find the correct method to call to achieve this. </span><br><br><span>Kind Regards </span></p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-53695" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              R
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Riad Benallou</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 10 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>in c# you cal register for event opcode 1001</p><p>int opcode = 1001; // Method for Subscribe events<br>string outXML; // XML Output<br>string inXML = "&lt;inArgs&gt;" +<br>"&lt;cmdArgs&gt;" +<br>"&lt;arg-int&gt;1&lt;/arg-int&gt;" + // Number of events you want to subscribe<br>"&lt;arg-int&gt;1&lt;/arg-int&gt;" + // Comma separated event IDs<br>"&lt;/cmdArgs&gt;" +<br>"&lt;/inArgs&gt;";<br>cCoreScannerClass.ExecCommand(opcode, ref inXML, out outXML, out status);<br>Console.WriteLine(outXML);<br><br>1 in this case is for Barcode event suscription . </p><p><br>try cCoreScannerClass.BarcodeEvent += new _ICoreScannerEvents_BarcodeEventEventHandler(OnBarcodeEvent);<br><br>There is no support for Windev , if support communication over Serial . perhaps using SSI over USB CDC will be a better option for you since its low layer directly with scanner and no libraries /SDK involvement </p><p><br> </p><p> </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/windows-sdk-correct-method-call-register-callback-event-barcode-scanning%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/windows-sdk-correct-method-call-register-callback-event-barcode-scanning%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

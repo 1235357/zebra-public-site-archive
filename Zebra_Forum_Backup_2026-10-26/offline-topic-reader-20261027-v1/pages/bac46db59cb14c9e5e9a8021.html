@@ -1,0 +1,150 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>SDK for ZXP series 7 in Linux</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>SDK for ZXP series 7 in Linux</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/sdk-zxp-series-7-linux; original snapshot: threads/00868.html; SHA-256: fd96bfb30c31eaaab2df6160b71d49453b287b62d4ff9e7874b52ef996d0849e</small><pre id="topic">
+
+    
+        SDK for ZXP series 7 in Linux
+
+
+        
+      
+                        
+                    
+            S
+          
+          Sean Tsao
+          4 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            88
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We have purchased several ZXP series 7 printers, we put them in Linux environment, in our system, we also use Zebra P330i old printer, old printer uses EPL language and new printer has to use new SDK printing package, however SDK printing process is much slow than old EPL language one, i create a server side ( in Linux environment) application, which can print card use either EPL or SDK, even though for SDK is slow,  if i use command line in Linux terminal, it works.  However for our users, they have to use a web application to print card, so i create web based application by using tomcat web server,  i use Java execution system call and also use waitfor method to wait for printing command finish, but the application is not able to wait that long for SDK printing which take about over 10 seconds to come back, so it fails to print by using web application. So i made a lot of try, it still not get any progress, i need a help. 
+Also i try to combine my web application and server application into one application,  i get a running java error which is java.lang.ClassNotFoundException: com.zebra.sdk.common.card.exceptions.ZebraCardException
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alfred Teixeira
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello,
+Unlike the P330i, which is a command-driven printer, the ZXP-7 is a job-based printer. When you use the SDK to print a card, the SDK builds a job, which contains all commands, print images, and required text, and sends this job to the printer. The printer must parse the received job to confirm it is valid before it begins performing the print job it received. As you have seen, this does take longer than sending simple EPL commands, one at a time, to the P330i.
+You mentioned it takes about 10 seconds to come back: can you please explain what you mean by this? I ask because when a job is sent to the printer, the printer assigns a job number or job ID to the job and returns this ID to the calling program; you can use this job ID to track the job&#x27;s progress within your application. The job ID should be returned by the printer very quickly; thus the 10 seconds you mention should never be an issue.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

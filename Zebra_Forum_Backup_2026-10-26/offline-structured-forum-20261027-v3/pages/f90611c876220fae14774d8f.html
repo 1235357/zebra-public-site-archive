@@ -1,0 +1,402 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Xamarin Link-os iOS, Doesn&#x27;t work without data connectivity. ZQ510</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/forum/25579; snapshot threads/resume-00502.html; SHA-256 e234bc4f57ac4c44d5fcf7fb0b2ece66af94373ce8ef04c15ca172e84c83282a. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Xamarin Link-os iOS, Doesn't work without data connectivity. ZQ510</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            V
+          </div>
+          <div class="forum-topic__author-name">Vladimir Araque</div>
+          <div class="forum-topic__timestamp">5 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            58
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Regards,<br>
+I have been working on an app using Xamarin with Link-os plugin and ZQ510 printer. The idea of ​​the app is that it can work in remote places where there is no internet connectivity.<br>
+The debug printing process always works. The iPhone can print without any problem with the Wi-Fi off and the data access off.<br>
+When the iPhone is disconnected from the PC and has some kind of data access, it is capable of printing. You can even remove the SIM card and connect it to a Wi-Fi without internet access and it will be able to print.<br>
+The problem occurs in conditions where there is no Wi-Fi and the operator does not provide data coverage.<br>
+I have done many tests between them discovering all the bluetooth printers connected to the device and on the other hand hard coding connections to the printer and in all cases the common factor to fail is always the absence of a connection to a network or to another device. That is, when trying to reproduce the fault conditions in debug mode, the iPhone prints.<br>
+It makes me think that it is something related to the SDK itself. But I am not sure.<br>
+//**********************************************************<br>
+using BGTix.Interfaces;<br>
+using LinkOS.Plugin;<br>
+using LinkOS.Plugin.Abstractions;<br>
+using System;<br>
+using System.Collections.Generic;<br>
+using System.Collections.ObjectModel;<br>
+using System.Text;<br>
+using System.Threading.Tasks;<br>
+using Xamarin.Forms;<br>
+namespace BGTix.Clases<br>
+{<br>
+    public class PrinteLinkOs<br>
+    {<br>
+        public enum ConnectionType<br>
+        {<br>
+            Bluetooth,<br>
+            USB,<br>
+            Network<br>
+        }<br>
+        ObservableCollection printerList;<br>
+        string ticket;<br>
+        public PrinteLinkOs()<br>
+        {<br>
+            printerList = new ObservableCollection();<br>
+        }<br>
+        public void PrintAll()<br>
+        {<br>
+            foreach (IDiscoveredPrinter IDP in printerList)<br>
+            {<br>
+                new Task(new Action(() =&gt;<br>
+                {<br>
+                    PrintLineMode(IDP);<br>
+                })).Start();<br>
+            }<br>
+        }<br>
+        public void PrintAllOff()<br>
+        {<br>
+            IConnection connection = null;<br>
+            connection = ConnectionBuilder.Current.Build("BT:XXRAJ183403613");<br>
+            connection.Open();<br>
+            IZebraPrinter printer = ZebraPrinterFactory.Current.GetInstance(connection);<br>
+            if ((!CheckPrinterLanguage(connection)) || (!PreCheckPrinterStatus(printer)))<br>
+            {<br>
+                ResetPage();<br>
+                return;<br>
+            }<br>
+            SendZplReceipt(connection);<br>
+        }<br>
+        private void PrintLineMode(IDiscoveredPrinter IDP)<br>
+        {<br>
+            IConnection connection = null;<br>
+            try<br>
+            {<br>
+                connection = IDP.Connection;<br>
+                connection.Open();<br>
+                IZebraPrinter printer = ZebraPrinterFactory.Current.GetInstance(connection);<br>
+                if ((!CheckPrinterLanguage(connection)) || (!PreCheckPrinterStatus(printer)))<br>
+                {<br>
+                    ResetPage();<br>
+                    return;<br>
+                }<br>
+                SendZplReceipt(connection);<br>
+            }<br>
+            catch (Exception ex)<br>
+            {<br>
+                // Connection Exceptions and issues are caught here<br>
+                //ShowErrorAlert(ex.Message);<br>
+            }<br>
+            finally<br>
+            {<br>
+                if ((connection != null) &amp;&amp; (connection.IsConnected))<br>
+                    connection.Close();<br>
+                ResetPage();<br>
+            }<br>
+        }<br>
+        private void ResetPage()<br>
+        {<br>
+            Device.BeginInvokeOnMainThread(() =&gt; {<br>
+                //printBtn.IsEnabled = true;<br>
+            });<br>
+        }<br>
+        protected bool PreCheckPrinterStatus(IZebraPrinter printer)<br>
+        {<br>
+            // Check the printer status<br>
+            IPrinterStatus status = printer.CurrentStatus;<br>
+            if (!status.IsReadyToPrint)<br>
+            {<br>
+                //ShowErrorAlert("Unable to print. Printer is " + status.Status);<br>
+                return false;<br>
+            }<br>
+            return true;<br>
+        }<br>
+        protected bool CheckPrinterLanguage(IConnection connection)<br>
+        {<br>
+            if (!connection.IsConnected)<br>
+                connection.Open();<br>
+            //  Check the current printer language<br>
+            byte[] response = connection.SendAndWaitForResponse(GetBytes("! U1 getvar \"device.languages\"\r\n"), 500, 100);<br>
+            string language = Encoding.UTF8.GetString(response, 0, response.Length);<br>
+            if (language.Contains("line_print"))<br>
+            {<br>
+                //ShowAlert("Switching printer to ZPL Control Language.", "Notification");<br>
+            }<br>
+            // printer is already in zpl mode<br>
+            else if (language.Contains("zpl"))<br>
+            {<br>
+                return true;<br>
+            }<br>
+            //  Set the printer command languege<br>
+            connection.Write(GetBytes("! U1 setvar \"device.languages\" \"zpl\"\r\n"));<br>
+            response = connection.SendAndWaitForResponse(GetBytes("! U1 getvar \"device.languages\"\r\n"), 500, 100);<br>
+            language = Encoding.UTF8.GetString(response, 0, response.Length);<br>
+            if (!language.Contains("zpl"))<br>
+            {<br>
+                //ShowErrorAlert("Printer language not set. Not a ZPL printer.");<br>
+                return false;<br>
+            }<br>
+            return true;<br>
+        }<br>
+        private void SendZplReceipt(IConnection printerConnection)<br>
+        {<br>
+            printerConnection.Write(GetBytes(ticket));<br>
+        }<br>
+        protected static byte[] GetBytes(string str)<br>
+        {<br>
+            byte[] bytes = new byte[str.Length];<br>
+            bytes = Encoding.UTF8.GetBytes(str);<br>
+            return bytes;<br>
+        }<br>
+        private Dictionary CreateListOfItems()<br>
+        {<br>
+            string[] names = { "Microwave Oven", "Sneakers (Size 7)", "XL T-Shirt", "Socks (3-pack)", "Blender", "DVD Movie" };<br>
+            string[] prices = { "79.99", "69.99", "39.99", "12.99", "34.99", "16.99" };<br>
+            Dictionary retVal = new Dictionary();<br>
+            for (int ix = 0; ix  names.Length; ix++)<br>
+            {<br>
+                retVal.Add(names[ix], prices[ix]);<br>
+            }<br>
+            return retVal;<br>
+        }<br>
+        /////<br>
+        ///// Start discovery on all ports. USB, then Bluetooth, then Network.<br>
+        /////<br>
+        public void StartPrinterDiscovery(string tkr)<br>
+        {<br>
+            ticket = tkr;<br>
+            new Task(new Action(() =&gt; {<br>
+                if (printerList != null &amp;&amp; printerList.Count &gt; 0)<br>
+                {<br>
+                    printerList.Clear();<br>
+                }<br>
+                StartDiscovery(ConnectionType.Bluetooth);<br>
+            })).Start();<br>
+        }<br>
+        private void StartDiscovery(ConnectionType connectionType)<br>
+        {<br>
+            UpdateStatus($"Discovering {connectionType.ToString()} printers...");<br>
+            try<br>
+            {<br>
+                System.Diagnostics.Debug.WriteLine($"Starting {connectionType.ToString()} discovery...");<br>
+                switch (connectionType)<br>
+                {<br>
+                    case ConnectionType.Bluetooth:<br>
+                        DependencyService.Get().FindBluetoothPrinters(new DiscoveryHandlerImplementation(this, ConnectionType.Bluetooth));<br>
+                        break;<br>
+                    case ConnectionType.Network:<br>
+                        NetworkDiscoverer.Current.LocalBroadcast(new DiscoveryHandlerImplementation(this, ConnectionType.Network));<br>
+                        break;<br>
+                    case ConnectionType.USB:<br>
+                        DependencyService.Get().FindUsbPrinters(new DiscoveryHandlerImplementation(this, ConnectionType.USB));<br>
+                        break;<br>
+                }<br>
+            }<br>
+            catch (Exception e)<br>
+            {<br>
+                if (e is NotImplementedException &amp;&amp; connectionType == ConnectionType.USB)<br>
+                {<br>
+                    StartDiscovery(ConnectionType.Bluetooth);<br>
+                }<br>
+                else<br>
+                {<br>
+                    string errorMessage = $"Error discovering {nameof(connectionType)} printers: {e.Message}";<br>
+                }<br>
+            }<br>
+        }<br>
+        private void UpdateStatus(string message)<br>
+        {<br>
+            Device.BeginInvokeOnMainThread(() =&gt; {<br>
+                //statusLbl.Text = message;<br>
+            });<br>
+        }<br>
+        private class DiscoveryHandlerImplementation : IDiscoveryHandler<br>
+        {<br>
+            private PrinteLinkOs Paja;<br>
+            private ConnectionType connectionType;<br>
+            public DiscoveryHandlerImplementation(PrinteLinkOs paja, ConnectionType connectionType)<br>
+            {<br>
+                this.Paja = paja;<br>
+                this.connectionType = connectionType;<br>
+            }<br>
+            public void DiscoveryError(string message)<br>
+            {<br>
+                if (connectionType == ConnectionType.USB)<br>
+                {<br>
+                    //selectPrinterPage.StartDiscovery(ConnectionType.Bluetooth);<br>
+                }<br>
+                else if (connectionType == ConnectionType.Bluetooth)<br>
+                {<br>
+                    //selectPrinterPage.StartDiscovery(ConnectionType.Network);<br>
+                }<br>
+                //else selectPrinterPage.UpdateStatus("Discovery finished");<br>
+            }<br>
+            public void DiscoveryFinished()<br>
+            {<br>
+                if (connectionType == ConnectionType.USB)<br>
+                {<br>
+                    Paja.StartDiscovery(ConnectionType.Bluetooth);<br>
+                }<br>
+                else if (connectionType == ConnectionType.Bluetooth)<br>
+                {<br>
+                    Paja.StartDiscovery(ConnectionType.Network);<br>
+                }<br>
+                else<br>
+                {<br>
+                    Paja.UpdateStatus("Discovery finished");<br>
+                    if (Paja.printerList.Count &gt; 0)<br>
+                    {<br>
+                        Paja.PrintAll();<br>
+                    }<br>
+                    else<br>
+                    {<br>
+                        Paja.PrintAllOff();<br>
+                    }<br>
+                }<br>
+            }<br>
+            public void FoundPrinter(IDiscoveredPrinter discoveredPrinter)<br>
+            {<br>
+                Paja.printerList.Add(discoveredPrinter);<br>
+            }<br>
+        }<br>
+    } //End class<br>
+}</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-47063" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            6 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Vladimir,<br>
+The Link-OS Xamarin SDK provides API for application to use. The SDK itself doesn't create dependency on external connectivity. If your iOS application relies on data coverage in order for the app to work, then the data coverage is required. If your iOS application only needs Bluetooth to connect with the printer to print, then the data coverage is not required, provided the application already has the data to print.<br>
+The SDK provides API for WiFi &amp;amp; network connectivity. If your application doesn't use WiFi or network connectivity, the SDK won't bother to check on WiFi or network connection.<br>
+I'm a bit confused with what&amp;nbsp;you said that the data coverage is required&amp;nbsp;for the Xamarine SDK to work.&amp;nbsp;<br>
+Rgds.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/forum/25579%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/forum/25579%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

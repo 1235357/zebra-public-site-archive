@@ -1,0 +1,284 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Import datawedge profile via Intent</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Import datawedge profile via Intent</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/import-datawedge-profile-intent; original snapshot: threads/00347.html; SHA-256: df8a3be325e6bb2fd108178ffb1fc55604df384e1d6d74bb7c956c28d3402080</small><pre id="topic">
+
+    
+        Import datawedge profile via Intent
+
+
+        
+      
+                        
+                    
+            J
+          
+          Jordan Faucher
+          9 months 3 weeks ago
+        
+        
+      
+        
+            
+                  
+            
+            366
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,I am currently trying to automatically upload a dataWedge profile from my android mobile application to the dataWedge application via the Intent IMPORT_CONFIG My profile is in the folder raw inside the application and I copy it to the external directory available for my application (sdcard/data/com.myapplication.app/files). I enable logging for dataWedge and don&#x27;t have any error when the profile is send and can&#x27;t be seen inside the  datawedge application. Since Android restricted writing in external storage, i can&#x27;t upload the file elsewhere (except if I missed something, I tried with asking READ_EXTERNAL_STORAGE and WRITE_EXTERNAL_STORAGE permission at runtime but nothing change , same with MEDIA permissions)  private fun autoImportDataWedgeProfile() {
+
+        val outFile = File(getExternalFilesDir(null), &quot;dwprofile_profilename.db&quot;)
+        outFile.setWritable(true, false)
+        outFile.setExecutable(true, false)
+        outFile.setReadable(true, false)
+
+        resources.openRawResource(R.raw.dwprofile_profilename).use { input -&gt;
+            FileOutputStream(outFile).use { output -&gt;
+                exportFile(input, output)
+            }
+        }
+
+        Log.e(&quot;DataWedge&quot;, &quot;Profile copied successfully&quot;)
+        importConfig()
+    }
+
+ private fun importConfig() {
+        val bMain = Bundle()
+        bMain.putString(&quot;FOLDER_PATH&quot;, getExternalFilesDir(null)?.path)
+        val fileNames = ArrayList&lt;String&gt;()
+
+        fileNames.add(&quot;dwprofile_profilename.db&quot;)
+
+        bMain.putStringArrayList(&quot;FILE_LIST&quot;, fileNames)
+
+        // send the intent
+        val i = Intent()
+        i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;)
+        i.putExtra(&quot;com.symbol.datawedge.api.IMPORT_CONFIG&quot;, bMain)
+
+        this.sendBroadcast(i)
+    } Maybe I missed something in the documentation but did anyone tried with the intent and have you succeed ?  Thanks in advance for your help  
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Marc Fluhrer
+          
+          
+            9 months 2 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Jordan, I have not used the Intent method, but maybe as a first test, if you copied your profile file to /enterprise/device/settings/datawedge/autoimport/dwprofile_profilename.dbDo you see it appear in the DataWedge application as a new profile?I am just wondering with the Scope storage if it is not letting you read from the /data directory.Otherwise, you may want to open a case.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jordan Faucher
+          
+          
+            9 months 2 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Unfortunatly I can&#x27;t automatically upload to the /enterprise since i can&#x27;t have the proper permission and the application can&#x27;t be a admin 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              Y
+            
+          
+                
+          
+            Yuli Sun
+          
+          
+            8 months 3 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Jordan,I have a workaround but not directly import .db profile:1. export the profile into sdcard in JSON format using:com.symbol.datawedge.api.GET_CONFIGand you have to implement utils to covert android bundle into JSON object and write the raw string into .json file on sdcard2. import the .json format profile:you can read the .json file into JSON object and covert it back to android bundle. then you use com.symbol.datawedge.api.SET_CONFIGto create profile by the android bundle.you can reference to the methods:DataWedgeHelper.getProfile()DataWedgeHelper.configWithJSON()in my open-sourced non-official sample codehttps://github.com/ys2714/zebra-sdk-kotlin-wrapperHoping this can help.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

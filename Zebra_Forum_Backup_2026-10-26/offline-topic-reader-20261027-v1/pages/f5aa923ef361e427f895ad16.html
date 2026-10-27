@@ -1,0 +1,150 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Connecting a ZT411 to a Tomcat Print Server</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Connecting a ZT411 to a Tomcat Print Server</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/connecting-zt411-tomcat-print-server; original snapshot: threads/00215.html; SHA-256: be8bb05f63d17cd1c4f060e2c3dab7dbdf302532dd9b851a9e19a81f4009298a</small><pre id="topic">
+
+    
+        Connecting a ZT411 to a Tomcat Print Server
+
+
+        
+      
+                        
+                    
+            M
+          
+          Michael Shields
+          2 years 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            165
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We have a Web app which retrieves labels from our shipping partners and we are trying to connect it to our Zebra ZT411 so that we can print directly from the application in the cloud to our printer from the browser. We have been able to connect the printer to Zebra&#x27;s demo server here (http://weblink.westeurope.cloudapp.azure.com/) but are having some trouble getting the self signed secure certificates to work. In particular I am looking for help to send the Multi Part Form commands that are described in this Printer Administration guide starting on page 61. https://www.zebra.com/content/dam/support-dam/en/documentation/unrestricted/guide/software/printsecure-administration-guide-en.pdfI have attempted to send the code to retrieve the CSR (page 63 of the above guide) from the Z drive which should at least return a 404 error if it does not exist but I get no response. Is ZPL the correct format to send this code to the printer or is there another way? Below is the code I attempted to send in a zpl file.{}--BOUNDARYContent-Disposition: form-data; name=&quot;files&quot;;filename=&quot;Z:CSR_WEBLINK1_CERT.CSR&quot;; action=&quot;retrieve&quot;Content-Type: application/octet-streamContent-Transfer-Encoding: binary --BOUNDARY
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The above MPF command to retrieve the CSR has syntax issues. Please use the following MPF command. The &lt;CR&gt;&lt;LF&gt; represent a carriage return and a linefeed respectively at the end of each line.
+{}--BOUNDARY&lt;CR&gt;&lt;LF&gt;
+Content-Disposition: form-data; name=&quot;files&quot;; filename=&quot;Z:CSR_WEBLINK1_CERT.CSR&quot;; action=&quot;retrieve&quot;&lt;CR&gt;&lt;LF&gt;
+Content-Type: application/octet-stream&lt;CR&gt;&lt;LF&gt;
+Content-Transfer-Encoding: binary&lt;CR&gt;&lt;LF&gt;
+--BOUNDARY--&lt;CR&gt;&lt;LF&gt;
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,400 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MC333R Android 8.1 OEMInfo Content Provider provides garbage data</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MC333R Android 8.1 OEMInfo Content Provider provides garbage data</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/mc333r-android-81-oeminfo-content-provider-provides-garbage-data; original snapshot: threads/00625.html; SHA-256: 4150673b0e80f8ac7a14d0df28cb5297c9bfcf1fddc8777f839e7ec7b0e519f2</small><pre id="topic">
+
+    
+        MC333R Android 8.1 OEMInfo Content Provider provides garbage data
+
+
+        
+      
+                        
+                    
+            D
+          
+          David Mikesell
+          3 years 7 months ago
+        
+        
+      
+        
+            
+                  
+            
+            99
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                          //Solved
+        
+  
+
+    
+    
+        
+      
+            
+                  I am trying to obtain the device serial number, and am using https://github.com/darryncampbell/OEMInfo-DeviceIdentifiers-Sample-Xamarin as a starting point.  However, when I run the sample application on a MC333R Android 8.1, I get garbage data for the serial.  The serial returned is:
+
+LLyWAiTKAieyu3Cq/cg1wO3phk70G2WQ1tSNFzX6M+gOMKG4mr9kn8oVjLr01tAUNm68o5x2j8yO
+p3EaiL2oNJnqQWX6puyAwwESmB0vpFRrOuD/0k8qtCxAfkbwi7ZVfhWvPwf2NSILMsOBf6GK64gw
+es+EARWmzBZdFmS5sfOXVba/wlslx1CHRta2lIKZv0+ndo0G9eEQAg5RvTj1PKZo/ETVn9B0HUt2
+SuZxtnD2l07VjqlQuP38IiAYLAcX8qTahucWWbMl6O7SuqGqj5GVxE+wkfCWOHODeDYr37POynRK
+turFjtUqCZpb1aOMVo5fzBnVDkOrU0vpA4j+fQ==
+
+The IMEI is not available, as expected, but the Bluetooth MAC is also being returned as not available.
+
+Are these API calls not supported on this device?  And can you provide documentation on which devices these would be supported?
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+        
+      
+        ✓ Accepted Solution
+      
+      
+        
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Good catch :)
+Yes - you will likely need to apply an LG patch, which can be downloaded here: https://www.zebra.com/us/en/support-downloads/software/operating-system….
+We recommend using OEMinfo 9.0.0.282 or later - the version of OEMInfo can be found in the release notes of the LG Patch.
+Thanks,
+james
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+      
+    
+  
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+In Android 8 you don&#x27;t need to use OEMInfo and can just use the Android API:
+android.os.Build.getSerial()Thanks,
+James
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            David Mikesell
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for the reply, James.  Our application targets API 32, so getSerial throws a SecurityException.  Reference this excerpt from the Android docs (https://developer.android.com/reference/android/os/Build#getSerial()):
+
+f the calling app&#x27;s target SDK is API level 28 or lower and the app does not have the READ_PHONE_STATE permission, or if the calling app is targeting API level 29 or higher, then a SecurityException is thrown.
+
+So getSerial won&#x27;t work for our use case.  The device has OSx version 8.2, and MXMF version 8.4.1.3, so perhaps there is an update available that would do the job.  One of our TC&#x27;s with Android 8.1 works without issue.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Good catch :)
+Yes - you will likely need to apply an LG patch, which can be downloaded here: https://www.zebra.com/us/en/support-downloads/software/operating-system….
+We recommend using OEMinfo 9.0.0.282 or later - the version of OEMInfo can be found in the release notes of the LG Patch.
+Thanks,
+james
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            David Mikesell
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks James for your speedy reply and the update link.  Very much appreciated.
+
+-David
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

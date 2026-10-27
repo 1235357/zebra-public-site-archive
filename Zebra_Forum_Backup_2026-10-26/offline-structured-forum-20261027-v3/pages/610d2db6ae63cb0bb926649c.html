@@ -1,0 +1,286 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Xamarin Bluetooth prining very slow</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/xamarin-bluetooth-prining-very-slow; snapshot threads/00963.html; SHA-256 a9f02baaf4251d855caf0056a1ee052be8f576e74253145a69db947399521891. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Xamarin Bluetooth prining very slow </span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            C
+          </div>
+          <div class="forum-topic__author-name">Clark Brown</div>
+          <div class="forum-topic__timestamp">4 years 11 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            154
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            3
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Following several example of code posted here to print to bluetooth printer.   VS 2019,    LinkOS_Xamarin_SDK 1.20<br>
+Install app on  Zebra  TC 51, paired with ZQ511  </p>
+<p>When printing sending ZPL to printer, is taking about 10 to 15 seconds to print ,  the line ConnectionBuilder.Current.Build("BT:" + address)  is taking about 6+ seconds </p>
+<p>I crated a test print function below , how can i get the     IConnection thePrinterConn = ConnectionBuilder.Current.Build("BT:" + address);  to execute faster ?</p>
+<p>private void Print_Clicked(object sender, EventArgs e)<br>
+        {<br>
+            var watch = new System.Diagnostics.Stopwatch();<br>
+            watch.Start();</p>
+<p>            string address = Preferences.Get("printer_key", "default_value");   //   1 ms</p>
+<p>            IConnection thePrinterConn = ConnectionBuilder.Current.Build("BT:" + address); // 6219 ms</p>
+<p>            //  var thePrinterConn = ConnectionBuilder.Current.Build("BT:" + address); // 6219 ms</p>
+<p>            // tested withiut "BT:"  -<br>
+            //var thePrinterConn = ConnectionBuilder.Current.Build(address); // 17164 ms 17.164 sec</p>
+<p>            watch.Stop();<br>
+            warningLabel.IsVisible = true;<br>
+            warningLabel.Text = $"Execution connectbuild Time: {watch.ElapsedMilliseconds} ms";</p>
+<p>            //open connection<br>
+            thePrinterConn.Open(); // 1216 ms - 1.2 sec</p>
+<p>            string zpl = "^XA^FO45,25^BY1^BCN,127,N,N,,N,A^FD1234567890^FS^FT29,173^CI0^A0N,20,27^FDTest5678901Test^F^PQ1^XZ";<br>
+            // Send the data to printer as a byte array.<br>
+            thePrinterConn.Write(System.Text.Encoding.ASCII.GetBytes(zpl)); // 494 ms  .5 sec</p>
+<p>            // Close </p>
+<p>            thePrinterConn.Close(); // 920 ms  1 sec</p>
+<p>            /// total  17272</p>
+<p>        }</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      3 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-49661" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>If you want to establish a Bluetooth connection faster, then don't use the ConnectionBuilder class. Because the ConnectionBuilder.Current.Build() will actually open and then close the Bluetooth connection before it returns the connection object to the caller. This roundtrip takes time, especially it takes 5 seconds to close the Bluetooth connection.</p>
+<p>Instead, you can use the BluetoothConnection class to create a Bluetooth connection object by passing in the Bluetooth MAC address to BluetoothConnection(), then followed by calling the Open() on this Bluetooth connection object. This way, you by-pass the unneeded close function, which cuts the time by at least 5 seconds.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-49678" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              C
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Clark Brown</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>using BluetoothConnection was faster but still to print is taking about 7 seconds, where before total was about 13 seconds.<br>
+I am getting closer with BluetoothAdapter, it is prininting within 2 seconds.  Only issue now, is it only prints first time, won't print after.<br>
+Working on determining the casue now.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-49680" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>There are a few properties (TimeToWaitBeforeClose, TimeToWaitForMoreData, etc.) in the BluetoothConnection class, which you can adjust the timeout values for your needs, so to reduce the overall time it takes for Open -&gt; Print -&gt; Close. I think the default value for TimeToWaitBeforeClose is set to 5,000ms (i.e. 5 seconds). Depending on the length of ZPL script, you may be able to reduce the value, so that you can short the total time overall.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div></div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/xamarin-bluetooth-prining-very-slow%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/xamarin-bluetooth-prining-very-slow%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

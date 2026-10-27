@@ -1,0 +1,227 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Settings key: &lt;bluetooth_address&gt; is only readable to apps with targetSdkVersion lower than or equal: 31</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Settings key: &lt;bluetooth_address&gt; is only readable to apps with targetSdkVersion lower than or equal: 31</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/settings-key-only-readable-apps-targetsdkversion-lower-or-equal-31; original snapshot: threads/00463.html; SHA-256: d97d85684fec1531582d623fceee636c6c13e763ef9c566cd01d4d78a387de16</small><pre id="topic">
+
+    
+        Settings key: &lt;bluetooth_address&gt; is only readable to apps with targetSdkVersion lower than or equal: 31
+
+
+        
+      
+                        
+                    
+            D
+          
+          David Donayo
+          3 years ago
+        
+        
+      
+        
+            
+                  
+            
+            664
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I have an application in Xamarin.Android which has an API level 33/Android 13, the app integrates with Zebra scanners and in this case I am trying to connect a Zebra DS3678 to my application. In previous versions (API Level &lt; 31 / Android 12) The scanner connects perfectly but now I have the error that is in the title of the question.
+
+Working with API Levels, I always notice that they touch and modify all Bluetooth issues but I couldn&#x27;t find what should change for API Level 32 or higher (33 in my case)
+
+I contacted the Zebra team but I had no answers (because I think a posible solution is upgrade the Zebra SDK Hander) and I can&#x27;t downgrade either because it is a corporate app
+
+This is my bluetooth configuration
+
+&lt;uses-sdk android:minSdkVersion=&quot;21&quot; android:targetSdkVersion=&quot;33&quot; /&gt;
+&lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot; /&gt;
+&lt;uses-permission android:name=&quot;android.permission.READ_EXTERNAL_STORAGE&quot; /&gt;
+&lt;uses-permission android:name=&quot;android.permission.INTERNET&quot; /&gt;
+&lt;uses-permission android:name=&quot;android.permission.ACCESS_NETWORK_STATE&quot; /&gt;
+&lt;uses-permission android:name=&quot;android.permission.ACCESS_WIFI_STATE&quot; /&gt;
+&lt;!-- FOR 30 AND BELOW --&gt;
+&lt;uses-permission android:name=&quot;android.permission.BLUETOOTH&quot; /&gt;
+&lt;uses-permission android:name=&quot;android.permission.BLUETOOTH_ADMIN&quot; /&gt;
+&lt;!-- for 31 and above --&gt;
+&lt;uses-permission android:name=&quot;android.permission.BLUETOOTH_SCAN&quot; /&gt;
+&lt;uses-permission android:name=&quot;android.permission.BLUETOOTH_CONNECT&quot; /&gt;
+&lt;uses-permission android:name=&quot;android.permission.BLUETOOTH_ADVERTISE&quot; /&gt;
+&lt;uses-permission android:name=&quot;android.permission.ACCESS_COARSE_LOCATION&quot; /&gt;
+&lt;uses-feature android:name=&quot;android.hardware.bluetooth_le&quot; android:required=&quot;true&quot; /&gt;
+&lt;uses-permission android:name=&quot;android.permission.CAMERA&quot; /&gt;
+&lt;uses-permission android:name=&quot;android.permission.FLASHLIGHT&quot; /&gt;
+&lt;uses-permission android:name=&quot;android.permission.VIBRATE&quot; /&gt;
+&lt;uses-permission android:name=&quot;android.permission.WRITE_SETTINGS&quot; /&gt;
+&lt;uses-permission android:name=&quot;android.permission.WRITE_SOCIAL_STREAM&quot; /&gt;
+&lt;uses-permission android:name=&quot;android.permission.WRITE_SECURE_SETTINGS&quot; /&gt;
+ 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Richard Venderbosch
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Perhaps this sample app may help you: https://github.com/darryncampbell/OEMInfo-DeviceIdentifiers-Sample-Xamarin
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi David. This is restrictions on observable data specific to the device - that Google is no longer allowing direct programmable access to Mac Addresses for this reason (Starting in A11:  https://developer.android.com/training/articles/user-data-ids#mac-11-plus )As you may have observed with the latest releases of &quot;Zebra Scanner Control&quot; app for Android, when you use the Bluetooth Classic modes - the app will REQUEST - that you (the User) supply the Bluetooth Mac Address interface Values. This gives you direct visibility as a user to share this data to an Android App. For Instance as a User:( Settings --&gt; About Phone --&gt; Bluetooth Address [Tap-Hold the menu line and choose &quot;Copy&quot;], and then you will have the &quot;User&quot; disclosable BT Mac address. ) Darryn&#x27;s OEMInfo is a comprimise. And there are other methods, But the BT Mac Address you had access to - is no longer available to you programmatically after API Level: 33  This uses a Priviledged App technique to access the Device OEMInfo - to get the same attribute.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

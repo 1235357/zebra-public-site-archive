@@ -1,0 +1,307 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Bluetooth connection frequently disconnected when printing with zpl</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/bluetooth-connection-frequently-disconnected-when-printing-zpl; snapshot threads/01042.html; SHA-256 95d9c8cc677bc478395921c960141fd3cfec44510069bfc19aec4c5143c09b29. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Bluetooth connection frequently disconnected when printing with zpl</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            H
+          </div>
+          <div class="forum-topic__author-name">Hojoong Kim</div>
+          <div class="forum-topic__timestamp">5 years 3 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            824
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            3
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>We made iOS app with MfiBtPrinterConnection and TcpPrinterConnection to make connections between iOS device and Zebra mobile printer (ZQ620 and QLN320)<br>
+(<span data-original-href="https://techdocs.zebra.com/link-os/2-13/ios/content/interface_mfi_bt_printer_connection.html">https://techdocs.zebra.com/link-os/2-13/ios/content/interface_mfi_bt_pr…</span>)</p>
+<p>The source code is exactly the same as example above link but there is only problem when I try to print out with ZQ620 + Bluetooth 5.0 Device (iPhone SE 2nd generation, iPhone 11Pro, iPhone11) - with MfiBtPrinterConnection</p>
+<p>No issue between (For QLN320, We have tried with LINK OS 6.2 and 6.3)<br>
+QLN320 + iPod touch 5th generation (Bluetooth 4.1)<br>
+QLN320 + iPod touch 6th generation (Bluetooth 4.1)<br>
+QLN320 + iPod touch 7th generation (Bluetooth 4.1)<br>
+QLN320 + iPhone SE 2nd generation (Bluetooth 5.0)<br>
+QLN320 + iPhone 11 Pro (Bluetooth 5.0)<br>
+QLN320 + iPhone 11 (Bluetooth 5.0)<br>
+ZQ620 + iPod touch 5th generation (Bluetooth 4.1)<br>
+ZQ620 + iPod touch 6th generation (Bluetooth 4.1)<br>
+ZQ620 + iPod touch 7th generation (Bluetooth 4.1)<br>
+and all TcpPrinterConnection printing</p>
+<p>Only thing I added is that I am checking printer status by getCurrentStatus to check whether my printer is enabled to print out or not, like the sequence below.<br>
+MfiBtPrinterConnection -&amp;gt; ZebraPrinterConnection.open -&amp;gt; ZebraPrinterFactory.getInstance -&amp;gt; getCurrentStatus() -&amp;gt; Write -&amp;gt; ZebraPrinterConnection.close</p>
+<p>There is no problem when printing successively after the first successful printing. But when I try to print again after waiting a while after printing, getCurrentStatus() throws an exception randomly. After that, the printer is paired, but the paired device cannot be found in the app.<br>
+Error Domain=ZSDK_API_ERROR_DOMAIN Code=7 "Malformed status response - unable to determine printer status" UserInfo={NSLocalizedDescription=Malformed status response - unable to determine printer status}<br>
+(connection open() and isConnected() are returning turu)</p>
+<p>I tried to prevent exceptions using setTimeToWaitForMoreData, setMaxTimeoutForRead, delay() and etc, But there is no way to fix it.<br>
+I'm so confused because it's a problem that doesn't happen with other device combinations. I could find a similar issue like<br>
+<span data-original-href="https://developer.zebra.com/thread/35152">https://developer.zebra.com/thread/35152</span><br>
+<span data-original-href="https://developer.zebra.com/thread/35033">https://developer.zebra.com/thread/35033</span><br>
+<span data-original-href="https://github.com/ZebraDevs/LinkOS-iOS-Samples/issues/5">https://github.com/ZebraDevs/LinkOS-iOS-Samples/issues/5</span><br>
+but there is no reply to solve the problem.<br>
+No issue with iOS(11,12,13,14), linkOS version, enabled BLE setting, enabled WLAN setting, Sleep setting. We have a lot of ZQ620 printers and the same issue has happened.</p>
+<p>This problem is a problem that occurs in getting status after opening a connection. Please give me advice.</p>
+<p>ALREADY TRIED<br>
+! U1 setvar "bluetooth.discoverable" "on"<br>
+! U1 setvar "bluetooth.authentication" "off"<br>
+! U1 setvar "bluetooth.bluetooth_pin" ""<br>
+! U1 setvar "bluetooth.afh_mode" "off"<br>
+! U1 setvar "bluetooth.afh_map" ""<br>
+! U1 setvar "wlan.enable" "off"</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      3 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-48089" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              H
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Hojoong Kim</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 3 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I tried with 'Zebra Printer Setup Utility' from the app store, And there is the same issue with bluetooth 5.0 device + ZQ620. (Tested 10EA ZQ620 with 5 devices(iPhone,iPod, iPad)</p>
+<p> just downloaded the LINK OS SDK from '<span data-original-href="https://www.zebra.com/ap/en/products/software/barcode-printers/link-os/link-os-sdk.html&amp;#039">https://www.zebra.com/ap/en/products/software/barcode-printers/link-os/…</span>; and tested it with my iPhone.<br>
+In the same way, when I try to check the connection or print after connecting Bluetooth, sometimes the Bluetooth connection is forcibly disconnected.</p>
+<p>I have tried with more than 10 iOS devices (with iOS12, iOS13,iOS14) with more than 10 Zebra ZQ620.<br>
+Same bluetooth connection problem. No problem with bluetooth 4.1 device with Zebra ZQ620.</p>
+<p>I would like to ask if you guys tried a printing test between bluetooth 5.0 iOS device and ZQ620.<br>
+I don't think it is printer hardware or iOS device problem since this problem has happened between a lot of device combinations .</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-48090" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 3 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Hojoong,</p>
+<p>Thanks for sharing the details of the observation. We think this might be a known issue on the iPhone side. Before we make such assertion, could you confirm the following question?</p>
+<p>Could you open the Settings -&gt; Bluetooth page on the iOS device where the problem occurred, and watch for the connected ZQ620 printer on the paired list for about 50 to 60 seconds? Please let us know if the Bluetooth setting page refreshes by itself during the 50 to 60 seconds? When the page refreshes, please let us know if the ZQ620 printer goes to "Not Connected" briefly and then back to "Connected" automatically.</p>
+<p>If you can confirm the above symptoms, then we can be certain that this is a known issue on iOS side and advise you how to get a temporary fix.</p>
+<p>We have reported the issue to Apple, but still have not heard any resolution.</p>
+<p> </p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-49541" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              G
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>GENE KOWALSKI</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>We're able to get our app to spit out a few labels on iphone 11,12,13 before the "disconnect" happens, but within a minute the connection is lost.</p>
+<p>We've been waiting for a solution for this for years, I was hoping iphone 13 would fix this but we just received ours today and very disappointed it doesn't. Our app works fine with iPhones up to iphone X but not on iphone 11, iphone 12, or iphone 13!!</p>
+<p>as far as I can tell it's only with the ZQ620, users using the old QLN320 don't have the problem.</p>
+<p>How can I get this temporary fix?</p>
+<p>Thank you,</p>
+<p>Gene</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/bluetooth-connection-frequently-disconnected-when-printing-zpl%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/bluetooth-connection-frequently-disconnected-when-printing-zpl%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

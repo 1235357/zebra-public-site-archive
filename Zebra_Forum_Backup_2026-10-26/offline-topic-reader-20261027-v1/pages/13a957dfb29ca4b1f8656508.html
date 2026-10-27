@@ -1,0 +1,154 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MC330K, Android 8.1 - how to programmatically listen to P1 and P2 HW keys without remapping them?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MC330K, Android 8.1 - how to programmatically listen to P1 and P2 HW keys without remapping them?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25883; original snapshot: threads/extra-02878.html; SHA-256: f151399b8ce7a5738d81af925f95f237ba8f271def8445d005980c8db810c01b</small><pre id="topic">
+
+    
+        MC330K, Android 8.1 - how to programmatically listen to P1 and P2 HW keys without remapping them?
+
+
+        
+      
+                        
+                    
+            D
+          
+          Dmitrii Semikin
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            110
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+I work with MC330K, Android 8.1. Application is written using standard Android Java SDK.
+My goal is to override the default behavior of buttons P1 and P2. Currently P1 acts as &quot;back&quot; button and P2  as &quot;APP_SWITCH&quot;.
+The constraint is also not to use Key Programmer (from Android Settings), so that user does not need to change global settings and can have different settings across applications.
+Currently I tried to override &quot;dispatchKeyEvent()&quot; and &quot;onKeyUp()&quot;/&quot;onKeyDown()&quot; of the current Activity and also use onKeyListener on the currently active EditText, but the Problem is that these callbacks do not even get triggered, when P1 or P2 key is pressed.
+Could someone, please, explain, how to react (override) the events from P1 and P2 keys?
+Thank you.
+Edit: In fact with default mapping P1 key (mappt to &quot;BACK&quot; as default), it eventually ends up in the EditText keyListener. On a first press it closes to on-screen keyboard (not caught by any listeners mentioned above) and on a second press it is being caught by EditText&#x27;s keyListener as a &quot;BACK-key&quot; event. I.e. the behavior is exactly the same as for standard &quot;triangle&quot; (aka &quot;back&quot;) android on-screen key. But this is not the desired behavior. So I would like to intercept this event from the key before it was converted into &quot;BACK&quot; event.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Darryn Campbell
+          
+          
+            5 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi, I don&#x27;t think this is possible, the keys are handled by Android before they are sent to the text field / app for processing and capturing by onKeyDown / onKeyUp.
+Typically I would suggest remapping these keys but you say that is not an option programmatically, would you be open to remapping them through EMM or StageNow as part of your provisioning process?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

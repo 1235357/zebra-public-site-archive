@@ -1,0 +1,264 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>TC21 Xamarin Android 9+ Hidden Fields Can&#x27;t Set Focus</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/tc21-xamarin-android-9-hidden-fields-cant-set-focus; snapshot threads/00902.html; SHA-256 1e376c5a72ce3766830e568457d05c0f78b4322d3bd8c33b565228f734deb88a. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">TC21 Xamarin Android 9+ Hidden Fields Can't Set Focus</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            B
+          </div>
+          <div class="forum-topic__author-name">Brian Hanna</div>
+          <div class="forum-topic__timestamp">4 years 9 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            57
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            3
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello, We have an app written in Xamarin that worked great for scanning using TC20 or MC3300 on Android 7, 8 using devices with physical keyboards.  With Android 9, 10 &amp;amp; 11 when the scan trigger is pressed, we are not able to set focus to the hidden field on our screens to receive the scanned input.   In Android to receive focus a field must have Area (size), IsEnabled=True, IsVisible=True, IsFocusable=True, IsFocusableInTouchMode=True.  Everything looks great.. but when we try to requestFocus or SetFocus specifically to the hidden field, requestFocus() returns false.    Note that in DataWedge we send characters as Key Events including the TAB key.  </p>
+<p>The other thing that happens is we have to turn off the soft keyboard completely because if you have that on it will inject random characters into the scanned string.</p>
+<p>Its almost as if our app isn't getting focus, even though it is receiving keyevents.</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      3 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-49968" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>James Swinton-Bland</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 9 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi,</p>
+<p>According to the docs requestFocus will return false if "it can't be focused due to other conditions (not focusable in touch mode (<code><span data-original-href="https://developer.android.com/reference/android/view/View#isFocusableInTouchMode()">isFocusableInTouchMode()</span></code>) while the device is in touch mode, <strong>not visible, not enabled</strong>, or has no size)"</p>
+<p>So it seems the API will not work if the view is hidden - see more info here: <span data-original-href="https://developer.android.com/reference/android/view/View#requestFocus">https://developer.android.com/reference/android/view/View#requestFocus</span>()</p>
+<p>May I recommend you implement a broadcast receiver to receive the data from DataWedge via an intent, and use this to inject the data into your application? More info available here: <span data-original-href="https://techdocs.zebra.com/datawedge/6-7/guide/api/tutorials/">https://techdocs.zebra.com/datawedge/6-7/guide/api/tutorials/</span></p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-49980" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              B
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Brian Hanna</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 9 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>We were able to figure this out.  We have a HiddenScannerValue field on screens to receive the scanned input.  In our Xamarin XAML it was placed inside a "stacklayer" view that was not visibile.  Moving it outside the stacklater resolved the problem.   This only occurred for us with Android version =&amp;gt; 9  and Zebra TC21 (TouchOnly) device.  It is likely this is just an Android 9+ issue and nothing to do with Zebra TC21.   Thanks for all the responses.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-49999" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>James Swinton-Bland</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 8 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Brian,</p>
+<p>Thanks for coming back &amp; updating the thread - much appreciated! Glad your problem has been resolved.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/tc21-xamarin-android-9-hidden-fields-cant-set-focus%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/tc21-xamarin-android-9-hidden-fields-cant-set-focus%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

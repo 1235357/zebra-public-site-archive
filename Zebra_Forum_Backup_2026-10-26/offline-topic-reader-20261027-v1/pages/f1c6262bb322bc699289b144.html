@@ -1,0 +1,646 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MC75 time issues</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MC75 time issues</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/24499; original snapshot: threads/01347.html; SHA-256: fb6a4a909bb51feba21171517c084ef9c887f2b5cdd66c7cb717b8773ff2f578</small><pre id="topic">
+
+    
+        MC75 time issues
+
+
+        
+      
+                        
+                    
+            K
+          
+          Ken Lim
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            26
+          
+                
+                  
+            
+            10
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi team   We have two reported cases of MC75 (BSP35) where the time goes quickly (on speed???).   Case #1 happened on 31DEC 2009. The system time changes 3minutes/second.  Case #2 happened on 8FEB 2010. The system time changes 4seconds/second.   Not sure am I clear above but let me give an example. For case #1, says the time now is 14:45:30. As the clock ticks, it should shows 14:45:31, 14:45:32 so on and so for. But customer is seeing the time change from 14:45:30 to 14:48:31, 14:51:32 so on and so for.   Have any one seen this happening in the field?  Appreciate your feedback and work around if any?   Thanks  ken
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      10 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Howard Laser
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Don, Thanks for the video, I have a similar video and it is attached to the SPR.  ECRT (Electrical)&amp;nbsp; now has one device that is exhibiting the fast time and one that had exhibited it, but was cold booted. They are currently trying to reproduce the issue on the unit which has been cold booted, and have just begun analysis on the device still showing the fast clock.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Howard Laser
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Ken,&amp;nbsp; I have seen the problem reported on units manufactured in Sept 2008 and Feb.2009  FYI-- SPR# 18732 has now been opened against the fast clock issue on MC75.  Please open a case through the Support Center and request that it be attached to this SPR.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Don Khan
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            First encountered this issue back in May of &#x27;09.&amp;nbsp; I provided engineering with a video of the issue as proof of occurrence.&amp;nbsp; At the time, it was deemed too infrequent an occurence to warrant investigating.   Here is the video...a bit fuzzy; however, pay attention to the date field!!   Don
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Don Khan
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            First encountered this issue back in May of &#x27;09.&amp;nbsp; I provided engineering with a video of the issue as proof of occurrence.&amp;nbsp; At the time, it was deemed too infrequent an occurence to warrant investigating.   Here is the video...a bit fuzzy; however, pay attention to the date field!!   Don
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Howard Laser
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I brought a unit that was exhibiting the fast clock issue down to ECRT, here was the results: I immediately brought to Engineering and analysis was performed.  We noticed that if unit is suspended, upon resume the clock has reverted back to the correct time and date, but immediately began jumping fast again. This led to the conclusion that the Real Time Clock (hardware on the main board) is functioning normally, but the Operating System (Bulverde) clock is not. Upon resume the OS clock will poll the RTC on the board, which explains the reversion to correct time.  Then all running processes were stopped one at a time in an attempt to find a corrupt process causing the fast OS clock.  This did not identify any bad process as we could not get the clock to stop running fast even after all relevant processes were stopped.  Further investigation involving deep drilling into running threads was unable to reveal a root cause.  Other testing required cold booting the unit?..which caused the clock to return to normal operation.   I since received another unit from the TA from the same customer but on a different unit. Please not again, that this is occurring on a small percentage of units, no reproduction steps have been found, and a cold boot seems to permanently resolve the issue. Anyway, here was my response to the TA after conferring with Engineering again:
+&amp;nbsp;I received the fast clock unit and asked engineering to analyze again. The clock on this unit is making larger jumps than the initial sample. We see jumps from 30 minutes per second to 90 minutes per second. Engineering believes this MAY be unique to  Dunbar ’s environment. In any case, standard analysis and troubleshooting were not able to reveal root cause. 
+Engineering believes, “The investigation sounds like it may be monumental and unique to this customer so the account team may want to consider ways to mitigate or work around this rather than fixing it. Not pretty but sounds more efficient. 
+  &amp;nbsp; 
+Again this is also due to the difficulty in reproducing the issue on any device once a cold boot has been performed. The few reports of this issue have never been combined with a reproduction scenario, nor have we seen the issue arise on the same unit twice. 
+Bearing the above in mind our recommendation is to perform a cold boot to resolve the issue. 
+  &amp;nbsp; 
+If this option is unsatisfactory for the customer, please let me know and I will request a brainstorming session with Engineering and the account team. 
+Kevin, I received the fast clock unit and asked engineering to analyze again. The clock on this unit is making larger jumps than the initial sample. We see jumps from 30 minutes per second to 90 minutes per second. Engineering believes this MAY be unique to Dunbar’s environment. In any case, standard analysis and troubleshooting were not able to reveal root cause. 
+Engineering believes, “The investigation sounds like it may be monumental and unique to this customer so the account team may want to consider ways to mitigate or work around this rather than fixing it. Not pretty but sounds more efficient. 
+Again this is also due to the difficulty in reproducing the issue on any device once a cold boot has been performed. The few reports of this issue have never been combined with a reproduction scenario, nor have we seen the issue arise on the same unit twice.
+Bearing the above in mind our recommendation is to perform a cold boot to resolve the issue. 
+If this option is unsatisfactory for the customer, please let me know and I will request a brainstorming session with Engineering and the account team.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              K
+            
+          
+                
+          
+            Ken Lim
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Yesterday we (Motorola account and services team) met up with partner and customer to address the fast clock issue.  Going through the thread, most of the installed base are hugh - in the thousands as compared to ours of&amp;nbsp;35 units. Out of the 35, two units were exhibiting the fast clock issue. We have shared with partner and customer&amp;nbsp;the recommendation is to perform a cold boot if unit exhibit the fast clock issue.  Customer says that is not good enough :(&amp;nbsp; Customer&amp;nbsp;still demands Motorola to reveal the root cause :(  They want to know the resolution or fix to prevent future occurance. I need help on that.  Btw, the manufactured date on the 35 units is 2009/11/11
+Hi Howard, the unit you brough to ECRT was it manufactured on 2009/11/11?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks Marc.&amp;nbsp; My customer is not using the MC7596 for WWAN.&amp;nbsp; They have no SIM cards installed and the cellular radio is always powered off.&amp;nbsp; It&#x27;s a DSD application.&amp;nbsp; They use WiFi in the morning to sync their route info.&amp;nbsp; The application then powers off the WiFi radio until they return in the afternoon.&amp;nbsp; The WiFi radio is then powered back on for end-of-day sync functions.&amp;nbsp; They have tried a warm boot on the unit in their office and it hasn&#x27;t corrected the problem.&amp;nbsp; I&#x27;m not having them try a cold boot until I find out if ECRT wants to see the unit.   Ken
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Horst Anderlohr
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            We got a similar issue at one of our customers. The clock ran to fast. The application itself is going to synchronize the clock, therefore it does not became a big issue. There are 3.000 units installed in the field, so far we have seen this only on one device. We sent the device to the repair center to analyze the issue. Unfortunately it was n just repaired and not analyzed by a mistake. So far, we believe that this was hardware related.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Don Khan
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Ken,  &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; I ran into this issue back in April &#x27;09.&amp;nbsp; Given the inconsistent nature, there was very little that engineering could have done at that time.   I believe that we need to take another look at the issue now that others have reprted it.&amp;nbsp; I have attached a video that I provided to engineering.&amp;nbsp; A bit blurry; however, you can see the date change by one day, approximately every three seconds.  Don
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I just had a customer call me with this issue on MC7596 units.&amp;nbsp; They have about 2500 units deployed.&amp;nbsp; They are getting sporadic reports from users of the time advancing 9 hours every second.&amp;nbsp; The customer just received a unit back from the field with the problem.&amp;nbsp; Hopefully we can get it to NY for ECRT to take a look at.&amp;nbsp;   So far we&#x27;ve heard of the problem happening on about 10 units.&amp;nbsp; The customer&#x27;s application prints an invoice with payment terms and conditions.&amp;nbsp; With the clock being all messed up, the affected units are printing a payment due date of May 2032 on the invoice.&amp;nbsp; The folks in Accounting are starting to get a little concerned.&amp;nbsp;   One thing they noticed is that if you suspend and resume the device, the clock goes back to a more reasonable date before taking off again advancing 9 hours every second.   Ken
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

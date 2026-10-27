@@ -1,0 +1,199 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Migrating from DYMO: ZPL templating and label previews</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/migrating-dymo-zpl-templating-and-label-previews; snapshot threads/00041.html; SHA-256 202eb3afc44497df461929f6e168d1cf32308cb11a899ac607efb2faca6506d5. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Migrating from DYMO: ZPL templating and label previews</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            C
+          </div>
+          <div class="forum-topic__author-name">C. S.</div>
+          <div class="forum-topic__timestamp">1 year 3 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            736
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            2
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi,<br>quick overview: we are currently running a small logistics web application with multiple customers. There is a button that prints a label with article data. Every customer gets an individual label layout/template. We are using DYMO label printers with their Label Web Print service. This is basically the same thing as Zebra Browser Print: you install the service on your computer with the printer and then you send the print commands from the web frontend via JavaScript to the address+port of the computer to print.</p><p>In our current solution, we create the label templates (.label files) in the DYMO label software, put it on the server and let PHP (i.e. Symfony+Twig) replace the placeholders with actual data and send it to the printing API to print the label. All this is done via DYMO's Javascript framework.</p><h2>Question 1</h2><p>Now the plan is to migrate to Zebra printers in the future and I am trying to evaluate how it can be done in our application. Since I am new to the Zebra ecosystem, I found it quite hard to find the right keywords to google it myself. But somehow I stumbled upon this thread here:<br><br><a href="78a60a927911b6739a0684a2.html">https://developer.zebra.com/content/creating-zpl-files-nlbl-template-using-net</a></p><p>From what I understand here: we could do it basically the same way as with the DYMO printer.</p><ol><li>Design the label with placeholders in Zebra Designer</li><li>save it as .prn file, containing ZPL data</li><li>put it on the server like the label files before and fill the placeholders with actual data</li><li>send the result as ZPL to the Browser Print service to print the label</li></ol><p>Would this work?<br><br>(note: I don't want to store templates in the printers)</p><h2>Question 2</h2><p>The DYMO service has a nifty little feature that creates preview images of labels. That way you can send the XML of the label to the local service and get a base64 encoded PNG back.</p><p>Is there something like that available in Browser Print?</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      2 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-54101" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              H
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Hannah Xu</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 3 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><h3><strong>Question 2: Is there a label preview API like DYMO’s base64 PNG return?</strong></h3><p>Unfortunately, <strong>Zebra Browser Print does not support label preview generation</strong> natively.</p><p>However, you have <strong>two main options</strong> to implement label previews:</p><h4>Option A: Zebra Designer + PDF Export (Manual)</h4><ul><li><strong>Design the label</strong> and <strong>export a static image or PDF</strong> for preview (e.g., during template creation).</li><li>This doesn't support dynamic data but can help show layout.</li></ul><h4>Option B: Use Zebra's Label Preview API (Cloud API – paid)</h4><p>Zebra has a <strong>cloud-based API</strong> (called ZebraDesigner Cloud API or Print DNA Label Preview) that can generate <strong>PNG previews of ZPL</strong>:</p><ul><li><strong>API Input</strong>: ZPL string</li><li><strong>API Output</strong>: Base64-encoded PNG or raw image</li><li>Docs: <span data-original-href="">Zebra Label Preview API</span></li></ul><p>✅ Pros:</p><ul><li>Generates preview dynamically with live data</li><li>Great for user-facing UIs</li></ul><p>❌ Cons:</p><ul><li>Requires Zebra DevConnect account</li><li>May be paid depending on usage<br> </li></ul><p><span>&lt;a href="</span><span data-original-href="https://lovepawsona.io/"><span>https://limsimi.app</span></span><span>"&gt;&lt;span&gt;Limsimi&lt;/span&gt;&lt;/a&gt;</span></p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-54107" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              E
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Emma Clark</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 3 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Moving from DYMO to ZPL gives us more control and configuration and expands our capabilities with labels. Exploring label previews warrants the best possible output. The same way that <span data-original-href="https://cipdassignmenthelp.org.uk/level-3-diploma-assignments">CIPD Level 3 Assignment Writing Services</span> help students to get clarity and accuracy when completing HR tasks.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/migrating-dymo-zpl-templating-and-label-previews%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/migrating-dymo-zpl-templating-and-label-previews%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

@@ -1,0 +1,228 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Print a .ZPL file to the Windows printer from notepad or from Visual C Software</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/forum/25893; snapshot threads/resume-00586.html; SHA-256 c9c7d25fae35dcf9b14943850b6ccc820df07efe94b4009726dfcdaa68c0b1ab. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Print a .ZPL file to the Windows printer  from notepad or from Visual C Software</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            E
+          </div>
+          <div class="forum-topic__author-name">Evandro Kalfelz Schmitz</div>
+          <div class="forum-topic__timestamp">5 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            948
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>I'm a developer<br>
+I have the following environment:<br>
+A- Zebra ZD500R (passive RFID printer)<br>
+Windows 10 with Zebra connected to USB<br>
+B- Azure system with Windows Server 2019 and connections using Terminal Services<br>
+In Azure I developed a Windows .exe software<br>
+I need to print from my Windows .exe software on Azure to the local Windows 10 printer<br>
+My system generates the .ZPL file with the commands<br>
+On local Windows 10, printing the .ZPL file to Zebra using Zebra Setup Utilities works well<br>
+But opening the .ZPL file in Notepad and sending it to the printer doesn't work<br>
+Some guys told me that it only works if I send the file to LPT1:,  using net use LPT1: \\ computer \ printer<br>
+But windows 10 does not allow me to use net use (error after entering the password), nor Azure<br>
+I tried:<br>
+A- Share the local Zebra printer on Windows 10 - ok<br>
+B- Net use in Windows 10 - Not ok<br>
+C- Share the redirected terminal service Zebra (TS00089)  in Azure Windows 2019 Terminal Services - as an administrator, it does not allow me to share<br>
+D- Network usage in Azure Windows 2019 Terminal Services - not ok<br>
+How can I send print data directly to Zebra from my .EXE application without using LPT1?<br>
+I need to send to the windows printer directly  (using the windows printer driver)<br>
+(all other normal printers work fine on my .exe system on Azure (normal reports to local laser printers for instance)</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-47560" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              B
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Brad Allen</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 8 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Add the below to make a new class RawPrinterHelper.<br>
+After installing the printer in Windows, use the EXACT printer name as shown in Windows, a document name to view in the Windows Print spooler, and the ZPL.<br>
+RawPrinterHelper.SendStringToPrinter("My USB Printer","Test Label Job 1","^XA^FO100,100^A0N,50,50^FDHello^FS^XZ");<br>
+To test, you can Pause the printer in its queue in Windows, then call the function. You should see the print job spooled in the queue and can then unPause to print just like any other normal print job. This works for all connection types and it doesn't even matter what actual driver you set up. For example, you can set up Generic, Text Only for any printer. But the port info you set up has to be correct. Hope it helps.<br>
+using System;<br>
+using System.Text;<br>
+using System.Runtime.InteropServices;<br>
+    public struct DOCINFO<br>
+    {<br>
+        public string pDocName;<br>
+        public string pOutputFile;<br>
+        public string pDataType;<br>
+    }<br>
+    public class RawPrinterHelper<br>
+    {<br>
+        [DllImport("winspool.drv", CharSet = CharSet.Ansi, ExactSpelling = false, CallingConvention = CallingConvention.StdCall)]<br>
+        public static extern long OpenPrinter(string pPrinterName, ref IntPtr phPrinter, int pDefault);<br>
+        [DllImport("winspool.drv", CharSet = CharSet.Ansi, ExactSpelling = false, CallingConvention = CallingConvention.StdCall)]<br>
+        public static extern long StartDocPrinter(IntPtr hPrinter, int Level, ref DOCINFO pDocInfo);<br>
+        [DllImport("winspool.drv", CharSet = CharSet.Auto, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]<br>
+        public static extern long StartPagePrinter(IntPtr hPrinter);<br>
+        [DllImport("winspool.drv", CharSet = CharSet.Ansi, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]<br>
+            public static extern long WritePrinter(IntPtr hPrinter, byte[] data, int buf, ref int pcWritten);<br>
+        [DllImport("winspool.drv", CharSet = CharSet.Auto, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]<br>
+            public static extern long EndPagePrinter(IntPtr hPrinter);<br>
+        [DllImport("winspool.drv", CharSet = CharSet.Auto, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]<br>
+            public static extern long EndDocPrinter(IntPtr hPrinter);<br>
+        [DllImport("winspool.drv", CharSet = CharSet.Auto, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]<br>
+            public static extern long ClosePrinter(IntPtr hPrinter);<br>
+        public static bool SendStringToPrinter(string printerName, string docname, string outputString)<br>
+        {<br>
+            bool bSuccess;<br>
+            bSuccess = SendBytesToPrinter(printerName, docname, Encoding.ASCII.GetBytes(outputString));<br>
+            return bSuccess;<br>
+        }<br>
+        public static bool SendBytesToPrinter(string printerName, string docname, byte[] byteData)<br>
+        {<br>
+            int dwError = 0;<br>
+            int dwWritten = 0;<br>
+            IntPtr hPrinter = new IntPtr(0);<br>
+            DOCINFO di = new DOCINFO();<br>
+            bool bSuccess = false;<br>
+            di.pDocName = docname + Convert.ToByte(0);<br>
+            di.pDataType = "RAW";<br>
+            if (OpenPrinter(printerName, ref hPrinter, 0)!=0)<br>
+            {<br>
+                if (StartDocPrinter(hPrinter, 1, ref di)!=0)<br>
+                {<br>
+                    if (StartPagePrinter(hPrinter)!=0)<br>
+                    {<br>
+                        bSuccess = (WritePrinter(hPrinter, byteData, byteData.Length, ref dwWritten)!=0);<br>
+                        EndPagePrinter(hPrinter);<br>
+                    }<br>
+                    EndDocPrinter(hPrinter);<br>
+                }<br>
+                ClosePrinter(hPrinter);<br>
+            }<br>
+            if (!bSuccess)<br>
+                dwError = Marshal.GetLastWin32Error();<br>
+            return bSuccess;<br>
+        }<br>
+    }</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/forum/25893%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/forum/25893%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

@@ -1,0 +1,161 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Issue with Zebra RFID Reader SDK for Android. eventStatusNotify – ClassCastException during Trigger Events on MC3300x</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Issue with Zebra RFID Reader SDK for Android. eventStatusNotify – ClassCastException during Trigger Events on MC3300x</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/issue-zebra-rfid-reader-sdk-android-eventstatusnotify-classcastexception-during-trigger-events-mc3300x-0; original snapshot: threads/00343.html; SHA-256: fa8403179bb2dee50a8b16fd956c8f88215ea2aaf7462706bb400fc9bfa91899</small><pre id="topic">
+
+    
+        Issue with Zebra RFID Reader SDK for Android. eventStatusNotify – ClassCastException during Trigger Events on MC3300x
+
+
+        
+      
+                        
+                    
+            L
+          
+          Lorenzo Cattapan
+          8 months 3 weeks ago
+        
+        
+      
+        
+            
+                  
+            
+            149
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Device: MC3300xAndroid Version: 11Zebra RFID Reader SDK Version: 2.0.5.238Description: I am encountering an issue where the eventStatusNotify callback is not triggered when the mapped physical trigger is pressed or released. Based on Logcat analysis, the SDK seems to encounter a casting error internally when a trigger event occurs. Specifically, it appears that the SDK is attempting an invalid cast, which prevents the event from being dispatched to my application.I enabled IRFIDLogger&#x27;s debug logs and i got these:Logcat snippet when eventStatusNotify doesn&#x27;t get triggered in my app: IRfidserviceImp D ON_KEY_EVENT KEYCODE = 102 STATE = 1
+IRFIDinfo D API3SystemService: broadcast: TRIGGERScom.symbol.button.L1
+IRFIDinfo D ASCIIHelper: GetReplyDetails =Notification:TriggerEvent,TriggerValue:1lastResponse = null
+IRFIDinfo D RFIDASCIIProcessor: getReplyMsg = Notification:TriggerEvent,TriggerValue:1
+IRFIDinfo D TransportSerial: Data from Reader : &lt;&lt; Notification:TriggerEvent,TriggerValue:1
+IRFIDinfo D parseMsg RFIDASCIIProcessor: replyType = NOTIFY IRFIDinfo D GetReplyDetails Notification:TriggerEvent,TriggerValue:1 msg.getMsgType NOTIFICATION
+IRFIDinfo D Notification_TriggerEvent TRIGGER_RELEASE
+IRFIDinfo D com.zebra.ASCII_SDK.ENUM_TRIGGER_TYPE cannot be cast to com.zebra.rfid.api3.RFID_EVENT_TYPELogcat snippet when eventStatusNotify does get triggered in my app:IRfidserviceImp D ON_KEY_EVENT KEYCODE = 102 STATE = 1
+IRFIDinfo D API3SystemService: broadcast: TRIGGERScom.symbol.button.L1
+IRFIDinfo D TransportSerial: Data from Reader : &lt;&lt; Notification:TriggerEvent,TriggerValue:1
+IRFIDinfo D ASCIIHelper: GetReplyDetails =Notification:TriggerEvent,TriggerValue:1lastResponse = null
+IRFIDinfo D RFIDASCIIProcessor: getReplyMsg = Notification:TriggerEvent,TriggerValue:1
+IRFIDinfo D parseMsg RFIDASCIIProcessor: replyType = NOTIFY
+IRFIDinfo D GetReplyDetails Notification:TriggerEvent,TriggerValue:1 msg.getMsgType NOTIFICATION IRFIDinfo D Notification_TriggerEvent TRIGGER_RELEASE
+IRFIDinfo D eventType value : 12 IRFIDinfo D WaitForEventNotification IRFIDinfo D GetEventData result : RFID_API_SUCCESS eventType HANDHELD_TRIGGER_EVENT RFIDHandler I Status Notification: HANDHELD_TRIGGER_EVENT
+RFIDHandler I Rfid Trigger released
+RFIDHandler D stopReading: entryI think that because of this `ClassCastException` within the SDK&#x27;s internal notification handling, my implementation of `eventStatusNotify` never receives the event. Note: This behavior is intermittent. The application works as expected sometimes, but once this error occurs, the eventStatusNotify stops receiving trigger events correctly and becomes unreliable.I can provide more detailed logs / code snippets or additional information if needed.I would be grateful for any help,Thanks.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            8 months 3 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I tested the HHSampleApp in the Android Studio V2.0.5.238 Sample.I see the correct &quot;RFIDASCIIProcessor: replyType = NOTIFY&quot; in the RxLog ( I used RxLogger to capture the Logcat.)Please test the HHSampleApp - project found in the RFID SDK - and review how that code functions / operates. On the MC3330XR I have running Android 14 - it seems to be operating correctly.  -sèan 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

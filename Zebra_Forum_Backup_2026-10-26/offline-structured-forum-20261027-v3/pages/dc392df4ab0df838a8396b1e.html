@@ -1,0 +1,342 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>How to configure a Datawedge profile programatically in an Android Kotlin app?</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/how-configure-datawedge-profile-programatically-android-kotlin-app; snapshot threads/00129.html; SHA-256 4baa556cea435f6f733645a1cba88faac0336e613891fbe506c687fd822dea2d. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">How to configure a Datawedge profile programatically in an Android Kotlin app?</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            P
+          </div>
+          <div class="forum-topic__author-name">Pierrick Valentin</div>
+          <div class="forum-topic__timestamp">1 year 11 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            587
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>I am developing an Android inventory app in Kotlin for Zebra TC21 devices, and I would like to configure a Datawedge profile programmatically. I need to scan qr codes with the integrated scanner, and RFID tags with a Zebra RFD4031. I would like the scanned data to be transmitted by "Intent output" with Broadcast mode. I also want the "key output" to be disabled.</p><p>I tried with this code:</p><pre><code class="language-plaintext">class DatawedgeConfig {
+
+  val baseConfig = createBaseConfig()
+
+ 
+
+  fun initialize(context: Context) {
+
+    try {
+
+      createProfile(context)
+
+      configureProfile(context)
+
+      configureInput(context)
+
+      configureOutput(context)
+
+      Log.d("DatawedgeConfig", "DataWedge initialized successfully")
+
+    } catch (e: Exception) {
+
+      Log.e("DatawedgeConfig", "Error initializing DataWedge", e)
+
+    }
+
+  }
+
+ 
+
+  private fun createBaseConfig(): Bundle {
+
+    return Bundle().apply {
+
+      putString("PROFILE_NAME", DATAWEDGE_PROFILE_NAME)
+
+      putString("PROFILE_ENABLED", "true")
+
+      putString("CONFIG_MODE", "UPDATE")
+
+    }
+
+  }
+
+ 
+
+  fun createProfile(context: Context) {
+
+    val intent = Intent()
+
+    intent.action = "com.symbol.datawedge.api.ACTION"
+
+    intent.putExtra("com.symbol.datawedge.api.CREATE_PROFILE", DATAWEDGE_PROFILE_NAME)
+
+    try {
+
+      context.sendBroadcast(intent)
+
+      Log.d("DatawedgeConfig", "Profile created successfully")
+
+    } catch (e: Exception) {
+
+      Log.e("DatawedgeConfig", "Error creating profile", e)
+
+    }
+
+  }
+
+ 
+
+  fun configureProfile(context: Context) {
+
+    val intent = Intent()
+
+    intent.action = "com.symbol.datawedge.api.ACTION"
+
+    intent.putExtra("com.symbol.datawedge.api.SET_CONFIG", Bundle().apply {
+
+      baseConfig.putParcelableArray("APP_LIST", arrayOf(Bundle().apply {
+
+        putString("PACKAGE_NAME", context.packageName)
+
+        putStringArray("ACTIVITY_LIST", arrayOf("*"))
+
+      }))
+
+    })
+
+ 
+
+    Log.d("DataWedgeConfig", "Configuring profile: $baseConfig")
+
+ 
+
+    try {
+
+      context.sendBroadcast(intent)
+
+      Log.d("DatawedgeConfig", "Profile configured successfully (PACKAGE_NAME : ${context.packageName})")
+
+    } catch (e: Exception) {
+
+      Log.e("DatawedgeConfig", "Error configuring profile", e)
+
+    }
+
+  }
+
+ 
+
+  fun configureInput(context: Context) {
+
+    val intent = Intent()
+
+    intent.action = "com.symbol.datawedge.api.ACTION"
+
+    intent.putExtra("com.symbol.datawedge.api.SET_CONFIG", Bundle().apply {
+
+      baseConfig.putParcelableArray("PLUGIN_CONFIG", arrayOf(Bundle().apply {
+
+        putString("PLUGIN_NAME", "BARCODE")
+
+        putString("RESET_CONFIG", "true")
+
+        putBundle("PARAM_LIST", Bundle().apply {
+
+          putString("scanner_selection", "auto")
+
+          putString("decoder_rfid", "true")
+
+          putString("decoder_qr_code", "true")
+
+        })
+
+      }))
+
+    })
+
+    try {
+
+      context.sendBroadcast(intent)
+
+      Log.d("DatawedgeConfig", "Input configured successfully")
+
+    } catch (e: Exception) {
+
+      Log.e("DatawedgeConfig", "Error configuring input", e)
+
+    }
+
+  }
+
+ 
+
+  fun configureOutput(context: Context) {
+
+    val intent = Intent()
+
+    intent.action = "com.symbol.datawedge.api.ACTION"
+
+    intent.putExtra("com.symbol.datawedge.api.SET_CONFIG", Bundle().apply {
+
+      baseConfig.putParcelableArray("PLUGIN_CONFIG", arrayOf(Bundle().apply {
+
+        putString("PLUGIN_NAME", "INTENT")
+
+        putString("RESET_CONFIG", "true")
+
+        putBundle("PARAM_LIST", Bundle().apply {
+
+          putString("intent_output_enabled", "true")
+
+          putString("intent_action", DATAWEDGE_ACTION)
+
+          putString("intent_delivery", "2")
+
+        })
+
+      }))
+
+    })
+
+    try {
+
+      context.sendBroadcast(intent)
+
+      Log.d("DatawedgeConfig", "Output configured successfully")
+
+    } catch (e: Exception) {
+
+      Log.e("DatawedgeConfig", "Error configuring output", e)
+
+    }
+
+  }
+
+}</code></pre><p> </p><p>The profile is actually created if it doesn't exist, but none of the options in the "SET_CONFIG" bundle is apllied. So, my app isn't associated with the created profile, and the intent output isn't neither enabled nor configured with the given values.</p><p>I don't understand why.</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-53624" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              P
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Pierrick Valentin</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I've finally found a solution. I share it for those who'd be interested:<br>```kotlin<br>import android.content.Context<br>import android.content.Intent<br>import android.os.Bundle<br>import dagger.hilt.android.qualifiers.ApplicationContext<br>import javax.inject.Inject<br>import javax.inject.Singleton</p><p>@Singleton<br>class DWConfig @Inject constructor(<br>   @ApplicationContext private val context: Context,<br>) {<br>   val setConfigBundle = Bundle().apply {<br>       putString("PROFILE_NAME", DATAWEDGE_PROFILE_NAME)<br>       putString("PROFILE_ENABLED", "true")<br>       putString("CONFIG_MODE", "CREATE_IF_NOT_EXIST")<br>   }</p><p>   val appConfig = Bundle().apply {<br>       putString("PACKAGE_NAME", context.packageName)<br>       putStringArray(<br>           "ACTIVITY_LIST", arrayOf(<br>               "${context.packageName}.MainActivity",<br>           )<br>       )<br>   }</p><p>   val barcodeParamList = Bundle().apply {<br>       putString("scanner_input_enabled", "true")<br>       putString("scanner_selection", "auto")<br>       putString("charset_name", "ISO-8859-1")<br>       putString("auto_charset_preferred_order", "UTF-8;GB2312")<br>       putString("auto_charset_failure_option", "UTF-8")<br>       putString("volume_slider_type", "3")<br>   }</p><p>   val barcodeConfigBundle = Bundle().apply {<br>       putString("PLUGIN_NAME", "BARCODE")<br>       putString("RESET_CONFIG", "true")<br>   }</p><p>   val intentParamList = Bundle().apply {<br>       putString("intent_output_enabled", "true")<br>       putString("intent_action", DATAWEDGE_INTENT_ACTION)<br>       putString("intent_delivery", "2")<br>   }</p><p>   val intentConfigBundle = Bundle().apply {<br>       putString("PLUGIN_NAME", "INTENT")<br>       putString("RESET_CONFIG", "true")<br>   }</p><p>   val rfidParamList = Bundle().apply {<br>       putString("rfid_input_enabled", "true")<br>       putString("rfid_beeper_enable", "false")<br>       putString("rfid_led_enable", "true")<br>       putString("rfid_antenna_transmit_power", "30")<br>       putString("rfid_memory_bank", "3")<br>       putString("rfid_session", "1")<br>       putString("rfid_trigger_mode", "0")<br>       putString("rfid_filter_duplicate_tags", "true")<br>       putString("rfid_hardware_trigger_enabled", "true")<br>       putString("rfid_tag_read_duration", "250")<br>   }</p><p>   val rfidConfigBundle = Bundle().apply {<br>       putString("PLUGIN_NAME", "RFID")<br>       putString("RESET_CONFIG", "true")<br>   }</p><p>   val keystrokeParamList = Bundle().apply {<br>       putString("keystroke_output_enabled", "false")<br>   }</p><p>   val keystrokeConfigBundle = Bundle().apply {<br>       putString("PLUGIN_NAME", "KEYSTROKE")<br>       putString("RESET_CONFIG", "true")<br>   }</p><p>   private fun setAppList() {<br>       setConfigBundle.putParcelableArray(<br>           "APP_LIST", arrayOf(<br>               appConfig<br>           )<br>       )<br>   }<br>   <br>   private fun setPluginConfig() {<br>       setConfigBundle.remove("PLUGIN_CONFIG")<br>       barcodeConfigBundle.putBundle("PARAM_LIST", barcodeParamList)<br>       intentConfigBundle.putBundle("PARAM_LIST", intentParamList)<br>       rfidConfigBundle.putBundle("PARAM_LIST", rfidParamList)<br>       keystrokeConfigBundle.putBundle("PARAM_LIST", keystrokeParamList)</p><p>       setConfigBundle.putParcelableArrayList(<br>           "PLUGIN_CONFIG", arrayListOf(<br>               barcodeConfigBundle,<br>               intentConfigBundle,<br>               rfidConfigBundle,<br>               keystrokeConfigBundle<br>           )<br>       )<br>   }</p><p>   private fun sendConfig() {<br>       val intent = Intent().apply {<br>           action = "com.symbol.datawedge.api.ACTION"<br>           putExtra("com.symbol.datawedge.api.SET_CONFIG", setConfigBundle)<br>       }</p><p>       context.sendBroadcast(intent)<br>   }</p><p>   fun initialize() : Boolean {<br>       try {<br>           <br>           setAppList()<br>           setPluginConfig()<br>           sendConfig()<br>           return true<br>           <br>       } catch (e: Exception) {<br>           <br>           Log.e("DWConfig", "Error initializing DataWedge", e)<br>           return false<br>           <br>       }<br>   }<br>}<br>```</p><p>I call `initialize()` method during the launch of my app:</p><p>```kotlin<br>@HiltViewModel<br>class MainViewModel @Inject constructor(<br>   private val dwConfig: DWConfig<br>) : ViewModel() {</p><p>   fun initializeDataWedge(): Boolean {<br>       return dwConfig.initialize()<br>   }</p><p>   ...</p><p>}<br>```</p><p>```kotlin<br>@HiltAndroidApp<br>class MainApplication : Application() {<br>   @Composable<br>   fun App(activity: MainActivity, mainViewModel: MainViewModel) {</p><p>       LaunchedEffect(Unit) {</p><p>           val dataWedgeJob = async { mainViewModel.initializeDataWedge() }<br>           <br>           ...</p><p>           dataWedgeJob.await()</p><p>           ...<br>}<br>```</p><p>I found most of the informations that I needed here (unfortunately, all the examples are written in Java) :<br>https://techdocs.zebra.com/datawedge/13-0/guide/api/setconfig/</p><p>Almost all the parameters that you can configure in the Datawedge App are referenced here with their ids and their possible values that you can set programmatically.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/how-configure-datawedge-profile-programatically-android-kotlin-app%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/how-configure-datawedge-profile-programatically-android-kotlin-app%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

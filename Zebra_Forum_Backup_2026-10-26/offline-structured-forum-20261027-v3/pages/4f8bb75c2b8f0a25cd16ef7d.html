@@ -1,0 +1,316 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Kill RFID Tags with DS9908R</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/kill-rfid-tags-ds9908r; snapshot threads/00431.html; SHA-256 214e41298300951d45cfc184e6b3ad084a6712518a722db60dc73fed3b75e781. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Kill RFID Tags with DS9908R</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            J
+          </div>
+          <div class="forum-topic__author-name">Jason Frost</div>
+          <div class="forum-topic__timestamp">2 years 11 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            541
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            3
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                          <span class="forum-solved">//Solved</span>
+        </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>I'm using a DS9908R scanner to read both barcodes and RFID epc information, all working well, but I need to create a process to "kill" tags and I'm struggling.  Has anyone got some examples?</p><p>Actually the attribute set for the Kill looks simple enough, I'm having a hard time setting the kill password before I get to that point.  I'm using Windows Forms/C#.</p><p>Thanks.</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+        <div class="forum-topic__accepted-solution">
+      <div class="forum-topic__accepted-solution-badge">
+        <span class="forum-topic__accepted-solution-label">✓ Accepted Solution</span>
+      </div>
+      <div class="forum-topic__accepted-solution-content">
+          
+
+
+
+<article id="comment-52326" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I'm going to generalize for most RFID when working with the Access bank, and the Kill Banks.  (MEMORY_BANK_RESERVED)</p><p>Which   :   Words    :    Offset</p><p>RESERVED - 4 words - 0 offset.  ( 64-bits )</p><p>Kill - 2-words - 0 offset. ( 32-bits )</p><p>Access - 2 words  - 2 word offset.   ( 32-bits )</p><p>Default Value: ( hexidecimal rep )</p><p>0000 0000 0000 0000  ( Reserved )</p><p>0000 0000  ____ ____ ( Kill )</p><p>____  ____  0000 0000 ( Access )</p><p>You set these by either writing the bytes ( 00 00 ) or the words ( 0000 ).   { This is SDK / API / dependent }</p><p>Lets say we wish to set Access password to " 8765 4321 "</p><p>and the Kill password to " EEEE BBBB "   - I'm using brutally simple hex values here.,</p><p>EEEE BBBB 8765 4321  ( Reserved )  </p><p>In the same way you write the EPC - you write these to the RESERVED memory bank - BEFORE - you use the password as the Permission.</p><p>( Use Tag Read/Write for doing this data setup on the Reserved memory bank - but be careful - since the next steps below can cause an order of operations issue. )</p><p>USES:  ( this is the permission / Privilege config )  </p><p>Access Password is used when you define the Password and the correspondent Permission (Lock Privilege).   ***  see further below too ***</p><p>For instance  RW - Permanent lock - Permanent unlock - Unlock -- &gt;against the target Memory Bank.</p><p>Kill Password only does one thing like "Privilege" Which is "KILL" the tag - when you provide the EPC + the correct Password and you use the "KILL" Privilege operation for it.  <br>( And then you no longer can find the EPC when you scan for it - BECAUSE - you killed the tag. . .   -- BE CAREFUL - DONT DO THIS WITH EXPENSIVE TAGS!!  --) </p><p>{ word to the wise - have a LOT of tags you can spare to do killing with. Cheap / Free tags that are not locked - helps. }</p><p>{ Permanent Lock, and Permanent Unlock } - these are specific use extremes:  </p><p>Permanent Lock - you are unable to make changes to the affected Memory Bank.  </p><p>Permanent Unlocked - means you cannot then use RW or even setup any Privilege properties to the memory bank in question.</p><p>The two most common "developer" "Access Password Usages - is the "Read/Write" Privilege, and "Unlock" Privilege.</p><p> </p><p>*** the Access operation / Privilege config *** - when you use this - and it is anything setup to the Memory Bank in question; your affect by this needs to function with the Password - used as the passed parameter (PASSWORD) for doing the operation.</p><p> </p><p> </p><p>+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</p><p> </p><p>To the above question  - See if you can write my suggested value with the DS9908 tools you are working with  - the Reserved Memory Bank. ( B = 0 )  Hint : &lt;value&gt;0xEE 0xEE 0xBB 0xBB 0x87 0x65 0x43 0x21 &lt;/value&gt; </p><p><span data-original-href="https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/barcode-scanners/general/ds9800/ds9x08r-rfid-api-programming-interface.pdf">https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/barcode-scanners/general/ds9800/ds9x08r-rfid-api-programming-interface.pdf</span></p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+      </div>
+    </div>
+  
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      3 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-52326" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I'm going to generalize for most RFID when working with the Access bank, and the Kill Banks.  (MEMORY_BANK_RESERVED)</p><p>Which   :   Words    :    Offset</p><p>RESERVED - 4 words - 0 offset.  ( 64-bits )</p><p>Kill - 2-words - 0 offset. ( 32-bits )</p><p>Access - 2 words  - 2 word offset.   ( 32-bits )</p><p>Default Value: ( hexidecimal rep )</p><p>0000 0000 0000 0000  ( Reserved )</p><p>0000 0000  ____ ____ ( Kill )</p><p>____  ____  0000 0000 ( Access )</p><p>You set these by either writing the bytes ( 00 00 ) or the words ( 0000 ).   { This is SDK / API / dependent }</p><p>Lets say we wish to set Access password to " 8765 4321 "</p><p>and the Kill password to " EEEE BBBB "   - I'm using brutally simple hex values here.,</p><p>EEEE BBBB 8765 4321  ( Reserved )  </p><p>In the same way you write the EPC - you write these to the RESERVED memory bank - BEFORE - you use the password as the Permission.</p><p>( Use Tag Read/Write for doing this data setup on the Reserved memory bank - but be careful - since the next steps below can cause an order of operations issue. )</p><p>USES:  ( this is the permission / Privilege config )  </p><p>Access Password is used when you define the Password and the correspondent Permission (Lock Privilege).   ***  see further below too ***</p><p>For instance  RW - Permanent lock - Permanent unlock - Unlock -- &gt;against the target Memory Bank.</p><p>Kill Password only does one thing like "Privilege" Which is "KILL" the tag - when you provide the EPC + the correct Password and you use the "KILL" Privilege operation for it.  <br>( And then you no longer can find the EPC when you scan for it - BECAUSE - you killed the tag. . .   -- BE CAREFUL - DONT DO THIS WITH EXPENSIVE TAGS!!  --) </p><p>{ word to the wise - have a LOT of tags you can spare to do killing with. Cheap / Free tags that are not locked - helps. }</p><p>{ Permanent Lock, and Permanent Unlock } - these are specific use extremes:  </p><p>Permanent Lock - you are unable to make changes to the affected Memory Bank.  </p><p>Permanent Unlocked - means you cannot then use RW or even setup any Privilege properties to the memory bank in question.</p><p>The two most common "developer" "Access Password Usages - is the "Read/Write" Privilege, and "Unlock" Privilege.</p><p> </p><p>*** the Access operation / Privilege config *** - when you use this - and it is anything setup to the Memory Bank in question; your affect by this needs to function with the Password - used as the passed parameter (PASSWORD) for doing the operation.</p><p> </p><p> </p><p>+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</p><p> </p><p>To the above question  - See if you can write my suggested value with the DS9908 tools you are working with  - the Reserved Memory Bank. ( B = 0 )  Hint : &lt;value&gt;0xEE 0xEE 0xBB 0xBB 0x87 0x65 0x43 0x21 &lt;/value&gt; </p><p><span data-original-href="https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/barcode-scanners/general/ds9800/ds9x08r-rfid-api-programming-interface.pdf">https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/barcode-scanners/general/ds9800/ds9x08r-rfid-api-programming-interface.pdf</span></p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-52328" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Jason Frost</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thanks, that's really helpful.  I'm struggling to get past the first stage at the moment, every time I try to write to a tag I get a RFID_COMMAND_STATUS of 5 back, but '5' is not one of the listed values so not a lot of help.  I'll keep going...</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-52327" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>( Hint #2  See PP21 in the same guide for the Kill details. )</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/kill-rfid-tags-ds9908r%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/kill-rfid-tags-ds9908r%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

@@ -1,0 +1,406 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to know when Bluetooth data transfer completes to a linkOS Printer</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to know when Bluetooth data transfer completes to a linkOS Printer</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/how-know-when-bluetooth-data-transfer-completes-linkos-printer; original snapshot: threads/01015.html; SHA-256: 169fa6a2f2f1989611df2eeee8c37c3860c37edb6d68babcc2e4224bf5069b5e</small><pre id="topic">
+
+    
+        How to know when Bluetooth data transfer completes to a linkOS Printer
+
+
+        
+      
+                        
+                    
+            L
+          
+          Laks Chanamolu
+          5 years 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            68
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We do &quot;Store and Recall print&quot; to ZQ320 printers from Android tablets over Bluetooth. Looking at http://link-os.github.io/android/v2.9.2275/documentation/com/zebra/sdk/…, there is a comment stating we have to wait to make sure the data got to printer before closing connection. 
+                     // Make sure the data got to the printer before closing the connection
+                     Thread.sleep(500);
+Is there a better way to know when printer received all data? Waiting doesn&#x27;t give confidence that the printer received data. We send files of different sizes, so waiting certain period of time for all files is not ideal.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The time used for the delay in the example code does appear arbitrary. But the essence is to ensure all the data are sent out and then received by the printer, before we close the connection. This is because that the Android OS doesn&#x27;t tell the application whether the data has been sent and received completely.
+A better way is to check the status of the printer (i.e. getCurrentStatus()) to make sure the following conditions are met before closing the connection.
+boolean isConnectionClosed = false;
+while (!isConnectionClosed) {
+    PrinterStatus status = printer.getCurrentStatus();
+    if (!status.isReceiveBufferFull &amp;&amp; !status.isPartialFormatInProgress) {
+        isConnectionClosed = true;
+        printer.getConnection().close();
+    } else {
+        Thread.sleep(100); // Pause for 100ms
+    }
+} 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              L
+            
+          
+                
+          
+            Laks Chanamolu
+          
+          
+            5 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks @SSi1. Let me try that and get back to you.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              L
+            
+          
+                
+          
+            Laks Chanamolu
+          
+          
+            5 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi @SSi1, we tried the solution, when the Bluetooth Data Transfer is in progress, printer.getCurrentStatus() is throwing Malformed status exception. So we are trying something like this and it seems to work. Please confirm checking for status multiple times during Bluetooth Data transfer does not impede the actual data transfer.
+boolean fileTransferComplete = false;
+int counter = 0;
+try {
+    while (!fileTransferComplete) {
+
+        try {
+            status = zebraPrinter.getCurrentStatus();
+        } catch (ConnectionException e) {
+            counter += 1;
+            Thread.sleep(100); // Pause for 100ms..
+            if (counter &gt; MAXIMUM_WAIT_COUNTER) {
+                return false;
+            }
+            continue;
+        }
+
+        if (!status.isReceiveBufferFull &amp;&amp; !status.isPartialFormatInProgress) {
+            fileTransferComplete = true;
+        } else {
+            counter += 1;
+
+            if (counter &gt; MAXIMUM_WAIT_COUNTER) {
+                return false;
+            }
+            Thread.sleep(100); // Pause for 100ms
+        }Also it would be nice to have the samples updated with this.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Laks, It&#x27;s ok to call the getCurrentStatus() multiple times when it hits Malformed status response. The code flow looks good.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              L
+            
+          
+                
+          
+            Laks Chanamolu
+          
+          
+            5 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for confirming SSi1.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

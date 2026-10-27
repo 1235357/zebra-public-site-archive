@@ -1,0 +1,211 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Trouble programmatically getting the firmware and hardware versions (link-os)</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Trouble programmatically getting the firmware and hardware versions (link-os)</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/33291; original snapshot: threads/resume-00160.html; SHA-256: 86809568841e66a0e4d1394959d44905bdd701d8b649e3388f1d869ecae20c42</small><pre id="topic">
+
+    
+        Trouble programmatically getting the firmware and hardware versions (link-os)
+
+
+        
+      
+                        
+                    
+            D
+          
+          Del Brown
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            295
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I have an iOS app which implements Link-OS for receipt printing to the iMZ220 bluetooth printer.
+ 
+Occasionally a couple of our customers complain about receipts printing multiple copies (not at the end of a roll).  One of the troubleshooting steps that could really help me (I think) is being able to correlate details, like firmware version, and possibly hardware version.
+ 
+Looking through Link-OS, I couldn&#x27;t find a way to get the firmware version and the hardware version.
+ 
+I *am* able to provide a way for the user to print a configuration label as follows:
+ 
+    var serialNumber: String?
+    if let connectedPrinter = EAAccessoryManager.shared().connectedAccessories.first(where:{$0.protocolStrings.contains(where: {$0 == &quot;com.zebra.rawport&quot;})}){
+      serialNumber = connectedPrinter.serialNumber
+        DispatchQueue.global(qos: .utility).async(execute: {
+          let zebraConnection = MfiBtPrinterConnection(serialNumber: serialNumber)
+          zebraConnection?.open()
+          do{
+            let zebraPrinter = try ZebraPrinterFactory.getInstance(zebraConnection)
+            try zebraPrinter.getToolsUtil().printConfigurationLabel()
+          } catch{
+            DDLogVerbose(&quot;Couldn&#x27;t get the zebraPrinter instance or the printConfigurationLabel failed&quot;)
+          }
+          zebraConnection?.close()
+        })
+    }
+ 
+which spits out some useful info, but I want to programmatically log those versions, not require the end user to print the configuration label and then somehow send it to me (via email, mms or some such).
+ 
+So I resorted to using iOS&#x27;s EAAccessory.  This does not appear to be accurate for firmareRevision and harwareRevision.
+ 
+    let connectedPrinter = EAAccessoryManager.shared().connectedAccessories.first(where:{$0.protocolStrings.contains(where: {$0 == &quot;com.zebra.rawport&quot;})}){
+ 
+In Xcode&#x27;s debug console, I print the connectedPrinter object:
+ 
+po connectedPrinter
+ 
+ {
+  connected:YES
+  connectionID:19337234
+  name: XXXXJ154601825
+  manufacturer: Zebra Technologies
+  modelNumber: iMZ220
+  serialNumber: XXXXJ154601825
+  firmwareRevision: 0.0.1
+  hardwareRevision: 0.0.1
+  dockType: (null)
+protocols: (
+    &quot;com.zebra.rawport&quot;
+)
+ 
+As you can see, some of the info is very helpful to me: name, manufacturer, modelNumber, and serialNumber.  But the firmwareRevison and hardwareRevision are useless.
+ 
+The printed configuration label shows me:
+ 
+V73.19.13Z 
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Del,
+This is where the SGD class comes in.&amp;nbsp; It is the primary way to work with settings and printer configuration.&amp;nbsp; The two &quot;settings&quot; you are looking for are &quot;appl.name&quot; for firmware, &quot;device.product_name&quot; for model, and&amp;nbsp; &quot;device.unique_id&quot; for serial number. 
+BOOL success = [zebraPrinterConnection open];
+NSError *error = nil;
+id printer = [ZebraPrinterFactory getInstance:zebraPrinterConnection error:&amp;amp;error];
+NSString *firmware = [SGD GET:&quot;appl.name&quot; withPrinterConnection:zebraPrinterConnection error:&amp;amp;error];
+NSLog(@&quot;The Firmware version is: %&quot;, firmware);
+[zebraPrinterConnection close];
+if (error != nil || printer == nil || success == NO)
+{
+&amp;nbsp;&amp;nbsp;&amp;nbsp; UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:&quot;Error&quot; message:[error localizedDescription] delegate:nil cancelButtonTitle:@&quot;Ok&quot; otherButtonTitles:nil];
+&amp;nbsp;&amp;nbsp;&amp;nbsp; [errorAlert show]; [errorAlert release];
+}
+[zebraPrinterConnection release];
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

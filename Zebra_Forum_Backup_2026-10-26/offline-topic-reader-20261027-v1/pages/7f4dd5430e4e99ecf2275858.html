@@ -1,0 +1,265 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>ZPL and strange vertical shift for big QR code</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>ZPL and strange vertical shift for big QR code</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zpl-and-strange-vertical-shift-big-qr-code; original snapshot: threads/00357.html; SHA-256: aae8600fedb2266121aca9456ac54134b8513fd18b62e9ec0675ac1fb43775ad</small><pre id="topic">
+
+    
+        ZPL and strange vertical shift for big QR code
+
+
+        
+      
+                        
+                    
+            A
+          
+          Adam Nowacki
+          11 months 3 weeks ago
+        
+        
+      
+        
+            
+                  
+            
+            417
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                          //Solved
+        
+  
+
+    
+    
+        
+      
+            
+                  Hi All,I have encountered issue with strange vertical shift for big (module size 38 in 300 dpi) QR code in ZPL.When I use datamatrix code there is no vertical shift but for QR there is shift about 6-7 mm in Y-axis.I use this ZPL for test: (This is fragment of larger label)^XA^FO802,0^BQN,2,38,Q^FDQA,3SDUB000012HCP2FU193980622D^FS^FO30,0^A0N,29,28^FDMFG PART NUMBER:^FS^FO405,0^A0N,29,28^FDORIGIN:^FS^PQ1,0,1,Y^XZY position for QR code and for Texts are the same :0 in ^FO command.You can see result in attached png file.Do you know how to remove this shift for QR code?I use ZT421 with linkOs:7.4.Kind regardsAdam
+              
+
+                    
+          
+      
+              
+ TEMP.GRF_.png
+
+          
+  
+        
+      
+                    
+          
+
+
+
+        
+      
+        ✓ Accepted Solution
+      
+      
+          
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mike Masotti
+          
+          
+            11 months 3 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Are you using a height parameter in a ^BY anywhere in this or another label format that printed prior on the printer (maybe for a code128)? If so, the height parameter should be put into the ^BX command. It will cause this to happen on a subsequent QR code. I&#x27;m betting that if you restart the printer and print this label first, it will be corrected. That should confirm it.If using Zebra Designer for ZPL, it will introduce this parameter for a code 128, but it needs to be corrected.See: ^BY Command Parameter Causes a Position Shift of the QR Code Barcode
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+      
+    
+  
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mike Masotti
+          
+          
+            11 months 3 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Are you using a height parameter in a ^BY anywhere in this or another label format that printed prior on the printer (maybe for a code128)? If so, the height parameter should be put into the ^BX command. It will cause this to happen on a subsequent QR code. I&#x27;m betting that if you restart the printer and print this label first, it will be corrected. That should confirm it.If using Zebra Designer for ZPL, it will introduce this parameter for a code 128, but it needs to be corrected.See: ^BY Command Parameter Causes a Position Shift of the QR Code Barcode
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Adam Nowacki
+          
+          
+            11 months 3 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you very much. It solves this issue.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

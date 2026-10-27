@@ -1,0 +1,1511 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Zebra Tread Intel API - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/tread-intel/latest/guide/api</code><br>Observed final URL: <code>https://techdocs.zebra.com/tread-intel/latest/guide/api/</code><br>Raw source: <code>raw/1fa8a8c0a84473e1c85f773a.html</code><br>Raw SHA-256: <code>f285ac58cdf9bed975e7c3a68339cec73f13deb02078602ea1fbc2495723f786</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            Zebra Tread Intel
+                                            1.0
+                        
+
+                    
+                
+                
+                    
+                        
+                            
+                                        About
+                            
+                        
+                        
+                            
+                                        APIs
+                            
+                        
+                        
+                            
+                                        Sample
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Zebra Tread Intel API
+                        
+                    OverviewRequirementsAdd Queries TagAdd ConstantsAPI GuideINITIATESTARTGet/Set ParametersSET_PARAMSGET_PARAMSTread Reader StateCURRENT_STATEON_STATE_CHANGEVERSIONRELEASESee Also
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Zebra Tread Intel API
+                                    
+                                            Zebra Tread Intel
+                                            1.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+Zebra Tread Intel API is designed based on the Android intent architecture, reducing library dependencies and integration time for app developers. To ensure the interface is secure, it uses explicit and pending intents. This document offers a comprehensive guide on accessing Zebra Tread Intel APIs. It describes the API components necessary for interaction and fulfills functional and non-functional requirements for applications that retrieving tread data from the reader accessory.
+
+APIs available:
+
+
+INITIATE – Initiate Tread Reader framework session.
+
+GET_PARAMS – Get the Tread Reader parameter values.
+
+SET_PARAMS – Set the Tread Reader parameter values.
+
+START – Start measurement and send data back to the application via pending intent.
+
+VERSION – Get the Tread Reader framework version data.
+
+CURRENT_STATE - Query the Tread Reader framework, connection state and framework state
+
+ON_STATE_CHANGE - Register to receive notifications when the framework connection state or framework state changes.
+
+RELEASE – Release the Tread Reader framework session.
+
+
+
+
+Requirements
+
+The following requirements must be met to successfully invoke intent APIs and obtain readings from the Zebra Tread Intel.
+
+Add Queries Tag
+
+For Android 13 devices and higher, add the &lt;queries&gt; tag in the AndroidManifest.xml of the Android application project. This defines the package name for the Zebra Tread Intel and is required to allow the Zebra Tread Intel API to communicate with the application.
+
+&lt;queries&gt;
+    &lt;package android:name=&quot;com.zebra.intentapis&quot; /&gt;
+&lt;/queries&gt;
+
+Add Constants
+
+Create a Java class named IntentAPIConstantUtils within the Android application project and add the code below. This helps manage and maintain consistent values throughout the project.
+
+    public class IntentAPIConstantUtils {
+        public static final int TTDR_REQUEST_CODE = 10100;
+        public static final String TTDR_CALLBACK_RESPONSE = &quot;TTDR_CALLBACK_RESPONSE&quot;;
+        public static final String TTDR_SDK_PACKAGE = &quot;com.zebra.intentapis&quot;;
+        public static final String TTDR_INTENT_ACTION_INITIATE_READER = &quot;com.zebra.intentapis.action.TTDR_INITIATE&quot;;
+        public static final String TTDR_INTENT_ACTION_CURRENT_STATE = &quot;com.zebra.intentapis.action.TTDR_CURRENT_STATE&quot;;
+        public static final String TTDR_INTENT_ACTION_ON_STATE_CHANGE = &quot;com.zebra.intentapis.action.TTDR_ON_STATE_CHANGE&quot;;
+        public static final String TTDR_INTENT_ACTION_START = &quot;com.zebra.intentapis.action.TTDR_START&quot;;
+        public static final String TTDR_INTENT_ACTION_SET_PARAMS = &quot;com.zebra.intentapis.action.TTDR_SET_PARAMS&quot;;
+        public static final String TTDR_INTENT_ACTION_GET_PARAMS = &quot;com.zebra.intentapis.action.TTDR_GET_PARAMS&quot;;
+        public static final String TTDR_INTENT_ACTION_RELEASE = &quot;com.zebra.intentapis.action.TTDR_READER_RELEASE&quot;;
+        public static final String TTDR_INTENT_ACTION_ERROR = &quot;com.zebra.intentapis.action.TTDR_ERROR&quot;;
+        public static final String TTDR_INTENT_ACTION_VERSION = &quot;com.zebra.intentapis.action.TTDR_VERSION&quot;;
+        public static final String TTDR_INTENT_ERROR_CODE = &quot;TTDR_INTENT_ERROR_CODE&quot;;
+        public static final String TTDR_INTENT_ERROR_MESSAGE = &quot;TTDR_INTENT_ERROR_MESSAGE&quot;;
+        public static final String TTDR_INTENT_ACTION_EXCEPTION = &quot;com.zebra.intentapis.action.TTDR_EXCEPTION&quot;;
+        public static final String TTDR_INTENT_EXCEPTION_DESCRIPTION = &quot;TTDR_INTENT_EXCEPTION_DESCRIPTION&quot;;
+        public static final String TTDR_INTENT_EXCEPTION_OCCURRED_ACTION = &quot;TTDR_INTENT_EXCEPTION_OCCURRED_ACTION&quot; ;
+        public static final String TTDR_ACTION = &quot;TTDR_ACTION&quot;;
+        public static final String TTDR_ACTION_STATUS = &quot;TTDR_ACTION_STATUS&quot;;
+        public static final String TTDR_ACTION_DATA = &quot;TTDR_ACTION_DATA&quot;;
+        public static final int TTDR_ACTION_SUCCESS = -1;
+        public static final int TTDR_ACTION_FAILED = 0;
+        public static final String TTDR_FW_CONNECTION_STATE = &quot;TTDR_FW_CONNECTION_STATE&quot;;
+        public static final String TTDR_FW_STATE = &quot;TTDR_FW_STATE&quot;;
+        public static final String TTDR_FW_PARAM = &quot;TTDR_FW_PARAM&quot;;
+        public static final String TTDR_FW_PARAM_VALUE = &quot;TTDR_FW_PARAM_VALUE&quot;;
+    }
+
+NOTE: The constants from this Java class are referenced throughout this documentation. If necessary, these constants can be added to another class (e.g., a different Java class within your project that maintains constants) and referenced from there.
+
+
+
+API Guide
+
+The following steps outline the process for using the APIs within the Zebra Tread Intel framework:
+
+
+Initialize the Framework - Begin by invoking the INITIATE API to set up the Zebra Tread Intel framework for subsequent operations.
+
+Configure Parameters - To meet specific requirements, use the GET_PARAMS and SET_PARAMS APIs to retrieve and configure the parameters of the framework.
+
+Start Measurement - Use the START API to commence the measurement process and begin data acquisition based on the parameter configurations.
+
+Check Version Compatibility - Call the VERSIONAPI to obtain the framework’s version information and ensure compatibility.
+
+Monitor Operational Status - Use the CURRENT_STATE API to monitor the framework’s real-time operational status, providing insights into its current state.
+
+Manage Resources - At the end of the application lifecycle, ensure proper resource management by calling the RELEASE API. This action frees up resources and properly terminates the framework, preparing it for future sessions.
+
+
+This structured approach facilitates effective measurement and configuration, ensuring optimal performance and reliability. All return data, including tread data, state changes, errors and exceptions, are reported through the Android onActivityResult() method.
+
+Note: For state change monitoring, register for notifications with ON_STATE_CHANGE.
+
+
+
+INITIATE
+
+INITIATE starts the Tread Reader service. Requirements include:
+
+
+It must be called only once within an application&#x27;s lifecycle, before any other APIs. This ensures the Tread Reader APIs are enabled and can communicate with the application.
+
+It must be called using the startForegroundService() method to properly start the Tread Reader service.
+
+It must be called within the onStart() method.
+
+
+
+
+Request
+
+Use the following action:
+
+    com.zebra.intentapis.action.TTDR_INITIATE
+
+Request Keys
+
+Add the following key to the intent:
+
+
+  
+    Key
+    Type
+    Description
+  
+
+  
+       TTDR_CALLBACK_RESPONSE
+    PendingIntent
+    Receives the response
+  
+
+
+
+Sample code
+
+The sample code below demonstrates how to initialize a reader by sending an intent with a specified action and sets up a callback mechanism using a PendingIntent to handle responses from the service.
+
+    Intent intent = new Intent();
+    intent.setPackage(IntentAPIConstantUtils.TTDR_SDK_PACKAGE);
+    intent.setAction(IntentAPIConstantUtils.TTDR_INTENT_ACTION_INITIATE_READER);
+    PendingIntent pendingIntent = createPendingResult(IntentAPIConstantUtils.TTDR_REQUEST_CODE, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+    intent.putExtra(IntentAPIConstantUtils.TTDR_CALLBACK_RESPONSE, pendingIntent);
+    startForegroundService(intent);
+
+
+
+Response
+
+The key-value pairs below are received in the onActivityResult() method after invoking INITIATE API.
+
+
+  
+    Key
+    Type
+    Value
+  
+
+  
+       TTDR_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_INITIATE
+  
+
+  
+       TTDR_ACTION_STATUS
+    Integer
+    -1 = Success0 = Failed
+  
+
+
+
+
+
+Exception
+
+If the framework encounters an exception when invoking the INITIATE API, the onActivityResult() method will return the following key-value pairs.
+
+
+  
+    Key
+    Type
+    Value
+  
+
+  
+       TTDR_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_EXCEPTION
+  
+
+  
+       TTDR_INTENT_EXCEPTION_OCCURRED_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_INITIATE
+  
+
+  
+       TTDR_INTENT_EXCEPTION_NUMBER
+    Integer
+    Returns an integer value that represents the type of exception:
+       • 1 = INVALID_CONTEXT - Attempted to disable the reader when the Tread Reader object is not open.??
+       • 2 = INVALID_STATE - The Tread Reader object is not in the proper state to set parameters. Parameters can be set when the reader is connected to the mobile computer and not actively reading.
+       • 3 = INVALID_PARAMETER_VALUE - An invalid value was provided; e.g., a string value was passed when an integer was expected.
+       • 4 = UNKNOWN_PARAMETER - An unknown parameter was provided; e.g., a parameter was used that is not among the accepted options.
+       • 5 = HARDWARE_ERROR - Unable to communicate with the Zebra Tread Intel; e.g., the device may not be properly connected to the mobile computer.
+       • 6 = REMOTE_COMMUNICATION_ERROR - Unable to communicate with the framework; e.g., the framework is not initialized.
+       • 7 = FRAMEWORK_ERROR - The framework was terminated; e.g., Android might have terminated it due to low memory.
+    
+    
+  
+
+  
+       TTDR_INTENT_EXCEPTION_OCCURRED_ACTION
+    String
+    [Description of the exception that corresponds with the exception number; see TTDR_INTENT_EXCEPTION_NUMBER above.]
+  
+
+
+
+
+
+Sample Code
+
+This sample handles the response and includes exception handling.
+
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == IntentAPIConstantUtils.TTDR_REQUEST_CODE) {
+            String mACTION = data.getStringExtra(IntentAPIConstantUtils.TTDR_ACTION);
+
+            if (Objects.equals(mACTION, IntentAPIConstantUtils.TDR_INTENT_ACTION_INITIATE_READER)){
+                int mACTION_STATUS = data.getIntExtra(IntentAPIConstantUtils.TTDR_ACTION_STATUS,0);
+                if (mACTION_STATUS == IntentAPIConstantUtils.TTDR_ACTION_SUCCESS) {
+                    Log.e(mACTION,&quot;ACTION SUCCESS&quot;);
+                }
+                else if (mACTION_STATUS == IntentAPIConstantUtils.TTDR_ACTION_FAILED){
+                    Log.e(mACTION,&quot;ACTION FAILED&quot;);
+                }
+            }
+
+            else if (Objects.equals(mACTION, IntentAPIConstantUtils.TTDR_INTENT_ACTION_EXCEPTION)) {
+                String mExceptionOccurredAction = data.getStringExtra(IntentAPIConstantUtils.TTDR_INTENT_EXCEPTION_OCCURRED_ACTION);
+                int mExceptionNumber = data.getIntExtra(IntentAPIConstantUtils.TTDR_INTENT_EXCEPTION_NUMBER,0);
+                String mExceptionDescription = data.getStringExtra(IntentAPIConstantUtils.TTDR_INTENT_EXCEPTION_DESCRIPTION);
+            }
+        }
+    }
+
+
+
+
+
+START
+
+START begins the Tread Reader measurement session, allowing the measurement of multiple tires within a single session. Make sure that the Tread Reader framework is initiated and the Tread Reader accessory is connected to the device.
+
+When the Tread Reader is attached to the mobile computer, it interfaces with the device via USB. Use CURRENT_STATE to verify the USB connection status, or register with ON_STATE_CHANGE to receive notifications of any changes in the connection state.
+
+
+
+Request
+
+Use the following action:
+
+com.zebra.intentapis.action.TTDR_START
+
+Request Keys
+
+Add the following key to the intent:
+
+
+  
+    Key
+    Type
+    Description
+  
+
+  
+       TTDR_CALLBACK_RESPONSE
+    PendingIntent
+    Receives the response
+  
+
+
+Sample Code
+
+This demonstrates how to send a broadcast intent with the action to start the measurement. By including a PendingIntent, it enables the receiving framework component to return a result to the original broadcast sender.
+
+    Intent intent = new Intent();
+    intent.setAction(IntentAPIConstantUtils.TTDR_INTENT_ACTION_START);
+    PendingIntent currentStatePendingIntent = createPendingResult(IntentAPIConstantUtils.TTDR_REQUEST_CODE, new Intent(),
+    PendingIntent.FLAG_UPDATE_CURRENT);
+    intent.putExtra(IntentAPIConstantUtils.TTDR_CALLBACK_RESPONSE, currentStatePendingIntent);
+    sendBroadcast(intent);
+
+
+
+Response
+
+The following key-value pairs are received to the onActivityResult() method after invoking START API:
+
+
+  
+    Key
+    Type
+    Description/Value
+  
+
+  
+       TTDR_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_START
+  
+
+  
+       TTDR_ACTION_STATUS
+    Integer
+    -1 = Success0 = Failed
+  
+
+  
+       TTDR_ACTION_DATA
+    String
+    JSON formatted data containing the tire tread measurement. For each tire tread measurement, a dataset is returned based on the tread position (Inner, Center, Outer), with 3 parameters for each position. 
+    
+        
+            position
+            A string indicating the tread depth position:
+               • Outer
+               • Center
+               • Inner 
+            If more than 3 tire treads are present, the deepest tread in each position is measured. Only one set of data is returned for each position, taking into account all available tire treads.    
+            
+        
+        
+            metricTreadDepth
+            Tread depth measurement provided in millimeters (mm). To convert millimeters to inches, multiply by 0.03937. Example conversion:
+               3.97 mm * 0.03937 = 0.1562989”  
+               0.1562989” is equivalent to 5/32”
+            Note: 1/32” = 0.03125”
+            
+        
+        
+            confidenceLevel
+            An integer value representing the confidence in the measurement taken, ranging from 0 to 100, with 0 being the lowest and 100 the highest confidence. This value varies based on factors like swipe speed, environmental conditions and tire complexity (e.g., tread geometry and patterns). As a guideline, consider the following thresholds for confidence levels:
+               • 81-100: High confidence. Generally, the user swipe was controlled, and the tread measurement is reliable.
+               • 61-80: Acceptable measurement. A mid-range score may indicate degraded measurement quality due to tread geometry or user swipe behavior. For example, a narrow tread and fast swipe speed could lower the confidence factor below 80.
+               • 0-60: Lowest confidence. Levels 60 and below usually indicate unstable swipe behavior or larger-than-typical measurement variation.         
+            
+        
+        
+            status
+            Represents the status of the tread depth measurement, where errors may occur from improper scanning techniques or actual tire deformations. For proper scanning guidelines, refer to the Quick Start Guide. Status values include:
+               • ErrorCodeNone - No error
+               • NotEnoughProfileDetected -  Insufficient profile detected in the ProfileGetter block
+               • NotEnoughEdgesFound - Insufficient edges found in the EdgeDetector Block
+               • NoValidTireSurfaceDetected - No valid tire surface or baseline detected in the BaselineGetter block
+               • NoFeaturesDetected - No features detected in the FeatureDetector block
+               • LargeAngle - Large angle outside of blocks
+               • MissingTreadInProfileCorelation - Missing tread in profile correlation outside of blocks
+               • FrameworkDied - Framework failure
+               • FrameworkUnableOpen - Unable to open framework
+               • ScanError -Scan error
+               • ScanSwipeTooFast - Swiped too fast to get data
+               • ScanFailedToDetectEdgeOfTire - Failed to detect tire edges
+               • ScanErraticSwipeMotion - Erratic Swipe motion
+               • ScanSwipeFarFromTire - Swiped too far from tire
+            
+        
+    
+    
+  
+
+
+
+
+
+Exception
+
+If the framework encounters an exception when invoking the START API, the onActivityResult() method will return the following key-value pairs.
+
+
+  
+    Key
+    Type
+    Value
+  
+
+  
+       TTDR_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_EXCEPTION
+  
+
+  
+       TTDR_INTENT_EXCEPTION_OCCURRED_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_START
+  
+
+  
+       TTDR_INTENT_EXCEPTION_NUMBER
+    Integer
+    Returns an integer value that represents the type of exception:
+       • 1 = INVALID_CONTEXT - Attempted to disable the reader when the Tread Reader object is not open.
+       • 2 = INVALID_STATE - The Tread Reader object is not in the proper state to set parameters. Parameters can be set when the reader is connected to the mobile computer and not actively reading.
+       • 3 = INVALID_PARAMETER_VALUE - An invalid value was provided; e.g., a string value was passed when an integer was expected.
+       • 4 = UNKNOWN_PARAMETER - An unknown parameter was provided; e.g., a parameter was used that is not among the accepted options.
+       • 5 = HARDWARE_ERROR - Unable to communicate with the Zebra Tread Intel; e.g., the device may not be properly connected to the mobile computer.
+       • 6 = REMOTE_COMMUNICATION_ERROR - Unable to communicate with the framework; e.g., the framework is not initialized.
+       • 7 = FRAMEWORK_ERROR - The framework was terminated; e.g., Android might have terminated it due to low memory.
+    
+  
+
+  
+       TTDR_INTENT_EXCEPTION_OCCURRED_ACTION
+    String
+    [Description of the exception that corresponds with the exception number; see TTDR_INTENT_EXCEPTION_NUMBER above.]
+  
+
+
+
+
+
+Sample Code
+
+This sample handles the response and includes exception handling.
+
+    if (Objects.equals(mACTION, IntentAPIConstantUtils.TTDR_INTENT_ACTION_START)) {
+        int mACTION_STATUS = data.getIntExtra(IntentAPIConstantUtils.TTDR_ACTION_STATUS,0);
+        if (mACTION_STATUS == IntentAPIConstantUtils.TTDR_ACTION_SUCCESS ){
+            String jsonData = data.getStringExtra(IntentAPIConstantUtils.TTDR_ACTION_DATA);
+        }else if (mACTION_STATUS == IntentAPIConstantUtils.TTDR_ACTION_FAILED){
+            Log.e(mACTION, &quot; - ACTION_FAILED&quot;);
+        }
+    }
+
+
+
+Sample Response
+
+Sample JSON response of TTDR_ACTION_DATA:
+
+    {&quot;treadList&quot;:[{
+        &quot;confidenceLevel&quot;:100,
+        &quot;metricTreadDepth&quot;:12.057596,
+        &quot;position&quot;:&quot;Inner&quot;,
+        &quot;status&quot;:&quot;NoStatus&quot;
+        },{
+        &quot;confidenceLevel&quot;:100,
+        &quot;metricTreadDepth&quot;:6.069351,
+        &quot;position&quot;:&quot;Center&quot;,
+        &quot;status&quot;:&quot;NoStatus&quot;
+        },{
+        &quot;confidenceLevel&quot;:100,
+        &quot;metricTreadDepth&quot;:2.0375476,
+        &quot;position&quot;:&quot;Outer&quot;,
+        &quot;status&quot;:&quot;NoStatus&quot;}]
+    }
+
+
+
+
+
+Get/Set Parameters
+
+Retrieve or configure the following Zebra Tread Intel parameters using GET_PARAMS and SET_PARAMS APIs.
+
+
+  
+    Parameter (TTDR_FW_PARAM)
+    Return Type
+    Permissions
+    Description (TTDR_FW_PARAM_VALUE)
+  
+
+  
+       hardware_version
+    String
+    Read Only
+    Returns the Zebra Tread Intel hardware version.
+  
+
+  
+       sdk_version
+    String
+    Read Only
+    Returns the version of the SDK. This is updated with any change to the API or interface exposed by the SDK.
+  
+
+  
+       service_version
+    String
+    Read Only
+    Returns service version information, which is updated with changes to the tire tread reading algorithm or software changes associated with the reader framework.
+  
+
+  
+       firmware_version
+    String
+    Read Only
+    Returns the Zebra Tread Intel firmware version information, which is typically updated with service updates.
+  
+
+  
+       reswipe
+    String
+    Read / Write
+    Specifies whether the upcoming tread measurement session (i.e. START) is a secondary measurement, represented as a Boolean value passed as a String:    • False = (Default) Indicates a standard tread measurement session. This value is set following any Enable/Disable transition of the framework.   • True = Indicates a re-swipe measurement session. The tread reading framework uses data from the previous attempt, combining the best measurement candidates. The aggregated result is then returned to the application. Note: This parameter is temporary and only applies to the next call to START. After START is executed, the parameter resets to the default state, “False,” indicating a standard swipe. If a measurement session encounters an error during a re-swipe, it also resets to “False”. 
+  
+
+  
+       scan_count
+    String
+    Read Only
+    Returns the total number of scans recorded from the Zebra Tread Intel accessory.
+  
+
+  
+       reader_timeout
+    String
+    Read / Write
+    Sets the scan duration of a scan:   • 0010 = Ultra-High, 3.1 seconds (2000 lines per scan)    • 0008 = High, 1.9 seconds (1200 lines per scan)   • 0004 = Mid (1000 lines per scan)   • 0002 = Low, 1.30 seconds (800 lines per scan) 
+  
+
+
+
+
+
+SET_PARAMS
+
+SET_PARAMS configures the Tread Reader parameters based on the functionality desired. The following are required:
+
+
+The Tread Reader framework is initiated.
+
+The Tread Reader device is connected to the mobile computer.
+
+
+
+
+Request
+
+Use the following action:
+
+    com.zebra.intentapis.action.TTDR_SET_PARAMS
+
+Request Keys
+
+Add the following key to the intent:
+
+
+  
+    Key
+    Type
+    Description/Value
+  
+
+  
+       TTDR_CALLBACK_RESPONSE
+    PendingIntent
+    Receive the response
+  
+
+  
+       TTDR_FW_PARAM
+    String
+    Respective parameter key, TTDR_FW_PARAM; see Get/Set Parameters table
+  
+
+  
+       TTDR_FW_PARAM_VALUE
+    String
+    Respective parameter value, TTDR_FW_PARAM_VALUE; see Get/Set Parameters table
+  
+
+
+
+Sample Code
+
+The sample code below demonstrates how to broadcast an intent with the action to set parameter values of the framework. By including a PendingIntent, it allows the receiving framework component to return to the original broadcast sender.
+
+    Intent intent = new Intent(IntentAPIConstantUtils.TTDR_INTENT_ACTION_SET_PARAMS);
+    PendingIntent closeFrameworkPendingIntent = createPendingResult(IntentAPIConstantUtils.TTDR_REQUEST_CODE, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+    intent.putExtra(IntentAPIConstantUtils.TTDR_CALLBACK_RESPONSE, closeFrameworkPendingIntent);
+    intent.putExtra(IntentAPIConstantUtils.TTDR_FW_PARAM, param);
+    intent.putExtra(IntentAPIConstantUtils.TTDR_FW_PARAM_VALUE, val);
+    sendBroadcast(intent);
+
+
+
+Response
+
+The key-value pairs below are received in the onActivityResult() method after invoking SET_PARAMS:
+
+
+  
+    Key
+    Type
+    Value
+  
+
+  
+       TTDR_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_GET_PARAMS
+  
+
+  
+       TTDR_ACTION_STATUS
+    Integer
+    -1 = Success 0 = Failed
+  
+
+
+
+
+
+Exception
+
+If the framework encounters an exception, the onActivityResult() method will return the following key-value pairs.
+
+
+  
+    Key
+    Type
+    Value
+  
+
+  
+       TTDR_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_EXCEPTION
+  
+
+  
+       TTDR_INTENT_EXCEPTION_OCCURRED_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_SET_PARAMS
+  
+
+  
+       TTDR_INTENT_EXCEPTION_NUMBER
+    Integer
+    Returns an integer value that represents the type of exception:
+       • 1 = INVALID_CONTEXT - Attempted to disable the reader when the Tread Reader object is not open.
+       • 2 = INVALID_STATE - The Tread Reader object is not in the proper state to set parameters. Parameters can be set when the reader is connected to the mobile computer and not actively reading.
+       • 3 = INVALID_PARAMETER_VALUE - An invalid value was provided; e.g., a string value was passed when an integer was expected.
+       • 4 = UNKNOWN_PARAMETER - An unknown parameter was provided; e.g., a parameter was used that is not among the accepted options.
+       • 5 = HARDWARE_ERROR - Unable to communicate with the Zebra Tread Intel; e.g., the device may not be properly connected to the mobile computer.
+       • 6 = REMOTE_COMMUNICATION_ERROR - Unable to communicate with the framework; e.g., the framework is not initialized.
+       • 7 = FRAMEWORK_ERROR - The framework was terminated; e.g., Android might have terminated it due to low memory.
+    
+  
+
+  
+       TTDR_INTENT_EXCEPTION_OCCURRED_ACTION
+    String
+    [Description of the exception that corresponds with the exception number; see TTDR_INTENT_EXCEPTION_NUMBER above.]
+  
+
+
+
+
+
+Sample Code
+
+This sample handles the response and includes exception handling.
+
+    if (Objects.equals(mACTION, IntentAPIConstantUtils.TTDR_INTENT_SET_PARAMS)) {
+        int mACTION_STATUS = data.getIntExtra(IntentAPIConstantUtils.TTDR_ACTION_STATUS,0);
+        if (mACTION_STATUS == IntentAPIConstantUtils.TTDR_ACTION_SUCCESS ){
+            Log.e(mACTION, &quot; - ACTION_SCCESS&quot;);
+        }
+        else if (mACTION_STATUS == IntentAPIConstantUtils.TTDR_ACTION_FAILED){
+            Log.e(mACTION, &quot; - ACTION_FAILED&quot;);
+        }
+    }
+
+
+
+GET_PARAMS
+
+GET_PARAMS retrieves configuration parameters from the Tread Reader framework. The following are required:
+
+
+The Tread Reader framework is initiated.
+
+The Tread Reader device is connected to the mobile computer.
+
+
+
+
+Request
+
+Use the following action:
+
+    com.zebra.intentapis.action.TTDR_GET_PARAMS
+
+Request Keys
+
+Add the following key to the intent:
+
+
+  
+    Key
+    Type
+    Description
+  
+
+  
+       TTDR_CALLBACK_RESPONSE
+    PendingIntent
+    Receive the response
+  
+
+  
+       TTDR_FW_PARAM
+    String
+    Respective parameter key, TTDR_FW_PARAM; see Get/Set Parameters table
+  
+
+
+
+Sample Code
+
+The sample code below demonstrates how to broadcast an intent with the action to retrieve parameter values of the framework.By including a PendingIntent, it allows the receiving framework component to return to the original broadcast sender.
+
+    Intent intent = new Intent(IntentAPIConstantUtils.TTDR_INTENT_ACTION_GET_PARAMS);
+    PendingIntent closeFrameworkPendingIntent =
+    createPendingResult(IntentAPIConstantUtils.TTDR_REQUEST_CODE, new Intent(),
+    PendingIntent.FLAG_UPDATE_CURRENT);
+    intent.putExtra(IntentAPIConstantUtils.TTDR_CALLBACK_RESPONSE, closeFrameworkPendingIntent);
+    intent.putExtra(IntentAPIConstantUtils.TTDR_FW_PARAM, param);
+    sendBroadcast(intent);
+
+
+
+Response
+
+The following key-value pairs are received to the onActivityResult() method after invoking GET_PARAMS:
+
+
+  
+    Key
+    Type
+    Value
+  
+
+  
+       TTDR_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_GET_PARAMS
+  
+
+  
+       TTDR_ACTION_STATUS
+    Integer
+    -1 = Success 0 = Failed
+  
+
+  
+       TTDR_ACTION_DATA
+    String
+    Requested parameter value in JSON format
+  
+
+
+
+
+
+Exception
+
+If the framework encounters an exception, the onActivityResult() method will return the following key-value pairs.
+
+
+  
+    Key
+    Type
+    Value
+  
+
+  
+       TTDR_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_EXCEPTION
+  
+
+  
+       TTDR_INTENT_EXCEPTION_OCCURRED_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_GET_PARAMS
+  
+
+  
+       TTDR_INTENT_EXCEPTION_NUMBER
+    Integer
+    Returns an integer value that represents the type of exception:
+       • 1 = INVALID_CONTEXT - Attempted to disable the reader when the Tread Reader object is not open.
+       • 2 = INVALID_STATE - The Tread Reader object is not in the proper state to set parameters. Parameters can be set when the reader is connected to the mobile computer and not actively reading.
+       • 3 = INVALID_PARAMETER_VALUE - An invalid value was provided; e.g., a string value was passed when an integer was expected.
+       • 4 = UNKNOWN_PARAMETER - An unknown parameter was provided; e.g., a parameter was used that is not among the accepted options.
+       • 5 = HARDWARE_ERROR - Unable to communicate with the Zebra Tread Intel; e.g., the device may not be properly connected to the mobile computer.
+       • 6 = REMOTE_COMMUNICATION_ERROR - Unable to communicate with the framework; e.g., the framework is not initialized.
+       • 7 = FRAMEWORK_ERROR - The framework was terminated; e.g., Android might have terminated it due to low memory.
+    
+  
+
+  
+       TTDR_INTENT_EXCEPTION_OCCURRED_ACTION
+    String
+    [Description of the exception that corresponds with the exception number; see TTDR_INTENT_EXCEPTION_NUMBER above.]
+  
+
+
+
+
+
+Sample Code
+
+This sample handles the response and includes exception handling.
+
+    if (Objects.equals(mACTION, IntentAPIConstantUtils.TTDR_INTENT_GET_PARAMS)) {
+        int mACTION_STATUS = data.getIntExtra(IntentAPIConstantUtils.TTDR_ACTION_STATUS,0);
+        if (mACTION_STATUS == IntentAPIConstantUtils.TTDR_ACTION_SUCCESS ){
+            String paramJson = data.getStringExtra(IntentAPIConstantUtils.TTDR_ACTION_DATA);
+        }
+        else if (mACTION_STATUS == IntentAPIConstantUtils.TTDR_ACTION_FAILED){
+            Log.e(mACTION, &quot; - ACTION_FAILED&quot;);
+        }
+    }
+
+Sample Response
+
+Response delivered in JSON format, for example:
+
+    {&quot;param&quot;:&quot;reader_timeout&quot;, &quot;paramVal:&quot;002&quot;}
+
+
+
+Tread Reader State
+
+Check the connection status of the Tread Reader and set up notifications for any state changes.
+
+CURRENT_STATE
+
+The CURRENT_STATE API checks the connection status of the Tread Reader framework after initialization, ensuring that the Tread Reader accessory is properly connected to the device. Make sure the Tread Reader framework is initiated.
+
+ON_STATE_CHANGE
+
+The ON_STATE_CHANGE API enables the app to register for notifications regarding state changes, notifying of any modifications in the framework connection status or operational state. Make sure the Tread Reader framework is initiated.
+
+
+
+Request
+
+Use the following actions for CURRENT_STATE or ON_STATE_CHANGE:
+
+    com.zebra.intentapis.action.TTDR_CURRENT_STATE
+    com.zebra.intentapis.action.TTDR_ON_STATE_CHANGE
+
+Request Keys
+
+Add the following key to the intent for CURRENT_STATE or ON_STATE_CHANGE:
+
+
+  
+    Key
+    Type
+    Description
+  
+
+  
+       TTDR_CALLBACK_RESPONSE
+    PendingIntent
+    Receives the response
+  
+
+
+
+Sample Code
+
+This demonstrates how to send a broadcast intent with the action to check the framework status for CURRENT_STATE and ON_STATE_CHANGE. By attaching a PendingIntent, the receiving framework component can return a result to the original broadcast sender.
+
+    private void getCurrentState(){
+        Intent intent = new Intent();
+        intent.setAction(IntentAPIConstantUtils.TTDR_INTENT_ACTION_CURRENT_STATE);
+        PendingIntent currentStatePendingIntent = createPendingResult(IntentAPIConstantUtils.TTDR_REQUEST_CODE, new Intent (), PendingIntent.FLAG_UPDATE_CURRENT);
+        intent.putExtra(IntentAPIConstantUtils.TTDR_CALLBACK_RESPONSE, currentStatePendingIntent);
+        sendBroadcast(intent);
+    }
+
+    private void checkForOnChangeState(){
+        Intent intent = new Intent();
+        intent.setAction(IntentAPIConstantUtils.TTDR_INTENT_ACTION_ON_STATE_CHANGE);
+        PendingIntent currentStatePendingIntent = createPendingResult(IntentAPIConstantUtils.TTDR
+        _REQUEST_CODE, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+        intent.putExtra(IntentAPIConstantUtils.TTDR_CALLBACK_RESPONSE, currentStatePendingIntent);
+        sendBroadcast(intent);
+    }
+
+
+
+Response
+
+The onActivityResult() method receives the following key-value pairs after invoking the CURRENT_STATE and ON_STATE_CHANGE APIs, providing information on the framework’s state and connection status.
+
+
+  
+    Key
+    Type
+    Value
+  
+
+  
+       TTDR_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_CURRENT_STATEcom.zebra.intentapis.action.TTDR_ON_STATE_CHANGE
+  
+
+  
+       TTDR_FW_STATE
+    String
+    Returns the framework operational state:   • Disabled   • Enabled   • Acquiring   • Processing
+  
+
+  
+       TTDR_FW_CONNECTION_STATE
+    String
+    Returns the framework connection state:   • Connected   • Disconnected
+  
+
+
+
+
+
+Exception
+
+If an exception occurs with CURRENT_STATE and ON_STATE_CHANGE, one of the following key-value pairs would be included in the response to the onActivityResult() method.
+
+
+  
+    Key
+    Type
+    Value
+  
+
+  
+       TTDR_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_EXCEPTION
+  
+
+  
+       TTDR_INTENT_EXCEPTION_OCCURRED_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_CURRENT_STATEcom.zebra.intentapis.action.TTDR_ON_STATE_CHANGE
+  
+
+  
+       TTDR_INTENT_EXCEPTION_NUMBER
+    Integer
+    Returns an integer value that represents the type of exception:
+       • 1 = INVALID_CONTEXT - Attempted to disable the reader when the Tread Reader object is not open.
+       • 2 = INVALID_STATE - The Tread Reader object is not in the proper state to set parameters. Parameters can be set when the reader is connected to the mobile computer and not actively reading.
+       • 3 = INVALID_PARAMETER_VALUE - An invalid value was provided; e.g., a string value was passed when an integer was expected.
+       • 4 = UNKNOWN_PARAMETER - An unknown parameter was provided; e.g., a parameter was used that is not among the accepted options.
+       • 5 = HARDWARE_ERROR - Unable to communicate with the Zebra Tread Intel; e.g., the device may not be properly connected to the mobile computer.
+       • 6 = REMOTE_COMMUNICATION_ERROR - Unable to communicate with the framework; e.g., the framework is not initialized.
+       • 7 = FRAMEWORK_ERROR - The framework was terminated; e.g., Android might have terminated it due to low memory.
+    
+  
+
+  
+       TTDR_INTENT_EXCEPTION_OCCURRED_ACTION
+    String
+    [Description of the exception that corresponds with the exception number; see TTDR_INTENT_EXCEPTION_NUMBER above.]
+  
+
+
+
+
+
+Sample Code
+
+This sample handles the response and includes exception handling for CURRENT_STATE and ON_STATE_CHANGE.
+
+    if (Objects.equals(mACTION,IntentAPIConstantUtils.TTDR_INTENT_ACTION_CURRENT_STATE)) {
+        String mFW_STATE = data.getStringExtra(IntentAPIConstantUtils.TTDR_FW_STATE);
+        String mFW_CONNECTION_STATE = data.getStringExtra(IntentAPIConstantUtils.TTDR_FW_CONNECTION_STATE);
+    }
+    if (Objects.equals(mACTION,IntentAPIConstantUtils.TTDR_INTENT_ACTION_ON_STATE_CHANGE)) {
+        String mFW_STATE = data.getStringExtra(IntentAPIConstantUtils.TTDR_FW_STATE);
+        String mFW_CONNECTION_STATE = data.getStringExtra(IntentAPIConstantUtils.TTDR_FW_CONNECTION_STATE);
+    }
+
+
+
+VERSION
+
+VERSION retrieves the version information of the Tread Reader framework. The following are required:
+
+
+The Tread Reader device is connected to the mobile computer.
+
+The Tread Reader framework is initiated before calling this API.
+
+
+
+
+Request
+
+Use the following action:
+
+    com.zebra.intentapis.action.TTDR_VERSION
+
+Request Keys
+
+Add the following key to the intent:
+
+
+  
+    Key
+    Type
+    Description
+  
+
+  
+       TTDR_CALLBACK_RESPONSE
+    PendingIntent
+    Receives the response
+  
+
+
+
+Sample Code
+
+Send a broadcast intent with the action to query the framework versions. By attaching a PendingIntent, it allows the receiving framework component to send a result back to the original sender of the broadcast
+
+    Intent intent = new Intent(IntentAPIConstantUtils.TTDR_INTENT_ACTION_VERSION);
+    PendingIntent closeFrameworkPendingIntent = createPendingResult(IntentAPIConstantUtils.TTDR_REQUEST_CODE, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+    intent.putExtra(IntentAPIConstantUtils.TTDR_CALLBACK_RESPONSE, closeFrameworkPendingIntent);
+    sendBroadcast(intent);
+
+Sample Response
+
+Response delivered in JSON format:
+
+{&quot;algorithmVersion&quot;:&quot;2.1.2.1&quot;,&quot;count&quot;:&quot;437&quot;,&quot;firmwareVersion&quot;:&quot;4.0&quot;,&quot;hardwareVersion&quot;:&quot;Tread Intel 1, 8 MB&quot;,&quot;hardwareaccessoryVersion&quot;:&quot;4.6.0.4&quot;,&quot;sdkVersion&quot;:&quot;4.5.6.0&quot;,&quot;serialNumber&quot;:&quot;242405251D0090&quot;,&quot;serviceVersion&quot;:&quot;4.6.0.4&quot;}
+
+This table provides the description of each field returned in the response.
+
+
+  
+    Field
+    Description
+  
+
+  
+    algorithmVersion
+    Returns the Zebra Tread Intel algorithm version information as a String.  
+  
+
+  
+    count
+    Returns the total number of scans recorded from the Zebra Tread Intel Accessory. For supported hardware, it returns the scan count value; for other accessories, it returns ‘Incompatible Hardware.’
+  
+
+  
+    firmwareVersion
+    Returns the Zebra Tread Intel firmware version information as a String. The firmware is managed internally by the service and is expected to be updated with service updates.
+  
+
+  
+    hardwareVersion
+    Returns the Zebra Tread Intel hardware accessory version information as a String.  
+  
+  
+    hardwareaccessoryVersion
+    Returns the Zebra Tread Intel software component version of the hardware accessory as a String.  
+  
+  
+    sdkVersion
+    Returns the SDK version, which is updated with any changes to the API or interfaces provided by the SDK.
+  
+  
+    serialNumber
+    Returns the serial number of the Zebra Tread Intel accessory as a String.  
+  
+  
+    serviceVersion
+    Returns the service version information as a String, updated with changes to the Tire Tread reading algorithm or software changes related to the reader framework.
+    
+  
+
+
+
+
+Response
+
+The following key-value pairs are received to the onActivityResult() method after invoking VERSION API:
+
+
+  
+    Key
+    Type
+    Value
+  
+
+  
+       TTDR_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_VERSION
+  
+
+  
+       TTDR_ACTION_STATUS
+    Integer
+    -1 = Success 0 = Failed
+  
+
+  
+       TTDR_ACTION_DATA
+    String
+    [JSON formatted data which contains the version information]
+  
+
+
+
+
+
+Exception
+
+In the event that the framework throws an exception while invoking VERSION API, the following key-value pairs may be part of the response to the onActivityResult() method.
+
+
+  
+    Key
+    Type
+    Value
+  
+
+  
+       TTDR_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_EXCEPTION
+  
+
+  
+       TTDR_INTENT_EXCEPTION_OCCURRED_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_VERSION
+  
+
+  
+       TTDR_INTENT_EXCEPTION_NUMBER
+    Integer
+    Returns an integer value that represents the type of exception:
+       • 1 = INVALID_CONTEXT - Attempted to disable the reader when the Tread Reader object is not open.
+       • 2 = INVALID_STATE - The Tread Reader object is not in the proper state to set parameters. Parameters can be set when the reader is connected to the mobile computer and not actively reading.
+       • 3 = INVALID_PARAMETER_VALUE - An invalid value was provided; e.g., a string value was passed when an integer was expected.
+       • 4 = UNKNOWN_PARAMETER - An unknown parameter was provided; e.g., a parameter was used that is not among the accepted options.
+       • 5 = HARDWARE_ERROR - Unable to communicate with the Zebra Tread Intel; e.g., the device may not be properly connected to the mobile computer.
+       • 6 = REMOTE_COMMUNICATION_ERROR - Unable to communicate with the framework; e.g., the framework is not initialized.
+       • 7 = FRAMEWORK_ERROR - The framework was terminated; e.g., Android might have terminated it due to low memory.
+    
+  
+
+  
+       TTDR_INTENT_EXCEPTION_OCCURRED_ACTION
+    String
+    [Description of the exception that corresponds with the exception number; see TTDR_INTENT_EXCEPTION_NUMBER above.]
+  
+
+
+
+
+
+Sample
+
+This sample handles the response and includes exception handling.
+
+    if (Objects.equals(mACTION, IntentAPIConstantUtils.TTDR_INTENT_ACTION_VERSION)) {
+
+        int mACTION_STATUS = data.getIntExtra(IntentAPIConstantUtils.TTDR_ACTION_STATUS,0);
+        if (mACTION_STATUS == IntentAPIConstantUtils.TTDR_ACTION_SUCCESS)  {
+            String jsonData = data.getStringExtra(IntentAPIConstantUtils.TTDR_ACTION_DATA);
+
+        }
+        else if (mACTION_STATUS == IntentAPIConstantUtils.TTDR_ACTION_FAILED) {
+            Log.e(mACTION, &quot; - ACTION_FAILED&quot;);
+        }
+    }
+
+
+
+RELEASE
+
+RELEASE terminates the Tread Reader framework session. Zebra recommends invoking this API within onStop() where the application enters an inactive state.
+
+
+
+Request
+
+Use the following action:
+
+com.zebra.intentapis.action.TTDR_RELEASE
+
+Request Keys
+
+Add the following key to the intent:
+
+
+  
+    Key
+    Type
+    Description
+  
+
+  
+       TTDR_CALLBACK_RESPONSE
+    PendingIntent
+    Receives the response
+  
+
+
+
+Sample Code
+
+The sample code below demonstrates how to broadcast an intent with the action to release the framework. By including a PendingIntent, it allows the receiving framework component to return to the original broadcast sender.
+
+    Intent intent = new Intent(IntentAPIConstantUtils.TTDR_INTENT_ACTION_RELEASE);
+    PendingIntent closeFrameworkPendingIntent = createPendingResult(IntentAPIConstantUtils.TTDR_REQUEST_CODE, new Intent(),
+    PendingIntent.FLAG_UPDATE_CURRENT);
+    intent.putExtra(IntentAPIConstantUtils.TTDR_CALLBACK_RESPONSE, closeFrameworkPendingIntent);
+    sendBroadcast(intent);
+
+
+
+Response
+
+The key-value pairs below are received in the onActivityResult() method after invoking RELEASE API.
+
+
+  
+    Key
+    Type
+    Value
+  
+
+  
+       TTDR_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_RELEASE
+  
+
+  
+       TTDR_ACTION_STATUS
+    Integer
+    -1 = Success 0 = Failed
+  
+
+
+
+
+
+Exception
+
+If the framework encounters an exception when invoking the RELEASE API, the onActivityResult() method will return the following key-value pairs.
+
+
+  
+    Key
+    Type
+    Value
+  
+
+  
+       TTDR_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_EXCEPTION
+  
+
+  
+       TTDR_INTENT_EXCEPTION_OCCURRED_ACTION
+    String
+    com.zebra.intentapis.action.TTDR_RELEASE
+  
+
+  
+       TTDR_INTENT_EXCEPTION_NUMBER
+    Integer
+    Returns an integer value that represents the type of exception:
+       • 1 = INVALID_CONTEXT - Attempted to disable the reader when the Tread Reader object is not open.
+       • 2 = INVALID_STATE - The Tread Reader object is not in the proper state to set parameters. Parameters can be set when the reader is connected to the mobile computer and not actively reading.
+       • 3 = INVALID_PARAMETER_VALUE - An invalid value was provided; e.g., a string value was passed when an integer was expected.
+       • 4 = UNKNOWN_PARAMETER - An unknown parameter was provided; e.g., a parameter was used that is not among the accepted options.
+       • 5 = HARDWARE_ERROR - Unable to communicate with the Zebra Tread Intel; e.g., the device may not be properly connected to the mobile computer.
+       • 6 = REMOTE_COMMUNICATION_ERROR - Unable to communicate with the framework; e.g., the framework is not initialized.
+       • 7 = FRAMEWORK_ERROR - The framework was terminated; e.g., Android might have terminated it due to low memory.
+    
+  
+
+  
+       TTDR_INTENT_EXCEPTION_OCCURRED_ACTION
+    String
+    [Description of the exception that corresponds with the exception number; see TTDR_INTENT_EXCEPTION_NUMBER above.]
+  
+
+
+
+
+
+Sample Code
+
+This sample handles the response and includes exception handling.
+
+    if (Objects.equals(mACTION, IntentAPIConstantUtils.TTDR_INTENT_ACTION_RELEASE)) {
+
+        int mACTION_STATUS = data.getIntExtra(IntentAPIConstantUtils.TTDR_ACTION_STATUS,0);
+        if (mACTION_STATUS == IntentAPIConstantUtils.TTDR_ACTION_SUCCESS ){
+            Log.e(mACTION,&quot;ACTION_SUCCESS&quot;);
+        }
+        else if (mACTION_STATUS == IntentAPIConstantUtils.TTDR_ACTION_FAILED){
+            Log.e(mACTION,&quot;ACTION_FAILED&quot;);
+        }
+    }
+
+
+
+See Also
+
+
+About Zebra Tread Intel
+
+Sample App
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2025 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+
+
+
+Back to Top</pre></body></html>

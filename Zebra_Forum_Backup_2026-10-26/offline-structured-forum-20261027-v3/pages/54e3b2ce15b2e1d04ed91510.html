@@ -1,0 +1,179 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>What happen if i close bluetooth connection once a day after my multiple print jobs completed</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/forum/26071; snapshot threads/resume-00390.html; SHA-256 8f63428953ba0236d3acf403ecac4ff353671f4914f5596215007907985efa83. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">What happen if i close bluetooth connection once a day after my multiple print jobs completed</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            A
+          </div>
+          <div class="forum-topic__author-name">Anonymous</div>
+          <div class="forum-topic__timestamp">5 years 4 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            41
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Before the discussion start, i need to provide some info on my background.<br>
+I have a android app develop under XAMARIN ANDROID platform. The android app will pair with a ZEBRA printer ZQ521. All the print jobs is send from android device to ZQ521 printer via Bluetooth connections. I have use LINK OS XAMARIN SDK's API to handle the Bluetooth communication between android device and ZEBRA ZQ521. Below is the sample source code i tried.<br>
+=======================================================================================================================<br>
+public void Print(IConnection connection)<br>
+{<br>
+    string zpl = "^XA^POI^MNN^LL90^PW400^FO20,20^A0N,50,50^FDTEST^FS^XZ";//sample content to print<br>
+    try<br>
+    {<br>
+        connection.Open();<br>
+        connection.Write(Encoding.UTF8.GetBytes(zpl));<br>
+    }<br>
+    catch (Exception e)<br>
+    {<br>
+        System.Diagnostics.Debug.WriteLine("Exception:" + e.Message);<br>
+    }<br>
+    finally<br>
+    {<br>
+        if (connection.IsConnected)<br>
+            connection.Close();<br>
+    }<br>
+}<br>
+=======================================================================================================================<br>
+What happen now is whenever i call  connection.Close(); to close the bluetooth connection, it took about 5 to 8 seconds to complete the action. This is troublesome to my use case as we need to print on average 300 to 500 print jobs a day. If each print jobs take 5 to 10 secs to complete, our user will need more time to complete 300 to 500 print jobs.<br>
+I have decided to redesign how i handle the LINK OS API. Below is the steps<br>
+1. I will set my connection object to singleton object (which means i only create the object once).<br>
+1. When user start to use our app, i will call   connection.Open(); 1 times.<br>
+2. I WILL NOT call connection.close() for each print jobs<br>
+3. By the end of day i will force my app to reboot the android device so that zebra bluetooth connection is close after user's daily operation ended.<br>
+My question is<br>
+1. What is the impact if i didn't close the bluetooth connection, if is the concern of memory resources, i have utilize singleton pattern on connection object to ensure the connection is only created once., will that help?</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-47864" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>The time to wait before close is set to 5 seconds in SDK. This is to prevent from closing the connection prematurely when there are still data being transmitted at the Bluetooth link layer.<br>
+We can certainly keep the Bluetooth connection open for the entire lifecycle of the workflow, as long as we check the connection status before sending any print jobs. This is because the printer may be out of the Bluetooth range and no longer reachable, therefore, the connection object is stale and no longer valid. In this case, we need to close the connection and create a new connection object. Hope this helps.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/forum/26071%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/forum/26071%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

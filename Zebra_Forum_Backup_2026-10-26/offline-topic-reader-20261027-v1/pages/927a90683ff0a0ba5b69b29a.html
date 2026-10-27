@@ -1,0 +1,184 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to configure a profile and receive a Datawedge broadcast receiver intent programatically in an Angular Ionic app?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to configure a profile and receive a Datawedge broadcast receiver intent programatically in an Angular Ionic app?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/how-configure-profile-and-receive-datawedge-broadcast-receiver-intent-programatically-angular-ionic-app; original snapshot: threads/00064.html; SHA-256: 5c695ef8f7fcb67c67d192761aed8ec2da4f68ff83283de49b3dccee3db70c70</small><pre id="topic">
+
+    
+        How to configure a profile and receive a Datawedge broadcast receiver intent programatically in an Angular Ionic app?
+
+
+        
+      
+                        
+                    
+            S
+          
+          Sobia Shahbaz
+          1 year 7 months ago
+        
+        
+      
+        
+            
+                  
+            
+            459
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Dear Zebra Support Team,I hope this message finds you well. I am reaching out for assistance with an issue I’m encountering while working with DataWedge on a Zebra TC26 device running Android 14 and DataWedge version 15.0.9.Issue DescriptionI am trying to configure a profile programmatically on DataWedge and retrieve the list of DataWedge profiles using the com.symbol.datawedge.api.GET_PROFILES_LIST API.However, despite successfully sending the intent (confirmed by the log: &quot;Intent sent successfully to get DataWedge profiles list&quot;), I am not receiving any response from DataWedge. The broadcast receiver does not seem to capture the intent containing the profiles list.Current Implementation1. Profile Creation and ConfigurationI am dynamically creating and configuring a DataWedge profile named &quot;ABC&quot; using the following steps:Associate the profile with my app’s package name.Configure the INTENT plugin to use a custom intent action (&lt;packageName&gt;.scan) and enable BROADCAST delivery.Set the Intent Category to android.intent.category.DEFAULT.Here’s the relevant code snippet for profile configuration:public profileIntentOutputConfig(profileName: string, scanIntentName: string): DataWedgeProfileConfig {   return {       PROFILE_NAME: profileName,       PROFILE_ENABLED: &#x27;true&#x27;,       CONFIG_MODE: &#x27;UPDATE&#x27;,       PLUGIN_CONFIG: [           {               PLUGIN_NAME: &#x27;INTENT&#x27;,               RESET_CONFIG: &#x27;true&#x27;,               PARAM_LIST: {                   intent_output_enabled: &#x27;true&#x27;,                   intent_action: scanIntentName,                   intent_delivery: DataWedgeIntentDelivery.BROADCAST,                   intent_category: &#x27;android.intent.category.DEFAULT&#x27;,               },           },           // Other plugin configurations...       ]   };}2. Sending the IntentI am sending the following intent to request the profiles list:const intent = {   action: &#x27;com.symbol.datawedge.api.ACTION&#x27;,   extras: {       &#x27;com.symbol.datawedge.api.GET_PROFILES_LIST&#x27;: &#x27;&#x27;   }};(window as any).plugins.intentShim.sendBroadcast(intent, successCallback, errorCallback);The log &quot;Intent sent successfully to get DataWedge profiles list&quot; confirms that the intent is sent successfully.3. Broadcast ReceiverI have set up a broadcast receiver to listen for the response:(window as any).plugins.intentShim.registerBroadcastReceiver(   {       filterActions: [           &#x27;com.symbol.datawedge.api.RESULT_ACTION&#x27;       ],       filterCategories: [           &#x27;android.intent.category.DEFAULT&#x27;       ]   },   (intent) =&gt; {       console.log(&#x27;Received Intent:&#x27;, intent);       if (intent.action === &#x27;com.symbol.datawedge.api.RESULT_ACTION&#x27;) {           const profilesList = intent.extras[&#x27;com.symbol.datawedge.api.RESULT_GET_PROFILES_LIST&#x27;];           if (profilesList) {               console.log(&#x27;DataWedge Profiles List:&#x27;, profilesList);           }       }   });However, the broadcast receiver does not log any intents, and I am unable to retrieve the profiles list.What I’ve TriedVerified that the DataWedge profile is correctly configured with the INTENT plugin.Ensured that the &gt;Intent Category is set to android.intent.category.DEFAULT.Restarted the DataWedge service on the device.Confirmed that the app has the necessary permissions:RECEIVE_BOOT_COMPLETEDWAKE_LOCKFOREGROUND_SERVICERequest for AssistanceCould you please help me identify what might be wrong with my implementation? Specifically:Are there any additional configurations required in the DataWedge profile to enable the GET_PROFILES_LIST API?Is there a known issue with DataWedge version 15.0.9 or Android 14 that might be causing this behavior?Are there any debugging steps I can take to further investigate why the broadcast receiver is not capturing the response?Any guidance or suggestions would be greatly appreciated! Please let me know if you need additional information or logs from my side.Thank you for your time and support! 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Adam Stein
+          
+          
+            1 year 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            It looks like you&#x27;ve set up everything correctly, but there are a few things you can check and try to troubleshoot why you&#x27;re not receiving the response from DataWedge. Let&#x27;s go through them step by step:1. Check DataWedge Logging for ErrorsSince DataWedge is not sending a response, check if the GET_PROFILES_LIST intent is being processed at all:Open DataWedge &gt; Settings &gt; Enable DataWedge Logging.Use ADB Logcat to check if any errors appear when you send the intent:adb logcat -s DataWedge
+If there’s an issue with intent handling, you should see relevant logs.2. Verify Broadcast Receiver SetupEnsure that your broadcast receiver is actually running and listening to the correct intents. Some things to check:The response from DataWedge should contain an Intent action of com.symbol.datawedge.api.RESULT_ACTION. Your receiver should be listening for this.Ensure your receiver is properly registered.Try registering it dynamically instead of using intentShim:Test with Java/KotlinIf possible, test with native Java/Kotlin code to check if the issue is with intentShim:BroadcastReceiver dataWedgeReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (intent.getAction().equals(&quot;com.symbol.datawedge.api.RESULT_ACTION&quot;)) {
+            Bundle extras = intent.getExtras();
+            if (extras != null &amp;&amp; extras.containsKey(&quot;com.symbol.datawedge.api.RESULT_GET_PROFILES_LIST&quot;)) {
+                ArrayList&lt;String&gt; profiles = extras.getStringArrayList(&quot;com.symbol.datawedge.api.RESULT_GET_PROFILES_LIST&quot;);
+                Log.d(&quot;DataWedge&quot;, &quot;Profiles: &quot; + profiles);
+            }
+        }
+    }
+};
+
+// Register the receiver dynamically
+IntentFilter filter = new IntentFilter();
+filter.addAction(&quot;com.symbol.datawedge.api.RESULT_ACTION&quot;);
+context.registerReceiver(dataWedgeReceiver, filter);
+If this works, the issue may be related to how intentShim is handling broadcasts.3. Ensure DataWedge Has Permission to Send BroadcastsStarting from Android 12+, broadcast receivers need explicit permissions to receive implicit broadcasts.Try adding the following to your AndroidManifest.xml:&lt;receiver android:name=&quot;.DataWedgeReceiver&quot;
+    android:exported=&quot;true&quot;&gt;
+    &lt;intent-filter&gt;
+        &lt;action android:name=&quot;com.symbol.datawedge.api.RESULT_ACTION&quot;/&gt;
+        &lt;category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;
+    &lt;/intent-filter&gt;
+&lt;/receiver&gt;
+Also, request RECEIVE_BROADCAST permission:&lt;uses-permission android:name=&quot;android.permission.RECEIVE_BROADCAST&quot;/&gt;
+4. Force DataWedge to Send Result via &quot;SEND_RESULT&quot;In some cases, DataWedge doesn’t send responses automatically. You can explicitly request a response using the SEND_RESULT flag.Modify your GET_PROFILES_LIST request like this:const intent = {
+   action: &#x27;com.symbol.datawedge.api.ACTION&#x27;,
+   extras: {
+       &#x27;com.symbol.datawedge.api.GET_PROFILES_LIST&#x27;: &#x27;&#x27;,
+       &#x27;SEND_RESULT&#x27;: &#x27;LAST_RESULT&#x27;
+   }
+};
+This forces DataWedge to send the response as the last known result.5. Check If DataWedge is Running in ForegroundSometimes, DataWedge might not process requests properly if it is inactive or crashes in the background.Try restarting DataWedge manually:Open the DataWedge app.Go to Settings &gt; Disable DataWedge &gt; Enable DataWedge.Restart your app and try again.6. Verify That Other Intents WorkTo determine if the issue is with GET_PROFILES_LIST specifically, try sending another API request, such as GET_VERSION_INFO:const intent = {
+   action: &#x27;com.symbol.datawedge.api.ACTION&#x27;,
+   extras: {
+       &#x27;com.symbol.datawedge.api.GET_VERSION_INFO&#x27;: &#x27;&#x27;
+   }
+};
+If this also doesn’t return a response, the problem may be with the broadcast setup.7. Try Using &quot;START_ACTIVITY&quot; Instead of &quot;BROADCAST&quot;As a last resort, switch from BROADCAST to START_ACTIVITY in your DataWedge configuration:intent_delivery: &#x27;START_ACTIVITY&#x27;
+This will open your app when a scan is received.Next Steps✅ Enable DataWedge logging and check logs with adb logcat -s DataWedge.✅ Test GET_VERSION_INFO to see if any API calls work.✅ Register a native broadcast receiver in Java/Kotlin and check if the issue is with intentShim.✅ Add the necessary permissions in AndroidManifest.xml.✅ Explicitly request a response with SEND_RESULT.. . . . .
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

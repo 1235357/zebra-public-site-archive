@@ -1,0 +1,339 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Print QR Code</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Print QR Code</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/print-qr-code; original snapshot: threads/00525.html; SHA-256: 5c1ab29b0ab117d15a0e796923dfee1d7e1ed92d422f5c6599f810390f4c3312</small><pre id="topic">
+
+    
+        Print QR Code
+
+
+        
+      
+                        
+                    
+            J
+          
+          Jose Margarido
+          3 years 3 months ago
+        
+        
+      
+        
+            
+                  
+            
+            2339
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+
+Zebra ZQ220 plus printer, Android Studio, and Zebra Mobile TC21.
+I can print text, etc., but I can&#x27;t print the QR code through an ImageView image.
+I have already checked the documentation and all the examples, but none of them work. They always print random characters. For example:
+
+ 
+
+....
+ImageView qrCodeImageView = findViewById(R.id.geraetiq_imageViewResult);
+final Bitmap qrCodeBitmap = ((BitmapDrawable) qrCodeImageView.getDrawable()).getBitmap();
+
+Connection connectprinter = new BluetoothConnection(&quot;XX:XX:XX:XX:XX:XX&quot;);
+try {
+    connectprinter.open();
+    ZebraPrinter printer = ZebraPrinterFactory.getInstance(connectprinter);
+    printer.reset();
+    File tempFile = null;
+    tempFile = File.createTempFile(&quot;temp_image&quot;, &quot;.png&quot;, getCacheDir());
+    FileOutputStream outputStream = new FileOutputStream(tempFile);
+    qrCodeBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+    outputStream.close();
+    int x = 0;
+    int y = 0;
+    printer.printImage(tempFile.getAbsolutePath(), x, y,50,50,false);  // NOT WORK
+    printer.printImage(new ZebraImageAndroid(qrCodeBitmap), 0, 0, qrCodeBitmap.getWidth(), qrCodeBitmap.getHeight(), false);  // NOT WORK
+    String finalCommand = &quot;! 0 50 20 100 1\r\nTEXT 4 0 20 20 &quot; + &quot;N: &quot; + eTxt_NInterno.getText().toString() + &quot;\r\nPRINT\r\n&quot;;
+    printer.sendCommand(finalCommand); //WORK
+    
+    connectprinter.close();
+
+} catch (ConnectionException e) {
+    e.printStackTrace();
+} catch (FileNotFoundException e) {
+    e.printStackTrace();
+} catch (IOException e) {
+    e.printStackTrace();
+} catch (ZebraPrinterLanguageUnknownException e) {
+    throw new RuntimeException(e);
+} finally {
+    try {
+        connectprinter.close();
+    } catch (ConnectionException e) {
+        e.printStackTrace();
+    }
+}
+
+ 
+
+ 
+
+What am I doing wrong?!!
+
+Thank you!
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            ZQ220 printers are CPCL printers. By default, the ZebraPrinterFactory.getInstance(connectprinter) returns an instance for ZPL printer. In order to get an instance for CPCL printer, please pass in the PrinterLanguage.CPCL parameter. With the CPCL printer instance, you should be able to print the image of the barcode.
+// Get a CPCL printer instance
+ZebraPrinter printer = ZebraPrinterFactory.getInstance(PrinterLanguage.CPCL, connectprinter)
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jose Margarido
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+
+Thank you for the help. However, I have another problem: How can I print the image with only 3 cm of height? Regardless of the size I manipulate the image, the printer roll prints an additional 15 cm of empty space. How can this be resolved?
+
+This my code:
+ 
+
+try {
+    connectprinter.open();
+    ZebraPrinter printer = ZebraPrinterFactory.getInstance(PrinterLanguage.CPCL, connectprinter);
+    
+    printer.printImage(new ZebraImageAndroid(qrCodeBitmap), 0, 0, 250, 125, false);
+    
+    // Rest of the code...
+} catch (ConnectionException e) {
+    e.printStackTrace();
+} catch (InterruptedException e) {
+    throw new RuntimeException(e);
+} finally {
+    try {
+        connectprinter.close();
+    } catch (ConnectionException e) {
+        e.printStackTrace();
+    }
+}
+
+Regards
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Check the media.feed_length setting on the ZQ220 printer. Try to set the media.feed_length to the minimum, which is 25 dots for the ZQ220. You can either use the Printer Setup Utilities for Windows tool or use the API in the SGD class of the SDK to change the setting.
+### Check the media.feed_length setting
+! U1 getvar &quot;media.feed_length&quot;
+
+### Set the media.feed_length to minimum 25
+! U1 setvar &quot;media.feed_length&quot; &quot;25&quot; 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

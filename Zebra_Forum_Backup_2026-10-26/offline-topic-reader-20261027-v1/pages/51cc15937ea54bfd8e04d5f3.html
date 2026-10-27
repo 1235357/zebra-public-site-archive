@@ -1,0 +1,190 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to find out whether the paired bluetooth device is a zebra printer or not</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to find out whether the paired bluetooth device is a zebra printer or not</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/how-find-out-whether-paired-bluetooth-device-zebra-printer-or-not; original snapshot: threads/00890.html; SHA-256: 3973384c54d5978424229556bb02852d70b8d8e20926cbc59cddd5872a4a9910</small><pre id="topic">
+
+    
+        How to find out whether the paired bluetooth device is a zebra printer or not
+
+
+        
+      
+                        
+                    
+            S
+          
+          Senthil Subramanian
+          4 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            398
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+Following is the way we are using to identify whether the paired bluetooth device is a zebra printer or not:
+We are not using discovery mechanism yet, we will pair our printer to the mobile device through bluetooth and by using the BluetoothDevice object we will initiate the connection mechanism. When we are querying for the list of paired devices we will get all the devices paired from the mobile device and to find out which is the printer device we will have the following logic using BluetoothClass:
+For getting the bluetooth class : BluetoothClass bluetoothClass = device.getBluetoothClass();
+And the condition is,
+if((bluetoothClass.getMajorDeviceClass() == BluetoothClass.Device.Major.IMAGING) &amp;amp;&amp;amp; (bluetoothClass.hasService(BluetoothClass.Service.RENDER))){
+// Then it is a printer
+}
+The above condition is failing for the ZD621R printer which i am using because getMajorDeviceClass() method is returning value as 7936 ( which is UNCATEGORIZED) and bluetoothClass.hasService(BluetoothClass.Service.RENDER) returns value as false. The same condition will work for all the previous models of zebra printers including ZD500R. Will there be any particular reason why this printer&#x27;s bluetooth class is defined as UNCATEGORIZED and it doesn&#x27;t have the service value as rendering? And is there any other way how we can identify the zebra printers via BluetoothDevice object?
+Please suggest if there are any other better way to identify whether the paired bluetooth device is a zebra printer or not.
+Thanks and Regards,
+Arunvishal S
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The factory default hardware confirmation of ZD621 printers does not include the Bluetooth classic. Therefore, the 7936 is returned from the bluetoothClass.getMajorDeviceClass(). If the ZD621 has the Bluetooth classic equipped, then the 1536 (0x600 for IMAGING) will be returned from the bluetoothClass.getMajorDeviceClass(). To verify if a printer has the Bluetooth classic equipped or not, use the SGD of the bluetooth via the Printer Setup Utility for Windows tool. In the response, the item of the bluetooth.le.controller_mode shows what type of the Bluetooth is equipped and enabled, i.e. the Classic, LE or both. Probably the ZD621 printer you have only has the LE.
+### Bluetooth SGD
+! U1 getvar &quot;bluetooth&quot;
+
+&lt;&lt; example response &gt;&gt;
+bluetooth.
+bluetooth.discoverable : on , Choices: on,off
+bluetooth.friendly_name : XXZJJ174600934 
+bluetooth.version : 6.2 
+bluetooth.date : 01/01/2020 
+bluetooth.local_name : XXZJJ174600934 
+bluetooth.address : AC:3F:A4:CD:C5:15 
+bluetooth.bluetooth_pin : * 
+bluetooth.short_address : AC3FA4CDC515 
+bluetooth.radio_version : 5.2 
+bluetooth.enable : on , Choices: on,off
+bluetooth.connected : no 
+bluetooth.minimum_security_mode : 3 , Choices: 1,2,3,4
+bluetooth.connected_security_mode : nc 
+bluetooth.bonding : on , Choices: on,off
+bluetooth.clear_bonding_cache
+bluetooth.enable_reconnect : iOS_only , Choices: off,iOS_only
+bluetooth.le.
+bluetooth.le.controller_mode : both , Choices: both,classic,le
+bluetooth.le.power_class : 2 , Choices: 1-2
+bluetooth.json_config_channel_enable : on , Choices: on,off
+bluetooth.page_scan_window : 60 , Choices: 15,60
+bluetooth.power_class : 2 , Choices: 1-2To detect if the paired Bluetooth device is a printer or not, use the BluetoothClass.Device class. Refer to the Bluetooth Class Device &amp; Service Generator to generate the const for comparison. For a Bluetooth printer device, the Major Device Class is IMAGING, while the Minor Device Class is the PRINTER. So the combined value is 1664 (or 0x680). Use the following comparison to determine if it&#x27;s a printer or not.
+if (bluetoothDevice.getBluetoothClass().getDeviceClass() == 1664) {
+    // A Bluetooth printer
+} else {
+    // Not a Bluetooth printer
+} 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

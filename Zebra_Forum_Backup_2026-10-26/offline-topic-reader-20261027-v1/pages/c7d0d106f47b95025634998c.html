@@ -1,0 +1,258 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MC3190 CE6 Remote Desktop password saving</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MC3190 CE6 Remote Desktop password saving</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/25066; original snapshot: threads/01405.html; SHA-256: 1a85dd15b4307904c23f83ff5cb624f6c37b4dbd04c149d0bf6de936c0439e48</small><pre id="topic">
+
+    
+        MC3190 CE6 Remote Desktop password saving
+
+
+        
+      
+                        
+                    
+            K
+          
+          Kultida Chatarupachewin
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            56
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;ve been trying to enable password save in RD client on MC3190 CE6.0. This feature was available on MC3090 CE5.0, so my customer who changed to buy the new model complaining a lot. They don&#x27;t want users to type in user/password everytime they login.   I was able to add the checkbox &quot;Remember my password&quot; to the credential window by changing below registry to zero.   HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows NT\Terminal Services\DisablePasswordSaving  But it l  ooks like WindowsCE still disable credential Network password saving. I&#x27;m trying to look for Registry key that can enable the credential password saving. Anyone familia with this issue??
+       Thank you.  
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Howard Laser
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            These registry keys will work as long as the RDP session is initiated from the program itself. The password will not be saved if launched from a saved RDP file. As per Microsoft,
+Windows CE reads saved passwords, but does not have the ACLs to securely write passwords.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            We have worked around this issue in the past by having a script start the client then send the required key strokes to navigate to the required screen then automatically enter the required password.&amp;nbsp; During this period it disables the touch screen and keypad, so the user cannot interfere with the sequence.   Whilst a workaround it does allow an automated login when the terminal starts.   The password/script can be encryprted.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            [HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows NT\Terminal Services] &quot;DisablePasswordSaving&quot;=dword:0
+[HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows NT\Terminal Services]  &quot;DisablePasswordSaving&quot;=dword:0
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

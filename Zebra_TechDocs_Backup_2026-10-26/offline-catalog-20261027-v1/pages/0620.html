@@ -1,0 +1,459 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Soft Scan Trigger - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/softscantrigger</code><br>Observed final URL: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/softscantrigger/</code><br>Raw source: <code>raw/b0a60984d1b650a41927bec0.html</code><br>Raw SHA-256: <code>80232da91069cb4f1c8df92fdb0173b1336a0828965cd8a83275047d71a0cebf</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs Home
+                        
+                                            DataWedge
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Get Started
+                            
+                        
+                        
+                            
+                                    Profiles
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Feature Matrix
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            US - English
+                          
+                          
+                                 CN - 普通话
+                                 JP - 日本語
+                          
+                                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Soft Scan Trigger
+                        
+                    SOFT_SCAN_TRIGGERFunction PrototypeParametersResult CodesExample CodeSample &#x27;SCANNER_STATUS&#x27; NotificationDelay codeGenerate and receive results
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Soft Scan Trigger
+                                    
+                                            DataWedge
+                                            15.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        SOFT_SCAN_TRIGGER
+
+Used to start, stop or toggle a software scanning trigger. This API is functional only when Barcode Input is enabled in the active Profile. Execution of the soft scan trigger command should be sufficiently delayed to enable the scanner to complete existing tasks before being asked to perform another. Soft scan trigger commands might be ignored if the scanner is busy at the time a command is executed. Zebra recommends using the SCANNER_STATUS parameter of the NOTIFICATION API to signal that the scanner is ready. 
+
+Function Prototype
+
+For single scanner:
+
+Intent i = new Intent();
+i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+i.putExtra(&quot;com.symbol.datawedge.api.SOFT_SCAN_TRIGGER&quot;, &quot;&lt;parameter&gt;&quot;);
+
+For multiple scanner support, the SOFT_SCAN_TRIGGER intent must include extra scanner_selection_by_identifier indicating the scanner to be used:
+
+Intent i = new Intent();
+i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+i.putExtra(&quot;scanner_selection_by_identifier&quot;, &quot;BLUETOOTH_RS6000&quot;);
+i.putExtra(&quot;com.symbol.datawedge.api.SOFT_SCAN_TRIGGER&quot;, &quot;TOGGLE_SCANNING&quot;);
+sendBroadcast(i);
+
+Parameters
+
+ACTION [String]: &quot;com.symbol.datawedge.api.ACTION&quot;
+
+EXTRA_DATA [String]: &quot;com.symbol.datawedge.api.SOFT_SCAN_TRIGGER&quot;
+
+&lt;parameter&gt;: The parameter as a string, using any of the following:
+
+
+START_SCANNING - starts scanning when triggered
+
+STOP_SCANNING - stops or interrupts scanning when triggered
+
+TOGGLE_SCANNING - toggles between START_SCANNING and STOP_SCANNING when triggered
+
+
+Result Codes
+
+DataWedge returns the following error codes if the app includes the intent extras SEND_RESULT and COMMAND_IDENTIFIER to enable the app to get results using the DataWedge result intent mechanism. See Example, below.
+
+
+DATAWEDGE_DISABLED - FAILURE
+
+INPUT_NOT_ENABLED - FAILURE
+
+PARAMETER_INVALID - FAILURE
+
+PROFILE_DISABLED - FAILURE
+
+
+Also see the Result Codes guide for more information.
+
+Example Code
+
+// define action and data strings
+String softScanTrigger = &quot;com.symbol.datawedge.api.ACTION&quot;;
+String extraData = &quot;com.symbol.datawedge.api.SOFT_SCAN_TRIGGER&quot;;
+
+// create the intent
+Intent i = new Intent();
+
+// set the action to perform
+i.setAction(softScanTrigger);
+
+// add additional info
+i.putExtra(extraData, &quot;START_SCANNING&quot;);
+
+// send the intent to DataWedge
+this.sendBroadcast(i);
+
+Sample &#x27;SCANNER_STATUS&#x27; Notification
+
+Sample code using the SCANNER_STATUS parameter of the NOTIFICATION API to signal that the scanner is ready.
+
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+    registerReceivers();
+}
+
+@Override
+protected void onResume(){
+    super.onResume();
+    switchToProfile();
+}
+
+public static final String ACTION = &quot;com.symbol.datawedge.api.ACTION&quot;;
+public static final String NOTIFICATION_ACTION = &quot;com.symbol.datawedge.api.NOTIFICATION_ACTION&quot;;
+public static final String NOTIFICATION_TYPE_SCANNER_STATUS = &quot;SCANNER_STATUS&quot;;
+public static final String SCAN_STATUS_WAITING = &quot;WAITING&quot;;
+public static final String NOTIFICATION_TYPE_PROFILE_SWITCH = &quot;PROFILE_SWITCH&quot;;
+
+public static final String ACTION_EXTRA_REGISTER_FOR_NOTIFICATION = &quot;com.symbol.datawedge.api.REGISTER_FOR_NOTIFICATION&quot;;
+public static final String ACTION_EXTRA_UNREGISTER_FOR_NOTIFICATION = &quot;com.symbol.datawedge.api.UNREGISTER_FOR_NOTIFICATION&quot;;
+
+private void registerReceivers() {
+    IntentFilter filter = new IntentFilter();
+    filter.addAction(NOTIFICATION_ACTION);
+    registerReceiver(broadcastReceiver, filter);
+    registerForScannerStatus();
+}
+
+@Override
+protected void onDestroy() {
+    super.onDestroy();
+    unregisterReceiver(broadcastReceiver);
+    unRegisterForScannerStatus();
+}
+
+private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String action = intent.getAction();
+        Log.d(TAG, &quot;#DataWedge-APP# Action: &quot; + action);
+        if(action.equals(NOTIFICATION_ACTION)){
+            // handle notification
+            if(intent.hasExtra(&quot;com.symbol.datawedge.api.NOTIFICATION&quot;)) {
+                Bundle b = intent.getBundleExtra(&quot;com.symbol.datawedge.api.NOTIFICATION&quot;);
+                String NOTIFICATION_TYPE  = b.getString(&quot;NOTIFICATION_TYPE&quot;);
+                if(NOTIFICATION_TYPE!= null) {
+                    switch (NOTIFICATION_TYPE) {
+                        case NOTIFICATION_TYPE_SCANNER_STATUS:
+                            Log.d(TAG, &quot;SCANNER_STATUS: status: &quot; + b.getString(&quot;STATUS&quot;) + &quot;, profileName: &quot; + b.getString(&quot;PROFILE_NAME&quot;));
+                            String status = b.getString(&quot;STATUS&quot;);
+                            if(status!=null &amp;&amp; status.equals(SCAN_STATUS_WAITING)){
+                                //toggle scanner when scanner is ready
+                                scanToggle();
+                                unRegisterForScannerStatus();
+                            }
+                            break;
+                        case NOTIFICATION_TYPE_PROFILE_SWITCH:
+                            Log.d(TAG, &quot;PROFILE_SWITCH: profileName: &quot; + b.getString(&quot;PROFILE_NAME&quot;) + &quot;, profileEnabled: &quot; + b.getBoolean(&quot;PROFILE_ENABLED&quot;));
+                            break;
+                    }
+                }
+            }
+        }
+    }
+};
+
+
+public void registerForScannerStatus() {
+    Bundle b = new Bundle();
+    b.putString(&quot;com.symbol.datawedge.api.APPLICATION_NAME&quot;, &quot;com.dwapi.dwnotifiation&quot;);
+    b.putString(&quot;com.symbol.datawedge.api.NOTIFICATION_TYPE&quot;, NOTIFICATION_TYPE_SCANNER_STATUS);
+    Intent i = new Intent();
+    i.setAction(ACTION);
+    i.putExtra(ACTION_EXTRA_REGISTER_FOR_NOTIFICATION, b);
+    this.sendBroadcast(i);
+}
+
+public void unRegisterForScannerStatus() {
+    Bundle b = new Bundle();
+    b.putString(&quot;com.symbol.datawedge.api.APPLICATION_NAME&quot;, &quot;com.dwapi.dwnotifiation&quot;);
+    b.putString(&quot;com.symbol.datawedge.api.NOTIFICATION_TYPE&quot;, NOTIFICATION_TYPE_SCANNER_STATUS);
+    Intent i = new Intent();
+    i.setAction(ACTION);
+    i.putExtra(ACTION_EXTRA_UNREGISTER_FOR_NOTIFICATION, b);
+    this.sendBroadcast(i);
+}
+
+public void switchToProfile(){
+    Intent i = new Intent();
+    i.setAction(ACTION);
+    i.putExtra(&quot;com.symbol.datawedge.api.SWITCH_TO_PROFILE&quot;,&quot;Launcher&quot;);
+    this.sendBroadcast(i);
+}
+
+public void scanToggle(){
+    Intent i = new Intent();
+    i.setAction(ACTION);
+    i.putExtra(&quot;com.symbol.datawedge.api.SOFT_SCAN_TRIGGER&quot;,&quot;TOGGLE_SCANNING&quot;);
+    this.sendBroadcast(i);
+}
+
+Delay code
+
+Sample code demonstrating use of a delay to allow the soft scan trigger command to complete a task before it can execute the next task.
+
+// SAMPLE DELAY CODE
+int triggerDelay = 250; // delay in milliseconds
+
+Handler handler = new Handler();
+handler.postDelayed(new Runnable() {
+        public void run() {
+                // for clarity, assume the following method contains the code in the example above
+                startSoftScan();
+        }
+}, triggerDelay);
+
+Note: While generally effective for this purpose, this sample delay code may work inconsistently across devices.
+
+Generate and receive results
+
+Command and configuration intent parameters determine whether to send result codes (disabled by default). When using SEND_RESULT, the COMMAND_IDENTIFIER is used to match the result code with the originating intent. Sample usage of these parameters is shown below.
+
+Note: Modify this generic code to match the API being used.
+
+// send the intent
+    Intent i = new Intent();
+    i.setAction(ACTION);
+    i.putExtra(&quot;com.symbol.datawedge.api.CREATE_PROFILE&quot;, &quot;Profile1&quot;);
+
+// request and identify the result code
+    i.putExtra(&quot;SEND_RESULT&quot;,&quot;true&quot;);
+    i.putExtra(&quot;COMMAND_IDENTIFIER&quot;,&quot;123456789&quot;);
+    this.sendBroadcast(i);
+
+// register to receive the result
+    public void onReceive(Context context, Intent intent){
+
+        String command = intent.getStringExtra(&quot;COMMAND&quot;);
+        String commandidentifier = intent.getStringExtra(&quot;COMMAND_IDENTIFIER&quot;);
+        String result = intent.getStringExtra(&quot;RESULT&quot;);
+
+        Bundle bundle = new Bundle();
+        String resultInfo = &quot;&quot;;
+        if(intent.hasExtra(&quot;RESULT_INFO&quot;)){
+            bundle = intent.getBundleExtra(&quot;RESULT_INFO&quot;);
+            Set&lt;String&gt; keys = bundle.keySet();
+            for (String key: keys) {
+                resultInfo += key + &quot;: &quot;+bundle.getString(key) + &quot;\n&quot;;
+            }
+        }
+
+        String text = &quot;Command: &quot;+command+&quot;\n&quot; +
+                      &quot;Result: &quot; +result+&quot;\n&quot; +
+                      &quot;Result Info: &quot; +resultInfo + &quot;\n&quot; +
+                      &quot;CID:&quot;+commandidentifier;
+
+        Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+
+    };
+
+
+
+SEE ALSO:
+
+Zebra Support Central | Integrator Guides, Product Manuals, Software Downloads and Support
+
+LaunchPad | Zebra Developer Community
+
+Intent | Android Developers
+
+Intents and Intent Filters | Android Developers
+
+Android Intents | Tutorial
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2024 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+      
+
+
+
+Back to Top</pre></body></html>

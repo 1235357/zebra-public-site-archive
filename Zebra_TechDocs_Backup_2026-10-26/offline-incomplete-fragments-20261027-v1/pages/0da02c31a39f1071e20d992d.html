@@ -1,0 +1,1834 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>INCOMPLETE - Zebra Managed Configurations - TechDocs</title></head><body><header><h1>Incomplete captured fragment</h1><p>This is a partial DOM snapshot; content ends prematurely and must not be mistaken for a complete document. No live links, scripts or remote assets.</p><p>Source: https://techdocs.zebra.com/oemconfig/latest/mc/</p><p>Original file: raw/0da02c31a39f1071e20d992d.html | SHA-256: 6e3f2a7cdbf1ccca118b70e01eabcfca0d03de3f9171968ad97cdd72ba8d70a3</p></header><main><div class="row" id="mainContent">
+<div class="col-sm-12">
+<div class="blog-post blog-large wow fadeInLeft" data-wow-delay="0ms" data-wow-duration="300ms">
+<!-- Start of guide -->
+<div class="service-box wow fadeInRight">
+<div class="">
+<!--                                     <p>
+                                    </p> -->
+<p></p><h3 class="anchor" id="legacyzebraoemconfig"><a aria-disabled="true" class="heading-anchor" data-original-href="#legacyzebraoemconfig"><span></span></a>Legacy Zebra OEMConfig</h3>
+<p><b><font color="red" size="4"> For devices with <u>Android 11 and OLDER</u></font></b><br/></p>
+<p>This guide documents managed configurations of the <strong><em>Original Schema</em></strong> for current and legacy Zebra devices. Learn more <a aria-disabled="true" data-original-href="../faq/#qwhatislegacyzebraoemconfig">about Legacy OEMConfig</a>.</p>
+<h4 class="anchor" id="usethisguideif"><a aria-disabled="true" class="heading-anchor" data-original-href="#usethisguideif"><span></span></a>Use this guide if:</h4>
+<ul>
+<li><strong>Targeting devices with <u>Android 8.x–11.x</u> <br/>
+<em><u>AND</u>...</em></strong></li>
+<li><strong>All desired features were implemented with <u>MX 11.1 or earlier</u></strong></li>
+</ul>
+<blockquote>
+<p><strong>The OEMConfig package name corresponding to this schema is</strong> <code>com.zebra.oemconfig.common</code>.</p>
+<p>For targeting devices with Android 11 and <strong><em>later</em></strong>, <a aria-disabled="true" data-original-href="../mc2">see OEMConfig Powered by MX schema docs</a></p>
+</blockquote>
+<p><br/></p>
+<hr/>
+<p><b><font color="black" size="6"> Terms in this Guide</font></b></p>
+<h2 class="anchor" id="typestyling"><a aria-disabled="true" class="heading-anchor" data-original-href="#typestyling"><span></span></a>Type Styling</h2>
+<ul>
+<li><p><strong><em>Bold Italic type</em></strong> indicates <strong><em>values</em></strong> of a <em>Managed Configuration</em> such as <strong><em>On</em></strong> or <strong><em>Enable</em></strong>.</p></li>
+<li><p><strong>Bold type</strong> indicates the name of an <em>MC</em>, <em>Group</em>, <em>Sub-group</em>, or <em>Sub-array</em>, such as the <strong>System Configuration</strong> <em>Group</em>, the <strong>Keyboard Configuration</strong> <em>Sub-group</em>, the <strong>Packages</strong> <em>Sub-array</em>, or the <strong>State</strong> <em>Managed Configuration</em>.</p></li>
+<li><p><em>Italic type</em> is used for <em>emphasis</em> and for referencing <em>Defined Terms</em>, such as <em>Sub-group</em> and <em>Instance</em>. Defined terms are <em>Capitalized</em> to differentiate them from italics used solely for <em>emphasis</em>.</p></li>
+</ul>
+<h2 class="anchor" id="androidterms"><a aria-disabled="true" class="heading-anchor" data-original-href="#androidterms"><span></span></a>Android Terms</h2>
+<ul>
+<li><em>Android Package</em></li>
+</ul>
+<blockquote>
+<p>An <em>Android Package</em> is how executable code is packaged for execution on Android devices. <em>Android Packages</em> can be built-into the Operating System image (OS), in which case they are referred to as being built-in, pre-loaded, or pre-installed. <em>Android Packages</em> that are not built-in can be added to an Android device by downloading and installing them, in which case they are referred to as post-loaded, post-installed, or installable. Each <em>Android Package</em> is identified by a unique <em>Android Package Name</em> and can contain one or more <em>Android Activities</em> and/or <em>Android Services</em>.</p>
+<p>Android defines a series of standard behaviors that will generally be exhibited by <em>Android Packages</em> which may vary based on whether an <em>Android Package</em> is pre-loaded or post-loaded and based on whether the <em>Android Package</em> is <em>Trusted</em> or <em>Non-Trusted</em>. Most <em>Android Packages</em> will fall into one of the following basic types:</p>
+</blockquote>
+<ul>
+<li><em>Built-in System Application</em></li>
+</ul>
+<blockquote>
+<p>A <em>Built-in System Package</em> is pre-loaded as part of the OS and is granted special <em>System Permissions</em> on the device. This makes it a <em>Trusted Package</em> and allows it to interact with system services and use <em>System APIs</em> that are not available to <em>Non-Trusted Packages</em>. Zebra carefully controls and vets all such <em>Android Packages</em> before building them into the OS to ensure that they are safe and contribute beneficially to the overall device experience without creating performance, security, or usability issues.</p>
+</blockquote>
+<ul>
+<li><em>Built-in Non-System Package</em></li>
+</ul>
+<blockquote>
+<p>A <em>Built-in Non-System Package</em> is pre-loaded as part of the OS but is not granted any special <em>System Permissions</em> on the device. This makes it a <em>Non-Trusted Package</em> and allows it to interact with system services and to use <em>System APIs</em> that are not available to <em>Non-Trusted Packages</em>. Zebra carefully controls and vets all such Android Packages* before building them into the OS to ensure that they contribute beneficially to the overall device experience without creating performance or usability issues.</p>
+</blockquote>
+<ul>
+<li><em>Installable System Package</em></li>
+</ul>
+<blockquote>
+<p>An <em>Installable System Package</em> must be post-loaded, since it is not part of the OS but is granted special <em>System Permissions</em> on the device. This makes it a <em>Trusted Package</em> and allows it to interact with system services and to use<em>System APIs</em> that are not available to <em>Non-Trusted Packages</em>. Only Zebra can provide such Android Packages* and Zebra carefully controls and vets all such Android Packages* it provides before they are published to ensure that they are safe and contribute beneficially to the overall device experience without creating performance, security, or usability issues. Ultimately, the decision of whether to install such an Android Package* on a device is the responsibility of the Device Administrator.</p>
+</blockquote>
+<ul>
+<li><em>Installable Non-System Package</em></li>
+</ul>
+<blockquote>
+<p>An <em>Installable Non-System Package</em> must be post-loaded, since it is not part of the OS and is not granted any special <em>System Permissions</em> on the device. This makes it an<em>Non-Trusted Package</em> and prevents it from interacting with system services and from using <em>System APIs</em> that are not available to <em>Non-Trusted Packages</em>. Zebra carefully controls and vets all such Android Packages* before they are published to ensure that they contribute beneficially to the overall device experience without creating performance or usability issues. Zebra cannot and does not control or guarantee the suitability of such Android Packages* that it does not provide. Ultimately, evaluating such an Android Package* and deciding whether to install it on a device is the responsibility of the Device Administrator.</p>
+</blockquote>
+<ul>
+<li><em>Android Package Name</em></li>
+</ul>
+<blockquote>
+<p>An <em>Android Package Name</em> is a string that uniquely identifies one or more versions of an <em>Android Package</em>.</p>
+</blockquote>
+<ul>
+<li><em>Android Application</em></li>
+</ul>
+<blockquote>
+<p>An <em>Android Application</em> refers to an <em>Android Package</em> that contains at least one <em>Android Activity</em> and therefore has some in-device UI for interacting with the User to differentiate it from other <em>Android Packages</em> that may only have <em>Android Services</em> and therefore have no UI for interacting with the User.</p>
+</blockquote>
+<ul>
+<li><em>Android Status Bar</em></li>
+</ul>
+<blockquote>
+<p>The <em>Android Status Bar</em> is an area at the top edge of the screen on an Android device where various status information can be displayed to the User.</p>
+</blockquote>
+<ul>
+<li><em>Android Notification Bar</em></li>
+</ul>
+<blockquote>
+<p>The <em>Android Notification Bar</em> is an area at the bottom edge of the screen on an Android device where soft buttons are provided to allow the User to navigate within the UI of the device.</p>
+</blockquote>
+<h2 class="anchor" id="managedconfigurationterms"><a aria-disabled="true" class="heading-anchor" data-original-href="#managedconfigurationterms"><span></span></a>Managed Configuration Terms</h2>
+<ul>
+<li><em>MC</em></li>
+</ul>
+<blockquote>
+<p>See <em>Managed Configuration</em>.</p>
+</blockquote>
+<ul>
+<li><em>Managed Configuration</em></li>
+</ul>
+<blockquote>
+<p>A <em>Managed Configuration</em> is a single configurable item, defined within the OEMConfig Schema, that can be used, alone or in conjunction with other <em>MCs</em>, to change some aspect of device behavior.</p>
+</blockquote>
+<ul>
+<li><em>Schema</em></li>
+</ul>
+<blockquote>
+<p>See <em>Managed Configuration Schema</em>.</p>
+</blockquote>
+<ul>
+<li><em>Managed Configuration Schema</em></li>
+</ul>
+<blockquote>
+<p>A <em>Managed Configuration Schema</em> is a definition of all the of the <em>Managed Configuration</em> that are supported by a given application.</p>
+</blockquote>
+<ul>
+<li><em>Group</em></li>
+</ul>
+<blockquote>
+<p>See <em>Managed Configuration Group</em>.</p>
+</blockquote>
+<ul>
+<li><em>Managed Configuration Group</em></li>
+</ul>
+<blockquote>
+<p>A <em>Managed Configuration Group</em> is a collection of <em>Sub-groups</em> or <em>Sub-arrays</em> that are defined to control multiple related aspects of device behavior (such as <strong>System Configuration</strong> or <strong>UI Configuration</strong>). A <em>Group</em> can include no more than one instance of any <em>Sub-group</em> or <em>Sub-array</em> that is defined for that <em>Group</em>.</p>
+</blockquote>
+<ul>
+<li><em>Sub-group</em></li>
+</ul>
+<blockquote>
+<p>A <em>Sub-group</em> is a collection of <em>MCs</em>, <em>Sub-groups</em>, or <em>Sub-arrays</em> that can be used to control some sub-aspect of device behavior (such as the <strong>Clock Configuration</strong> <em>Sub-group</em> within the <strong>System Configuration</strong> <em>Group</em>). A <em>Sub-group</em> can include no more than one instance of any <em>MC</em>, <em>Sub-group</em>, or <em>Sub-array</em> defined for that <em>Sub-group</em>.</p>
+</blockquote>
+<ul>
+<li><em>Sub-array</em></li>
+</ul>
+<blockquote>
+<p>A <em>Sub-array</em> is an ordered list of instances of a SINGLE <em>Sub-group</em>, each of which can contain anything that is defined for that <em>Sub-group</em>. The <em>only</em> time the same <em>MC</em>, <em>Sub-group</em>, or <em>Sub-array</em> can be included more than once into the same <em>Sub-group</em> is when it appears within different <em>Instances</em> of that <em>Sub-group</em> within a <em>Sub-array</em>.</p>
+</blockquote>
+<h2 class="anchor" id="oemconfigterms"><a aria-disabled="true" class="heading-anchor" data-original-href="#oemconfigterms"><span></span></a>OEMConfig Terms</h2>
+<ul>
+<li><em>OEMConfig</em></li>
+</ul>
+<blockquote>
+<p><em>OEMConfig</em> is a term invented by Zebra and adopted by Google to refer to an OEM-specific application that exposes <em>Managed Configurations</em> which it uses to enable configuration of OEM-specific features of the device rather than to configure application features.</p>
+</blockquote>
+<ul>
+<li><em>Zebra OEMConfig</em></li>
+</ul>
+<blockquote>
+<p><em>Zebra OEMConfig</em> is a term used by Zebra to refer to Zebra-specific <em>OEMConfig</em> application(s) provided by Zebra to configure Zebra Android devices.</p>
+</blockquote>
+<ul>
+<li><em>Zebra OEMConfig Schema</em></li>
+</ul>
+<blockquote>
+<p><em>Zebra OEMConfig Schema</em> is a term used to refer to a <em>Schema</em> for a <em>Zebra OEMConfig</em> application.</p>
+</blockquote>
+<ul>
+<li><em>Zebra OEMConfig Old Schema</em></li>
+</ul>
+<blockquote>
+<p><em>Zebra OEMConfig Old Schema</em> is a term used to refer to the <em>Zebra OEMConfig Schema</em> defined for the old version of the <em>Zebra OEMConfig</em> application with package name "com.zebra.oemconfig.common" and intended for use on Zebra Android devices with Android 11 or lower.</p>
+</blockquote>
+<ul>
+<li><em>Zebra OEMConfig New Schema</em></li>
+</ul>
+<blockquote>
+<p><em>Zebra OEMConfig New Schema</em> is a term used to refer to the <em>Zebra OEMConfig Schema</em> defined for the new version of the <em>Zebra OEMConfig</em> application with package name "com.zebra.mdna.oemconfig" and intended for use on Zebra Android devices with Android 11 or higher.</p>
+</blockquote>
+<h2 class="anchor" id="zebraoemconfigterms"><a aria-disabled="true" class="heading-anchor" data-original-href="#zebraoemconfigterms"><span></span></a>Zebra OEMConfig Terms</h2>
+<ul>
+<li><em>Setting</em></li>
+</ul>
+<blockquote>
+<p>A <em>Setting</em> is a <em>Managed Configuration</em> defined in a <em>Zebra OEMConfig Schema</em> that is used to enable configuration of some aspect of device behavior. A <em>Setting</em> generally affects the ongoing behavior of a device from the time it is applied until some subsequent time when it is changed to a new value. The order of configuration of different <em>Settings</em> is generally expected to have little or no impact on the end result. Further, it is generally is expected to be safe to set a <em>Setting</em> to the same value repetitively with no negative impact. Common examples of <em>Settings</em> include display timeout and network configuration.</p>
+</blockquote>
+<ul>
+<li><em>Action</em></li>
+</ul>
+<blockquote>
+<p>An <em>Action</em> is a <em>Managed Configuration</em> defined in a <em>Zebra OEMConfig Schema</em> that is used to enable performance on a device of some operation that takes place during some unit of time, that has a beginning, a middle, and an end, and then is over. An <em>Action</em> MAY, but doesn’t always, cause a change in the device state that affects ongoing behavior of a device. An <em>Action</em> MAY be REPEATED, but should NEVER be AUTOMATICALLY repeated and should be repeated ONLY when EXPLICITLY requested by an administrator. When an <em>Action</em> is repeated, the corresponding operation will occur again and that MIGHT produce negative or undesirable behavior if done unintentionally or unexpectedly. In many cases, the ORDER in which multiple different <em>Actions</em> are performed can be quite important since it can affect the actual outcome. Common examples of <em>Actions</em> include performing a reboot, uninstalling an application, or wiping an SD card. The <em>Zebra OEMConfig Old Schema</em> heavily relied on <em>Actions</em>, but Google has since discouraged the use of <em>Actions</em> in <em>OEMConfig</em> applications because it can be difficult or even impossible to reliably enforce ordering and prevent repetition. For this reason, the <em>Zebra OEMConfig New Schema</em> eliminated all support for <em>Actions</em>.</p>
+</blockquote>
+<ul>
+<li><em>Argument</em></li>
+</ul>
+<blockquote>
+<p>An <em>Argument</em> is a parameter specified for an <em>Action</em> that defines or adjusts the operation performed by that <em>Action</em>. Most <em>Actions</em> have at least one <em>Argument</em> and some <em>Actions</em> have multiple <em>Arguments</em>. Each invocation of an <em>Action</em> may have different <em>Arguments</em> to suit the reason why the <em>Action</em> is being performed.</p>
+</blockquote>
+<ul>
+<li><em>Condition</em></li>
+</ul>
+<blockquote>
+<p>A <em>Condition</em> is a criteria defining when an <em>Action</em> should be performed. <em>Actions</em> are generally invoked when an administrator determines that the .<em>Conditions</em> are appropriate to require the operation defined by that <em>Action</em> and its <em>Arguments</em> to be performed.</p>
+</blockquote>
+<ul>
+<li><em>Rule</em></li>
+</ul>
+<blockquote>
+<p>A <em>Rule</em> is a <em>Setting</em> defined in a <em>Zebra OEMConfig Schema</em> that is used to configure a device to perform some defined operation at some time in the future when certain defined <em>Conditions</em> are met. Every <em>Rule</em> must specify information that defines an operation to be performed AND information that defines the <em>Conditions</em> when that operation should be performed. In many cases, an <em>Action</em> can be converted into one or more <em>Rules</em> to help conform to the Google recommendation that <em>OEMConfig</em> applications should ONLY support <em>Settings</em> and NOT <em>Actions</em>. Because a <em>Rule</em> is a <em>Setting</em>, it doesn't cause the operation to be performed when it is configured, but instead sets the operation up to be performed in the future. As a result, it is generally unnecessary to worry about the order in which <em>Rules</em> are configured or about preventing the repetition of the configuration of <em>Rules</em>. Common examples of <em>Rules</em> include configuring a device to automatically download a file when it is not already on a device or configuring a device to update its OS when it is out of date. The <em>Zebra OEMConfig New Schema</em> heavily relies on <em>Rules</em> to replace functionality that was previously supported in the the <em>Zebra OEMConfig Old Schema</em> via <em>Actions</em>.</p>
+</blockquote>
+<ul>
+<li><em>Array of Rules</em></li>
+</ul>
+<blockquote>
+<p>An <em>Array of Rules</em> is a mechanism that uses an <em>Array</em> of <em>Rules</em> to replace an <em>Action</em>. Most <em>Actions</em> require <em>Arguments</em> to define variations in the operation to be performed and each invocation of an <em>Action</em> could have a different combination of <em>Arguments</em>. To provide a similar capability, an <em>Array of Rules</em> can be created where each element of the <em>Array</em> contains a different set of <em>Arguments</em> and thus defines a slightly different operation to be performed. Since each element of the <em>Array</em> is a <em>Rule</em>, each element of the <em>Array</em> must also include information that describes the <em>Conditions</em> when the defined operation should be performed. By creating an <em>Array of Rules</em> that contains elements that define the required combination of <em>Arguments</em> and <em>Conditions</em>, comparable results can be achieved without using <em>Actions</em>.</p>
+</blockquote>
+<h2 class="anchor" id="additionalterms"><a aria-disabled="true" class="heading-anchor" data-original-href="#additionalterms"><span></span></a>Additional Terms</h2>
+<p>The above terms have been defined here because they may be generally used throughout this document. Additional terms will be defined in subsequent sections of this document as needed to clarify concepts and usage specific to those sections.</p>
+<h2 class="anchor" id="reversingasetting"><a aria-disabled="true" class="heading-anchor" data-original-href="#reversingasetting"><span></span></a>Reversing a Setting</h2>
+<p>Managed configurations work to configure devices by pushing a bundle of parameter settings to the target device. <strong>To change or undo any previously configured setting, simply resend the same bundle with a new setting, or omit the setting entirely and resend</strong> to return the managed configuration to its default.  </p>
+<!-- 
+## Reversing a Setting
+
+To reverse a setting, simply remove the code that configured the setting to begin with. 
+
+Just as class and feature variances are selected and added to a managed configuration bundle and pushed to devices to configure that device's settings, so too can they be removed from a bundle and pushed to devices to "unconfigure" them, reversing the previous setting. 
+
+ -->
+<hr/>
+<p><a aria-disabled="true" id="appConfig"></a></p>
+<h2 class="anchor" id="applicationconfiguration"><a aria-disabled="true" class="heading-anchor" data-original-href="#applicationconfiguration"><span></span></a>Application Configuration</h2>
+<p>Use this <em>Group</em> to configure Device Central Configuration .</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = appConfig</p></li>
+<li><p>Type = bundle</p></li>
+</ul>
+<p><a aria-disabled="true" id="appConfig.deviceCentralConfig"></a></p>
+<h3 class="anchor" id="devicecentralconfiguration"><a aria-disabled="true" class="heading-anchor" data-original-href="#devicecentralconfiguration"><span></span></a>Device Central Configuration</h3>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#appConfig">Application Configuration</a>
+</font>
+</span> <br/><br/></p>
+<p>Use this <em>Sub-group</em> to configure Bluetooth Pairing Control, User Control of Bluetooth State, User Control of Firmware Update, and Smart Leash.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = deviceCentralConfig</p></li>
+<li><p>Type = bundle</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="appConfig.deviceCentralConfig.appDeviceCentralBluetoothPairingControl"></a></p>
+<h4 class="anchor" id="bluetoothpairingcontrol"><a aria-disabled="true" class="heading-anchor" data-original-href="#bluetoothpairingcontrol"><span></span></a>Bluetooth Pairing Control</h4>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#appConfig">Application Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig">Device Central Configuration</a>
+</font>
+</span> <br/><br/></p>
+<p>Select whether Device Central system should allow multiple pairings to the same Device Class.</p>
+<ul>
+<li>If the value <strong><em>Single Pairing Per Device Class</em></strong> is selected, Device Central system will only allow one pairing at a time for each Bluetooth Device Class (e.g. one headset and one printer).</li>
+<li>If the value <strong><em>Multiple Pairings Per Device Class</em></strong> is selected, Device Central system will allow multiple pairings at a time for each Bluetooth Device Class (e.g. multiple headsets and/or multiple printers).</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = appDeviceCentralBluetoothPairingControl</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> Do not change </small></i></b></td><td><small>  </small></td></tr><tr align="center"><td><b><i><small> Single Pairing Per Device Class </small></i></b></td><td><small> 1 </small></td></tr><tr align="center"><td><b><i><small> Multiple Pairings Per Device Class </small></i></b></td><td><small> 2 </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li><p>NOT supported on Device(s): TC20 and TC25.</p></li>
+<li><p>Supported from: MX 8.1.</p></li>
+</ul>
+<p><a aria-disabled="true" id="appConfig.deviceCentralConfig.appDeviceCentralBluetoothOnOffControl"></a></p>
+<h4 class="anchor" id="usercontrolofbluetoothstate"><a aria-disabled="true" class="heading-anchor" data-original-href="#usercontrolofbluetoothstate"><span></span></a>User Control of Bluetooth State</h4>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#appConfig">Application Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig">Device Central Configuration</a>
+</font>
+</span> <br/><br/></p>
+<p>Select whether the User will be allowed to use the Device Central UI to control the Bluetooth State.</p>
+<ul>
+<li><p>If the value <strong><em>Disallow</em></strong> is selected, the User will NOT be allowed to use the Device Central UI to control the Bluetooth State.</p></li>
+<li><p>If the value <strong><em>Allow</em></strong> is selected, the User WILL be allowed to use the Device Central UI to control the Bluetooth State.</p></li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = appDeviceCentralBluetoothOnOffControl</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> Do not change </small></i></b></td><td><small>  </small></td></tr><tr align="center"><td><b><i><small> Disallow </small></i></b></td><td><small> 2 </small></td></tr><tr align="center"><td><b><i><small> Allow </small></i></b></td><td><small> 1 </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li><p>NOT supported on Device(s): TC20 and TC25.</p></li>
+<li><p>Supported from: MX 8.1.</p></li>
+</ul>
+<p><a aria-disabled="true" id="appConfig.deviceCentralConfig.appDeviceCentralFirmwareUpdateButton"></a></p>
+<h4 class="anchor" id="usercontroloffirmwareupdate"><a aria-disabled="true" class="heading-anchor" data-original-href="#usercontroloffirmwareupdate"><span></span></a>User Control of Firmware Update</h4>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#appConfig">Application Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig">Device Central Configuration</a>
+</font>
+</span> <br/><br/></p>
+<p>Select whether the User will be Allowed to use the Firmware Update Button within the Device Central UI to perform Firmware Updates.</p>
+<ul>
+<li>If the value <strong><em>Disallow</em></strong> is selected, the User will NOT be Allowed to use the Firmware Update Button within the Device Central UI to perform Firmware Updates.</li>
+<li>If the value <strong><em>Allow</em></strong> is selected, the User WILL be Allowed to use the Firmware Update Button within the Device Central UI to perform Firmware Updates.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = appDeviceCentralFirmwareUpdateButton</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> Do not change </small></i></b></td><td><small>  </small></td></tr><tr align="center"><td><b><i><small> Disallow </small></i></b></td><td><small> 2 </small></td></tr><tr align="center"><td><b><i><small> Allow </small></i></b></td><td><small> 1 </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li><p>NOT supported on Device(s): TC20 and TC25.</p></li>
+<li><p>Supported from: MX 8.1.</p></li>
+</ul>
+<p><a aria-disabled="true" id="appConfig.deviceCentralConfig.dcSmartLeash"></a></p>
+<h4 class="anchor" id="smartleash"><a aria-disabled="true" class="heading-anchor" data-original-href="#smartleash"><span></span></a>Smart Leash</h4>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#appConfig">Application Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig">Device Central Configuration</a>
+</font>
+</span> <br/><br/></p>
+<p>Use this <em>Sub-group</em> to configure State, User Access To Smart Leash Section, Audio Feedback, and Haptic Feedback.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = dcSmartLeash</p></li>
+<li><p>Type = bundle</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="appConfig.deviceCentralConfig.dcSmartLeash.slState"></a></p>
+<h5 class="anchor" id="state"><a aria-disabled="true" class="heading-anchor" data-original-href="#state"><span></span></a>State</h5>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#appConfig">Application Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig">Device Central Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig.dcSmartLeash">Smart Leash</a>
+</font>
+</span> <br/><br/></p>
+<p>Select whether the Smart Leash active (on) or inactive (off).</p>
+<ul>
+<li>If the value <strong><em>Off</em></strong> is selected, Device Central will turn on Smart Leash.</li>
+<li>If the value <strong><em>On</em></strong> is selected, Device Central will turn off Smart Leash.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = slState</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> Do not change </small></i></b></td><td><small>  </small></td></tr><tr align="center"><td><b><i><small> Off </small></i></b></td><td><small> 2 </small></td></tr><tr align="center"><td><b><i><small> On </small></i></b></td><td><small> 1 </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li><p>NOT supported on Device(s): TC20 and TC25.</p></li>
+<li><p>Supported from: MX 10.2.</p></li>
+</ul>
+<p><a aria-disabled="true" id="appConfig.deviceCentralConfig.dcSmartLeash.slSettingsUI"></a></p>
+<h5 class="anchor" id="useraccesstosmartleashsection"><a aria-disabled="true" class="heading-anchor" data-original-href="#useraccesstosmartleashsection"><span></span></a>User Access To Smart Leash Section</h5>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#appConfig">Application Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig">Device Central Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig.dcSmartLeash">Smart Leash</a>
+</font>
+</span> <br/><br/></p>
+<p>Select whether the User will be Allowed to use the Device Central UI to configure Smart Leash.</p>
+<ul>
+<li>If the value <strong><em>Disallow</em></strong> is selected, the User will NOT be Allowed to use the Device Central UI to configure Smart Leash.</li>
+<li>If the value <strong><em>Allow</em></strong> is selected, the User WILL be Allowed to use the Device Central UI to configure Smart Leash.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = slSettingsUI</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> Do not change </small></i></b></td><td><small>  </small></td></tr><tr align="center"><td><b><i><small> Disallow </small></i></b></td><td><small> 2 </small></td></tr><tr align="center"><td><b><i><small> Allow </small></i></b></td><td><small> 1 </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li><p>NOT supported on Device(s): TC20 and TC25.</p></li>
+<li><p>Supported from: MX 10.2.</p></li>
+</ul>
+<p><a aria-disabled="true" id="appConfig.deviceCentralConfig.dcSmartLeash.slAudioFeedback"></a></p>
+<h5 class="anchor" id="audiofeedback"><a aria-disabled="true" class="heading-anchor" data-original-href="#audiofeedback"><span></span></a>Audio Feedback</h5>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#appConfig">Application Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig">Device Central Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig.dcSmartLeash">Smart Leash</a>
+</font>
+</span> <br/><br/></p>
+<p>Use this <em>Sub-group</em> to configure State, Sound, Volume, and Repeat Count.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = slAudioFeedback</p></li>
+<li><p>Type = bundle</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="appConfig.deviceCentralConfig.dcSmartLeash.slAudioFeedback.slafState"></a></p>
+<h6 class="anchor" id="state-1"><a aria-disabled="true" class="heading-anchor" data-original-href="#state-1"><span></span></a>State</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#appConfig">Application Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig">Device Central Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig.dcSmartLeash">Smart Leash</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig.dcSmartLeash.slAudioFeedback">Audio Feedback</a>
+</font>
+</span> <br/><br/></p>
+<p>Select whether the Smart Leash Audio Feedback is active (on) or inactive (off).</p>
+<ul>
+<li>If the value <strong><em>Off</em></strong> is selected, Device Central will turn on Audio Feedback in Smart Leash.</li>
+<li>If the value <strong><em>On</em></strong> is selected, Device Central will turn off Audio Feedback in Smart Leash.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = slafState</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> Do not change </small></i></b></td><td><small>  </small></td></tr><tr align="center"><td><b><i><small> Off </small></i></b></td><td><small> 2 </small></td></tr><tr align="center"><td><b><i><small> On </small></i></b></td><td><small> 1 </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li><p>NOT supported on Device(s): TC20 and TC25.</p></li>
+<li><p>Supported from: MX 10.2.</p></li>
+</ul>
+<p><a aria-disabled="true" id="appConfig.deviceCentralConfig.dcSmartLeash.slAudioFeedback.slafSound"></a></p>
+<h6 class="anchor" id="sound"><a aria-disabled="true" class="heading-anchor" data-original-href="#sound"><span></span></a>Sound</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#appConfig">Application Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig">Device Central Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig.dcSmartLeash">Smart Leash</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig.dcSmartLeash.slAudioFeedback">Audio Feedback</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter the sound to be used when the Smart Leash Audio Feedback is active (on). The name of an existing Ringtone or the fully qualified path to an audio file is expected. .wav, .ogg, .mp3 and .m4a audio file types are supported.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = slafSound</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li><p>NOT supported on Device(s): TC20 and TC25.</p></li>
+<li><p>Supported from: MX 10.2.</p></li>
+</ul>
+<p><a aria-disabled="true" id="appConfig.deviceCentralConfig.dcSmartLeash.slAudioFeedback.slafVolume"></a></p>
+<h6 class="anchor" id="volume"><a aria-disabled="true" class="heading-anchor" data-original-href="#volume"><span></span></a>Volume</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#appConfig">Application Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig">Device Central Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig.dcSmartLeash">Smart Leash</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig.dcSmartLeash.slAudioFeedback">Audio Feedback</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter the percentage of volume that should be used when <strong>State</strong> is set to <strong><em>On</em></strong>. Supported values range between 1 and 100.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = slafVolume</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li><p>NOT supported on Device(s): TC20 and TC25.</p></li>
+<li><p>Supported from: MX 10.2.</p></li>
+</ul>
+<p><a aria-disabled="true" id="appConfig.deviceCentralConfig.dcSmartLeash.slAudioFeedback.slafRepeatCount"></a></p>
+<h6 class="anchor" id="repeatcount"><a aria-disabled="true" class="heading-anchor" data-original-href="#repeatcount"><span></span></a>Repeat Count</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#appConfig">Application Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig">Device Central Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig.dcSmartLeash">Smart Leash</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig.dcSmartLeash.slAudioFeedback">Audio Feedback</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter the number of times the sound should be repeated when <strong>State</strong> is set to <strong><em>On</em></strong>. Supported values range between 0 and 100.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = slafRepeatCount</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li><p>NOT supported on Device(s): TC20 and TC25.</p></li>
+<li><p>Supported from: MX 10.2.</p></li>
+</ul>
+<p><a aria-disabled="true" id="appConfig.deviceCentralConfig.dcSmartLeash.slHapticFeedback"></a></p>
+<h5 class="anchor" id="hapticfeedback"><a aria-disabled="true" class="heading-anchor" data-original-href="#hapticfeedback"><span></span></a>Haptic Feedback</h5>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#appConfig">Application Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig">Device Central Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig.dcSmartLeash">Smart Leash</a>
+</font>
+</span> <br/><br/></p>
+<p>Use this <em>Sub-group</em> to configure State and Time.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = slHapticFeedback</p></li>
+<li><p>Type = bundle</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="appConfig.deviceCentralConfig.dcSmartLeash.slHapticFeedback.slhfState"></a></p>
+<h6 class="anchor" id="state-2"><a aria-disabled="true" class="heading-anchor" data-original-href="#state-2"><span></span></a>State</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#appConfig">Application Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig">Device Central Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig.dcSmartLeash">Smart Leash</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig.dcSmartLeash.slHapticFeedback">Haptic Feedback</a>
+</font>
+</span> <br/><br/></p>
+<p>Select whether the Smart Leash Haptic Feedback is active (on) or inactive (off).</p>
+<ul>
+<li>If the value <strong><em>Off</em></strong> is selected, Device Central will turn on Audio Feedback in Smart Leash.</li>
+<li>If the value <strong><em>On</em></strong> is selected, Device Central will turn off Audio Feedback in Smart Leash.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = slhfState</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> Do not change </small></i></b></td><td><small>  </small></td></tr><tr align="center"><td><b><i><small> Off </small></i></b></td><td><small> 2 </small></td></tr><tr align="center"><td><b><i><small> On </small></i></b></td><td><small> 1 </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li><p>NOT supported on Device(s): TC20 and TC25.</p></li>
+<li><p>Supported from: MX 10.2.</p></li>
+</ul>
+<p><a aria-disabled="true" id="appConfig.deviceCentralConfig.dcSmartLeash.slHapticFeedback.slhfDuration"></a></p>
+<h6 class="anchor" id="time"><a aria-disabled="true" class="heading-anchor" data-original-href="#time"><span></span></a>Time</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#appConfig">Application Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig">Device Central Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig.dcSmartLeash">Smart Leash</a>  &gt; 
+<a aria-disabled="true" data-original-href="#appConfig.deviceCentralConfig.dcSmartLeash.slHapticFeedback">Haptic Feedback</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter the duration of vibration when the <strong>State</strong> is set to <strong><em>On</em></strong></p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = slhfDuration</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li><p>NOT supported on Device(s): TC20 and TC25.</p></li>
+<li><p>Supported from: MX 10.2.</p></li>
+</ul>
+<p><a aria-disabled="true" id="filesConfig"></a></p>
+<h2 class="anchor" id="filesconfiguration"><a aria-disabled="true" class="heading-anchor" data-original-href="#filesconfiguration"><span></span></a>Files Configuration</h2>
+<p>Use this <em>Array</em> to configure one or more special handlings for one or more <em>File(s)</em>.</p>
+<p><em>Files</em> are a fundamental unit of storage in Android, via which data is organized and stored within the storage areas of an Android device. The following terms can help explain how <em>Files</em> are used in Android:</p>
+<blockquote>
+<p><em>Device File System</em></p>
+</blockquote>
+<p><em>Device File System</em> is generically used to refer to any storage area in an Android device in which data, organized as <em>Files</em>, can reside. This term can refer to <em>Files</em> that are built into the device, but it is most commonly used to refer to <em>Files</em> that are stored in storage areas on the device that can be read and modified during normal device operation, by the Android system and/or by <em>Android Applications</em>.</p>
+<blockquote>
+<p><em>Folder</em></p>
+</blockquote>
+<p><em>Folder</em> refers to a location in the <em>Device File System</em> where <em>Files</em> can exist and that can be used to hierarchically organize <em>Files</em> into groups.</p>
+<blockquote>
+<p><em>Media Storage</em></p>
+</blockquote>
+<p><em>Media Storage</em> is a collection of <em>Folders</em> in Android that is generically used to refer to any storage area in the <em>Device File System</em> in which common types of media data, organized as <em>Files</em>, can reside. This term is most commonly used to refer to <em>Folders</em> where media <em>Files</em> (such as pictures, video, audio, etc.) can be stored and shared by multiple applications.</p>
+<blockquote>
+<p><em>Application Sandbox</em></p>
+</blockquote>
+<p><em>Application Sandbox</em> is a <em>Folder</em> in the <em>Device File System</em> that is associated with an <em>Android Application</em> into which application data, organized as <em>Files</em>, can be placed such that they are private to and accessible only by that <em>Android Application</em>. This term can apply to private <em>Files</em> stored in <em>Primary Storage</em>, <em>Secondary Storage</em>, or <em>Portable Storage</em>. The key criteria that applies to all <em>Application Sandbox</em> data, and that differentiates it from other data, is the fact that it is owned by and generally accessible only to the <em>Android Package</em> that created it.</p>
+<blockquote>
+<p><em>Shared Folders</em></p>
+</blockquote>
+<p><em>Shared Folders</em> refer to <em>Folders</em> in the <em>Device File System</em> of an Android device in which data, organized as <em>Files</em>, can reside and be shared amongst multiple <em>Android Packages</em>. Android generally discourages the use of <em>Shared Folders</em> and has added more and more restrictions over time to limit their use. In particular, <em>Scoped Storage</em> is a recent addition to Android designed to severely restrict the use of <em>Shared Folders</em> to share data between <em>Android Packages</em>. Android provides other mechanisms, such as Intents, Content and File Providers, and the Storage Access Framework to enable sharing of data amongst <em>Android Packages</em> to be done in a more secure and controlled manner than could ever be achieved using <em>Shared Folders</em>. For the time being, many Zebra Android devices support the use of the following <em>Shared Folders</em>, but these are expected to be phased out over time to better comply with Android standard practice.</p>
+<ul>
+<li><strong>/data/tmp/public</strong></li>
+</ul>
+<p>The folder <strong>/data/tmp/public</strong> is unique to Zebra Android devices and is commonly used for downloading <em>Transient</em> <em>Files</em>, such as <em>Local Update Files</em> for <em>OS Updates</em>.</p>
+<ul>
+<li><strong>/enterprise/usr</strong></li>
+</ul>
+<p>The folder <strong>/enterprise/usr</strong> is unique to Zebra Android devices, is generally of a relatively small fixed size (e.g. 128MB), and is commonly used for downloading <em>Persistent</em> Files, such as <em>Android Packages</em> that might need to be re-installed following an <em>Enterprise Reset</em>.</p>
+<p>Most <em>Files</em> stored in the <em>Device File System</em> do NOT require any special handling. Most <em>Files</em> are created, read, updated, and deleted by the Android system and/or by <em>Android Applications</em> on a device without any outside intervention. But some <em>Files</em> MAY require special handling, in which case this <em>Array</em> is used to identify which <em>Files</em> require special handling and what special handling each such <em>File</em> requires. There is generally no reason to include a file in this <em>Array</em> unless it needs some form of special handling, but a single <em>File</em> could have multiple types of special handling. Every element of this <em>Array</em> should specify a value for <strong>Device Path And Name</strong> that uniquely identifies a <em>File</em> by the path and file name where the <em>File</em> resides in the in the <em>Device File System</em>.</p>
+<p>The following classes of special handling might be required:</p>
+<ul>
+<li><em>Download File</em></li>
+</ul>
+<p><em>Download File</em> special handling would be appropriate when there was a <em>File</em> that was created off-device that needed to be delivered to the device to support some system or application service that needed to consume that <em>File</em>. For example, a <em>Local Update File</em> used to initiate an <em>OS Update</em> would generally originate off-device and might need to be Downloaded to a <em>Shared Folder</em> before it could be used to initiate such an <em>OS Update</em>. A special case of <em>Download File</em> special handling is when the <em>File</em> to be downloaded is intended for the exclusive use of a single <em>Android Application</em>.</p>
+<ul>
+<li><em>Upload File</em></li>
+</ul>
+<p><em>Upload File</em> special handling would be appropriate when there was a <em>File</em> that was created by the Android system and/or by <em>Android Applications</em> on a device that needed to be Uploaded to somewhere off-device for its eventual consumption there. For example, a Log <em>File</em> might be uploaded to a server so it could be used for troubleshooting or analysis.</p>
+<ul>
+<li><em>Delete File</em></li>
+</ul>
+<p><em>Delete File</em> special handling would be appropriate when there was a need for a <em>File</em> to be Deleted (removed from the <em>Device File System</em>) for some reason NOT driven by the Android system and/or by <em>Android Applications</em>. For example, a <em>File</em> might be created by an <em>Android Application</em> that neglects to delete it, resulting in a large amount of space being occupied. Deleting such a <em>File</em> , under the right conditions, could be quite beneficial.</p>
+<p>Special handling must be carefully defined to avoid the potential for repetition which could cause harm or negatively impact device performance. For example, repeatedly downloading the same <em>File</em> could have multiple negative effects, such as slowing down the device, clogging up the network, wearing out flash memory, etc.</p>
+<p>This <em>Array</em> is used to specify which <em>Files</em> require special handling. Any <em>File</em> that does NOT require special handling should not have an element in this <em>Array</em>, indicating that NO special handling should be performed. Any <em>File</em> that DOES require special handling should not have an element in this <em>Array</em> that specifies ALL special handlings required for that <em>File</em>.</p>
+<ul>
+<li><p>If this <em>Array</em> has never been specified (never included in the <em>MCs</em> sent), then no configuration of special handling will be configured for any <em>Files</em>.</p></li>
+<li><p>If this <em>Array</em> is not specified (not included in the <em>MCs</em> sent), then no changes will be made to the configuration defined by any previously specified version of this <em>Array</em>.</p></li>
+<li><p>If this <em>Array</em> is specified (included in the <em>MCs</em> sent), then the specified <em>Array</em> will entirely replace the configuration defined by any previously specified <em>Array</em>.</p></li>
+</ul>
+<blockquote>
+<p>Note that it is generally NOT possible to specify an "empty" <em>Array</em> (i.e. an <em>Array</em> with zero elements). Every <em>Array</em> must contain at least one element. Any element(s) in this <em>Array</em> where a blank (empty string) value is entered for <strong>Device Path And Name</strong> will be ignored. It is therefore possible to specify a "virtually empty" <em>Array</em> by entering a blank (empty string) value for <strong>Device Path And Name</strong> in every element of the <em>Array</em>.</p>
+</blockquote>
+<ul>
+<li>If this <em>Array</em> is specified (included in the <em>MCs</em> sent), but that <em>Array</em> is "virtually empty," as described above, then all special handling previously configured by any previously specified <em>Array</em> will be removed, thus returning to a state equivalent to when no <em>Array</em> had ever been specified.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = filesConfig</p></li>
+<li><p>Type = bundle_array</p></li>
+</ul>
+<p><a aria-disabled="true" id="filesConfig.filesConfigFile"></a></p>
+<h3 class="anchor" id="file"><a aria-disabled="true" class="heading-anchor" data-original-href="#file"><span></span></a>File</h3>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#filesConfig">Files Configuration</a>
+</font>
+</span> <br/><br/></p>
+<p>Use this <em>Sub-group</em> to identify a <em>File</em> that needs special handling and to specify the special handling it needs.</p>
+<ul>
+<li><p>To specify that a <em>File</em> should be downloaded, at least one <strong>Download Option Type</strong> must be specified via <strong>Download Options</strong>.</p></li>
+<li><p>To specify that a <em>File</em> should be uploaded, at least one <strong>Upload Option Type</strong> must be specified via <strong>Upload Options</strong>.</p></li>
+<li><p>To specify that a <em>File</em> should be deleted, at least one <strong>Delete Option Type</strong> must be specified via <strong>Delete Options</strong>.</p></li>
+</ul>
+<p>Notes:</p>
+<ul>
+<li><p>If none of <strong>Download Options</strong>, <strong>Upload Options</strong>, or <strong>Delete Options</strong> are specified for a <em>File</em>, then NO special handlings CAN occur for that <em>File</em>.</p></li>
+<li><p>If one or more <strong>Download Options</strong>, <strong>Upload Options</strong>, or <strong>Delete Options</strong> are specified for a <em>File</em>, then one or more special handlings MAY occur for that <em>File</em>, if/when one or more of the conditions specified for that <em>File</em> via <strong>Download Option Type</strong> , <strong>Upload Option Type</strong>, or <strong>Delete Option Type</strong> are met for that <em>File</em>.</p></li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = filesConfigFile</p></li>
+<li><p>Type = bundle</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="filesConfig.filesConfigFile.filesConfigDevicePathAndName"></a></p>
+<h4 class="anchor" id="devicepathandname"><a aria-disabled="true" class="heading-anchor" data-original-href="#devicepathandname"><span></span></a>Device Path And Name</h4>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#filesConfig">Files Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile">File</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter a string that uniquely identifies a <em>File</em> in the <em>Device File System</em> for which special handling is required.</p>
+<p>For each element in the <em>Array</em> <strong>Files Configuration</strong>:</p>
+<ul>
+<li><p>If no value is specified for this <em>MC</em> or if a blank (empty string) value is entered, then the element of the <em>Array</em> will be ignored (not processed), producing the same result as if the element of the <em>Array</em> was not present. This can be used to effectively remove an element of an <em>Array</em> or to create a virtually empty <em>Array</em>.</p></li>
+<li><p>If a non-blank (non-empty string) value is entered, then the element of the <em>Array</em> will be processed and the value entered must uniquely identify a <em>File</em> that DOES or COULD exist in the <em>Device File System</em>.</p></li>
+<li><p>The value entered could take the format /&lt;path&gt;/&lt;filename&gt; to indicate that the <em>File</em> is to be downloaded to a <em>Shared Folder</em> in the <em>Device File System</em>.</p></li>
+<li><p>The value entered could take the format /&lt;path&gt;/&lt;filename&gt;, where &lt;filename&gt; includes one or more of the wildcard characters * (Asterisk) or ? <em>(Question mark) to indicate that all *Files</em> in the specified path that match are to be uploaded to a Server from a <em>Shared Folder</em> in the <em>Device File System</em>.</p></li>
+<li><p>The value entered could take the format &lt;packagename&gt;/&lt;path&gt;/&lt;filename&gt; to indicate that the <em>File</em> should be downloaded using the Zebra <em>Secure Storage Manager</em> for the exclusive use of the <em>Android Application</em> identified by the specified <em>Android Package Name</em>. In such cases, <strong>Download Application Signature</strong> must also be specified to provide the <em>Android Package Signature</em> that will be verified to ensure that the instance of the <em>Android Application</em> to which the <em>File</em> will be deployed is genuine.</p></li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = filesConfigDevicePathAndName</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="filesConfig.filesConfigFile.filesConfigDownloadOptions"></a></p>
+<h4 class="anchor" id="downloadoptions"><a aria-disabled="true" class="heading-anchor" data-original-href="#downloadoptions"><span></span></a>Download Options</h4>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#filesConfig">Files Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile">File</a>
+</font>
+</span> <br/><br/></p>
+<p>Use this <em>Sub-array</em> to configure when/how a <em>File</em> should be downloaded from a Server to the <em>Device File System</em>.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = filesConfigDownloadOptions</p></li>
+<li><p>Type = bundle_array</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>Supported from: MX 5.0.</li>
+</ul>
+<p><a aria-disabled="true" id="filesConfig.filesConfigFile.filesConfigDownloadOptions.fileMgmtDownloadOption"></a></p>
+<h5 class="anchor" id="downloadoption"><a aria-disabled="true" class="heading-anchor" data-original-href="#downloadoption"><span></span></a>Download Option</h5>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#filesConfig">Files Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile">File</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile.filesConfigDownloadOptions">Download Options</a>
+</font>
+</span> <br/><br/></p>
+<p>Use this <em>Sub-group</em> to configure when/how a <em>File</em> should be downloaded from a Server to the <em>Device File System</em>.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = fileMgmtDownloadOption</p></li>
+<li><p>Type = bundle</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="filesConfig.filesConfigFile.filesConfigDownloadOptions.fileMgmtDownloadOption.fileMgmtDownloadOptionType"></a></p>
+<h6 class="anchor" id="downloadoptiontype"><a aria-disabled="true" class="heading-anchor" data-original-href="#downloadoptiontype"><span></span></a>Download Option Type</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#filesConfig">Files Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile">File</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile.filesConfigDownloadOptions">Download Options</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile.filesConfigDownloadOptions.fileMgmtDownloadOption">Download Option</a>
+</font>
+</span> <br/><br/></p>
+<p>Select the Type of a single Download Option defining when/how to download a <em>File</em> From a Server to the <em>Device File System</em>.</p>
+<ul>
+<li><p>If the value <strong><em>On Server</em></strong> is selected, a <em>File</em> will be downloaded from a Server if the file is present on the Server whether or not the <em>File</em> is currently present in the <em>Device File System</em>.</p></li>
+<li><p>If the value <strong><em>On Server but not on Device</em></strong> is selected, a <em>File</em> will be downloaded from a Server, only if the file is present on the Server AND the <em>File</em> is NOT currently present in the <em>Device File System</em>.</p></li>
+</ul>
+<p>If a <em>File</em> is downloaded, it will be downloaded from the location on the Server specified via <strong>Download Server URI</strong> to the <em>Device File System</em> at the location specified via <strong>Device Path And Name</strong>.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = fileMgmtDownloadOptionType</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> On Server </small></i></b></td><td><small> 1 </small></td></tr><tr align="center"><td><b><i><small> On Server but not on Device </small></i></b></td><td><small> 2 </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="filesConfig.filesConfigFile.filesConfigDownloadServerUri"></a></p>
+<h4 class="anchor" id="downloadserveruri"><a aria-disabled="true" class="heading-anchor" data-original-href="#downloadserveruri"><span></span></a>Download Server URI</h4>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#filesConfig">Files Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile">File</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter a URI that identifies a <em>File</em> on a Server that will be downloaded to the <em>Device File System</em> when indicated by one or more <strong>Download Options</strong>.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = filesConfigDownloadServerUri</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="filesConfig.filesConfigFile.filesConfigDestSignature"></a></p>
+<h4 class="anchor" id="downloadapplicationsignature"><a aria-disabled="true" class="heading-anchor" data-original-href="#downloadapplicationsignature"><span></span></a>Download Application Signature</h4>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#filesConfig">Files Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile">File</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter the <em>Android Package Signature</em> to be used to verify that the <em>Android Application</em> for which the <em>File</em> will be downloaded is genuine. This is meaningful ONLY when the format &lt;packagename&gt;/&lt;path&gt;/&lt;filename&gt; is used for <strong>Device Path And Name</strong> to indicate that the <em>File</em> should be downloaded using the Zebra <em>Secure Storage Manager</em> for the exclusive use of the <em>Android Application</em>.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = filesConfigDestSignature</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>Supported from: MX 11.3.</li>
+</ul>
+<p><a aria-disabled="true" id="filesConfig.filesConfigFile.filesConfigDeployPersistence"></a></p>
+<h4 class="anchor" id="downloadfilepersistence"><a aria-disabled="true" class="heading-anchor" data-original-href="#downloadfilepersistence"><span></span></a>Download File Persistence</h4>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#filesConfig">Files Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile">File</a>
+</font>
+</span> <br/><br/></p>
+<p>Select whether the <em>File</em> downloaded to the <em>Device File System</em> should locally persist on the device following an <em>Enterprise Reset</em>. This is meaningful ONLY when the format &lt;packagename&gt;/&lt;path&gt;/&lt;filename&gt; is used for <strong>Device Path And Name</strong> to indicate that the <em>File</em> should be downloaded using the Zebra <em>Secure Storage Manager</em> for the exclusive use of the <em>Android Application</em>.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = filesConfigDeployPersistence</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> Do Not Persist </small></i></b></td><td><small> 0 </small></td></tr><tr align="center"><td><b><i><small> Persist </small></i></b></td><td><small> 1 </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>Supported from: MX 11.3.</li>
+</ul>
+<p><a aria-disabled="true" id="filesConfig.filesConfigFile.filesConfigUploadOptions"></a></p>
+<h4 class="anchor" id="uploadoptions"><a aria-disabled="true" class="heading-anchor" data-original-href="#uploadoptions"><span></span></a>Upload Options</h4>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#filesConfig">Files Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile">File</a>
+</font>
+</span> <br/><br/></p>
+<p>Use this <em>Sub-array</em> to configure when/how <em>Files</em> should be uploaded to a Server from the <em>Device File System</em>.</p>
+<p>It is important to understand that due to the one-to-many relationship between Enterprise Mobility Management Systems (EMMs) and devices, the nature of upload is fundamentally different from download. When downloading a <em>File</em> from a Server to the <em>Device File System</em>, a single <em>File</em> on a Server can be downloaded to the same location in the <em>Device File System</em> of many devices. But when a <em>File</em> in the <em>Device File System</em> of many devices is uploaded to the Server, it doesn't make sense for each upload to overwrite a single file on the Server. In order for upload to make sense, each copy of a <em>File</em> uploaded by a different device needs to be uploaded to the Server with a different name, to ensure that all uploaded <em>Files</em> will be retained. Further, to make the set of uploaded copies of a <em>File</em> useful, it is important that the different copies of a <em>File</em> uploaded by different devices be somehow associated to the device from which they were uploaded.</p>
+<p>Unlike download, which always downloads a single <em>File</em> from the Server to the <em>Device File System</em> on any given device, upload COULD upload multiple <em>Files</em> to the Server from the <em>Device File System</em> of a given device. This is accomplished by using the /&lt;path&gt;/&lt;filename&gt; format for <strong>Device Path And Name</strong> where &lt;filename&gt; includes one or more of the wildcard characters * (Asterisk) or ? <em>(Question mark). All *Files</em> that match will be uploaded.</p>
+<p>Unlike download, which can download the same <em>File</em> from the Server to the <em>Device File System</em> of many devices, upload may need to upload copies of the same <em>File</em> from many devices to the same Server and must therefore name the <em>Files</em> from different devices differently on the Server. This is accomplished by specifying only a location via <strong>Upload Server URI</strong> not a specific <em>File</em> AND by specifying a pattern via <strong>Upload File Name Pattern</strong> telling upload how to name <em>Files</em> from different devices when they are uploaded to a common location on the Server.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = filesConfigUploadOptions</p></li>
+<li><p>Type = bundle_array</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>Supported from: MX 10.1.</li>
+</ul>
+<p><a aria-disabled="true" id="filesConfig.filesConfigFile.filesConfigUploadOptions.fileMgmtUploadOption"></a></p>
+<h5 class="anchor" id="uploadoption"><a aria-disabled="true" class="heading-anchor" data-original-href="#uploadoption"><span></span></a>Upload Option</h5>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#filesConfig">Files Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile">File</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile.filesConfigUploadOptions">Upload Options</a>
+</font>
+</span> <br/><br/></p>
+<p>Use this <em>Sub-group</em> to configure when/how <em>Files</em> should be to uploaded to a Server from the <em>Device File System</em>.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = fileMgmtUploadOption</p></li>
+<li><p>Type = bundle</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="filesConfig.filesConfigFile.filesConfigUploadOptions.fileMgmtUploadOption.fileMgmtUploadOptionType"></a></p>
+<h6 class="anchor" id="uploadoptiontype"><a aria-disabled="true" class="heading-anchor" data-original-href="#uploadoptiontype"><span></span></a>Upload Option Type</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#filesConfig">Files Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile">File</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile.filesConfigUploadOptions">Upload Options</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile.filesConfigUploadOptions.fileMgmtUploadOption">Upload Option</a>
+</font>
+</span> <br/><br/></p>
+<p>Select the Type of a single Upload Option defining when/how to upload matching <em>Files</em> to a Server from the <em>Device File System</em>.</p>
+<ul>
+<li><p>If the value <strong><em>Not on Server</em></strong> is selected, a matching <em>File</em> will be uploaded to a Server if the <em>File</em> is present in the <em>Device File System</em> and is NOT present on the Server.</p></li>
+<li><p>If the value <strong><em>Sorted By Name</em></strong> is selected, if multiple matching <em>Files</em> exist to be uploaded to a Server, they will be uploaded in alphabetical order by filename instead of uploading them in the default order of oldest to newest.</p></li>
+</ul>
+<p>If a <em>File</em> is uploaded, it will be uploaded from the <em>Device File System</em> at the location specified via <strong>Device Path And Name</strong> to the location specified via <strong>Download Server URI</strong> with a name determined from the value specified via <strong>Upload File Name Pattern</strong>.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = fileMgmtUploadOptionType</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> Not on Server </small></i></b></td><td><small> 1 </small></td></tr><tr align="center"><td><b><i><small> Sorted By Name </small></i></b></td><td><small> 3 </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="filesConfig.filesConfigFile.filesConfigUploadFileNamePattern"></a></p>
+<h4 class="anchor" id="uploadfilenamepattern"><a aria-disabled="true" class="heading-anchor" data-original-href="#uploadfilenamepattern"><span></span></a>Upload File Name Pattern</h4>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#filesConfig">Files Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile">File</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter a Pattern to be used to craft the names of <em>Files</em> uploaded to a Server to ensure that <em>Files</em> uploaded from different devices have different names.
+The Pattern may contain any characters that are valid for use in a <em>File</em> Name on the Server, which may vary by Server but will generally include letters, digits, and a decimal point (dot) and may also contain one or more of the following:</p>
+<ul>
+<li>If the constant value <em>%model%</em> appears in the Pattern, then it will be replaced with the model name of the device.</li>
+<li>If the constant value <em>%serial%</em> appears in the Pattern, then it will be replaced with the serial number of the device.</li>
+<li>If the constant value <em>%date%</em> appears in the Pattern, then it will be replaced with the date the File was created in the <em>Device File System</em>.</li>
+<li>If the constant value <em>%time%</em> appears in the Pattern, then it will be replaced with the time the File was created in the <em>Device File System</em>.</li>
+</ul>
+<p>For example, if the Pattern was <em>Log-%model%-%serial%-%date%-%time%.zip</em>, a File that is Uploaded to the Server might be assigned the File Name <em>Log-TC51-123456789-041520-112300.zip</em>, indicating that the File was a Log File that was Created on a TC51 device whose serial number was <em>123456789</em> and where the File was created in the <em>Device File System</em> at 11:23 AM on April 15, 2020.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = filesConfigUploadFileNamePattern</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><a aria-disabled="true" id="filesConfig.filesConfigFile.filesConfigUploadServerURI"></a></p>
+<h4 class="anchor" id="uploadserveruri"><a aria-disabled="true" class="heading-anchor" data-original-href="#uploadserveruri"><span></span></a>Upload Server URI</h4>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#filesConfig">Files Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile">File</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter the URI of a location on a Server to which File(s) from the Device File System will be uploaded.</p>
+<p>Note: Because multiple <em>Files</em> may be uploaded from a given device, and because <em>Files</em> may be uploaded from multiple devices, this URI should point to a <em>Folder</em> on the Server NOT to a <em>File</em> on the Server. The name of the <em>Files</em> uploaded to the specified location on the Server will be determined based on the value specified via <strong>Upload File Name Pattern</strong>.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = filesConfigUploadServerURI</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><a aria-disabled="true" id="filesConfig.filesConfigFile.filesConfigDeleteOptions"></a></p>
+<h4 class="anchor" id="deleteoptions"><a aria-disabled="true" class="heading-anchor" data-original-href="#deleteoptions"><span></span></a>Delete Options</h4>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#filesConfig">Files Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile">File</a>
+</font>
+</span> <br/><br/></p>
+<p>Use this <em>Sub-array</em> to configure when a <em>File</em> should be deleted the <em>Device File System</em>.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = filesConfigDeleteOptions</p></li>
+<li><p>Type = bundle_array</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>Supported from: MX 5.0.</li>
+</ul>
+<p><a aria-disabled="true" id="filesConfig.filesConfigFile.filesConfigDeleteOptions.fileMgmtDeleteOption"></a></p>
+<h5 class="anchor" id="deleteoption"><a aria-disabled="true" class="heading-anchor" data-original-href="#deleteoption"><span></span></a>Delete Option</h5>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#filesConfig">Files Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile">File</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile.filesConfigDeleteOptions">Delete Options</a>
+</font>
+</span> <br/><br/></p>
+<p>Use this <em>Sub-group</em> to configure when a <em>File</em> should be deleted from the <em>Device File System</em>.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = fileMgmtDeleteOption</p></li>
+<li><p>Type = bundle</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="filesConfig.filesConfigFile.filesConfigDeleteOptions.fileMgmtDeleteOption.fileMgmtDeleteOptionType"></a></p>
+<h6 class="anchor" id="deleteoptiontype"><a aria-disabled="true" class="heading-anchor" data-original-href="#deleteoptiontype"><span></span></a>Delete Option Type</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#filesConfig">Files Configuration</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile">File</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile.filesConfigDeleteOptions">Delete Options</a>  &gt; 
+<a aria-disabled="true" data-original-href="#filesConfig.filesConfigFile.filesConfigDeleteOptions.fileMgmtDeleteOption">Delete Option</a>
+</font>
+</span> <br/><br/></p>
+<p>Select the Type of a single Delete Option defining when to delete a <em>File</em> from the <em>Device File System</em>.</p>
+<ul>
+<li><p>If the value <strong><em>Always</em></strong> is selected, a <em>File</em> will be deleted from the <em>Device File System</em> whenever it exists.</p></li>
+<li><p>If the value <strong><em>After Reboot(s)</em></strong> is selected, a <em>File</em> will be deleted from the <em>Device File System</em> only if it exists immediately after a reboot.</p></li>
+</ul>
+<p>If a <em>File</em> is deleted, it will be deleted from the location in the <em>Device File System</em> specified via <strong>Device Path And Name</strong>.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = fileMgmtDeleteOptionType</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> Always </small></i></b></td><td><small> 1 </small></td></tr><tr align="center"><td><b><i><small> After Reboot(s) </small></i></b></td><td><small> 2 </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings"></a></p>
+<h2 class="anchor" id="keyboardmappings"><a aria-disabled="true" class="heading-anchor" data-original-href="#keyboardmappings"><span></span></a>Keyboard Mappings</h2>
+<p>Use this <em>Array</em> to configure one or more Keyboard Mapping(s)</p>
+<p>The following defined terms are important to understand:</p>
+<blockquote>
+<p><em>Key</em></p>
+</blockquote>
+<p><em>Key</em> refers to any physical switch that can be activated through manual pressure or any logical (e.g. On-Screen) button that can be activated using a touch panel or other pointing device.</p>
+<blockquote>
+<p><em>Keyboard</em></p>
+</blockquote>
+<p><em>Keyboard</em> refers to any input mechanism that utilizes <em>Keys</em> that can be pressed to enter data into a mobile device.</p>
+<blockquote>
+<p><em>Built-In Keyboard</em></p>
+</blockquote>
+<p><em>Built-In Keyboard</em> refers to a <em>Keyboard</em> that is physically integrated with and is generally inseparable from a mobile device and where <em>Keys</em> are generally activated by manual pressure.</p>
+<blockquote>
+<p><em>On-Screen Keyboard</em></p>
+</blockquote>
+<p><em>On-Screen Keyboard</em> refers to a <em>Keyboard</em> that is displayed on the screen and where <em>Keys</em> are generally activated by a touch panel or other pointing device. In Android devices, <em>On-Screen Keyboards</em> are typically implemented through the Soft Input Panel (SIP) mechanism.</p>
+<blockquote>
+<p><em>External Keyboard</em></p>
+</blockquote>
+<p><em>External Keyboard</em> refers to a <em>Keyboard</em> that is physically separate from a mobile device and that must be connected to the mobile device via some communications channel, such as Bluetooth or USB, and where <em>Keys</em> are generally activated by manual pressure.</p>
+<blockquote>
+<p><em>Key Behavior</em></p>
+</blockquote>
+<p><em>Key Behavior</em> refers to what will occur when a <em>Key</em> on a <em>Keyboard</em> is activated. <em>Key Behavior</em> for a <em>Key</em> may vary depending on the current <em>Keyboard State</em> of a <em>Keyboard</em> when the <em>Key</em> is activated on that <em>Keyboard</em>.</p>
+<blockquote>
+<p><em>Keyboard Mapping</em></p>
+</blockquote>
+<p><em>Keyboard Mapping</em> refers to configuration that alters the operation of a <em>Keyboard</em> by changing The <em>Key Behavior</em> for one or more <em>Keys</em> on that <em>Keyboard</em>.</p>
+<blockquote>
+<p><em>Keyboard State</em></p>
+</blockquote>
+<p><em>Keyboard State</em> refers to a logical state that a <em>Keyboard</em> can be in and which affects the <em>Key Behavior</em> of <em>Keys</em> that are pressed while in that state. Standard <em>Keyboard States</em> include <em>Shift</em>, <em>Caps Lock</em>, <em>Control</em>, and <em>Alt</em>. <em>Built-In Keyboards</em> on Zebra Android devices may also support non-standard <em>Keyboard States</em>, such as <em>Function</em>, <em>Blue</em>, <em>Orange</em>, etc.</p>
+<blockquote>
+<p><em>Mapping Table</em></p>
+</blockquote>
+<p><em>Mapping Table</em> refers to a table maintained in memory on a Zebra Android device that holds the <em>Keyboard Mappings</em> defined for a <em>Keyboard</em> that apply to a particular <em>Keyboard State</em>. For example, the <em>Shift</em> <em>Mapping Table</em> for a <em>Keyboard</em> would contain <em>Keyboard Mappings</em> that apply to <em>Keys</em> pressed only when that <em>Keyboard</em> is in the <em>Shift</em> <em>Keyboard State</em>. Consult the product documentation for a Zebra Android device to determine which <em>Mapping Tables</em> it supports.</p>
+<blockquote>
+<p><em>Key Identifier</em></p>
+</blockquote>
+<p><em>Key Identifier</em> refers to a value used to uniquely identify a <em>Key</em> on a <em>Keyboard</em> so the <em>Key Behavior</em> of that <em>Key</em> can be altered via a <em>Keyboard Mapping</em> for that <em>Key</em>. <em>Key Identifiers</em> are most commonly string values that match the label of a <em>Key</em>, for <em>keys</em> that are labelled. For example, the <em>Key Identifier</em> "A" would used to identify a <em>Key</em> that is labelled as having that function. In some cases, a <em>Key</em> may be labeled with a graphical symbol that cannot easily be represented through a direct text string. For example, the "Left Arrow" <em>Key</em> may be labeled with a graphical arrow symbol, in which the <em>Key Identifier</em> will attempt to describe that symbol (e.g. "Left"). In some cases, a <em>Key</em> may be unlabeled, in which case the <em>Key Identifier</em> will attempt to describe the <em>Key</em> using functional and/or positional information. For example, the "Volume Up" <em>Key</em> is unlabeled and will describe the function of the <em>Key</em> (e.g. "Volume Up") and the yellow "Scan" trigger <em>Key</em> on the left hand side of the device might be unlabeled and will describe the function and position of the <em>Key</em> (e.g. "Left Trigger").</p>
+<blockquote>
+<p><em>Key Code</em></p>
+</blockquote>
+<p><em>Key Code</em> refers to a value that is sent to the Android System when a <em>key</em> is activated to indicate how the key should be interpreted.</p>
+<blockquote>
+<p><em>Trigger Signal</em></p>
+</blockquote>
+<p><em>Trigger Signal</em> refers to a logical indication, on a Zebra Android device, that a <em>Key</em> has been activated that is configured to behave as a trigger. Various Zebra Value-Add services, such as Barcode Scanning, are designed to respond to <em>Trigger Signals</em>.</p>
+<p>This <em>Array</em> allows <em>Keyboard Mappings</em> to be defined for <em>Built-In Keyboards</em> only.</p>
+<p>Each element of this <em>Array</em>:</p>
+<ul>
+<li><p>Defines a <em>Keyboard Mapping</em> for a single <em>Key</em> on the <em>Built-In Keyboard</em>, identified by the <em>Key Identifier</em> value specified in <strong>Key ID</strong>. By adding multiple elements to this <em>Array</em>, <em>Keyboard Mappings</em> for multiple <em>Keys</em> can be defined.</p></li>
+<li><p>Can define the behavior of the identified <em>Key</em> in one or more <em>Mapping Tables</em> that are supported by the <em>Built-In Keyboard</em> on a Zebra Android device. .</p></li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keyboardMappings</p></li>
+<li><p>Type = bundle_array</p></li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping"></a></p>
+<h3 class="anchor" id="keyboardmapping"><a aria-disabled="true" class="heading-anchor" data-original-href="#keyboardmapping"><span></span></a>Keyboard Mapping</h3>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>
+</font>
+</span> <br/><br/></p>
+<p>Use this <em>Sub-group</em> to configure Key ID and Behaviors for a single <em>Key</em> on the <em>Built-In Keyboard</em>.</p>
+<ul>
+<li><p><strong>Key ID</strong> must be specified to provide the <em>Key Identifier</em> of the <em>Key</em> whose <em>Key Behaviors</em> will be altered in one or more <em>Keyboard States</em>.</p></li>
+<li><p>The <em>Sub-array</em> <strong>Behaviors</strong> must be specified to define the <em>Key Behavior</em> to be defined as the <em>Keyboard Mapping</em> for the <em>Key</em> identified by the <em>Key Identifier</em>. .</p></li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keyboardMapping</p></li>
+<li><p>Type = bundle</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>Supported from: MX 4.4.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingKeyId"></a></p>
+<h4 class="anchor" id="keyid"><a aria-disabled="true" class="heading-anchor" data-original-href="#keyid"><span></span></a>Key ID</h4>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>
+</font>
+</span> <br/><br/></p>
+<p>Select the <em>Key Identifier</em> value that uniquely identifies the <em>Key</em> on the <em>Built-In Keyboard" whose *Key Behavior</em> is to be changed in one or more <em>Keyboard States</em>.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingKeyId</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> 0 </small></i></b></td><td><small> 0 </small></td></tr><tr align="center"><td><b><i><small> 1 </small></i></b></td><td><small> 1 </small></td></tr><tr align="center"><td><b><i><small> 2 </small></i></b></td><td><small> 2 </small></td></tr><tr align="center"><td><b><i><small> 3 </small></i></b></td><td><small> 3 </small></td></tr><tr align="center"><td><b><i><small> 4 </small></i></b></td><td><small> 4 </small></td></tr><tr align="center"><td><b><i><small> 5 </small></i></b></td><td><small> 5 </small></td></tr><tr align="center"><td><b><i><small> 6 </small></i></b></td><td><small> 6 </small></td></tr><tr align="center"><td><b><i><small> 7 </small></i></b></td><td><small> 7 </small></td></tr><tr align="center"><td><b><i><small> 8 </small></i></b></td><td><small> 8 </small></td></tr><tr align="center"><td><b><i><small> 9 </small></i></b></td><td><small> 9 </small></td></tr><tr align="center"><td><b><i><small> A </small></i></b></td><td><small> A </small></td></tr><tr align="center"><td><b><i><small> B </small></i></b></td><td><small> B </small></td></tr><tr align="center"><td><b><i><small> C </small></i></b></td><td><small> C </small></td></tr><tr align="center"><td><b><i><small> D </small></i></b></td><td><small> D </small></td></tr><tr align="center"><td><b><i><small> E </small></i></b></td><td><small> E </small></td></tr><tr align="center"><td><b><i><small> F </small></i></b></td><td><small> F </small></td></tr><tr align="center"><td><b><i><small> G </small></i></b></td><td><small> G </small></td></tr><tr align="center"><td><b><i><small> H </small></i></b></td><td><small> H </small></td></tr><tr align="center"><td><b><i><small> I </small></i></b></td><td><small> I </small></td></tr><tr align="center"><td><b><i><small> J </small></i></b></td><td><small> J </small></td></tr><tr align="center"><td><b><i><small> K </small></i></b></td><td><small> K </small></td></tr><tr align="center"><td><b><i><small> L </small></i></b></td><td><small> L </small></td></tr><tr align="center"><td><b><i><small> M </small></i></b></td><td><small> M </small></td></tr><tr align="center"><td><b><i><small> N </small></i></b></td><td><small> N </small></td></tr><tr align="center"><td><b><i><small> O </small></i></b></td><td><small> O </small></td></tr><tr align="center"><td><b><i><small> P </small></i></b></td><td><small> P </small></td></tr><tr align="center"><td><b><i><small> Q </small></i></b></td><td><small> Q </small></td></tr><tr align="center"><td><b><i><small> R </small></i></b></td><td><small> R </small></td></tr><tr align="center"><td><b><i><small> S </small></i></b></td><td><small> S </small></td></tr><tr align="center"><td><b><i><small> T </small></i></b></td><td><small> T </small></td></tr><tr align="center"><td><b><i><small> U </small></i></b></td><td><small> U </small></td></tr><tr align="center"><td><b><i><small> V </small></i></b></td><td><small> V </small></td></tr><tr align="center"><td><b><i><small> W </small></i></b></td><td><small> W </small></td></tr><tr align="center"><td><b><i><small> X </small></i></b></td><td><small> X </small></td></tr><tr align="center"><td><b><i><small> Y </small></i></b></td><td><small> Y </small></td></tr><tr align="center"><td><b><i><small> Z </small></i></b></td><td><small> Z </small></td></tr><tr align="center"><td><b><i><small> . (Period) </small></i></b></td><td><small> DOT </small></td></tr><tr align="center"><td><b><i><small> , (Comma) </small></i></b></td><td><small> COMMA </small></td></tr><tr align="center"><td><b><i><small> * (Star) </small></i></b></td><td><small> STAR </small></td></tr><tr align="center"><td><b><i><small> # (Pound) </small></i></b></td><td><small> POUND </small></td></tr><tr align="center"><td><b><i><small> F1 </small></i></b></td><td><small> F1 </small></td></tr><tr align="center"><td><b><i><small> F2 </small></i></b></td><td><small> F2 </small></td></tr><tr align="center"><td><b><i><small> F3 </small></i></b></td><td><small> F3 </small></td></tr><tr align="center"><td><b><i><small> F4 </small></i></b></td><td><small> F4 </small></td></tr><tr align="center"><td><b><i><small> F5 </small></i></b></td><td><small> F5 </small></td></tr><tr align="center"><td><b><i><small> F6 </small></i></b></td><td><small> F6 </small></td></tr><tr align="center"><td><b><i><small> F7 </small></i></b></td><td><small> F7 </small></td></tr><tr align="center"><td><b><i><small> F8 </small></i></b></td><td><small> F8 </small></td></tr><tr align="center"><td><b><i><small> F9 </small></i></b></td><td><small> F9 </small></td></tr><tr align="center"><td><b><i><small> F10 </small></i></b></td><td><small> F10 </small></td></tr><tr align="center"><td><b><i><small> F11 </small></i></b></td><td><small> F11 </small></td></tr><tr align="center"><td><b><i><small> F12 </small></i></b></td><td><small> F12 </small></td></tr><tr align="center"><td><b><i><small> Enter </small></i></b></td><td><small> ENTER </small></td></tr><tr align="center"><td><b><i><small> Up </small></i></b></td><td><small> UP </small></td></tr><tr align="center"><td><b><i><small> Down </small></i></b></td><td><small> DOWN </small></td></tr><tr align="center"><td><b><i><small> Left </small></i></b></td><td><small> LEFT </small></td></tr><tr align="center"><td><b><i><small> Right </small></i></b></td><td><small> RIGHT </small></td></tr><tr align="center"><td><b><i><small> NAV_OK </small></i></b></td><td><small> NAV_OK </small></td></tr><tr align="center"><td><b><i><small> Escape </small></i></b></td><td><small> ESC </small></td></tr><tr align="center"><td><b><i><small> Backspace </small></i></b></td><td><small> BACKSPACE </small></td></tr><tr align="center"><td><b><i><small> Space </small></i></b></td><td><small> SPACE </small></td></tr><tr align="center"><td><b><i><small> Return </small></i></b></td><td><small> RETURN </small></td></tr><tr align="center"><td><b><i><small> Clear </small></i></b></td><td><small> CLR </small></td></tr><tr align="center"><td><b><i><small> Field Exit </small></i></b></td><td><small> FIELD_EXIT </small></td></tr><tr align="center"><td><b><i><small> Alt </small></i></b></td><td><small> ALT </small></td></tr><tr align="center"><td><b><i><small> Control </small></i></b></td><td><small> CTRL </small></td></tr><tr align="center"><td><b><i><small> Shift </small></i></b></td><td><small> SHIFT </small></td></tr><tr align="center"><td><b><i><small> Func </small></i></b></td><td><small> FUNC </small></td></tr><tr align="center"><td><b><i><small> Alpha </small></i></b></td><td><small> ALPHA </small></td></tr><tr align="center"><td><b><i><small> CL </small></i></b></td><td><small> CL </small></td></tr><tr align="center"><td><b><i><small> FN </small></i></b></td><td><small> FN </small></td></tr><tr align="center"><td><b><i><small> Blue </small></i></b></td><td><small> BLUE </small></td></tr><tr align="center"><td><b><i><small> Orange </small></i></b></td><td><small> ORANGE </small></td></tr><tr align="center"><td><b><i><small> Grey </small></i></b></td><td><small> GREY </small></td></tr><tr align="center"><td><b><i><small> Diamond </small></i></b></td><td><small> DIAMOND </small></td></tr><tr align="center"><td><b><i><small> Green Dot </small></i></b></td><td><small> GREEN </small></td></tr><tr align="center"><td><b><i><small> Red Dot </small></i></b></td><td><small> RED </small></td></tr><tr align="center"><td><b><i><small> Volume Up </small></i></b></td><td><small> VOLUMEUP </small></td></tr><tr align="center"><td><b><i><small> Volume Down </small></i></b></td><td><small> VOLUMEDOWN </small></td></tr><tr align="center"><td><b><i><small> Scan </small></i></b></td><td><small> SCAN </small></td></tr><tr align="center"><td><b><i><small> Grip Trigger </small></i></b></td><td><small> GRIP_TRIGGER </small></td></tr><tr align="center"><td><b><i><small> Grip Trigger 2 </small></i></b></td><td><small> GRIP_TRIGGER_2 </small></td></tr><tr align="center"><td><b><i><small> Button L1 </small></i></b></td><td><small> LEFT_TRIGGER_1 </small></td></tr><tr align="center"><td><b><i><small> Button L2 </small></i></b></td><td><small> LEFT_TRIGGER_2 </small></td></tr><tr align="center"><td><b><i><small> Button R1 </small></i></b></td><td><small> RIGHT_TRIGGER_1 </small></td></tr><tr align="center"><td><b><i><small> Button R2 </small></i></b></td><td><small> RIGHT_TRIGGER_2 </small></td></tr><tr align="center"><td><b><i><small> Left Trigger </small></i></b></td><td><small> LEFT_TRIGGER </small></td></tr><tr align="center"><td><b><i><small> Right Trigger </small></i></b></td><td><small> RIGHT_TRIGGER </small></td></tr><tr align="center"><td><b><i><small> Center Trigger </small></i></b></td><td><small> CENTER_TRIGGER </small></td></tr><tr align="center"><td><b><i><small> Gun Trigger </small></i></b></td><td><small> GUN_TRIGGER </small></td></tr><tr align="center"><td><b><i><small> Headset Button </small></i></b></td><td><small> HEADSET_HOOK </small></td></tr><tr align="center"><td><b><i><small> Back </small></i></b></td><td><small> BACK </small></td></tr><tr align="center"><td><b><i><small> Home </small></i></b></td><td><small> HOME </small></td></tr><tr align="center"><td><b><i><small> Menu </small></i></b></td><td><small> MENU </small></td></tr><tr align="center"><td><b><i><small> Recent </small></i></b></td><td><small> RECENT </small></td></tr><tr align="center"><td><b><i><small> Search </small></i></b></td><td><small> SEARCH </small></td></tr><tr align="center"><td><b><i><small> Keyboard Backlight </small></i></b></td><td><small> KEYLIGHT </small></td></tr><tr align="center"><td><b><i><small> Display Backlight </small></i></b></td><td><small> LAMP </small></td></tr><tr align="center"><td><b><i><small> Power </small></i></b></td><td><small> POWER </small></td></tr><tr align="center"><td><b><i><small> P1 Button </small></i></b></td><td><small> P1 </small></td></tr><tr align="center"><td><b><i><small> P2 Button </small></i></b></td><td><small> P2 </small></td></tr><tr align="center"><td><b><i><small> P3 Button </small></i></b></td><td><small> P3 </small></td></tr><tr align="center"><td><b><i><small> P4 Button </small></i></b></td><td><small> P4 </small></td></tr><tr align="center"><td><b><i><small> P5 Button </small></i></b></td><td><small> P5 </small></td></tr><tr align="center"><td><b><i><small> P6 Button </small></i></b></td><td><small> P6 </small></td></tr><tr align="center"><td><b><i><small> W1 Button </small></i></b></td><td><small> W1 </small></td></tr><tr align="center"><td><b><i><small> W2 Button </small></i></b></td><td><small> W2 </small></td></tr><tr align="center"><td><b><i><small> Rear Button </small></i></b></td><td><small> REAR_BUTTON </small></td></tr><tr align="center"><td><b><i><small> Left External Trigger </small></i></b></td><td><small> LEFT_EXTERNAL_TRIGGER </small></td></tr><tr align="center"><td><b><i><small> Right External Trigger </small></i></b></td><td><small> RIGHT_EXTERNAL_TRIGGER </small></td></tr><tr align="center"><td><b><i><small> Bluetooth Remote Trigger 1 </small></i></b></td><td><small> BLUETOOTH_REMOTE_TRIGGER_1 </small></td></tr><tr align="center"><td><b><i><small> Bluetooth Remote Trigger 2 </small></i></b></td><td><small> BLUETOOTH_REMOTE_TRIGGER_2 </small></td></tr><tr align="center"><td><b><i><small> Touch NAV_PAD </small></i></b></td><td><small> NAV_PAD </small></td></tr><tr align="center"><td><b><i><small> Macro 1 </small></i></b></td><td><small> M1 </small></td></tr><tr align="center"><td><b><i><small> Macro 2 </small></i></b></td><td><small> M2 </small></td></tr><tr align="center"><td><b><i><small> Macro 3 </small></i></b></td><td><small> M3 </small></td></tr><tr align="center"><td><b><i><small> Macro 4 </small></i></b></td><td><small> M4 </small></td></tr><tr align="center"><td><b><i><small> Macro 5 </small></i></b></td><td><small> M5 </small></td></tr><tr align="center"><td><b><i><small> Macro 6 </small></i></b></td><td><small> M6 </small></td></tr><tr align="center"><td><b><i><small> Brightness Up </small></i></b></td><td><small> BRIGHTNESSUP </small></td></tr><tr align="center"><td><b><i><small> Brightness Down </small></i></b></td><td><small> BRIGHTNESSDOWN </small></td></tr><tr align="center"><td><b><i><small> Keyboard </small></i></b></td><td><small> KEYBOARD </small></td></tr><tr align="center"><td><b><i><small> Keyboard Backlight Brightness Up </small></i></b></td><td><small> KEYLIGHTUP </small></td></tr><tr align="center"><td><b><i><small> Keyboard Backlight Brightness Down </small></i></b></td><td><small> KEYLIGHTDOWN </small></td></tr><tr align="center"><td><b><i><small> Rotate </small></i></b></td><td><small> ROTATE </small></td></tr><tr align="center"><td><b><i><small> + (Plus) </small></i></b></td><td><small> PLUS </small></td></tr><tr align="center"><td><b><i><small> - (Minus) </small></i></b></td><td><small> MINUS </small></td></tr><tr align="center"><td><b><i><small> Pause </small></i></b></td><td><small> PAUSE </small></td></tr><tr align="center"><td><b><i><small> End </small></i></b></td><td><small> END </small></td></tr><tr align="center"><td><b><i><small> Page Up </small></i></b></td><td><small> PAGEUP </small></td></tr><tr align="center"><td><b><i><small> Page Down </small></i></b></td><td><small> PAGEDOWN </small></td></tr><tr align="center"><td><b><i><small> Tab </small></i></b></td><td><small> TAB </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors"></a></p>
+<h4 class="anchor" id="behaviors"><a aria-disabled="true" class="heading-anchor" data-original-href="#behaviors"><span></span></a>Behaviors</h4>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>
+</font>
+</span> <br/><br/></p>
+<p>Use this <em>Sub-array</em> to configure one or more <em>Key Behaviors</em> for a <em>Key</em> on the <em>Built-In Keyboard</em>.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviors</p></li>
+<li><p>Type = bundle_array</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior"></a></p>
+<h5 class="anchor" id="behavior"><a aria-disabled="true" class="heading-anchor" data-original-href="#behavior"><span></span></a>Behavior</h5>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>
+</font>
+</span> <br/><br/></p>
+<p>Use this <em>Sub-group</em> to configure Table Name, Behavior Type, Send Key Code, Alt State, Ctrl State, Fn State, Shift State, Send Trigger, Send Intent, Intent Method, Intent Action, Intent Category, Intent Package Name, Intent Class, Intent Data URI, Intent MIME Type, Intent Extra Name 1, Intent Extra Name 2, Intent Extra Name 3, Intent Extra Name 4, Intent Extra Name 5, Intent Extra Value 1, Intent Extra Value 2, Intent Extra Value 3, Intent Extra Value 4, Intent Extra Value 5, Intent Flags, Send Intent - Intent Add Key Event, and Launch Application Name to define a single <em>Key Behavior</em> for a <em>Key</em> on the <em>Built-In Keyboard</em>.</p>
+<ul>
+<li><p><strong>Table Name</strong> must be specified to identify the <em>Mapping Table</em> into which the <em>Key Behavior</em> should be stored and which will thereby define the <em>Keyboard State</em> in which the <em>Key</em> must be activated in order for the <em>Key Behavior</em> to occur.</p></li>
+<li><p><strong>Behavior Type</strong> must be specified to identify the type of <em>Key Behavior</em> being defined
+.</p></li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehavior</p></li>
+<li><p>Type = bundle</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTableName"></a></p>
+<h6 class="anchor" id="tablename"><a aria-disabled="true" class="heading-anchor" data-original-href="#tablename"><span></span></a>Table Name</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Select the name of the <em>Mapping Table</em> into which the <em>Key Behavior</em> should be stored and which will thereby define the <em>Keyboard State</em> in which the <em>Key</em> must be activated in order for the <em>Key Behavior</em> to occur.</p>
+<p>Each <em>Mapping Table</em> is associated with a <em>Keyboard State</em> and is generally named based on the state <em>Key</em> on the <em>Built-in Keyboard</em> that causes that <em>Keyboard State</em> to be set or cleared.</p>
+<blockquote>
+<p>Note that due to variations in the size, layout, and intended use cases of <em>Built-In Keyboards</em> on various Zebra Android devices, not all <em>Keyboard States</em> may be supported on any given device. Consult the product documentation for a device to determine the supported <em>Keyboard States</em> and <em>Mapping Tables</em>.</p>
+</blockquote>
+<p>Some or all of the following values may be supported by a Zebra Android device:</p>
+<ul>
+<li><p>If the value <strong><em>Base</em></strong> is selected, the Base <em>Mapping Table</em> will be selected. The Base <em>Mapping Table</em> is used to store the <em>Key Behaviors</em> that will be performed for <em>Keys</em> that are activated under conditions where no <em>Keyboard States</em> are set.</p></li>
+<li><p>If the value <strong><em>Blue</em></strong> is selected, the Blue <em>Mapping Table</em> will be selected. The Blue <em>Mapping Table</em> is used to store the <em>Key Behaviors</em> that will be performed for <em>Keys</em> that are activated under conditions where the Blue <em>Key</em> has been used to set the Blue <em>Keyboard State</em>.</p></li>
+<li><p>If the value <strong><em>Orange</em></strong> is selected, the Orange <em>Mapping Table</em> will be selected. The Orange <em>Mapping Table</em> is used to store the <em>Key Behaviors</em> that will be performed for <em>Keys</em> that are activated under conditions where the Orange <em>Key</em> has been used to set the Orange <em>Keyboard State</em>.</p></li>
+<li><p>If the value <strong><em>Grey</em></strong> is selected, the Grey <em>Mapping Table</em> will be selected. The Grey <em>Mapping Table</em> is used to store the <em>Key Behaviors</em> that will be performed for <em>Keys</em> that are activated under conditions where the Grey <em>Key</em> has been used to set the Grey <em>Keyboard State</em>.</p></li>
+<li><p>If the value <strong><em>Diamond</em></strong> is selected, the Diamond <em>Mapping Table</em> will be selected. The Diamond <em>Mapping Table</em> is used to store the <em>Key Behaviors</em> that will be performed for <em>Keys</em> that are activated under conditions where the Diamond <em>Key</em> has been used to set the Diamond <em>Keyboard State</em>.</p></li>
+<li><p>If the value <strong><em>Shift</em></strong> is selected, the Shift <em>Mapping Table</em> will be selected. The Shift <em>Mapping Table</em> is used to store the <em>Key Behaviors</em> that will be performed for <em>Keys</em> that are activated under conditions where the Shift <em>Key</em> has been used to set the Shift <em>Keyboard State</em>.</p></li>
+<li><p>If the value <strong><em>Control</em></strong> is selected, the Control <em>Mapping Table</em> will be selected. The Control <em>Mapping Table</em> is used to store the <em>Key Behaviors</em> that will be performed for <em>Keys</em> that are activated under conditions where the Control <em>Key</em> has been used to set the Control <em>Keyboard State</em>.</p></li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTableName</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> Base </small></i></b></td><td><small> Base </small></td></tr><tr align="center"><td><b><i><small> Blue </small></i></b></td><td><small> Blue </small></td></tr><tr align="center"><td><b><i><small> Orange </small></i></b></td><td><small> Orange </small></td></tr><tr align="center"><td><b><i><small> Grey </small></i></b></td><td><small> Grey </small></td></tr><tr align="center"><td><b><i><small> Diamond </small></i></b></td><td><small> Diamond </small></td></tr><tr align="center"><td><b><i><small> Shift </small></i></b></td><td><small> Shift </small></td></tr><tr align="center"><td><b><i><small> Control </small></i></b></td><td><small> Control </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorType"></a></p>
+<h6 class="anchor" id="behaviortype"><a aria-disabled="true" class="heading-anchor" data-original-href="#behaviortype"><span></span></a>Behavior Type</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Select the type of <em>Key Behavior</em> that will be performed when a specified <em>Key</em> is activated while the <em>Keyboard State</em> associated with the specified <em>Mapping Table</em> is set.
+The following values are supported:</p>
+<ul>
+<li><p>If the value <strong><em>Send Key Code</em></strong> is selected, the <em>Key Behavior</em> performed when the specified <em>Key</em> is activated while the <em>Keyboard State</em> associated with the specified <em>Mapping Table</em> is set will be to send a specified <em>Key Code</em>. This can be thought of as being “Classic Keyboard Remapping”, since it causes the standard <em>Key Behavior</em> of a <em>Key</em>, which is generally to send a standard <em>Key Code</em> to be altered to send a different <em>Key Code</em>, which may or may not be present on the <em>Built-In Keyboard</em> and hence might otherwise not been possible to send without using <em>Key Mapping</em>. You must also specify <strong>Send Key Code</strong> to provide the <em>Key Code</em> that will be sent.</p></li>
+<li><p>If the value <strong><em>Send Trigger</em></strong> is selected, the <em>Key Behavior</em> performed when the specified <em>Key</em> is activated while the <em>Keyboard State</em> associated with the specified <em>Mapping Table</em> is set will be to send a <em>Trigger Signal</em>. You must also specify <strong>Send Trigger</strong> to select which <em>Trigger Signal</em> will be sent,</p></li>
+<li><p>If the value <strong><em>Launch Application</em></strong> is selected, the <em>Key Behavior</em> performed when the specified <em>Key</em> is activated while the <em>Keyboard State</em> associated with the specified <em>Mapping Table</em> is set will be to launch an application. You must also specify <strong>Launch Application Name</strong> to provide the <em>Friendly Name</em> of the application to be launched.</p></li>
+</ul>
+<blockquote>
+<p>Note that this is NOT the <em>Android Package Name</em>. To launch an application by its <em>Android Package Name</em>, the value <strong><em>Send Intent</em></strong> should be select.</p>
+</blockquote>
+<ul>
+<li><p>If the value <strong><em>Send Intent</em></strong> is selected, the <em>Key Behavior</em> performed when the specified <em>Key</em> is activated while the <em>Keyboard State</em> associated with the specified <em>Mapping Table</em> is set will be to send an Android Intent</p>
+<ul>
+<li><p>Sending an Android Intent provides a very flexible way to specify the <em>Key Behavior</em> to be performed for a <em>Key</em> by invoking an application or service.</p></li>
+<li><p>There are many options that control the nature of the intent that will be sent.</p></li>
+<li><p>It is generally recommended to fully understand the nature of the Android Intent to be sent before attempting to configure it as a <em>Key</em> <em>Key Behavior</em>.</p></li>
+<li><p>In many cases, the application or service to be invoked will define the nature of the intent it wishes to receive and that definition can be used to drive the configuration.</p></li>
+<li><p>Android allows a collection of named Extras, of various types, to be attached to any intent.</p></li>
+<li><p>An Intent sent as a <em>Key Behavior</em> for a specified <em>Key</em> can optionally have up to 5 Extras attached which, if used, MUST always be of type String.</p></li>
+<li><p>This limitation of only attaching up to 5 Extras of type String might prevent certain intents, those which require more Extras or Extras of type other than String, from being sent as a <em>Key Behavior</em> for a <em>Key</em>.</p></li>
+<li><p>You should consult the documentation or developer of a given application or service to determine the intents it supports and whether a function you want to perform requires any Extra(s) to be attached and, if so, of what type(s).</p></li>
+<li><p>Sending an Android Intent might cause any number of possible results, depending on the nature of the intent configured to be sent.</p></li>
+<li><p>You must also specify some or all of the following to define the Android Intent to be sent:</p>
+<ul>
+<li><p><strong>Intent Method</strong></p></li>
+<li><p><strong>Intent Action</strong></p></li>
+<li><p><strong>Intent Category</strong></p></li>
+<li><p><strong>Intent Package Name</strong></p></li>
+<li><p><strong>Intent Class</strong></p></li>
+<li><p><strong>Intent Data URI</strong></p></li>
+<li><p><strong>Intent Flags</strong></p></li>
+<li><p><strong>Intent MIME Type</strong></p></li>
+<li><p><strong>Intent Extra Name 1</strong></p></li>
+<li><p><strong>Intent Extra Value 1</strong></p></li>
+<li><p><strong>Intent Extra Name 2</strong></p></li>
+<li><p><strong>Intent Extra Value 2</strong></p></li>
+<li><p><strong>Intent Extra Name 3</strong></p></li>
+<li><p><strong>Intent Extra Value 3</strong></p></li>
+<li><p><strong>Intent Extra Name 4</strong></p></li>
+<li><p><strong>Intent Extra Value 4</strong></p></li>
+<li><p><strong>Intent Extra Name 5</strong></p></li>
+<li><p><strong>Intent Extra Value 5</strong></p></li></ul></li></ul></li>
+<li><p>If the value <strong><em>Suppress Key</em></strong> is selected, NO <em>Key Behavior</em> will be performed when the specified <em>Key</em> is activated while the <em>Keyboard State</em> associated with the specified <em>Mapping Table</em> is active. This provides a method to change a <em>Key</em> to do nothing (act as if it was <em>Key</em> has not been activated). - If the value <strong><em>Reset To Default</em></strong> is selected, the <em>Key Behavior</em> performed when the specified <em>Key</em> is activated while the <em>Keyboard State</em> associated with the specified <em>Mapping Table</em> is active be reset back to its default. This will effectively remove any prior mapping of that <em>Key</em> in that <em>Keyboard State</em> and return the <em>Key</em> to its out-of-box <em>Key Behavior</em> in that <em>Keyboard State</em>.</p></li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorType</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> Send Key Code </small></i></b></td><td><small> 2 </small></td></tr><tr align="center"><td><b><i><small> Send Trigger </small></i></b></td><td><small> 1 </small></td></tr><tr align="center"><td><b><i><small> Launch Application </small></i></b></td><td><small> 4 </small></td></tr><tr align="center"><td><b><i><small> Send Intent </small></i></b></td><td><small> 3 </small></td></tr><tr align="center"><td><b><i><small> Suppress Key </small></i></b></td><td><small> 5 </small></td></tr><tr align="center"><td><b><i><small> Reset To Default </small></i></b></td><td><small> 7 </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendKeyCode"></a></p>
+<h6 class="anchor" id="sendkeycode"><a aria-disabled="true" class="heading-anchor" data-original-href="#sendkeycode"><span></span></a>Send Key Code</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Select the <em>Key Code</em> that will be sent as the <em>Key Behavior</em> for a specified <em>Key</em> when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Key Code</em></strong> is selected for <strong>Behavior Type</strong>.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendKeyCode</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> 0 </small></i></b></td><td><small> 7 </small></td></tr><tr align="center"><td><b><i><small> 1 </small></i></b></td><td><small> 8 </small></td></tr><tr align="center"><td><b><i><small> 2 </small></i></b></td><td><small> 9 </small></td></tr><tr align="center"><td><b><i><small> 3 </small></i></b></td><td><small> 10 </small></td></tr><tr align="center"><td><b><i><small> 4 </small></i></b></td><td><small> 11 </small></td></tr><tr align="center"><td><b><i><small> 5 </small></i></b></td><td><small> 12 </small></td></tr><tr align="center"><td><b><i><small> 6 </small></i></b></td><td><small> 13 </small></td></tr><tr align="center"><td><b><i><small> 7 </small></i></b></td><td><small> 14 </small></td></tr><tr align="center"><td><b><i><small> 8 </small></i></b></td><td><small> 15 </small></td></tr><tr align="center"><td><b><i><small> 9 </small></i></b></td><td><small> 16 </small></td></tr><tr align="center"><td><b><i><small> + (Plus) </small></i></b></td><td><small> 81 </small></td></tr><tr align="center"><td><b><i><small> - (Minus) </small></i></b></td><td><small> 69 </small></td></tr><tr align="center"><td><b><i><small> = (Equals) </small></i></b></td><td><small> 70 </small></td></tr><tr align="center"><td><b><i><small> ( (Left Bracket) </small></i></b></td><td><small> 71 </small></td></tr><tr align="center"><td><b><i><small> ) (Right Bracket) </small></i></b></td><td><small> 72 </small></td></tr><tr align="center"><td><b><i><small> ` (Grave) </small></i></b></td><td><small> 68 </small></td></tr><tr align="center"><td><b><i><small> / (Slash) </small></i></b></td><td><small> 76 </small></td></tr><tr align="center"><td><b><i><small> \\\\ (Backslash) </small></i></b></td><td><small> 73 </small></td></tr><tr align="center"><td><b><i><small> ; (Semicolon) </small></i></b></td><td><small> 74 </small></td></tr><tr align="center"><td><b><i><small> ' (Apostrophe) </small></i></b></td><td><small> 75 </small></td></tr><tr align="center"><td><b><i><small> , (Comma) </small></i></b></td><td><small> 55 </small></td></tr><tr align="center"><td><b><i><small> . (Period) </small></i></b></td><td><small> 56 </small></td></tr><tr align="center"><td><b><i><small> * (Star) </small></i></b></td><td><small> 17 </small></td></tr><tr align="center"><td><b><i><small> # (Pound) </small></i></b></td><td><small> 18 </small></td></tr><tr align="center"><td><b><i><small> @ (At) </small></i></b></td><td><small> 77 </small></td></tr><tr align="center"><td><b><i><small> A </small></i></b></td><td><small> 29 </small></td></tr><tr align="center"><td><b><i><small> B </small></i></b></td><td><small> 30 </small></td></tr><tr align="center"><td><b><i><small> C </small></i></b></td><td><small> 31 </small></td></tr><tr align="center"><td><b><i><small> D </small></i></b></td><td><small> 32 </small></td></tr><tr align="center"><td><b><i><small> E </small></i></b></td><td><small> 33 </small></td></tr><tr align="center"><td><b><i><small> F </small></i></b></td><td><small> 34 </small></td></tr><tr align="center"><td><b><i><small> G </small></i></b></td><td><small> 35 </small></td></tr><tr align="center"><td><b><i><small> H </small></i></b></td><td><small> 36 </small></td></tr><tr align="center"><td><b><i><small> I </small></i></b></td><td><small> 37 </small></td></tr><tr align="center"><td><b><i><small> J </small></i></b></td><td><small> 38 </small></td></tr><tr align="center"><td><b><i><small> K </small></i></b></td><td><small> 39 </small></td></tr><tr align="center"><td><b><i><small> L </small></i></b></td><td><small> 40 </small></td></tr><tr align="center"><td><b><i><small> M </small></i></b></td><td><small> 41 </small></td></tr><tr align="center"><td><b><i><small> N </small></i></b></td><td><small> 42 </small></td></tr><tr align="center"><td><b><i><small> O </small></i></b></td><td><small> 43 </small></td></tr><tr align="center"><td><b><i><small> P </small></i></b></td><td><small> 44 </small></td></tr><tr align="center"><td><b><i><small> Q </small></i></b></td><td><small> 45 </small></td></tr><tr align="center"><td><b><i><small> R </small></i></b></td><td><small> 46 </small></td></tr><tr align="center"><td><b><i><small> S </small></i></b></td><td><small> 47 </small></td></tr><tr align="center"><td><b><i><small> T </small></i></b></td><td><small> 48 </small></td></tr><tr align="center"><td><b><i><small> U </small></i></b></td><td><small> 49 </small></td></tr><tr align="center"><td><b><i><small> V </small></i></b></td><td><small> 50 </small></td></tr><tr align="center"><td><b><i><small> W </small></i></b></td><td><small> 51 </small></td></tr><tr align="center"><td><b><i><small> X </small></i></b></td><td><small> 52 </small></td></tr><tr align="center"><td><b><i><small> Y </small></i></b></td><td><small> 53 </small></td></tr><tr align="center"><td><b><i><small> Z </small></i></b></td><td><small> 54 </small></td></tr><tr align="center"><td><b><i><small> Enter </small></i></b></td><td><small> 66 </small></td></tr><tr align="center"><td><b><i><small> Tab </small></i></b></td><td><small> 61 </small></td></tr><tr align="center"><td><b><i><small> Space </small></i></b></td><td><small> 62 </small></td></tr><tr align="center"><td><b><i><small> Escape </small></i></b></td><td><small> 111 </small></td></tr><tr align="center"><td><b><i><small> Delete </small></i></b></td><td><small> 67 </small></td></tr><tr align="center"><td><b><i><small> F1 </small></i></b></td><td><small> 131 </small></td></tr><tr align="center"><td><b><i><small> F2 </small></i></b></td><td><small> 132 </small></td></tr><tr align="center"><td><b><i><small> F3 </small></i></b></td><td><small> 133 </small></td></tr><tr align="center"><td><b><i><small> F4 </small></i></b></td><td><small> 134 </small></td></tr><tr align="center"><td><b><i><small> F5 </small></i></b></td><td><small> 135 </small></td></tr><tr align="center"><td><b><i><small> F6 </small></i></b></td><td><small> 136 </small></td></tr><tr align="center"><td><b><i><small> F7 </small></i></b></td><td><small> 137 </small></td></tr><tr align="center"><td><b><i><small> F8 </small></i></b></td><td><small> 138 </small></td></tr><tr align="center"><td><b><i><small> F9 </small></i></b></td><td><small> 139 </small></td></tr><tr align="center"><td><b><i><small> F10 </small></i></b></td><td><small> 140 </small></td></tr><tr align="center"><td><b><i><small> F11 </small></i></b></td><td><small> 141 </small></td></tr><tr align="center"><td><b><i><small> F12 </small></i></b></td><td><small> 142 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD 0 </small></i></b></td><td><small> 144 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD 1 </small></i></b></td><td><small> 145 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD 2 </small></i></b></td><td><small> 146 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD 3 </small></i></b></td><td><small> 147 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD 4 </small></i></b></td><td><small> 148 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD 5 </small></i></b></td><td><small> 149 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD 6 </small></i></b></td><td><small> 150 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD 7 </small></i></b></td><td><small> 151 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD 8 </small></i></b></td><td><small> 152 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD 9 </small></i></b></td><td><small> 153 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD / (NUMPAD Divide) </small></i></b></td><td><small> 154 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD * (NUMPAD Multiply) </small></i></b></td><td><small> 155 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD - (NUMPAD Subtract) </small></i></b></td><td><small> 156 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD + (NUMPAD Add) </small></i></b></td><td><small> 157 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD . (NUMPAD Period) </small></i></b></td><td><small> 158 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD , (NUMPAD Comma) </small></i></b></td><td><small> 159 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD Enter </small></i></b></td><td><small> 160 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD = (NUMPAD Equals) </small></i></b></td><td><small> 161 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD { (NUMPAD Left Parenthesis) </small></i></b></td><td><small> 162 </small></td></tr><tr align="center"><td><b><i><small> NUMPAD } (NUMPAD Right Parenthesis) </small></i></b></td><td><small> 163 </small></td></tr><tr align="center"><td><b><i><small> DPAD Up </small></i></b></td><td><small> 19 </small></td></tr><tr align="center"><td><b><i><small> DPAD Down </small></i></b></td><td><small> 20 </small></td></tr><tr align="center"><td><b><i><small> DPAD Left </small></i></b></td><td><small> 21 </small></td></tr><tr align="center"><td><b><i><small> DPAD Right </small></i></b></td><td><small> 22 </small></td></tr><tr align="center"><td><b><i><small> DPAD Center </small></i></b></td><td><small> 23 </small></td></tr><tr align="center"><td><b><i><small> Move Home </small></i></b></td><td><small> 122 </small></td></tr><tr align="center"><td><b><i><small> Move End </small></i></b></td><td><small> 123 </small></td></tr><tr align="center"><td><b><i><small> Page Up </small></i></b></td><td><small> 92 </small></td></tr><tr align="center"><td><b><i><small> Page Down </small></i></b></td><td><small> 93 </small></td></tr><tr align="center"><td><b><i><small> Insert </small></i></b></td><td><small> 124 </small></td></tr><tr align="center"><td><b><i><small> Forward Delete </small></i></b></td><td><small> 112 </small></td></tr><tr align="center"><td><b><i><small> Clear </small></i></b></td><td><small> 28 </small></td></tr><tr align="center"><td><b><i><small> Lamp </small></i></b></td><td><small> 10024 </small></td></tr><tr align="center"><td><b><i><small> Do Nothing </small></i></b></td><td><small> 10026 </small></td></tr><tr align="center"><td><b><i><small> Blue </small></i></b></td><td><small> 10027 </small></td></tr><tr align="center"><td><b><i><small> Orange </small></i></b></td><td><small> 10028 </small></td></tr><tr align="center"><td><b><i><small> Grey </small></i></b></td><td><small> 10029 </small></td></tr><tr align="center"><td><b><i><small> Diamond </small></i></b></td><td><small> 10039 </small></td></tr><tr align="center"><td><b><i><small> Alt </small></i></b></td><td><small> 10030 </small></td></tr><tr align="center"><td><b><i><small> Control </small></i></b></td><td><small> 10031 </small></td></tr><tr align="center"><td><b><i><small> Shift </small></i></b></td><td><small> 10032 </small></td></tr><tr align="center"><td><b><i><small> Keyboard </small></i></b></td><td><small> 10034 </small></td></tr><tr align="center"><td><b><i><small> Touch Calibrate </small></i></b></td><td><small> 10035 </small></td></tr><tr align="center"><td><b><i><small> Scan </small></i></b></td><td><small> 10036 </small></td></tr><tr align="center"><td><b><i><small> Search Key </small></i></b></td><td><small> 10037 </small></td></tr><tr align="center"><td><b><i><small> None </small></i></b></td><td><small> 10038 </small></td></tr><tr align="center"><td><b><i><small> KeyLight </small></i></b></td><td><small> 10025 </small></td></tr><tr align="center"><td><b><i><small> Keylight Up </small></i></b></td><td><small> 10040 </small></td></tr><tr align="center"><td><b><i><small> Keylight Down </small></i></b></td><td><small> 10041 </small></td></tr><tr align="center"><td><b><i><small> Left Shift </small></i></b></td><td><small> 59 </small></td></tr><tr align="center"><td><b><i><small> Right Shift </small></i></b></td><td><small> 60 </small></td></tr><tr align="center"><td><b><i><small> Left Alt </small></i></b></td><td><small> 57 </small></td></tr><tr align="center"><td><b><i><small> Right Alt </small></i></b></td><td><small> 58 </small></td></tr><tr align="center"><td><b><i><small> Left Control </small></i></b></td><td><small> 113 </small></td></tr><tr align="center"><td><b><i><small> Right Control </small></i></b></td><td><small> 114 </small></td></tr><tr align="center"><td><b><i><small> Meta Left </small></i></b></td><td><small> 117 </small></td></tr><tr align="center"><td><b><i><small> Meta Right </small></i></b></td><td><small> 118 </small></td></tr><tr align="center"><td><b><i><small> Caps Lock </small></i></b></td><td><small> 115 </small></td></tr><tr align="center"><td><b><i><small> Num Lock </small></i></b></td><td><small> 143 </small></td></tr><tr align="center"><td><b><i><small> Scroll Lock </small></i></b></td><td><small> 116 </small></td></tr><tr align="center"><td><b><i><small> SysRq </small></i></b></td><td><small> 120 </small></td></tr><tr align="center"><td><b><i><small> Break </small></i></b></td><td><small> 121 </small></td></tr><tr align="center"><td><b><i><small> Function </small></i></b></td><td><small> 119 </small></td></tr><tr align="center"><td><b><i><small> Back </small></i></b></td><td><small> 4 </small></td></tr><tr align="center"><td><b><i><small> Forward </small></i></b></td><td><small> 125 </small></td></tr><tr align="center"><td><b><i><small> Home </small></i></b></td><td><small> 3 </small></td></tr><tr align="center"><td><b><i><small> Menu </small></i></b></td><td><small> 82 </small></td></tr><tr align="center"><td><b><i><small> Settings </small></i></b></td><td><small> 176 </small></td></tr><tr align="center"><td><b><i><small> Application Switch </small></i></b></td><td><small> 187 </small></td></tr><tr align="center"><td><b><i><small> Calculator </small></i></b></td><td><small> 210 </small></td></tr><tr align="center"><td><b><i><small> Explorer </small></i></b></td><td><small> 64 </small></td></tr><tr align="center"><td><b><i><small> Envelope </small></i></b></td><td><small> 65 </small></td></tr><tr align="center"><td><b><i><small> Bookmark </small></i></b></td><td><small> 174 </small></td></tr><tr align="center"><td><b><i><small> Music </small></i></b></td><td><small> 209 </small></td></tr><tr align="center"><td><b><i><small> Call </small></i></b></td><td><small> 5 </small></td></tr><tr align="center"><td><b><i><small> End Call </small></i></b></td><td><small> 6 </small></td></tr><tr align="center"><td><b><i><small> Microphone Mute </small></i></b></td><td><small> 91 </small></td></tr><tr align="center"><td><b><i><small> Camera </small></i></b></td><td><small> 27 </small></td></tr><tr align="center"><td><b><i><small> Search </small></i></b></td><td><small> 84 </small></td></tr><tr align="center"><td><b><i><small> Contacts </small></i></b></td><td><small> 207 </small></td></tr><tr align="center"><td><b><i><small> Calendar </small></i></b></td><td><small> 208 </small></td></tr><tr align="center"><td><b><i><small> Volume Up </small></i></b></td><td><small> 24 </small></td></tr><tr align="center"><td><b><i><small> Volume Down </small></i></b></td><td><small> 25 </small></td></tr><tr align="center"><td><b><i><small> Volume Mute </small></i></b></td><td><small> 164 </small></td></tr><tr align="center"><td><b><i><small> Brightness Up </small></i></b></td><td><small> 221 </small></td></tr><tr align="center"><td><b><i><small> Brightness Down </small></i></b></td><td><small> 220 </small></td></tr><tr align="center"><td><b><i><small> Power </small></i></b></td><td><small> 26 </small></td></tr><tr align="center"><td><b><i><small> Sleep </small></i></b></td><td><small> 223 </small></td></tr><tr align="center"><td><b><i><small> Wakeup </small></i></b></td><td><small> 224 </small></td></tr><tr align="center"><td><b><i><small> Headset </small></i></b></td><td><small> 79 </small></td></tr><tr align="center"><td><b><i><small> Push-to-talk </small></i></b></td><td><small> 228 </small></td></tr><tr align="center"><td><b><i><small> Camera Focus </small></i></b></td><td><small> 80 </small></td></tr><tr align="center"><td><b><i><small> Media Play/Pause </small></i></b></td><td><small> 85 </small></td></tr><tr align="center"><td><b><i><small> Media Stop </small></i></b></td><td><small> 86 </small></td></tr><tr align="center"><td><b><i><small> Media Next </small></i></b></td><td><small> 87 </small></td></tr><tr align="center"><td><b><i><small> Media Previous </small></i></b></td><td><small> 88 </small></td></tr><tr align="center"><td><b><i><small> Media Rewind </small></i></b></td><td><small> 89 </small></td></tr><tr align="center"><td><b><i><small> Media Fast-Forward </small></i></b></td><td><small> 90 </small></td></tr><tr align="center"><td><b><i><small> Media Play </small></i></b></td><td><small> 126 </small></td></tr><tr align="center"><td><b><i><small> Media Pause </small></i></b></td><td><small> 127 </small></td></tr><tr align="center"><td><b><i><small> Media Close </small></i></b></td><td><small> 128 </small></td></tr><tr align="center"><td><b><i><small> Media Eject </small></i></b></td><td><small> 129 </small></td></tr><tr align="center"><td><b><i><small> Media Record </small></i></b></td><td><small> 130 </small></td></tr><tr align="center"><td><b><i><small> Button L1 </small></i></b></td><td><small> 102 </small></td></tr><tr align="center"><td><b><i><small> Button R1 </small></i></b></td><td><small> 103 </small></td></tr><tr align="center"><td><b><i><small> Button L2 </small></i></b></td><td><small> 104 </small></td></tr><tr align="center"><td><b><i><small> Button R2 </small></i></b></td><td><small> 105 </small></td></tr><tr align="center"><td><b><i><small> Button A </small></i></b></td><td><small> 96 </small></td></tr><tr align="center"><td><b><i><small> Button B </small></i></b></td><td><small> 97 </small></td></tr><tr align="center"><td><b><i><small> Button C </small></i></b></td><td><small> 98 </small></td></tr><tr align="center"><td><b><i><small> Button X </small></i></b></td><td><small> 99 </small></td></tr><tr align="center"><td><b><i><small> Button Y </small></i></b></td><td><small> 100 </small></td></tr><tr align="center"><td><b><i><small> Button Z </small></i></b></td><td><small> 101 </small></td></tr><tr align="center"><td><b><i><small> Left Thumb Button </small></i></b></td><td><small> 106 </small></td></tr><tr align="center"><td><b><i><small> Right Thumb Button </small></i></b></td><td><small> 107 </small></td></tr><tr align="center"><td><b><i><small> Start Button </small></i></b></td><td><small> 108 </small></td></tr><tr align="center"><td><b><i><small> Select Button </small></i></b></td><td><small> 109 </small></td></tr><tr align="center"><td><b><i><small> Mode Button </small></i></b></td><td><small> 110 </small></td></tr><tr align="center"><td><b><i><small> Gamepad Button 1 </small></i></b></td><td><small> 188 </small></td></tr><tr align="center"><td><b><i><small> Gamepad Button 2 </small></i></b></td><td><small> 189 </small></td></tr><tr align="center"><td><b><i><small> Gamepad Button 3 </small></i></b></td><td><small> 190 </small></td></tr><tr align="center"><td><b><i><small> Gamepad Button 4 </small></i></b></td><td><small> 191 </small></td></tr><tr align="center"><td><b><i><small> Gamepad Button 5 </small></i></b></td><td><small> 192 </small></td></tr><tr align="center"><td><b><i><small> Gamepad Button 6 </small></i></b></td><td><small> 193 </small></td></tr><tr align="center"><td><b><i><small> Gamepad Button 7 </small></i></b></td><td><small> 194 </small></td></tr><tr align="center"><td><b><i><small> Gamepad Button 8 </small></i></b></td><td><small> 195 </small></td></tr><tr align="center"><td><b><i><small> Gamepad Button 9 </small></i></b></td><td><small> 196 </small></td></tr><tr align="center"><td><b><i><small> Gamepad Button 10 </small></i></b></td><td><small> 197 </small></td></tr><tr align="center"><td><b><i><small> Gamepad Button 11 </small></i></b></td><td><small> 198 </small></td></tr><tr align="center"><td><b><i><small> Gamepad Button 12 </small></i></b></td><td><small> 199 </small></td></tr><tr align="center"><td><b><i><small> Gamepad Button 13 </small></i></b></td><td><small> 200 </small></td></tr><tr align="center"><td><b><i><small> Gamepad Button 14 </small></i></b></td><td><small> 201 </small></td></tr><tr align="center"><td><b><i><small> Gamepad Button 15 </small></i></b></td><td><small> 202 </small></td></tr><tr align="center"><td><b><i><small> Gamepad Button 16 </small></i></b></td><td><small> 203 </small></td></tr><tr align="center"><td><b><i><small> Zenkaku/Hankaku </small></i></b></td><td><small> 211 </small></td></tr><tr align="center"><td><b><i><small> Eisu </small></i></b></td><td><small> 212 </small></td></tr><tr align="center"><td><b><i><small> Muhenkan </small></i></b></td><td><small> 213 </small></td></tr><tr align="center"><td><b><i><small> Henkan </small></i></b></td><td><small> 214 </small></td></tr><tr align="center"><td><b><i><small> Katakana/Hiragana </small></i></b></td><td><small> 215 </small></td></tr><tr align="center"><td><b><i><small> Ro </small></i></b></td><td><small> 217 </small></td></tr><tr align="center"><td><b><i><small> Yen </small></i></b></td><td><small> 216 </small></td></tr><tr align="center"><td><b><i><small> Kana </small></i></b></td><td><small> 218 </small></td></tr><tr align="center"><td><b><i><small> Keyboard </small></i></b></td><td><small> 10034 </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendKeyCodeAltState"></a></p>
+<h6 class="anchor" id="altstate"><a aria-disabled="true" class="heading-anchor" data-original-href="#altstate"><span></span></a>Alt State</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Select whether the <em>Key Code</em> specified via <strong>Send Key Code</strong> will be sent with the Alt <em>Keyboard State</em> set when it is sent as the <em>Key Behavior</em>.</p>
+<ul>
+<li>If the value <strong><em>Off</em></strong> is selected, then when the <em>Key Code</em> is sent, it will NOT be sent with the Alt <em>Keyboard State</em> set. This will ensure that it will NOT interpreted as a Alt <em>Key</em>.</li>
+<li>If the value <strong><em>On</em></strong> is selected, then when the <em>Key Code</em> is sent, it WILL be sent with the Alt <em>Keyboard State</em> set. This will ensure that it WILL be interpreted as a Alt <em>Key</em>.</li>
+<li>If no value is specified, then when the Key Code is sent, it will be sent without modifying the Alt <em>Keyboard State</em>. This will ensure that it will be interpreted as a Alt or non-Alt <em>Key</em> depending on whatever <em>Keyboard State</em> the <em>Keyboard</em> is currently in.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendKeyCodeAltState</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> On </small></i></b></td><td><small> 1 </small></td></tr><tr align="center"><td><b><i><small> Off </small></i></b></td><td><small> 0 </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendKeyCodeCtrlState"></a></p>
+<h6 class="anchor" id="ctrlstate"><a aria-disabled="true" class="heading-anchor" data-original-href="#ctrlstate"><span></span></a>Ctrl State</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Select whether the <em>Key Code</em> specified via <strong>Send Key Code</strong> will be sent with the Control <em>Keyboard State</em> set when it is sent as the <em>Key Behavior</em>.</p>
+<ul>
+<li>If the value <strong><em>Off</em></strong> is selected, then when the <em>Key Code</em> is sent, it will NOT be sent with the Control <em>Keyboard State</em> set. This will ensure that it will NOT interpreted as a Control <em>Key</em>.</li>
+<li>If the value <strong><em>On</em></strong> is selected, then when the <em>Key Code</em> is sent, it WILL be sent with the Control <em>Keyboard State</em> set. This will ensure that it WILL be interpreted as a Control <em>Key</em>.</li>
+<li>If no value is specified, then when the Key Code is sent, it will be sent without modifying the Control <em>Keyboard State</em>. This will ensure that it will be interpreted as a Control or non-Control <em>Key</em> depending on whatever <em>Keyboard State</em> the <em>Keyboard</em> is currently in.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendKeyCodeCtrlState</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> On </small></i></b></td><td><small> 1 </small></td></tr><tr align="center"><td><b><i><small> Off </small></i></b></td><td><small> 0 </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendKeyCodeFnState"></a></p>
+<h6 class="anchor" id="fnstate"><a aria-disabled="true" class="heading-anchor" data-original-href="#fnstate"><span></span></a>Fn State</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Select whether the <em>Key Code</em> specified via <strong>Send Key Code</strong> will be sent with the Function <em>Keyboard State</em> set when it is sent as the <em>Key Behavior</em>.</p>
+<ul>
+<li>If the value <strong><em>Off</em></strong> is selected, then when the <em>Key Code</em> is sent, it will NOT be sent with the Function <em>Keyboard State</em> set. This will ensure that it will NOT interpreted as a Function <em>Key</em>.</li>
+<li>If the value <strong><em>On</em></strong> is selected, then when the <em>Key Code</em> is sent, it WILL be sent with the Function <em>Keyboard State</em> set. This will ensure that it WILL be interpreted as a Function <em>Key</em>.</li>
+<li>If no value is specified, then when the Key Code is sent, it will be sent without modifying the Function <em>Keyboard State</em>. This will ensure that it will be interpreted as a Function or non-Function <em>Key</em> depending on whatever <em>Keyboard State</em> the <em>Keyboard</em> is currently in.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendKeyCodeFnState</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> On </small></i></b></td><td><small> 1 </small></td></tr><tr align="center"><td><b><i><small> Off </small></i></b></td><td><small> 0 </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendKeyCodeShiftState"></a></p>
+<h6 class="anchor" id="shiftstate"><a aria-disabled="true" class="heading-anchor" data-original-href="#shiftstate"><span></span></a>Shift State</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Select whether the <em>Key Code</em> specified via <strong>Send Key Code</strong> will be sent with the Shift <em>Keyboard State</em> set when it is sent as the <em>Key Behavior</em>.</p>
+<ul>
+<li>If the value <strong><em>Off</em></strong> is selected, then when the <em>Key Code</em> is sent, it will NOT be sent with the Shift <em>Keyboard State</em> set. This will ensure that it will NOT interpreted as a Shifted <em>Key</em>.</li>
+<li>If the value <strong><em>On</em></strong> is selected, then when the <em>Key Code</em> is sent, it WILL be sent with the Shift Keyboard State* set. This will ensure that it WILL be interpreted as a Shifted <em>Key</em>.</li>
+<li>If no value is specified, then when the Key Code is sent, it will be sent without modifying the Shift <em>Keyboard State</em>. This will ensure that it will be interpreted as a Shifted or Unshifted <em>Key</em> depending on whatever <em>Keyboard State</em> the <em>Keyboard</em> is currently in.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendKeyCodeShiftState</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> On </small></i></b></td><td><small> 1 </small></td></tr><tr align="center"><td><b><i><small> Off </small></i></b></td><td><small> 0 </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendTrigger"></a></p>
+<h6 class="anchor" id="sendtrigger"><a aria-disabled="true" class="heading-anchor" data-original-href="#sendtrigger"><span></span></a>Send Trigger</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Select the <em>Trigger Signal</em> that will be sent as the <em>Key Behavior</em> for a specified <em>Key</em> when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Trigger</em></strong> is selected for <strong>Behavior Type</strong>.</p>
+<p>Eight possible <em>Trigger Signals</em> are defined, but not all may be supported on all devices. All devices generally support at least one <em>Trigger Signal</em> and generally default to using the first <em>Trigger Signal</em> to activate the Barcode Scanner. Some devices may support additional <em>Trigger Signals</em> and could be configured to use one or more <em>Trigger Signals</em> for some purpose(s) other than Barcode Scanning. Consult the product documentation for a device to determine which <em>Trigger Signals</em> are supported and how they are configured by default to be used.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendTrigger</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> Trigger 1 </small></i></b></td><td><small> 10016 </small></td></tr><tr align="center"><td><b><i><small> Trigger 2 </small></i></b></td><td><small> 10017 </small></td></tr><tr align="center"><td><b><i><small> Trigger 3 </small></i></b></td><td><small> 10018 </small></td></tr><tr align="center"><td><b><i><small> Trigger 4 </small></i></b></td><td><small> 10019 </small></td></tr><tr align="center"><td><b><i><small> Trigger 5 </small></i></b></td><td><small> 10020 </small></td></tr><tr align="center"><td><b><i><small> Trigger 6 </small></i></b></td><td><small> 10021 </small></td></tr><tr align="center"><td><b><i><small> Trigger 7 </small></i></b></td><td><small> 10022 </small></td></tr><tr align="center"><td><b><i><small> Trigger 8 </small></i></b></td><td><small> 10023 </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendIntent"></a></p>
+<h6 class="anchor" id="sendintent"><a aria-disabled="true" class="heading-anchor" data-original-href="#sendintent"><span></span></a>Send Intent</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Select the circumstances when an Android Intent will be sent as the <em>Key Behavior</em> for a specified <em>Key</em> when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Intent</em></strong> is selected for <strong>Behavior Type</strong>.</p>
+<ul>
+<li>If the value <strong><em>On Key Down</em></strong> is selected, the Android Intent will be sent when the <em>Key</em> is activated (pressed) but will NOT be sent again when the Key is deactivated (released).</li>
+<li>If the value <strong><em>On Key Up</em></strong> is selected, the Android Intent will be NOT be sent when the <em>Key</em> is activated (pressed) but will be sent when the Key is deactivated (released).</li>
+<li>If the value <strong><em>On Both Key Up and Down</em></strong> is selected, the Android Intent will be sent when the <em>Key</em> is activated (pressed) AND will be sent again when the Key is deactivated (released).</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendIntent</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> On Key Down </small></i></b></td><td><small> 1 </small></td></tr><tr align="center"><td><b><i><small> On Key Up </small></i></b></td><td><small> 2 </small></td></tr><tr align="center"><td><b><i><small> On Both Key Up and Down </small></i></b></td><td><small> 3 </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendIntentMethod"></a></p>
+<h6 class="anchor" id="intentmethod"><a aria-disabled="true" class="heading-anchor" data-original-href="#intentmethod"><span></span></a>Intent Method</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Select the method via which an Android Intent will be sent to invoke an application or service for a specified <em>Key</em> when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Intent</em></strong> is selected for <strong>Behavior Type</strong>.</p>
+<p>Depending on the application or service to be invoked, there is likely only one method that can be used to successfully invoke a desired function in that application or service. You will need to consult the documentation or developer of a given application or service to determine the method via which a particular Android Intent must be sent to produce the desired function.</p>
+<ul>
+<li><p>If the value <strong><em>StartActivity</em></strong> is selected, the Android Intent will be sent using the Android startActivity() method. This method is suitable for invoking Android Activities, which are components that perform user interactions. If the function to be invoked involves interacting with the User, this method will most likely be the correct one to use.</p></li>
+<li><p>If the value <strong><em>Broadcast</em></strong> is selected, the Android Intent will be sent using the Android sendBroadcast() method. This method is suitable for invoking Services, which are components that implement background operations. If the function to be invoked does not involve interacting with the User, this method will most likely be the correct one to use.</p></li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendIntentMethod</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<table border="1"><tbody><tr align="center"><th><small> UI Choice </small></th><th><small> JSON Value </small></th></tr><tr align="center"><td><b><i><small> StartActivity </small></i></b></td><td><small> StartActivity </small></td></tr><tr align="center"><td><b><i><small> Broadcast </small></i></b></td><td><small> Broadcast </small></td></tr></tbody></table>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendIntentAction"></a></p>
+<h6 class="anchor" id="intentaction"><a aria-disabled="true" class="heading-anchor" data-original-href="#intentaction"><span></span></a>Intent Action</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter an Android Intent Action Value for an Intent to be sent to invoke an application or service for a specified Key when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Intent</em></strong> is selected for <strong>Behavior Type</strong>.</p>
+<p>An Android Intent Action Value is NOT mandatory to specify when sending every Android Intent. An Android Intent Action Value is a commonly used method to identify the purpose of an Android Intent. This can be especially important when the application or service to be invoked supports multiple functions, in which case the Android Intent Action Value is commonly used to identify which function to perform when invoking that application or service. When sending an Implicit Intent, which does not specify an exact recipient application or service, it is also common to use the Android Intent Action Value to indicate the function to be performed by whatever application or service ultimately receives the intent. You should consult the documentation or developer of a given application or service to determine the intents it supports and whether a function you want to perform requires an Android Intent Action Value to be supplied.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendIntentAction</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendIntentCategory"></a></p>
+<h6 class="anchor" id="intentcategory"><a aria-disabled="true" class="heading-anchor" data-original-href="#intentcategory"><span></span></a>Intent Category</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter an Android Intent Category Value for an Android Intent to be sent to invoke an application or service for a specified Key when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Intent</em></strong> is selected for <strong>Behavior Type</strong>.</p>
+<p>An Android Intent Category Value is NOT mandatory to specify when sending every Android Intent. An Android Intent Action Value is a commonly used method to help identify the purpose of an Android Intent. You should consult the documentation or developer of a given application or service to determine the intents it supports and whether a function you want to perform requires an Android Intent Category Value to be supplied.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendIntentCategory</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendIntentPackageName"></a></p>
+<h6 class="anchor" id="intentpackagename"><a aria-disabled="true" class="heading-anchor" data-original-href="#intentpackagename"><span></span></a>Intent Package Name</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter an Android Package Name Value that will be used to form an <em>Android Component</em> that identifies an application or service to invoke for a specified <em>Key</em> when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Intent</em></strong> is selected for <strong>Behavior Type</strong> and <strong>Intent Class</strong> is specified.</p>
+<p>An Android Package Name Value is NOT mandatory to specify when sending every Android Intent. An Android Package Name Value is a commonly used, together with an Android Class Name Value, to send an Explicit Intent, which uses an <em>Android Component</em> comprised of a Package Name and a Class name to specify the exact recipient application or service to which the intent will be delivered. <strong>Intent Class</strong> must also be specified to complete the definition of the <em>Android Component</em>.</p>
+<p>Using an Explicit Intent can increase security and is often used when the intent being sent requires any sensitive data. Using an Implicit Intent provides enhanced flexibility since it may be sent to any application or service that has registered its ability to handle that intent and is often used when the intent being sent requires no sensitive data and when it may be desirable to dynamically control which application or service is ultimately invoked to handle the intent.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendIntentPackageName</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendIntentClass"></a></p>
+<h6 class="anchor" id="intentclass"><a aria-disabled="true" class="heading-anchor" data-original-href="#intentclass"><span></span></a>Intent Class</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter an Android Class Name Value that will be used to form an <em>Android Component</em> that identifies an application or service to invoke for a specified <em>Key</em> when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Intent</em></strong> is selected for <strong>Behavior Type</strong> and <strong>Intent Package Name</strong> is specified.</p>
+<p>An Android Class Name Value is NOT mandatory to specify when sending every Android Intent. An Android Class Name Value is a commonly used, together with an Android Package Name Value, to send an Explicit Intent, which uses an <em>Android Component</em> comprised of a Package Name and a Class name to specify the exact recipient application or service to which the intent will be delivered. <strong>Intent Package Name</strong> must also be specified to complete the definition of the <em>Android Component</em>.</p>
+<p>Using an Explicit Intent can increase security and is often used when the intent being sent requires any sensitive data. Using an Implicit Intent provides enhanced flexibility since it may be sent to any application or service that has registered its ability to handle that intent and is often used when the intent being sent requires no sensitive data and when it may be desirable to dynamically control which application or service is ultimately invoked to handle the intent.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendIntentClass</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendIntentDataUri"></a></p>
+<h6 class="anchor" id="intentdatauri"><a aria-disabled="true" class="heading-anchor" data-original-href="#intentdatauri"><span></span></a>Intent Data URI</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter a Uniform Resource Identifier (URI) Value that identifies some data to be utilized by the application or service invoked by the intent for a specified <em>Key</em> when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Intent</em></strong> is selected for <strong>Behavior Type</strong>. It is often advisable, and sometimes required, to specify <strong>Intent MIME Type</strong> to identify the type of data pointed to by the URI.</p>
+<p>A URI Value is NOT mandatory to specify when sending every Android Intent. Whether the application or service that will receive the Intent expects a URI to be specified as part of the intent or not is up to that recipient and/or the definition of the intent that recipient is designed to consume. You should consult the documentation or developer of a given application or service to determine the intents it supports and whether a function you want to perform requires a URI, and possibly a MIME Type, to be supplied.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendIntentDataUri</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendIntentMimeType"></a></p>
+<h6 class="anchor" id="intentmimetype"><a aria-disabled="true" class="heading-anchor" data-original-href="#intentmimetype"><span></span></a>Intent MIME Type</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter a Multipurpose Internet Mail Extensions (MIME) Type Value to assist the application or service invoked by the intent for a specified <em>Key</em> when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Intent</em></strong> is selected for <strong>Behavior Type</strong> and <strong>Intent Data URI</strong> is specified.</p>
+<p>A MIME Type Value is NOT mandatory to specify when sending every Android Intent. Whether the application or service that will receive the Intent expects a MIME Type to be specified as part of the intent or not is up to that recipient and/or the definition of the intent that recipient is designed to consume. In some cases, the type may be assumed or may be inferred from the data itself. Setting a MIME Type explicitly, if supported by an application or service, could disable automatic type detection and and force handling according to the specified type. You should consult the documentation or developer of a given application or service to determine the intents it supports and whether a function you want to perform requires a MIME Type to be supplied along with a URI.</p>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendIntentMimeType</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendIntentExtraName1"></a></p>
+<h6 class="anchor" id="intentextraname1"><a aria-disabled="true" class="heading-anchor" data-original-href="#intentextraname1"><span></span></a>Intent Extra Name 1</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter the Name of a String Extra to be attached to the Intent that will be utilized by the application or service invoked by the intent for a specified <em>Key</em> when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Intent</em></strong> is selected for <strong>Behavior Type</strong> and when <strong>Intent Extra Value 1</strong> is specified.</p>
+<ul>
+<li>If specified, this Extra of type String must be provided as a Name/Value pair specified via <strong>Intent Extra Name 1</strong> and <strong>Intent Extra Value 1</strong>.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendIntentExtraName1</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendIntentExtraName2"></a></p>
+<h6 class="anchor" id="intentextraname2"><a aria-disabled="true" class="heading-anchor" data-original-href="#intentextraname2"><span></span></a>Intent Extra Name 2</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter the Name of a String Extra to be attached to the Intent that will be utilized by the application or service invoked by the intent for a specified <em>Key</em> when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Intent</em></strong> is selected for <strong>Behavior Type</strong> and when <strong>Intent Extra Value 2</strong> is specified.</p>
+<ul>
+<li>If specified, this Extra of type String must be provided as a Name/Value pair specified via <strong>Intent Extra Name 2</strong> and <strong>Intent Extra Value 2</strong>.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendIntentExtraName2</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendIntentExtraName3"></a></p>
+<h6 class="anchor" id="intentextraname3"><a aria-disabled="true" class="heading-anchor" data-original-href="#intentextraname3"><span></span></a>Intent Extra Name 3</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter the Name of a String Extra to be attached to the Intent that will be utilized by the application or service invoked by the intent for a specified <em>Key</em> when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Intent</em></strong> is selected for <strong>Behavior Type</strong> and when <strong>Intent Extra Value 3</strong> is specified.</p>
+<ul>
+<li>If specified, this Extra of type String must be provided as a Name/Value pair specified via <strong>Intent Extra Name 3</strong> and <strong>Intent Extra Value 3</strong>.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendIntentExtraName3</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendIntentExtraName4"></a></p>
+<h6 class="anchor" id="intentextraname4"><a aria-disabled="true" class="heading-anchor" data-original-href="#intentextraname4"><span></span></a>Intent Extra Name 4</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter the Name of a String Extra to be attached to the Intent that will be utilized by the application or service invoked by the intent for a specified <em>Key</em> when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Intent</em></strong> is selected for <strong>Behavior Type</strong> and when <strong>Intent Extra Value 4</strong> is specified.</p>
+<ul>
+<li>If specified, this Extra of type String must be provided as a Name/Value pair specified via <strong>Intent Extra Name 4</strong> and <strong>Intent Extra Value 4</strong>.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendIntentExtraName4</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendIntentExtraName5"></a></p>
+<h6 class="anchor" id="intentextraname5"><a aria-disabled="true" class="heading-anchor" data-original-href="#intentextraname5"><span></span></a>Intent Extra Name 5</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter the Name of a String Extra to be attached to the Intent that will be utilized by the application or service invoked by the intent for a specified <em>Key</em> when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Intent</em></strong> is selected for <strong>Behavior Type</strong> and when <strong>Intent Extra Value 5</strong> is specified.</p>
+<ul>
+<li>If specified, this Extra of type String must be provided as a Name/Value pair specified via <strong>Intent Extra Name 5</strong> and <strong>Intent Extra Value 5</strong>.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendIntentExtraName5</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendIntentExtraValue1"></a></p>
+<h6 class="anchor" id="intentextravalue1"><a aria-disabled="true" class="heading-anchor" data-original-href="#intentextravalue1"><span></span></a>Intent Extra Value 1</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter the Value of a single String Extra to be attached to the Intent that will be utilized by the application or service invoked by the intent for a specified <em>Key</em> when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Intent</em></strong> is selected for <strong>Behavior Type</strong> and when <strong>Intent Extra Name 1</strong> is specified.</p>
+<ul>
+<li>If specified, the SINGLE Extra of type String must be provided as a Name/Value pair specified via <strong>Intent Extra Name 1</strong> and <strong>Intent Extra Value 1</strong>.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendIntentExtraValue1</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendIntentExtraValue2"></a></p>
+<h6 class="anchor" id="intentextravalue2"><a aria-disabled="true" class="heading-anchor" data-original-href="#intentextravalue2"><span></span></a>Intent Extra Value 2</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter the Value of a single String Extra to be attached to the Intent that will be utilized by the application or service invoked by the intent for a specified <em>Key</em> when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Intent</em></strong> is selected for <strong>Behavior Type</strong> and when <strong>Intent Extra Name 2</strong> is specified.</p>
+<ul>
+<li>If specified, the SINGLE Extra of type String must be provided as a Name/Value pair specified via <strong>Intent Extra Name 2</strong> and <strong>Intent Extra Value 2</strong>.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendIntentExtraValue2</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendIntentExtraValue3"></a></p>
+<h6 class="anchor" id="intentextravalue3"><a aria-disabled="true" class="heading-anchor" data-original-href="#intentextravalue3"><span></span></a>Intent Extra Value 3</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter the Value of a single String Extra to be attached to the Intent that will be utilized by the application or service invoked by the intent for a specified <em>Key</em> when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Intent</em></strong> is selected for <strong>Behavior Type</strong> and when <strong>Intent Extra Name 3</strong> is specified.</p>
+<ul>
+<li>If specified, the SINGLE Extra of type String must be provided as a Name/Value pair specified via <strong>Intent Extra Name 3</strong> and <strong>Intent Extra Value 3</strong>.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendIntentExtraValue3</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendIntentExtraValue4"></a></p>
+<h6 class="anchor" id="intentextravalue4"><a aria-disabled="true" class="heading-anchor" data-original-href="#intentextravalue4"><span></span></a>Intent Extra Value 4</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter the Value of a single String Extra to be attached to the Intent that will be utilized by the application or service invoked by the intent for a specified <em>Key</em> when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Intent</em></strong> is selected for <strong>Behavior Type</strong> and when <strong>Intent Extra Name 4</strong> is specified.</p>
+<ul>
+<li>If specified, the SINGLE Extra of type String must be provided as a Name/Value pair specified via <strong>Intent Extra Name 4</strong> and <strong>Intent Extra Value 4</strong>.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendIntentExtraValue4</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendIntentExtraValue5"></a></p>
+<h6 class="anchor" id="intentextravalue5"><a aria-disabled="true" class="heading-anchor" data-original-href="#intentextravalue5"><span></span></a>Intent Extra Value 5</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter the Value of a single String Extra to be attached to the Intent that will be utilized by the application or service invoked by the intent for a specified <em>Key</em> when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Intent</em></strong> is selected for <strong>Behavior Type</strong> and when <strong>Intent Extra Name 5</strong> is specified.</p>
+<ul>
+<li>If specified, the SINGLE Extra of type String must be provided as a Name/Value pair specified via <strong>Intent Extra Name 5</strong> and <strong>Intent Extra Value 5</strong>.</li>
+</ul>
+<p><strong>Detail Information:</strong></p>
+<ul>
+<li><p>Key = keymappingBehaviorTypeSendIntentExtraValue5</p></li>
+<li><p>Type = string</p></li>
+</ul>
+<p><strong>Support Information:</strong></p>
+<ul>
+<li>NOT supported on Device(s): TC20 and TC25.</li>
+</ul>
+<p><a aria-disabled="true" id="keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior.keymappingBehaviorTypeSendIntentFlags"></a></p>
+<h6 class="anchor" id="intentflags"><a aria-disabled="true" class="heading-anchor" data-original-href="#intentflags"><span></span></a>Intent Flags</h6>
+<p><span class="breadcrumbs">
+<font size="2">
+  
+<a aria-disabled="true" data-original-href="#keyboardMappings">Keyboard Mappings</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping">Keyboard Mapping</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors">Behaviors</a>  &gt; 
+<a aria-disabled="true" data-original-href="#keyboardMappings.keyboardMapping.keymappingBehaviors.keymappingBehavior">Behavior</a>
+</font>
+</span> <br/><br/></p>
+<p>Enter a value that encodes one or more <em>Android Intent Flags</em> to be set for the Intent to be sent to invoke an application or service for a specified <em>Key</em> when activated in a specified <em>Keyboard State</em> and when the value <strong><em>Send Intent</em></strong> is selected for <strong>Behavior Type</strong>.</p>
+<p><em>Android Intent Flags</em> control how an Intent is handled by Android and/or by the application or service that receives the Intent. Further:</p>
+<ul>
+<li><p>Some <em>Android Intent Flags</em> are specific to the type of <em>Android Component</em> that will be invoked by the Intent (e.g. activity vs service).</p></li>
+<li><p>Whether certain <em>Android Intent Flags</em> are needed to invoke a desired func[Truncated]</p></li></ul></div></div></div></div></div></main></body></html>

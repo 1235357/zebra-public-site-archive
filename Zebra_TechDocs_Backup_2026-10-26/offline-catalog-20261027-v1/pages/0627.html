@@ -1,0 +1,1014 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Intent Output - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/datawedge/latest/guide/output/intent</code><br>Observed final URL: <code>https://techdocs.zebra.com/datawedge/latest/guide/output/intent/</code><br>Raw source: <code>raw/6a3d9cfbd5f1687901286033.html</code><br>Raw SHA-256: <code>2f4e99a373df64acea3866d90ce456981c5763d5eccfbd4fcff155b04504b170</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs Home
+                        
+                                            DataWedge
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Get Started
+                            
+                        
+                        
+                            
+                                    Profiles
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Feature Matrix
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            US - English
+                          
+                          
+                                 CN - 普通话
+                                 JP - 日本語
+                          
+                                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Intent Output
+                        
+                    OverviewThe Intent Object
+
+
+
+
+Outputting Raw DataIntent Output SetupSingle Decode ModeParametersUDI/Multiple Decode ModeParametersBarcode BundleTokenized Data BundleToken IDsOther Decode TagsGS1 and Digital Link ParsingGS1 Tokenized Data Bundle SpecificationProgrammatic Access to GS1 Data
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Intent Output
+                                    
+                                            DataWedge
+                                            15.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+Intent Output allows data acquired and processed by DataWedge to be sent to the associated foreground application as payload within an Android intent object. This allows acquired data to be passed programmatically to an application, where it can be consumed or further processed. The core components of an application (its activities, services and broadcast receivers) also can be activated by intents, as can many DataWedge features through the DataWedge APIs.
+
+The Intent Object
+
+An intent object is a bundle of information that describes a desired action. It includes the data to be acted upon, the category of component that should perform the action and other pertinent data and/or instructions. When an intent is initiated, Android locates an appropriate component to respond to the intent, launches a new instance of the component (if needed), and passes the intent object to it.
+
+Components advertise their capabilities (the kinds of intents they can respond to) through intent filters. Since the system must learn which intents a component can handle before it launches the component, intent filters are specified in the app&#x27;s AndroidManifest.xml file as &lt;intent-filter&gt; elements. A component can have any number of intent filters, each describing a different capability.
+
+For example, if the manifest contains...
+
+&lt;intent-filter&gt;
+...
+&lt;action android:name=&quot;android.intent.action.DEFAULT&quot; /&gt;
+&lt;category android:name=&quot;android.intent.category.MAIN&quot; /&gt;
+&lt;/intent-filter&gt;
+
+...the intent action in the Intent Output configuration would be:
+
+android.intent.action.DEFAULT
+
+and the Intent category would be:
+
+android.intent.category.MAIN
+
+
+
+
+
+
+Outputting Raw Data
+
+In addition to its normal plain-text and hexadecimal modes, DataWedge can output acquired data in its raw form, before the application of any encoders. This can be useful if custom encoders are needed for acquiring character sets not supported by Zebra.
+
+Raw data is received as a byte stream using the com.symbol.datawedge.decode_data intent extra. See the Single Decode Mode section below.
+
+
+  Raw data cannot be output as keystrokes.
+
+
+
+
+Intent Output Setup
+
+DataWedge invokes an intent though an Intent action in an Intent category as described in its AndroidManifest.xml file.
+
+When combined, these two values are like a &quot;channel&quot; to which an app can listen for intents that use the same combination, filtering out &quot;noise&quot; from other intents that use different value pairs. Once these values are known, DataWedge Intent Output must be set to match.
+
+Component Information specifies the package names and signatures of the applications that are designated to receive intent data. This adds a level of security to guarantee that data is delivered only to the intended applications. If using the DataWedge content provider, only the specified package names can query the content provider.
+
+
+When the package name is specified, DataWedge sends explicit intents only to the package name. Optionally, enabling the application signature check adds another level of security for intent delivery. DataWedge matches the signature of the application before sending out the intent. If the signature does not match, DataWedge does not send the intent. If the signature check is not enabled, DataWedge sends the explicit intent based on the package name.
+
+For example, if a package name is specified as &#x27;com.zebra.app1&#x27; without the signature check, another app can be created with this same package name and disguised as the original - the original app can be uninstalled on the device and the new malicious app can be installed as the replacement. This results to the intent data being delivered to the malicious app. If instead, the signature check was enabled for the original app, even though the new app shares the same package name, the signature is different and therefore the intent data cannnot be delivered to the malicious app.
+
+
+Use content providers option allows applications to leverage DataWedge&#x27;s content provider to retrieve scanned data from files larger than 500 KB, such as images, primarily with Signature Capture and NextGen SimulScan. A content provider is an Android app component that encapsulates data to share between apps.
+
+The parameters of these features can be configured through the UI or by using the Set Config API.
+
+See Use Content Provider Programmer&#x27;s Guide for more information.
+
+
+  Important: For scanning applications that output directly to an activity, the activity must be designated as &quot;singleTop&quot; in the app&#x27;s AndroidManifest.xml file. Failure to designate an activity in this way will cause an instance of the activity to be launched with every decode, and the acquired data sent to each newly spawned instance.
+
+
+To configure DataWedge with Intent Output options:
+
+1. Locate the Intent Output section of the Profile being configured.
+
+2. Check &quot;Enabled&quot; box to activate Intent Output: 
+
+Intent Output options for the &quot;Launcher&quot; Profile
+
+
+3. Specify action, category and delivery as described below:
+
+    Intent action - specifies the action to handle the intent 
+    Intent category - specifies the category of intent to be handled 
+    Intent delivery - used to select one of four delivery methods for intent-based data:
+
+
+Send via startActivity - startActivity() Android API is called to deliver data.
+
+Send via startService - delivers data using Android&#x27;s startService() API. This method is recommended only if your application/service is compiled for Android SDK version 25 or below. If your application/service is compiled for SDK version 26 or above, startService() option does not work. Refer to startService Android developer article.
+
+Send via startForegroundService - startForegroundService() Android API is called to deliver data. This option applies to Android Oreo (v8.0) and above. This method is recommended only if your application/service is compiled for Android SDK version 30 or below. If your application/service is compiled for SDK version 31 or above, startForegroundService() option does not work. Refer to startService Android developer article.
+
+Broadcast Intent - Receiver foreground flag Intent.FLAG_RECEIVER_FOREGROUND can be set giving the broadcast recipient permission to run at foreground priority with a shorter timeout interval. Zebra recommends using this flag only if delays are seen in delivery of intents immediately following device boot-up.
+
+
+
+
+4. Specify component information for secure intent delivery. Tap on Component Information.
+
+Component Information under Intent Output
+
+Tap the top right menu and select New Component.
+
+Add New Component
+
+Select the package name to receive intent data from the installed app list.
+
+Select New Component
+
+
+When prompted, tap OK to enable the application signature check, allowing DataWedge to retrieve the app signature via the .APK and use it for comparison. Otherwise, tap Cancel. If multiple signatures are available for an app, a list is be displayed for the user to select one signature.
+
+Application signature
+
+The selected package name is listed with an indication whether the signature check is enabled/disabled.
+
+Component Information list
+
+
+5. Enable Use Content Providers from the Intent Output screen when scanning large data such as images (for example with Signature Capture and NextGen SimulScan).
+
+Use Content Providers
+
+
+
+Single Decode Mode
+
+Single mode reads and decodes a single barcode at a time, and is the most common decoding mode. For decoding multiple barcodes simultaneously, such as with UDI-compliant objects, see UDI/Multiple Decode Mode.
+
+Parameters
+
+Name: &quot;com.symbol.datawedge.source&quot;
+Type: [String]
+Contents: Source of incoming data
+Possible values:
+
+
+&quot;msr&quot;
+
+&quot;scanner&quot;
+
+&quot;simulscan&quot;
+
+&quot;serial&quot;
+
+&quot;voice&quot;
+
+&quot;rfid&quot;
+
+
+NOTE: Source of incoming data is &quot;scanner&quot; for camera, imager or scanner.
+
+
+
+Name: &quot;com.symbol.datawedge.label_type&quot;
+Type: [String]
+Contents: Barcode label type (i.e. &quot;EAN128&quot;)
+Possible values:
+
+
+&quot;LABEL-TYPE-CODE39&quot;
+
+&quot;LABEL-TYPE-CODABAR&quot;
+
+&quot;LABEL-TYPE-CODE128&quot;
+
+&quot;LABEL-TYPE-D2OF5&quot;
+
+&quot;LABEL-TYPE-IATA2OF5&quot;
+
+&quot;LABEL-TYPE-I2OF5&quot;
+
+&quot;LABEL-TYPE-CODE93&quot;
+
+&quot;LABEL-TYPE-UPCA&quot;
+
+&quot;LABEL-TYPE-UPCE0&quot;
+
+&quot;LABEL-TYPE-UPCE1&quot;
+
+&quot;LABEL-TYPE-EAN8&quot;
+
+&quot;LABEL-TYPE-EAN13&quot;
+
+&quot;LABEL-TYPE-MSI&quot;
+
+&quot;LABEL-TYPE-EAN128&quot;
+
+&quot;LABEL-TYPE-TRIOPTIC39&quot;
+
+&quot;LABEL-TYPE-BOOKLAND&quot;
+
+&quot;LABEL-TYPE-COUPON&quot;
+
+&quot;LABEL-TYPE-DATABAR-COUPON&quot;
+
+&quot;LABEL-TYPE-ISBT128&quot;
+
+&quot;LABEL-TYPE-CODE32&quot;
+
+&quot;LABEL-TYPE-PDF417&quot;
+
+&quot;LABEL-TYPE-MICROPDF&quot;
+
+&quot;LABEL-TYPE-TLC39&quot;
+
+&quot;LABEL-TYPE-CODE11&quot;
+
+&quot;LABEL-TYPE-MAXICODE&quot;
+
+&quot;LABEL-TYPE-DATAMATRIX&quot;
+
+&quot;LABEL-TYPE-QRCODE&quot;
+
+&quot;LABEL-TYPE-GS1-DATABAR&quot;
+
+&quot;LABEL-TYPE-GS1-DATABAR-LIM&quot;
+
+&quot;LABEL-TYPE-GS1-DATABAR-EXP&quot;
+
+&quot;LABEL-TYPE-USPOSTNET&quot;
+
+&quot;LABEL-TYPE-USPLANET&quot;
+
+&quot;LABEL-TYPE-UKPOSTAL&quot;
+
+&quot;LABEL-TYPE-JAPPOSTAL&quot;
+
+&quot;LABEL-TYPE-AUSPOSTAL&quot;
+
+&quot;LABEL-TYPE-DUTCHPOSTAL&quot;
+
+&quot;LABEL-TYPE-FINNISHPOSTAL-4S&quot;
+
+&quot;LABEL-TYPE-CANPOSTAL&quot;
+
+&quot;LABEL-TYPE-CHINESE-2OF5&quot;
+
+&quot;LABEL-TYPE-AZTEC&quot;
+
+&quot;LABEL-TYPE-MICROQR&quot;
+
+&quot;LABEL-TYPE-US4STATE&quot;
+
+&quot;LABEL-TYPE-US4STATE-FICS&quot;
+
+&quot;LABEL-TYPE-COMPOSITE-AB&quot;
+
+&quot;LABEL-TYPE-COMPOSITE-C&quot;
+
+&quot;LABEL-TYPE-WEBCODE&quot;
+
+&quot;LABEL-TYPE-SIGNATURE&quot;
+
+&quot;LABEL-TYPE-KOREAN-3OF5&quot;
+
+&quot;LABEL-TYPE-MATRIX-2OF5&quot;
+
+&quot;LABEL-TYPE-OCR&quot;
+
+&quot;LABEL-TYPE-HANXIN&quot;
+
+&quot;LABEL-TYPE-MAILMARK&quot;
+
+&quot;MULTICODE-DATA-FORMAT&quot;
+
+&quot;LABEL-TYPE-GS1-DATAMATRIX&quot;
+
+&quot;LABEL-TYPE-GS1-QRCODE&quot;
+
+&quot;LABEL-TYPE-DOTCODE&quot;
+
+&quot;LABEL-TYPE-GRIDMATRIX&quot;
+
+&quot;LABEL-TYPE-UNDEFINED&quot;
+
+
+
+
+Name: &quot;com.symbol.datawedge.data_string&quot;
+Type: [String]
+Contents: Acquired barcode characters
+Example: &quot;abcde12345&quot;
+
+
+
+Name: &quot;com.symbol.datawedge.decode_data&quot;
+Type: [List &lt;byte [ ]&gt;]
+Contents: Acquired raw (unmodified) data as an array list of byte arrays
+Example: List_Item_1(array_1(byte11,byte12,byte13)),List_Item_2(array_2(byte21,byte22,byte23)) ...
+Sample code:
+
+ArrayList&lt;byte[]&gt; rawData =
+     (ArrayList &lt;byte[]&gt;) initiatingIntent.getSerializableExtra(&quot;com.symbol.datawedge.decode_data&quot;);
+
+if (rawData != null)
+{
+    byte[] rawBytes = rawData.get(0);
+    for (int i = 0; i &lt; rawBytes.length; i++)
+        Log.d(LOG_TAG, i + &quot;: &quot; + rawBytes[i]);
+}
+
+
+
+Name: &quot;com.symbol.datawedge.decoded_mode&quot;
+Type: [String]
+Contents: Mode used to decode the incoming data
+Possible values:
+
+
+&quot;multiple_decode&quot;
+
+&quot;single_decode&quot;
+
+
+
+
+UDI/Multiple Decode Mode
+
+When decoding a UDI-compliant object, data is acquired from multiple barcodes simultaneously and output as a multi-decode bundle, which differs from a single-decode bundle. DataWedge also can acquire multiple non-UDI barcodes in a single scan. This section applies to both modes.
+
+Parameters
+
+Name: &quot;com.symbol.datawedge.decode_mode&quot;
+Type: [String]
+Contents: Mode used to decode incoming data
+Possible values:
+
+
+&quot;multiple_decode&quot;
+
+&quot;single_decode&quot;
+
+
+
+
+Name: &quot;com.symbol.datawedge.smart_decode_type&quot;
+Type: [String]
+Contents: Decode type 
+Possible values:
+
+
+“udi”
+
+“multibarcode”
+
+
+
+
+Name: &quot;com.symbol.datawedge.data_string&quot;
+Type: [String]
+Contents: Acquired barcode characters 
+Example: &quot;abcde12345&quot;
+
+
+
+Name: &quot;com.symbol.datawedge.decode_data&quot;
+Type: [List &lt;byte [ ]&gt;]
+Contents: Acquired raw (unmodified) data as an array list of byte arrays
+Example: List_Item_1(array_1(byte11,byte12,byte13)), List_Item_2(array_2(byte21,byte22,byte23)) ...
+
+
+
+Name: &quot;com.symbol.datawedge.source&quot;
+Type: [String]
+Contents: Source of incoming data
+Possible values:
+
+
+&quot;msr&quot;
+
+&quot;scanner&quot;
+
+&quot;simulscan&quot;
+
+
+
+
+Name: &quot;com.symbol.datawedge.label_id&quot;
+Type: [String]
+Contents: UDI type of incoming data
+Possible values:
+
+
+“UDI_HIBCC”
+
+“UDI_GS1”
+
+“UDI_ICCBBA”
+
+“UNDEFINED”
+
+
+
+
+Name: &quot;com.symbol.datawedge.barcodes&quot;
+Type: [List &lt;Bundle&gt;]
+Contents: See Bundle description (below)
+
+
+
+Name: &quot;com.symbol.datawedge.tokenized_data&quot;
+Type: [List &lt;Bundle&gt;]
+Contents: See Bundle description (below)
+Note: Source of incoming data is &quot;scanner&quot; for camera, imager or scanner
+
+
+
+Barcode Bundle
+
+Bundle name: &quot;com.symbol.datawedge.barcodes&quot;
+
+Parameters
+
+Name: &quot;com.symbol.datawedge.label_type&quot;
+Type: [String]
+Contents: Barcode label type, original symbology (i.e. &quot;EAN128&quot;)
+
+
+
+Name: &quot;com.symbol.datawedge.decode_data&quot;
+Type: [byte [ ] ]
+Contents: Acquired raw (unmodified) data as a byte array
+
+
+
+Name: &quot;com.symbol.datawedge.data_string&quot;
+Type: [String]
+Contents: Acquired barcode characters 
+Example: &quot;abcde12345&quot;
+
+
+
+Tokenized Data Bundle
+
+Bundle name: &quot;com.symbol.datawedge.tokenized_data&quot;
+
+Parameters
+
+Name: &quot;token_id&quot;
+Type: [String]
+Contents: Data in a UDI-defined tag 
+Possible values: (see token IDs, below)
+
+
+
+Name: &quot;token_data_type&quot;
+Type: [String]
+Contents: Incoming data type 
+Example: date, long, string 
+
+
+
+Name: &quot;token_format&quot;
+Type: [String]
+Contents: Format of incoming string 
+Example: YYYYMMDD
+
+
+
+Name: &quot;token_string_data&quot;
+Type: [String]
+Contents: Acquired barcode characters 
+Example: &quot;abcde12345&quot;
+
+
+
+Name: &quot;token_binary_data&quot;
+Type: [byte [ ] ]
+Contents: Acquired barcode data as a byte array
+
+
+
+Token IDs
+
+Token ID: di
+Display Name: Device identifier
+
+
+
+Token ID: manufacturing_date_original
+Display Name: Manufacturing date
+
+
+
+Token ID: expiration_date_original
+Display Name: Expiration date
+
+
+
+Token ID: lot_number
+Display Name: Lot number
+
+
+
+Token ID: serial_number
+Display Name: Serial number
+
+
+
+Token ID: mpho_lot_number
+Display Name: Medical products of human origin (MPHO) lot number 
+
+
+
+Token ID: donation_id
+Display Name: Donation ID number
+
+
+
+Token ID: labeler_identification_code
+Display Name: Labeler ID code
+
+
+
+Token ID: product_or_catalog_number
+Display Name: Product or catalog number
+
+
+
+Token ID: unit_of_measure_id
+Display Name: Unit of measure ID
+
+
+
+Token ID: Quantity
+Display Name: Quantity
+
+
+
+Other Decode Tags
+
+The decode-related data added to an intent bundle can be retrieved using specific string tags. Use the code below with the string tags in the section that follows.
+
+
+Intent.getStringExtra()
+
+Tag: LABEL_TYPE_TAG 
+Type: [String]
+Name: &quot;com.symbol.datawedge.label_type&quot;
+Contents: Barcode label type 
+Example: &quot;LABEL-TYPE-EAN128&quot;
+
+
+
+Tag: DATA_STRING_TAG
+Type: [String]
+Name: &quot;com.symbol.datawedge.data_string&quot;
+Contents: Acquired barcode characters 
+Example: &quot;abcde12345&quot;
+
+Note: When multiple barcodes are acquired simultaneously, the decoded data is concatenated and sent out as a single string.
+
+
+
+Tag: DECODE_DATA_TAG
+Type: [byte [ ] ]
+Name: &quot;com.symbol.datawedge.decode_data&quot;
+Contents: Decoded data returned as a list of byte arrays.
+
+Note: In most cases there will be one byte array per decode. 
+
+
+
+
+
+GS1 and Digital Link Parsing
+
+Enables advanced data parsing for GS1-compliant barcodes, including GS1 Digital Link and traditional GS1 barcodes (e.g., GS1-128). When either feature is enabled, DataWedge automatically extracts data elements - such as GTINs, expiration dates, and lot numbers - from the scanned barcode. This structured data is then delivered through an Intent, simplifying data processing for applications in retail, logistics, and healthcare. 
+
+GS1 Tokenized Data Bundle Specification
+
+Bundle Name: com.symbol.datawedge.tokenized_data
+
+Parameters
+
+
+
+
+
+    Name
+    Type
+    Contents
+    Example/Values
+
+
+
+    
+      token_id
+      String
+      Data in a GS1-defined tag
+      See GS1 Token Parameters section
+    
+    
+      token_data_type
+      String
+      Incoming data type
+      date, long, string
+    
+    
+      token_format
+      String
+      Format of incoming string
+      YYYYMMDD
+    
+    
+      token_string_data
+      String
+      Acquired barcode characters
+      &quot;09506000134376&quot;
+    
+    
+      token_binary_data
+      byte[]
+      Acquired barcode data as a byte array
+      N/A
+    
+  
+
+
+
+Token IDs
+
+
+
+
+
+    
+      Token ID
+      Display Name
+    
+  
+
+    
+      digital_link_domain
+      Digital Link Domain
+    
+    
+      serial_shipping_container_code
+      Serial Shipping Container Code (SSCC)
+    
+    
+      di
+      Device Identifier (GTIN)
+    
+    
+      global_trade_item_number_of_contained_trade_items
+      Global Trade Item Number (GTIN) of contained trade items (CONTENT)
+    
+    
+      manufacturing_date_original
+      Production date (YYMMDD) (PROD DATE)
+    
+    
+      best_before_date
+      Best before date (YYMMDD) (BEST BEFORE or BEST BY)
+    
+    
+      expiration_date_original
+      Expiration date (YYMMDD) (USE BY OR EXPIRY)
+    
+    
+      lot_number
+      Batch or lot number (BATCH/LOT)
+    
+    
+      serial_number
+      Serial number (SERIAL)
+    
+    
+      variable_count_of_items
+      Variable count of items (variable measure trade item) (VAR. COUNT)
+    
+    
+      count_of_trade_items
+      Count of trade items or trade item pieces contained in a logistic unit (COUNT)
+    
+    
+      company_internal_information
+      Company internal information (INTERNAL)
+    
+    
+      customers_purchase_order_number
+      Customers purchase order number (ORDER NUMBER)
+    
+    
+      ship_to_postal_code_within_a_single_postal_authority
+      Ship to / Deliver to postal code within a single postal authority (SHIP TO POST)
+    
+  
+
+
+Programmatic Access to GS1 Data
+
+This section outlines the process for programmatically enabling and reading GS1 tokenized data using DataWedge APIs.
+
+
+Configure GS1 Token Processing: GS1 parsing and the output of GS1 tokens can be enabled or disabled programmatically by using the SetConfig API to modify the barcode and Intent output plugin properties. After applying a new configuration, its successful application can be verified by using the GetConfig API.
+
+
+
+Parameter Details: For a list of available parameters, refer to the GS1 Token Parameters documentation.
+
+Code Example: To build and send the configuration Intent, see the Set GS1 Token Processing example.
+
+
+Read Scan Data via Intent Output: When Intent output is configured, DataWedge can deliver the scan data in two formats: as a single raw string or as a structured tokenized data bundle.
+
+
+Method A: Reading Raw Intent String Data
+
+This approach captures the unprocessed string data directly from the scanner. It is useful when the application requires the full, unaltered barcode content.
+
+    private BroadcastReceiver myBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent == null) return;
+
+            String action = intent.getAction();
+            if (INTENT_OUTPUT_ACTION.equals(action)) {
+                // Retrieve the raw scan data containing the GS1 tokens
+                String stringData = intent.getStringExtra(&quot;com.symbol.datawedge.data_string&quot;);
+                Log.d(TAG, &quot;Raw string data: &quot; + stringData);
+            }
+        }
+    };
+
+Method B: Reading the GS1 Tokenized Data Bundle
+
+For more structured data access, an application can extract the tokenized_data bundle. This provides each GS1 Application Identifier (AI) and its value as a separate object, which is easier to parse. 
+
+    private BroadcastReceiver myBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent == null) return;
+
+            String action = intent.getAction();
+            if (INTENT_OUTPUT_ACTION.equals(action)) {
+                // Check for the tokenized data bundle
+                if (intent.hasExtra(&quot;com.symbol.datawedge.tokenized_data&quot;)) {
+                    ArrayList&lt;Bundle&gt; tokenizedData = intent.getParcelableArrayListExtra(&quot;com.symbol.datawedge.tokenized_data&quot;);
+                    if (tokenizedData != null &amp;&amp; !tokenizedData.isEmpty()) {
+                        // Iterate through each token in the bundle
+                        for (Bundle token : tokenizedData) {
+                            String tokenId = token.getString(&quot;token_id&quot;);
+                            String tokenStringData = token.getString(&quot;token_string_data&quot;);
+                            Log.d(TAG, &quot;Token ID: &quot; + tokenId + &quot;, Data: &quot; + tokenStringData);
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+Retrieve the GTIN: This sample code demonstrates how to iterate through the bundle specifically to find and extract the GTIN (Global Trade Item Number), which uses the token ID &quot;di&quot;.
+
+    private BroadcastReceiver scanDataReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent == null) return;
+
+            String action = intent.getAction();
+            if (INTENT_OUTPUT_ACTION.equals(action)) {
+                if (intent.hasExtra(&quot;com.symbol.datawedge.tokenized_data&quot;)) {
+                    ArrayList&lt;Bundle&gt; tokenizedData = intent.getParcelableArrayListExtra(&quot;com.symbol.datawedge.tokenized_data&quot;);
+                    if (tokenizedData != null &amp;&amp; !tokenizedData.isEmpty()) {
+                        String gtin = null;
+                        // Iterate through the tokens to find the GTIN
+                        for (Bundle token : tokenizedData) {
+                            String tokenId = token.getString(&quot;token_id&quot;);
+                            // Check for the GTIN token ID &quot;di&quot;
+                            if (tokenId != null &amp;&amp; tokenId.equals(&quot;di&quot;)) {
+                                gtin = token.getString(&quot;token_string_data&quot;);
+                                break; // Exit the loop once the GTIN is found
+                            }
+                        }
+                        Log.d(TAG, &quot;Retrieved GTIN: &quot; + gtin);
+                    }
+                }
+            }
+        }
+    };
+
+
+
+Other DataWedge Output Options:
+
+
+Keystroke - outputs acquired data as if the keyboard was pressed
+
+Internet Protocol - outputs data over a network using TCP or UDP
+
+
+Related guides:
+
+
+Profiles/Plug-ins
+
+DataWedge APIs
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates.
+    Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+      
+
+
+
+Back to Top</pre></body></html>

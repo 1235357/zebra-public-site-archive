@@ -1,0 +1,245 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MC35 Notification Queue to wake up the PDA</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MC35 Notification Queue to wake up the PDA</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/22330; original snapshot: threads/01094.html; SHA-256: 18aba6bf6b8de99e085f4b5edfe48185950b39174ed227c5911304c8872e262b</small><pre id="topic">
+
+    
+        MC35 Notification Queue to wake up the PDA
+
+
+        
+      
+                        
+                    
+            C
+          
+          Charles Malm
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            20
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  They are sending me sample apps so we can reproduce it and I&#x27;ve opened a case. They use the Notification Queue to wake up the PDA for events (like take and send GPS). 
+If something is scheduled to wake up for example at 12:00:01 and the MC35 suspends 1 second before that (12:00:00), then the notification queue will never be processed. 
+It will not process anything even if you wait a period of time until you manually turn on the unit via the power button. Once you hit the power button, the notification queue will continue to process the calls.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Charles Malm
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            my mistake, i&#x27;ve forwarded this to the appropriate party
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Charles Malm
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Brian, attached is the test project to duplicate the notification queue problem that we discussed on Friday in which the notification queue appears to be &quot;stuck&quot; when a suspend event occurs at the same time a notification event is scheduled for. I wrote the test program to give you a &quot;good&quot; scenario and a &quot;stuck&quot; one. To run correctly the PDA must be on battery and set to suspend at 1 minute. In the good scenario 3 events are scheduled at 70 seconds, 140 seconds and 210 seconds from the time the button is pushed. Make sure you do not do anything or have anything that would wake the PDA up besides the events that have been scheduled. At 1 minute after the button is pushed, the PDA suspends and 10 seconds later turns back on because the first event pops. After another minute, the PDA suspends again and turns back on 10 seconds later. Finally, after another minute it suspends again and is woken up again 10 seconds later. This is detailed in the log below.
+11/10/08 1:12:37 PM - ** Start Good **
+11/10/08 1:12:37 PM - PwrTestEvent 1 = 1:13:47 PM
+11/10/08 1:12:37 PM - PwrTestEvent 2 = 1:14:57 PM
+11/10/08 1:12:37 PM - PwrTestEvent 3 = 1:16:07 PM
+11/10/08 1:13:37 PM - TRANSITION - UNATTENDED
+11/10/08 1:13:48 PM - TRANSITION - SUSPEND
+11/10/08 1:13:48 PM - TRANSITION - PASSWORD
+11/10/08 1:13:48 PM - RESUME -
+11/10/08 1:13:48 PM - PwrTestEvent 1
+11/10/08 1:13:48 PM - TRANSITION - ON PASSWORD
+11/10/08 1:14:48 PM - TRANSITION - UNATTENDED
+11/10/08 1:14:58 PM - TRANSITION - SUSPEND
+11/10/08 1:14:58 PM - TRANSITION - PASSWORD
+11/10/08 1:14:58 PM - RESUME -
+11/10/08 1:14:58 PM - PwrTestEvent 2
+11/10/08 1:14:58 PM - TRANSITION - ON PASSWORD
+11/10/08 1:15:58 PM - TRANSITION - UNATTENDED
+11/10/08 1:16:08 PM - TRANSITION - SUSPEND
+11/10/08 1:16:08 PM - TRANSITION - PASSWORD
+11/10/08 1:16:08 PM - RESUME -
+11/10/08 1:16:08 PM - PwrTestEvent 3
+11/10/08 1:16:08 PM - TRANSITION - ON PASSWORD 
+The &quot;stuck&quot; scenario is the same except that the first timer is set to pop at 61 seconds which will put it in the middle of the suspend. In this case the PDA goes to sleep at 1:09:11 and does not wake up again until I hit the power button at 1:12:17. At that point all three events basically fire at the same time since their start time has already come and gone. See the log below.
+11/10/08 1:08:11 PM - ** Start Bad **
+11/10/08 1:08:11 PM - PwrTestEvent 1 = 1:09:12 PM
+11/10/08 1:08:11 PM - PwrTestEvent 2 = 1:10:31 PM
+11/10/08 1:08:11 PM - PwrTestEvent 3 = 1:11:41 PM
+11/10/08 1:08:25 PM - POWERINFOCHANGE -
+11/10/08 1:09:11 PM - TRANSITION - UNATTENDED
+11/10/08 1:12:17 PM - PwrTestEvent 1
+11/10/08 1:12:17 PM - TRANSITION - SUSPEND
+11/10/08 1:12:17 PM - PwrTestEvent 2
+11/10/08 1:12:18 PM - TRANSITION - PASSWORD
+11/10/08 1:12:18 PM - PwrTestEvent 3
+11/10/08 1:12:18 PM - RESUME -
+11/10/08 1:12:18 PM - TRANSITION - ON PASSWORD
+11/10/08 1:12:18 PM - TRANSITION - ON PASSWORD
+11/10/08 1:12:18 PM - TRANSITION - ON PASSWORD
+11/10/08 1:12:18 PM - TRANSITION - ON PASSWORD
+11/10/08 1:12:22 PM - POWERINFOCHANGE - 
+&amp;nbsp;
+I have tested this on two different MC35&#x27;s, one running L06 and the other L10 and the behavior is the same. I tested it on the MC70 and it does not exhibit this problem. I apologize that the code in the test project is a little haphazard but I pieced it together from SecuureTrax via cut and paste (why reinvent the wheel). Let me know if you need anything else from me. This problem has been around since we started using the MC35 but I was not able to figure out the reason until I put in all the debugging information for the services.exe problem (silver lining I guess).
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,424 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>I have a calibration problem</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>I have a calibration problem</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/i-have-calibration-problem; original snapshot: supplement/verified-threads/2c0fe97eaad8e5af280771d4.html; SHA-256: bb2c6a71e9c151e350fdf3d665e3c0284ed3c61e327fa7d52c66855fe514495e</small><pre id="topic">
+
+    
+        I have a calibration problem
+
+
+        
+      
+                        
+                    
+            C
+          
+          Cenk Yenikoylu
+          3 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            329
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+
+I design with Zdesigner.
+
+- After printing the barcode label, it produces 7 more blank labels in sequence. 7. Remove the label halfway, and the red error light is flashing.
+
+- If I output a label with a RAW TXT file from ZDesign, it outputs 2 labels.
+
+- By doing C# coding, the label output in RAW format comes out as 1 piece properly.
+
+- If I output labels with DevExpress design by doing C# coding. Again, it produces 1 full (first label output) and 7 empty labels.
+
+I have manually calibrated several times. I have also calibrated multiple times with the Zebra Utility application. Please provide some context that shows me the correct method. There is no video about ZD220t on Youtube channel.
+
+Please watch video:
+
+https://drive.google.com/file/d/17vhBVg7zvvFEI3s8R1x5sOYKevKQPH7x/view?usp=share_link
+
+My label:
+
+100x100mm
+
+left and right 1mm
+
+top between 3mm
+
+ 
+
+C# RAW SOURCECODE:
+
+string s =
+&quot;^XA&quot; +
+&quot;^FO50,250&quot; +
+&quot;^A0N50,50&quot; +
+&quot;^FDModel: BM3-1A^FS&quot; +
+//&quot;^XZ&quot; +
+//&quot;^XA&quot; +
+&quot;^LH50,30&quot; +
+&quot;^FO50,300&quot; +
+//&quot;^ADN,90,50&quot; +
+&quot;^AD&quot; +
+&quot;^FD(C) 2023 Bridge Systems BV^FS&quot; +
+&quot;^XZ&quot;;
+
+PrintDialog pd = new PrintDialog();
+pd.PrinterSettings = new PrinterSettings();
+RawPrinterHelper.SendStringToPrinter(pd.PrinterSettings.PrinterName, s);
+         
+
+C# DEVEXPRESS REPORT SOURCECODE:
+
+private void XtraReport1_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e)
+        {
+            //this.Detail.Controls.Add(CreateCode128BarCode(_BarCodeText_));
+            xrBarCode1 = CreateCode128BarCode(_BarCodeText_);// _BarCodeText_;
+
+            //BarCodeControl barCodeControl1 = new BarCodeControl();
+            ////barCodeControl1.Parent = Parent;
+            //barCodeControl1.Size = new System.Drawing.Size(150, 150);
+            //barCodeControl1.AutoModule = true;
+            //barCodeControl1.Text = _BarCodeText_;
+
+            QRCodeGenerator symb = new QRCodeGenerator();
+            //barCodeControl1.Symbology = symb;
+
+            // Adjust the QR barcode&#x27;s specific properties.
+            symb.CompactionMode = QRCodeCompactionMode.AlphaNumeric;
+            symb.ErrorCorrectionLevel = QRCodeErrorCorrectionLevel.H;
+            symb.Version = QRCodeVersion.AutoVersion;
+
+            xrBarCode2.Symbology = symb;
+
+            
+        }
+
+        public XRBarCode CreateCode128BarCode(string BarCodeText)
+        {
+            // Create a bar code control.
+            XRBarCode barCode = new XRBarCode();
+
+            // Set the bar code&#x27;s type to Code 128.
+            barCode.Symbology = new Code128Generator();
+
+            // Adjust the bar code&#x27;s main properties.
+            barCode.Text = BarCodeText;
+            //barCode.Width = 400;
+            //barCode.Height = 100;
+
+            // Adjust the properties specific to the bar code type.
+            ((Code128Generator)barCode.Symbology).CharacterSet = DevExpress.XtraPrinting.BarCode.Code128Charset.CharsetB;
+
+            return barCode;
+        }
+
+ 
+
+ 
+
+ 
+              
+
+                    
+          
+      
+              
+ zpltest.txt
+
+              
+ LabelTest.nlbl_.txt
+
+              
+ Screenshot 2023-04-18 130459.png
+
+              
+ Screenshot 2023-04-18 130623.png
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Cenk Yenikoylu
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I&#x27;m pretty sure my printer doesn&#x27;t understand the size of the label I&#x27;m using. Because when I want to get two outputs, it outputs 2 blank labels between the two labels and writes the second copy on the 3rd label. I have no idea how to define the tag I have used to my device.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Cenk Yenikoylu
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I tried adding all the parameters one by one. The code that outputs 7 blank pages is ^MNW. I was able to output a single label by subtracting this parameter.
+
+When I searched ^MNW in the &quot;ZPLII-Prog.pdf&quot; document, I couldn&#x27;t find any results. I encountered this issue in the latest version of ZebraDesinger for Developer.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There might be two issues here. Make sure the printer is calibrated properly. You can use the ~JC (a ZPL command) to calibrate the printer. Then make sure the label size used in the ZebraDesigner does not exceed the size of the actual label, especially the length. You can ignore the width. When printing from the ZebraDesigner, ideally, select the &quot;Let the printer control this option&quot; for all options, to prevent the ZebraDesigner from interfering with the media settings and calibration on the printer. Just right click on each green squares.
+
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The ^MNW is on the ZPL User&#x27;s Guide. Check out this - ^MNW.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

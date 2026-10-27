@@ -1,0 +1,167 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>C# code that scales font, now having issue getting the Zebra printer to interpret it</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/c-code-scales-font-now-having-issue-getting-zebra-printer-interpret-it; snapshot threads/00931.html; SHA-256 c35a77a18d84d2e4056eb40920f5b030a59018e48eb668afbf8de76c48223f2a. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">C# code that scales font, now having issue getting the Zebra printer to interpret it</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            V
+          </div>
+          <div class="forum-topic__author-name">Vince Quach</div>
+          <div class="forum-topic__timestamp">4 years 10 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            79
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>So a while back I posted about whether or not Zebra/ZPL had some sort of auto-scaling functionality to scale AND wrap text to fit a label. It didn't, so I came up with my own method, although now I'm having difficulty getting it to print properly.</p>
+<p>My C# code takes in a user input of what they'd like printed, and then passes that along with the font name, font style, and label width into a function that scales it down: </p>
+<p>public Font ScaleFont(string text, string fontName, FontStyle fontStyle, int startingFontSize, double labelWidth) {<br>
+            for (int fontSize = startingFontSize; fontSize &amp;gt; 1; --fontSize) {<br>
+                Font trialFont = new Font(fontName, fontSize, fontStyle);<br>
+                Size textSize = TextRenderer.MeasureText(text, trialFont);<br>
+                if (textSize.Width &amp;lt; labelWidth)<br>
+                    return trialFont;<br>
+            }<br>
+            return null;<br>
+        }</p>
+<p>This seems to work, and it returns a font whose Font.Size's width property is always smaller than the maximum label width that I pass. Now I'm just having difficulty getting that into ZPL and getting the printer to interpret it properly. To start, I've already downloaded Arial onto the printer, and when checking the on-board memory it returns that the font is in position "1". I read the documentation and saw that you're to use the "^Afo,h,w" command to set the font size along with other properties, so I have a string that gets concatenated with the rest of my pre-generated ZPL code: </p>
+<p>$"^A1N,{fontsize.Height},{fontsize.Width}" Is right before my "^FD"block with the calculated values being used for the height and width property of the ^A command. However, upon printing it seems to output the default size regardless of the input-text's length or content. I'm not sure if I'm doing this correctly.</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-49816" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 10 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Looks like the downloaded Arial font is not designated to a correct letter.</p>
+<p>If the ZebraDesigner driver is used to download the Arial font onto the printer, there would a *.TTF file called as 9835202.TTF (or something similar to it) on the E: drive or R: drive after the font is downloaded. The downloading process could take a while depending on the size of the font library. Then,  we need to use ^CW command to designate the 9835202.TTF font to a letter. For example, to designate the font to the letter Z, we use the following ZPL</p>
+<pre><code>^XA^CWZ,E:9835202.TTF^FS^XZ</code></pre><p>Then we can call out the Z font with the following ZPL for the desired size we want.</p>
+<pre><code>^XA^FO10,10 ^CI28^AZN,32,32^FDArial 32x32^FS^XZ
+
+^XA^FO10,10 ^CI28^AZN,64,64^FDArial 64x64^FS^XZ
+</code></pre><p> </p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/c-code-scales-font-now-having-issue-getting-zebra-printer-interpret-it%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/c-code-scales-font-now-having-issue-getting-zebra-printer-interpret-it%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

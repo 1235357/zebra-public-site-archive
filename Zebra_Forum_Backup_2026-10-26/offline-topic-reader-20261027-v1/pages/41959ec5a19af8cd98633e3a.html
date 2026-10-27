@@ -1,0 +1,225 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>react native - zpl - zebra ZT411 - rfid - get tag id after write</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>react native - zpl - zebra ZT411 - rfid - get tag id after write</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/react-native-zpl-zebra-zt411-rfid-get-tag-id-after-write; original snapshot: threads/00869.html; SHA-256: 6b7c351d5410559e3b8f68f5cbcf00ce9993a3c31f633e5fca462e303b180410</small><pre id="topic">
+
+    
+        react native - zpl - zebra ZT411 - rfid - get tag id after write 
+
+
+        
+      
+                        
+                    
+            G
+          
+          Giorgio Zett
+          4 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            347
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi all!
+I have a react native app where I can print rfid tags. I found some example, and I can get a bluetooth connection to the printer and print the tags correctly.
+But I need to get the tag id, too. I use zpl language in order to set how to print the tag, and I read about to use RI command to get RFID tag ID. But I can&#x27;t understand how to get it.
+This is the code I&#x27;m speaking about:
+&lt;code&gt;
+Connection printerConnection = null;
+        ZebraPrinter printer = null;
+        printerConnection = new BluetoothConnection(macAddress);
+        try {
+            printerConnection.open();
+            if (printerConnection.isConnected()) {
+                printer = ZebraPrinterFactory.getInstance(printerConnection);
+                PrinterLanguage printerLanguage = printer.getPrinterControlLanguage();
+                byte[] testLabel = getTestLabel(printerLanguage);
+                printerConnection.write(testLabel);
+            }
+&lt;/code&gt;
+I expected &lt;code&gt; printerConnection.write(testLabel);&lt;/code&gt; could return the tag id, but it seems return only void.
+Do I have to listen some events in order to get that id?
+How can I get it?
+Thanks in advance :-)
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            First of all, to read from RFID, we use the ^RF command in the RFID Programming Guide. The ^RI command in the ZPL Programming Guide is obsolete. Refer to the RFID Programming Guide for all RFID related commands. There are examples about how to read the TID and how to return the value to the host.
+Once you have successfully read the TID and returned the TID to the host with the RFID commands, then use the SendAndWaitForResponse API in the Connection class to send the RFID related ZPL commands to the printer, so that the application can get the TID.
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Giorgio Zett
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            thanks for your suggestions.
+we found &lt;code&gt; SendAndWaitForResponse &lt;/code&gt; and it works great in android
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

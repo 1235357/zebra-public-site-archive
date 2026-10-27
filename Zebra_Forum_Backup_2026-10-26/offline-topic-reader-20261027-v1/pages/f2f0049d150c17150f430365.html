@@ -1,0 +1,224 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Tc8000 Notification Manager is null</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Tc8000 Notification Manager is null</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/34725; original snapshot: threads/resume-00206.html; SHA-256: ce8672ba6d7e5aeeff9be9c0cd91a316277e35fb0c480b8c9c2ddd2acb0ac087</small><pre id="topic">
+
+    
+        Tc8000 Notification Manager is null
+
+
+        
+      
+                        
+                    
+            E
+          
+          Elesh Jamnadas
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            25
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+ 
+I am getting trouble using notification api. Below is the code I am using the obtain the NotificationManager, which is being set to null. Has anyone else had issues obtaining the Notification Manager?
+ 
+ 
+public void onOpened(EMDKManager emdkManager) {
+   this.emdkManager = emdkManager;
+ 
+   try   {
+   // Acquire the notification manager resources   notificationManager = (NotificationManager) emdkManager.getInstance(FEATURE_TYPE.NOTIFICATION);
+  }
+   catch(Exception ex)
+  {
+  ex.printStackTrace();
+  }
+......
+......
+}
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+The EMDK NotificationManager is used to control the LEDs on the RS6000 (Notification API Programmer&#x27;s Guide - Zebra Technologies Techdocs ) but I can&#x27;t see any evidence that the TC8000 supports the RS6000, the TC8000&#x27;s manual explicitly calls out the RS507 (https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/mobile-com… ) but not the RS6000 and only the latter supports the EMDK Notification API.
+So, I think this could be a case of lack of support since this is the only function of the EMDK NotificationManager (http://techdocs.zebra.com/emdk-for-android/6-4/api/reference/com/symbol…​).&amp;nbsp; If you are just trying to control the device LEDs then please use the Android NotificationManager ( NotificationManager | Android Developers&amp;nbsp; ) which is completely separate, though shares the same name.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              E
+            
+          
+                
+          
+            Elesh Jamnadas
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you for the reply,
+What I am trying to accomplish are different beeps based on a successful barcode validation.
+The scanner already beeps once each time it scans by default. What I need,&amp;nbsp; is to make the scanner beep again twice ( two beeps) once the scan is validated. The default tone on the scanner beep is pretty loud and we operate in a noisy environment, so we was hoping to use that same tone.
+Is it that possible using the scanners native tones?
+I will take a look at the android Notification Manager.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

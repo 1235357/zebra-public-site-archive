@@ -1,0 +1,386 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>ZebraSDK Xamarin iOS Error Write to Connection on Any operation after opening the connection</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>ZebraSDK Xamarin iOS Error Write to Connection on Any operation after opening the connection</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zebrasdk-xamarin-ios-error-write-connection-any-operation-after-opening-connection; original snapshot: threads/00833.html; SHA-256: 964826bd8cb2aebb349fa4add2a97e3c94bb06ab1e94321a5521d50f56823932</small><pre id="topic">
+
+    
+        ZebraSDK Xamarin iOS Error Write to Connection on Any operation after opening the connection
+
+
+        
+      
+                        
+                    
+            A
+          
+          Antonino Rametta
+          4 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            231
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m using the Zebra SDK on a iOS App made with Xamarin framework on .NET using Visual Studio 2019.
+I&#x27;ve added ExternalAccessory information and support for bluetooth in info.plist.
+I&#x27;ve paried my ZQ320 printer on iOS settings.
+&lt;code&gt;
+var conn = new Zebra.Sdk.Comm.BluetoothConnection(mac);
+conn.Open();                                               
+var printer = Zebra.Sdk.Printer.ZebraPrinterFactory.GetLinkOsPrinter(conn, Zebra.Sdk.Printer.PrinterLanguage.ZPL);
+var status = printer.GetCurrentStatus();
+&lt;/code&gt;
+The GetCurrentStatus (and any other functionality) will throw an exception &quot;Error writing to connection&quot;
+  at Zebra.Sdk.Comm.Internal.ZebraBluetoothSocket+OutputStream.Write (System.Byte[] source) [0x00065] in &amp;lt;81e75b784ceb453f94368622a751b567&amp;gt;:0
+  at Zebra.Sdk.Comm.Internal.ZebraBluetoothSocket+OutputStream.Write (System.Byte[] buffer, System.Int32 offset, System.Int32 count) [0x0003f] in &amp;lt;81e75b784ceb453f94368622a751b567&amp;gt;:0
+  at System.IO.MemoryStream.WriteAsync (System.Byte[] buffer, System.Int32 offset, System.Int32 count, System.Threading.CancellationToken cancellationToken) [0x00060] in /Library/Frameworks/Xamarin.iOS.framework/Versions/Current/src/Xamarin.iOS/external/corefx/src/Common/src/CoreLib/System/IO/MemoryStream.cs:764 
+Anyone can help?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The problem is with the BluetoothConnection(mac) statement. On iOS, we have to use the friendly_name of the printer&#x27;s Bluetooth. By default, the friendly_name is the serial number of the printer.
+// var conn = new Zebra.Sdk.Comm.BluetoothConnection(mac); // The mac address won&#x27;t work for iOS.
+var conn = new Zebra.Sdk.Comm.BluetoothConnection(serialNumber); // Use the serial number for iOS.
+conn.Open(); 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Antonino Rametta
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello, thanks for the reply. I&#x27;ve changed the friendly_name, so its not the serialnumber anymore, but if i use the friendly name i get:
+&lt;code&gt;Could not connect to device: Object reference not set to an instance of an object&lt;/code&gt;
+I&#x27;ve also tried then to use the GetConnection from the discovered printers gained from Zebra.Sdk.Printer.Discovery.BluetoothDiscoverer.FindPrinters. But i still get the &quot;Error writing to connection&quot; error.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I saw the same error msg on an old build of the XamarinDevDemo already installed on my iOS device. Then I updated the Visual Studio and created a new build for my iOS 14.8 device. The error msg went away and the Bluetooth connection started working. Please try to update the Visual Studio for the latest Xamarin package. Hope this makes the &quot;Could not connect to device: Object reference not set to an instance of an object&quot; error msg go away for you.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Antonino Rametta
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I&#x27;ve already VS19 with latest version, and latest version of Xamarin Package, and latest version of Zebra SDK, i&#x27;ve also tried to create a new empty project and still not working.
+I finally find the solution by myself. In order to work, the printing process should be executed on a different thread of the GUI.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Glad that you&#x27;ve figured it out. The Zebra printers are considered as slow accessories in general. Any interaction to the printer cannot be done in a UI thread. It is recommended to spawn a separate thread when calling the Link-OS SDK API. 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

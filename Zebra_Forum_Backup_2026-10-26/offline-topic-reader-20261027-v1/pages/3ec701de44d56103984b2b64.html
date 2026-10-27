@@ -1,0 +1,305 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Bluetooth connection frequently disconnected when printing with zpl</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Bluetooth connection frequently disconnected when printing with zpl</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/bluetooth-connection-frequently-disconnected-when-printing-zpl; original snapshot: threads/01042.html; SHA-256: 95d9c8cc677bc478395921c960141fd3cfec44510069bfc19aec4c5143c09b29</small><pre id="topic">
+
+    
+        Bluetooth connection frequently disconnected when printing with zpl
+
+
+        
+      
+                        
+                    
+            H
+          
+          Hojoong Kim
+          5 years 3 months ago
+        
+        
+      
+        
+            
+                  
+            
+            824
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We made iOS app with MfiBtPrinterConnection and TcpPrinterConnection to make connections between iOS device and Zebra mobile printer (ZQ620 and QLN320)
+(https://techdocs.zebra.com/link-os/2-13/ios/content/interface_mfi_bt_pr…)
+The source code is exactly the same as example above link but there is only problem when I try to print out with ZQ620 + Bluetooth 5.0 Device (iPhone SE 2nd generation, iPhone 11Pro, iPhone11) - with MfiBtPrinterConnection
+No issue between (For QLN320, We have tried with LINK OS 6.2 and 6.3)
+QLN320 + iPod touch 5th generation (Bluetooth 4.1)
+QLN320 + iPod touch 6th generation (Bluetooth 4.1)
+QLN320 + iPod touch 7th generation (Bluetooth 4.1)
+QLN320 + iPhone SE 2nd generation (Bluetooth 5.0)
+QLN320 + iPhone 11 Pro (Bluetooth 5.0)
+QLN320 + iPhone 11 (Bluetooth 5.0)
+ZQ620 + iPod touch 5th generation (Bluetooth 4.1)
+ZQ620 + iPod touch 6th generation (Bluetooth 4.1)
+ZQ620 + iPod touch 7th generation (Bluetooth 4.1)
+and all TcpPrinterConnection printing
+Only thing I added is that I am checking printer status by getCurrentStatus to check whether my printer is enabled to print out or not, like the sequence below.
+MfiBtPrinterConnection -&amp;gt; ZebraPrinterConnection.open -&amp;gt; ZebraPrinterFactory.getInstance -&amp;gt; getCurrentStatus() -&amp;gt; Write -&amp;gt; ZebraPrinterConnection.close
+There is no problem when printing successively after the first successful printing. But when I try to print again after waiting a while after printing, getCurrentStatus() throws an exception randomly. After that, the printer is paired, but the paired device cannot be found in the app.
+Error Domain=ZSDK_API_ERROR_DOMAIN Code=7 &quot;Malformed status response - unable to determine printer status&quot; UserInfo={NSLocalizedDescription=Malformed status response - unable to determine printer status}
+(connection open() and isConnected() are returning turu)
+I tried to prevent exceptions using setTimeToWaitForMoreData, setMaxTimeoutForRead, delay() and etc, But there is no way to fix it.
+I&#x27;m so confused because it&#x27;s a problem that doesn&#x27;t happen with other device combinations. I could find a similar issue like
+https://developer.zebra.com/thread/35152
+https://developer.zebra.com/thread/35033
+https://github.com/ZebraDevs/LinkOS-iOS-Samples/issues/5
+but there is no reply to solve the problem.
+No issue with iOS(11,12,13,14), linkOS version, enabled BLE setting, enabled WLAN setting, Sleep setting. We have a lot of ZQ620 printers and the same issue has happened.
+This problem is a problem that occurs in getting status after opening a connection. Please give me advice.
+ALREADY TRIED
+! U1 setvar &quot;bluetooth.discoverable&quot; &quot;on&quot;
+! U1 setvar &quot;bluetooth.authentication&quot; &quot;off&quot;
+! U1 setvar &quot;bluetooth.bluetooth_pin&quot; &quot;&quot;
+! U1 setvar &quot;bluetooth.afh_mode&quot; &quot;off&quot;
+! U1 setvar &quot;bluetooth.afh_map&quot; &quot;&quot;
+! U1 setvar &quot;wlan.enable&quot; &quot;off&quot;
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hojoong Kim
+          
+          
+            5 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I tried with &#x27;Zebra Printer Setup Utility&#x27; from the app store, And there is the same issue with bluetooth 5.0 device + ZQ620. (Tested 10EA ZQ620 with 5 devices(iPhone,iPod, iPad)
+ just downloaded the LINK OS SDK from &#x27;https://www.zebra.com/ap/en/products/software/barcode-printers/link-os/…; and tested it with my iPhone.
+In the same way, when I try to check the connection or print after connecting Bluetooth, sometimes the Bluetooth connection is forcibly disconnected.
+I have tried with more than 10 iOS devices (with iOS12, iOS13,iOS14) with more than 10 Zebra ZQ620.
+Same bluetooth connection problem. No problem with bluetooth 4.1 device with Zebra ZQ620.
+I would like to ask if you guys tried a printing test between bluetooth 5.0 iOS device and ZQ620.
+I don&#x27;t think it is printer hardware or iOS device problem since this problem has happened between a lot of device combinations .
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Hojoong,
+Thanks for sharing the details of the observation. We think this might be a known issue on the iPhone side. Before we make such assertion, could you confirm the following question?
+Could you open the Settings -&gt; Bluetooth page on the iOS device where the problem occurred, and watch for the connected ZQ620 printer on the paired list for about 50 to 60 seconds? Please let us know if the Bluetooth setting page refreshes by itself during the 50 to 60 seconds? When the page refreshes, please let us know if the ZQ620 printer goes to &quot;Not Connected&quot; briefly and then back to &quot;Connected&quot; automatically.
+If you can confirm the above symptoms, then we can be certain that this is a known issue on iOS side and advise you how to get a temporary fix.
+We have reported the issue to Apple, but still have not heard any resolution.
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            GENE KOWALSKI
+          
+          
+            5 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            We&#x27;re able to get our app to spit out a few labels on iphone 11,12,13 before the &quot;disconnect&quot; happens, but within a minute the connection is lost.
+We&#x27;ve been waiting for a solution for this for years, I was hoping iphone 13 would fix this but we just received ours today and very disappointed it doesn&#x27;t. Our app works fine with iPhones up to iphone X but not on iphone 11, iphone 12, or iphone 13!!
+as far as I can tell it&#x27;s only with the ZQ620, users using the old QLN320 don&#x27;t have the problem.
+How can I get this temporary fix?
+Thank you,
+Gene
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

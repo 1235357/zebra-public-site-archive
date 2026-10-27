@@ -1,0 +1,401 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Creating ZPL files from a .nlbl template using .net</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Creating ZPL files from a .nlbl template using .net</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/creating-zpl-files-nlbl-template-using-net; original snapshot: threads/00752.html; SHA-256: cdc00f5885b384281ec9bc0216c8e7926b77341e3c71090a9ea182019eb7adaa</small><pre id="topic">
+
+    
+        Creating ZPL files from a .nlbl template using .net
+
+
+        
+      
+                        
+                    
+            J
+          
+          Jordon Pilling
+          4 years 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            8199
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We have multiple templates ready in ZebraDesigner and saved as *.nlbl files - i.e. with placholder textboxes and barcodes all in the correct locations / sizes etc
+We need to use .net to open this *.nlbl files, populate the placeholder textboxes and barcodes with real data then save as a zpl file.
+Stackoverflow and general googling gives a barrage of outdated / conflicting information on this topic.
+Please can you confirm the &quot;pest practice&quot; way for us to acheive the above? Is there an SDK that will open an nlbl file and allow the export to zpl file?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Dougie Birrell
+          
+          
+            4 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Not the most elegant solution, but I&#x27;ve printed the nlbl file I&#x27;d designed to a zpl file, by changing the print port to &quot;Print to File&quot;.  I then opened and pasted the ZPL file into a string. (example below) This allowed me to add in variables (assetID, location, item, category) from a database allowing me to to print custom labels. C# Example
+private static string CreateLabel(string assetID, string item, string category, string location)
+        {
+            byte[] assetByte = Encoding.Default.GetBytes(assetID);
+            var assetHex = BitConverter.ToString(assetByte);
+            assetHex = assetHex.Replace(&quot;-&quot;, &quot;&quot;);
+            string label = &quot;CT~~CD,~CC^~CT~&quot; +
+                &quot;^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR2,2~SD10^JUS^LRN^CI0^XZ&quot; +
+                &quot;^XA&quot; +
+                &quot;^MMT&quot; +
+                &quot;^PW607&quot; +
+                &quot;^LL0198&quot; +
+                &quot;^LS0&quot; +
+                &quot;^FO0,0^GFA,02048,02048,00016,:Z64:&quot; +
+                &quot;....long string of hex which was an image&quot; +
+                &quot;^BY3,3,43^FT149,167^BCN,,Y,N&quot; +
+                &quot;^FD&amp;gt;:&quot; + assetID + &quot;^FS&quot; +
+                &quot;^FT25,130^AAN,27,10^FH\\^FD&quot; + assetID + &quot;^FS&quot; +
+                &quot;^FT115,23^A0N,23,26^FB468,1,0,R^FH\\^FD_MYCOMPANY_NAME^FS&quot; +
+                &quot;^FT489,44^A0N,17,16^FH\\^FDEH54 5DJ, UK^FS&quot; +
+                &quot;^FT146,92^AAN,18,10^FH\\^FDCat: &quot; + category + &quot;^FS&quot; +
+                &quot;^FT146,112^AAN,18,10^FH\\^FDLoc: &quot; + location + &quot;^FS&quot; +
+                &quot;^FT134,71^AAN,18,10^FH\\^FDItem: ^FS&quot; +
+                &quot;^FT208,71^AAN,18,5^FH\\^FD&quot; + item + &quot;^FS&quot; +
+                &quot;^PQ1,0,1,Y^XZ&quot;;
+            return label;
+        }
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jordon Pilling
+          
+          
+            4 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you for the example.
+This is pretty risky if your variables (category, location, item etc) contain ZPL control characters such as ^ or \\
+Is there an authoritative list of illegal characters that need to be escaped in ZPL / do you have a function already that does this?
+This is why i was asking about SDK, this concatenation method appears very crude / reminds me of SQL injection lol.
+That said, if it&#x27;s the only option, i can figure out the escape logic from scratch by adding ^ and \\ in ZebreaDesigner labels and saving as prn files i suppose – I just don’t want to re-invent the wheel when smarter and more knowledgeable people have surly already tackled this issue :)
+Thanks again, and would love to hear how other people have approached the escaping issue with concatenation / string replace method.
+J.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Dougie Birrell
+          
+          
+            4 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            These were labels with a barcode and certain areas for the text. The values for the text came from a SQL table, in which had the safety measures to only allow letters and numbers when entered into the database, so it by passed the risky aspect.
+\\ was a C# specific change, they were originally \ but C# treats that as a special character so needed to be changed to \\ in the code. 
+Yeah I totally get about not reinventing the wheel! Hope you can find what you&#x27;re looking for, if not this will help! :)
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There is no need to deal with the *.nlbl file directly, which is in a proprietary format. The ZebraDesigner can export the *.nlbl into the *.prn file, called as the template file in ZPL (or in XML with the ZebraDesigner for Developers). Your .NET application only needs to work with the *.prn file to populate the values. There are two ways to populate the values for the template. You can either replace the variables (or the placeholders) in the template and send the resulted ZPL file to the printer to print. Or you can send the template first as the stored format onto the printer and then send the recall format (with the values) to the printer. The printer will replace the variables with the values passed in the recall format and print the label.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              V
+            
+          
+                
+          
+            Vali Maties
+          
+          
+            1 year 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi.This approach will not work if you use custom fonts for text fields, because as we know, Zebra Designer will convert the text into the prn file for the placeholders, the text will be converter to image and you will see ^GF instead of ^FD .So we need to find other solution for this!Is there another solution?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

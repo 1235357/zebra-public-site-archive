@@ -1,0 +1,146 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>OEMConfig build_serial extraction</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>OEMConfig build_serial extraction</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/oemconfig-buildserial-extraction; original snapshot: threads/00060.html; SHA-256: d0055a45d1ee47901c882009ce77f6579f777ed12539f9d946664d68d23daa6f</small><pre id="topic">
+
+    
+        OEMConfig build_serial extraction
+
+
+        
+      
+                        
+                    
+            M
+          
+          Matan Genezia
+          1 year 7 months ago
+        
+        
+      
+        
+            
+                  
+            
+            223
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  HiIn my Android app, I use UUID.randomUUID().toString() and save it to SharedPreferencesThis UUID used for save information about the device in server DBMy problem is that our customer works with MDM that not update the app, but uninstall and install the new versionTherefor the UUID is changedI need a way to extract some unique identifier of the device, that won&#x27;t be change when reinstalling the app (or clear data) I tried to use OEMConfig:I tried with CallerSignature as hex &amp; base64 as mentioned in https://developer.zebra.com/blog/generating-package-signature-use-mx (Zebra&#x27;s App Signature Tools)I tried to extract the CallerSignature with SigTools.jarI always got the same result- CursorIndexOutOfBoundsException (index 0) I added those to the manifest as well &lt;uses-permission android:name=&quot;com.zebra.provider.READ&quot;/&gt;&lt;queries&gt;    &lt;package android:name=&quot;com.zebra.zebracontentprovider&quot; /&gt;&lt;/queries&gt; Here&#x27;s my code:        val profileName = UUID.randomUUID().toString()       val profile = &quot;&lt;wap-provisioningdoc&gt;\n&quot; +               &quot;  &lt;characteristic type=\&quot;ProfileInfo\&quot;&gt;\n&quot; +               &quot;      &lt;parm name=\&quot;created_wizard_version\&quot; value=\&quot;11.0.1\&quot; /&gt;\n&quot; +               &quot;  &lt;/characteristic&gt;\n&quot; +               &quot;  &lt;characteristic type=\&quot;Profile\&quot;&gt;\n&quot; +               &quot;      &lt;parm name=\&quot;ProfileName\&quot; value=\&quot;$profileName\&quot; /&gt;\n&quot; +               &quot;      &lt;parm name=\&quot;ModifiedDate\&quot; value=\&quot;2022-08-17 10:20:36\&quot; /&gt;\n&quot; +               &quot;      &lt;parm name=\&quot;TargetSystemVersion\&quot; value=\&quot;10.4\&quot; /&gt;\n&quot; +               &quot;      &lt;characteristic type=\&quot;AccessMgr\&quot; version=\&quot;10.4\&quot;&gt;\n&quot; +               &quot;          &lt;parm name=\&quot;emdk_name\&quot; value=\&quot;\&quot; /&gt;\n&quot; +               &quot;          &lt;parm name=\&quot;ServiceAccessAction\&quot; value=\&quot;4\&quot; /&gt;\n&quot; +               &quot;          &lt;parm name=\&quot;ServiceIdentifier\&quot; value=\&quot;content://oem_info/oem.zebra.secure/build_serial\&quot; /&gt;\n&quot; +               &quot;          &lt;parm name=\&quot;CallerPackageName\&quot; value=\&quot;com.supersmart.cc6000.sapir.il\&quot; /&gt;\n&quot; +               &quot;          &lt;parm name=\&quot;CallerSignature\&quot; value=\&quot;{{hex signature}}\&quot; /&gt;\n&quot; +               &quot;      &lt;/characteristic&gt;\n&quot; +               &quot;  &lt;/characteristic&gt;\n&quot; +               &quot;&lt;/wap-provisioningdoc&gt;&quot;       Log.i(&quot;SERIAL&quot;, &quot;version with hex key&quot;)       val returnVal = arrayOf(profile)       val profileXml = mapOf(Pair(profileName, returnVal))       ProfileManagerBase {           val SERIAL_URI = &quot;content://oem_info/oem.zebra.secure/build_serial&quot;           val uri = Uri.parse(SERIAL_URI)           object: AsyncTask&lt;String, Void, Cursor&gt;() {               var myUri: String? = null               override fun doInBackground(vararg params: String?): Cursor? {                   myUri = params[0]                   var cr = contentResolver                   val cursor = cr.query(Uri.parse(myUri), null, null, null,null)                   cursor?.let {                       it.moveToFirst()                       val serial = it.getString(0)                       val a = serial                       Log.i(&quot;SERIAL!!!&quot;, &quot;doInBackground: $serial&quot;)                   }                   return cursor               }           }.execute(uri.toString())       }           .handleXmlProfile(profileXml, true) I want to extract the build_serial (or any other data that won&#x27;t be changed after reinstall)I&#x27;m using Cc6000 Android 13
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              I
+            
+          
+                
+          
+            Ian Hatton
+          
+          
+            1 year 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Please take a look at the guide here ( Device Identifiers on Zebra Devices Running Android 10 – The Complete Guide | Developer Portal ) which covers several methods of accessing device-specific info including UUID
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

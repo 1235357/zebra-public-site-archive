@@ -1,0 +1,600 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>I2of5 BC not decoded in Enterprise Browser on WT6000</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/thread/34596; snapshot threads/resume-00198.html; SHA-256 7e1a7612217fb6baf60770bb51f12db614ace28d243d161fa11f9956fa651761. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">I2of5 BC not decoded in Enterprise Browser on WT6000</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            P
+          </div>
+          <div class="forum-topic__author-name">Petr Stejskal</div>
+          <div class="forum-topic__timestamp">5 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            53
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            8
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello,<br>
+we have an issue that RS4000 scanner connected to WT6000 would not decode an I2of5 barcode in Enterprise Browser.<br>
+ <br>
+We have the folowing devices:<br>
+WT60A0-TS0LEWR<br>
+RS4000-HPCSWR<br>
+SW-ENTBRV1-PD - version 1.6<br>
+ <br>
+We have these SW versions:<br>
+OS: Android 5.1.1, Security Patch level 2017-02-01,  Kernel ver. 3.14.52, patch WT6K0L300PUWW30704.zip<br>
+DW: 6.2.23<br>
+EHS: 2.5.1<br>
+ <br>
+We're using DW scanning in EB - we've correctly configured the Profile0 wich is used for Enterprise Browser.<br>
+ <br>
+We think that this issue is isolated to the EB on WT6000 because of the following conditions:<br>
+- the same I2of5 BC is decoded well on the same device while in DWdemo (DW profile for DWDemo is configured in the same way as Profile0 (Default) which is used for EB scanning)<br>
+- the same I2of5 is decoded well in Enteprise Browser on different devices - we've tested and verified MC32N0-SL3SAHEIA and MC92N0-GJ0SYFAA6WR<br>
+ <br>
+I am attaching DW config we're using<br>
+ <br>
+Probably EB is not using the correct DW setting on WT6000</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      8 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-41612" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              P
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Petr Stejskal</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi,<br>
+so we found the cause of this issue...and it is ...surprisingly in our webpage :-) (sort of).<br>
+I'm sorry that I was chasing you guys down for an issue that originated within our webpage.<br>
+Let's explain it quickly - we're using EB as a client for our WMS solution in SAP. It is displaying webpages that we generate according to our template from an SAP screen.<br>
+The problem was, that we left these meta tags in the login page:</p>
+<p>although we were using DW scanning ( in config.xml).<br>
+We cleared the meta tags from all of our pages (when we switched from EB scanning to DW scanning because it was more stable), but forgot to clear them from the login page.<br>
+So apparently EB on WT6000 was somehow confused by the meta tag and probably was using EB scanning insted of DW scanning...<br>
+The strange thing is, that exactly the same set of screens (webpages) worked well on MC32 and MC92....</p>
+<p>Regards Petr</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-41550" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              P
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Petr Stejskal</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi,<br>
+we've tested that again and maybe there could be an issue with the saved profile I've attached, but we've verified again that probably EB does not take the allowed symbology list from the DW profile - but it's strange, since it takes for example prefix/suffix settings from the DW profile.<br>
+My colleague will ad more details soon.<br>
+Petr</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-41551" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              A
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Abhineet Agarwal</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Dear Petr,</p>
+<p>As mentioned by Daniel, It should definitely work properly.</p>
+<p>Please follow the data wedge guidelines captured Using DataWedge with EB - Zebra Technologies TechDocs </p>
+<p>After configuration check whether I2of5 BC decoder is enabled in the data wedge profile which is associated with Enterprise Browser application.</p>
+<p>In case you are still getting the issues, please raise the support ticket. Our support team will assist you on the same.</p>
+<p>Thanks &amp;amp; Regards,<br>
+Abhineet Agarwal<br>
+Enterprise Browser Software Lead</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-41552" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              P
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Petr Stejskal</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Abhineet,<br>
+thanks for your reply, we've folowed that guideline very thoroughly but even though with no luck<br>
+A support ticket have been already submitted on Tuesday.</p>
+<p>We have also tested the option that we've created a specific DW profile for EB, associated it with EB but no luck again.<br>
+The strange thing is that it was able to decode the I2of5 barcode twice, but no luck after that...</p>
+<p>Regards<br>
+Petr</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-41536" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              A
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Abhineet Agarwal</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Dear Petr,</p>
+<p>It's strange that it was able to decode twice but not later. Have you checked this behavior outside EB by scanning the Barcode in other application such as Notes or Stock Browser etc.. ?</p>
+<p>I see that the DataWedge version which you have mentioned is 6.2.23. Therefore, I believe you must have configured the below settings.</p>
+<p>To enable an EB app to scan with DataWedge 6.0.1 and higher:<br>
+1. Confirm that no association with com.symbol.enterprisebrowser exists in the "Disabled app list" in the DataWedge Settings panel:</p>
+<p>In DataWedge, select Menu-&amp;gt;Settings-&amp;gt;Disabled app list. The list of disabled apps appears.</p>
+<p>Remove com.symbol.enterprisebrowser from the list, if present (see note, above).</p>
+<p>Then choose any DataWedge profile (with I2of5 barcode enabled) which will be used within EB for scanning.</p>
+<p>2. In the EB app's config.xml file, set a value of "1" in the  tag &amp;amp; re-launch the EB application.</p>
+<p>Even after applying this settings, it doesn't work then there must be an issue at DataWedge application end. </p>
+<p>As you have already raised the support ticket, zebra support team will assist on the same as early as possible.</p>
+<p>Thanks &amp;amp; Regards,<br>
+Abhineet Agarwal<br>
+Enterprise Browser Software Lead</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-41537" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              P
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Petr Stejskal</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi,<br>
+yes, we've tested that outside EB - with calculator app (I know, strange, but helps :-)<br>
+We have allowed I2of5 in the Default Profile0 and tested the same barcode:<br>
+- in EB -&amp;gt; no decode<br>
+- in Calculator -&amp;gt; decoding well (no issues)</p>
+<p>We made another test - disabled Code 128 in Default Profile0 - and even after that, Code128 barcode is decoded within EB, but not outside EB (therefore the changes in the DW profile are valid) ... strange... but leads us to the idea, that EB does have it's own mind when allowing different symbologies.</p>
+<p>Regards</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div></div></div></div>  
+
+
+
+<article id="comment-41527" class="comment forum-topic__reply js-comment by-anonymous forum-topic__reply--comment by-viewer">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              A
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Anonymous (not verified)</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I loaded your Profile0 on my WT6000 and it looks like Interleaved 2of5 is not enabled.&amp;nbsp; A good test whether Profile0 is working right might be to open the normal Android Browser and try to scan into the address bar.&amp;nbsp; If you can't scan there either,&amp;nbsp; it has nothing to do with EB.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-41514" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              P
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Petr Stejskal</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Daniel,<br>
+so the DW says on your device that I2of5 is disabled for the Profile0? Interesting - I'll double check tomorrow on my device, although looking directly into the DB file it should be enabled</p>
+<p>Good tip on browser though, we know that we can scan in DW Demo, but that app is using a different DW profile.<br>
+Regards Petr</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/thread/34596%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/thread/34596%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

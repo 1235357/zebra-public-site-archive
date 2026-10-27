@@ -1,0 +1,360 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Error 500 when trying to send file to printer via API</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/error-500-when-trying-send-file-printer-api; snapshot threads/00986.html; SHA-256 ccfc81acb75dd62f3e051f3b0683cca6f7ac78aed77fbc6f271b67cd7e1c63c9. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Error 500 when trying to send file to printer via API</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            T
+          </div>
+          <div class="forum-topic__author-name">Tim Schelpe</div>
+          <div class="forum-topic__timestamp">5 years ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            951
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            4
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi<br>
+I'm trying to send files to the printer from Microsoft Business central (AL coding language).<br>
+My request contains the apikey and tenant headers and my body looks like this:</p>
+<p>--ac75c5016-d2f8-41a2-a2d5-494b247babcbf<br>
+Content-Disposition: form-data; name="sn"</p>
+<p>D6J211603681<br>
+--ac75c5016-d2f8-41a2-a2d5-494b247babcbf<br>
+Content-Disposition: form-data; name="zpl_file"; filename="label.txt"<br>
+Content-Type: text/plain</p>
+<p>^XA ^FO50,50^ADN,36,20^FDHello World^FS ^XZ<br>
+--ac75c5016-d2f8-41a2-a2d5-494b247babcbf--</p>
+<p>I get following error in return:<br>
+{"fault":{"faultstring":"Execution of JS-ExtractPrinterList failed with error: Javascript runtime error:<br>
+"TypeError: Cannot read property<br>
+"1<br>
+" from null. (JS-ExtractPrinterList.js:7)<br>
+"","detail":{"errorcode":"steps.javascript.ScriptExecutionFailed"}}}<br>
+which is a server-side (500) error.</p>
+<p>Can anyone tell me if I'm missing something or did something wrong?<br>
+Thanks in advance for any help</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      4 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-49573" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>First, make sure you are able to print through the Curl command with your apikey, tenant ID, printer SN and the file. The Curl format is shown below. This is to ensure that we have everything set up properly. You can also verify your settings with the JavaScript demo code, which can be downloaded from GitHub - <span data-original-href="https://github.com/ZebraDevs/Zebra-Printer-Samples/tree/Print-From-Zebra-Data-Services-Cloud-Example">Print From the Cloud Demo</span>. Then we can focus on the AL code.</p>
+<pre><code class="language-bash">curl -v -H "apikey: yourApikey" \
+     -H "tenant: yourTenantID" \
+     -F "sn=XXRBJ143300207" \
+     -F "zpl_file=@HelloWorld.txt" \
+     https://stage-api.zebra.com/v2/devices/printers/send</code></pre><p>By just looking at the multipart form-data body, I don't see any wrong. But I definitely would look into the AL code to see if any extra headers being added before it sends the request out.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-49574" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              T
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Tim Schelpe</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I was able to send files to the printer form postman, which does the same as curl as far as I'm aware.<br>
+The headers in AL are added like this: (apikey and tenant left empty for obvious reasons)</p>
+<p>vHttpContent.GetHeaders(vHttpHeaders);<br>
+        vHttpHeaders.Add('apikey', '');<br>
+        vHttpHeaders.Add('tenant', '');<br>
+        vHttpHeaders.Remove('Content-Type');<br>
+        vBoundary := generateBoundary();<br>
+        vHttpHeaders.Add('Content-Type', 'multipart/form-data; boundary=--' + vBoundary);</p>
+<p>the request itself is configured like this:<br>
+        vHttpRequest.Method('POST');<br>
+        vHttpRequest.SetRequestUri('<span data-original-href="https://api.zebra.com/v2/devices/printers/send&amp;#039">https://api.zebra.com/v2/devices/printers/send&amp;#039</span>;);</p>
+<p>and I send the request like this:<br>
+       vHttpClient.Post('<span data-original-href="https://api.zebra.com/v2/devices/printers/send&amp;#039">https://api.zebra.com/v2/devices/printers/send&amp;#039</span>;, vHttpContent, vHttpResponse);</p>
+<p>The response then contains the error with status code 500</p>
+<p>When debugging the code, the debugger only shows the headers I manually added. Debugging APIs is kind of a mess in AL.</p>
+<p>Thank you for your help and let me know if I need to provide more information.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-49576" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I am unfamiliar with AL language. The 500 error indicates a server internal error, which means that the server cannot process the request. In most cases, the 500 error is caused by the request body. Is there a way to output the request body from the code above, so that we can visually check if anything is missing or extra in the multipart form-data?</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-49577" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              T
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Tim Schelpe</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>--ac75c5016-d2f8-41a2-a2d5-494b247babcbf<br>
+Content-Disposition: form-data; name="sn"</p>
+<p>D6J211603681<br>
+--ac75c5016-d2f8-41a2-a2d5-494b247babcbf<br>
+Content-Disposition: form-data; name="zpl_file"; filename="label.txt"<br>
+Content-Type: text/plain</p>
+<p>^XA ^FO50,50^ADN,36,20^FDHello World^FS ^XZ<br>
+--ac75c5016-d2f8-41a2-a2d5-494b247babcbf--</p>
+<p>this is an exact output of the body</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/error-500-when-trying-send-file-printer-api%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/error-500-when-trying-send-file-printer-api%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

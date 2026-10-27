@@ -1,0 +1,765 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>iOS Swift Sample Xcode Projects</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>iOS Swift Sample Xcode Projects</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/ios-swift-sample-xcode-projects; original snapshot: threads/00552.html; SHA-256: 024cdb839b17c6827226dc62694a397add549b0f2f3002eb4b92c87504087bb4</small><pre id="topic">
+
+    
+        iOS Swift Sample Xcode Projects
+
+
+        
+      
+                        
+                    
+            J
+          
+          Justin Leger
+          3 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            1066
+          
+                
+                  
+            
+            11
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi, I looking at doing a mobile printing Proof of Concept and product / technical evaluation using the ZQ511 and ZQ521.
+
+We are primarily an iOS development team and looking for some good Swift sample starter projects to get us up an running quickly with our technical evaluation.
+
+We have found a few sample projects on ZebraDev GitHub, but they are all 6 years old and written in Objective-C. We can definitely look at converting to Swift, but the effort in conversion limits out time and focus.
+
+Sample Project Found
+
+
+	LinkOS-SDK: https://github.com/ZebraDevs/LinkOS-iOS-Samples/tree/ZSDK_DevDemos
+	BLE Demo: https://github.com/ZebraDevs/LinkOS-iOS-Samples/tree/ZebraPrinterBLEDemo
+
+
+We are open to both possible solution of using iOS native BLE connection or using the LinkOS SDK. Zebra has provide us with a pre-release compiled version of the LinkOS SDK to run on newer devices, but there are no Swift project to get started with.
+
+Technical Evaluation Success Criteria
+
+
+	iPhone or iPad connection to a printer.
+	Auto re-connection from mobile device to printer. (After things like mobile device sleep/wake or battery replacement on printer)
+	Printing documents (mobile device generated such as PDFs or mapping data to a Zebra template)
+	Printer status information. (Battery Level, Print Medial Levels, etc...)
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      11 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            We don&#x27;t have Swift sample code for the Link-OS SDK for iOS. With the bridging header, the objective-c library of the SDK should work with the latest Swift on the latest iOS devices (iPhone &amp; iPad). The SDK supports connectivity of TCP and Bluetooth Classic. Unfortunately, the SDK doesn&#x27;t support BLE at the moment. You would need to create your own BLE support.
+The Bluetooth auto-reconnection for iOS is already built into the printer&#x27;s firmware. By default, the Bluetooth auto-reconnection is enabled.
+For PDF print, you can take the advantage of the PDF Direct, which is a emulation feature on the printer. The ZQ511, ZQ521 and all Link-OS printers have the PDF Direct capability, which can be enabled or disabled. With a PDF Direct enabled printer, the app simply calls the sendFileContents API to send a PDF file to the printer to print. There is no need to do any conversion at the app level.
+With the SDK, we can get the full operational status of the printer, such as the head open, media out, etc. For the printer&#x27;s battery level, there is a full set of ZPL commands for retrieving the battery related info. For the media level, the app would need to use the printer odometers to estimate the remaining media level roughly based on the initial total number of the labels on the media roll at the installation and the number of labels printed since.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Justin Leger
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Steven, thanks you for getting back with us.
+
+
+I have converted the BLE Demo to swift and very time I try writing to the ZQ511 I get an Authentication is insufficient error.
+Error?    domain: &quot;CBATTErrorDomain&quot; - code: 5    0x000000028164e040
+
+Could this be a printer configuration issue or MFi?
+
+Any help would be greatly appreciated.
+
+
+Thanks,
+
+Justin
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The issue has nothing to do with MFi, as MFi is not applicable to Bluetooth Low Energy. It&#x27;s most likely related to the Bluetooth security settings on the ZQ511 printer. Make sure the bluetooth.minimum_security_mode is set to 1. Use the following SGD commands to set and verify the security mode setting for Bluetooth.
+### Verify the security mode setting on the printer
+! U1 getvar &quot;bluetooth.minimum_security_mode&quot;
+
+### If the return of the above command is not 1, then set it to 1.
+! U1 setvar &quot;bluetooth.minimum_security_mode&quot; &quot;1&quot;
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Justin Leger
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Just to note, I am connecting successfully to the device via BLE in both  the demo app and some custom code version based on the swift conversion.
+
+From my Custom Swift code
+
+
+	READ INFO from device ZQ511
+	READ INFO from device XXRAN230900085
+	READ INFO from device V91.21.20Z
+	READ INFO from device ZQ51-BUW0000-00
+	READ INFO from device 6.7
+	READ INFO from device Zebra Technologies
+
+
+ 
+
+From the Converted Obj-C -&gt; Swift App
+
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            These values are from the BLE advertisement packets. The security mode controls the read from and write to the characteristics. This is where the exception occurs if the security mode on the printer is not set properly.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Justin Leger
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks, I think I was resolving this at the same time you were responding. I used the Setup Utility and used the Bluetooth Connectivity Wizard  to set the minimum security value.
+
+I found it in this doc. Table 3 of the security section.
+
+https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/printers/common/network/bluetooth-ug-en.pdf
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Justin Leger
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I am able to connect and write with the Authentication error now!!!! Yeah!!!
+
+But all my ZPL code is just printing as plain text. Is there another setting that needs to be set?
+
+I am using Labelary to create the ZPL string, covert string to data, break data into chunks based on the peripheral maximumWriteValueLength, then loop through and send the chunks via
+
+self.selectedPeripheral?.writeValue(chunk, for: writeCharacteristicUUID, type: .withResponse)
+
+Anything I might be missing?
+
+ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Justin Leger
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The device.languages on your ZQ511 printer is set to line_print mode, which results in the ZPL being printed instead of a label. You can use the same Printer Setup Utility app to change the device language setting from the line_print to ZPL, which will solve the issue.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Justin Leger
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks,
+
+Googled you notes and found this link, and it worked! Thanks!
+
+https://supportcommunity.zebra.com/s/article/Change-printer-language-and-driver-to-ZPL?language=en_US
+
+! U1 setvar &quot;device.languages&quot; &quot;zpl&quot;
+! U1 setvar &quot;device.pnp_option&quot; &quot;zpl&quot;
+! U1 do &quot;device.reset&quot; &quot;&quot; &lt;CR&gt;
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              W
+            
+          
+                
+          
+            William Mays
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Will we ever get native swift support? I am having issues with multiple Xcode and swift projects where I will print a tag, then 10m later it will randomly print the same tag again. Not sure why this is happening. I have closed the printer connection so any ideas?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

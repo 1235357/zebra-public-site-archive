@@ -1,0 +1,397 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Bulk printing</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Bulk printing</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/bulk-printing; original snapshot: threads/00540.html; SHA-256: 51092628d18b29c08439feb3bab026fb1cc4c3f709a37df44769cb458ca0e57f</small><pre id="topic">
+
+    
+        Bulk printing
+
+
+        
+      
+                        
+                    
+            V
+          
+          Vinod Venugopal
+          3 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            2265
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi, 
+
+ What are the options to do bulk print using Zebra SDK java library?  Does Zebra SDK support bulk printing?
+
+We would want  to stream the data to the printer using the SDK rather than send each request.  Also, is there any option to cancel the bulk print request? 
+
+Appreciate if you could share any examples.
+
+ 
+
+Thanks
+
+Vinod
+
+ 
+
+ 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            What do you mean by &quot;bulk printing&quot;? Do you mean to print multiple copies of the same and identical label? Or do you mean to print labels with different data on each label?
+If it&#x27;s former, there is a ^PQ command in the ZPL to specify how many copies you want for the same label in the ZPL.
+For the latter, you can take advantage of the templated based printing, by storing the template on the printer and send the data in ZPL to the printer or stream the data in XML to the printer to print.
+For template creation, see the ZebraDesigner for Developers 3.
+For XML streaming based template printing, see Zebra XML-Enabled Printer Reference Guide
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              V
+            
+          
+                
+          
+            Vinod Venugopal
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for your response Steven.
+
+We want to print labels with different data on each label.  At the moment we are storing the template on the printer and sending the data in ZPL to the printer. 
+
+We are using this below method in FormatUtil class passing template location and mappings.
+
+void printStoredFormat(String var1, Map&lt;Integer, String&gt; var2) 
+
+I assume calling this method in a loop for different data on each label - say around 750, would create 750 jobs on the printer queue ?  Instead of that is there any api to send all the labels together so that there is only one print job. 
+
+My another query is any API available for cancelling the print request?  
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The printStoredFormat() only prints one label based on the template at a time. When calling the printStoredFormat() in a loop, the data for each label is cached in the memory buffer on the printer for the printer to print one at a time based on the first come first served. If you want to put all the data together for all the labels in one file, you would have to concatenate the individual ZPL data files into one file and call the sendFileContents() API to send the resulting file once for printing all the labels. The ZPL data file for each individual label needs to comply with the ZPL Recall Format requirement. You will have to do this yourself, as there is no API for that.
+No matter whether using printStoredFormat() in a loop or sendFileContents() for multiple labels, the data is stored in the buffer for the labels to be printed, a.k.a., labels or formats in the buffer. These labels or formats in the buffer can be cleared or cancelled all at once with either a ZPL command (~JA) or a SGD command (formats.cancel_all).
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              V
+            
+          
+                
+          
+            Vinod Venugopal
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for the above response. What is the API to generate the lbl file from the template and data?  I saw this example here which sends .lbl file path to sendFileContents(). 
+
+https://techdocs.zebra.com/link-os/2-14/pc/
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The .LBL file extension is used for the label format files in CPCL formatting language. CPCL is a legacy label formatting language. It is supported currently for backwards compatibility, but no longer evolves. It is recommended to use ZPL label formatting language. There is a tool, ZebraDesigner for Developer 3, to help design and generate the label template files in ZPL, including the Stored Format and the Recall Format. Conventionally, the .ZPL file extension is used for ZPL files.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

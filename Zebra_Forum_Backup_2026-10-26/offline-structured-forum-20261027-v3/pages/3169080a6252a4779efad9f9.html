@@ -1,0 +1,216 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Java SDK getCurrentStatus on USB direct takes 10 seconds to return</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/java-sdk-getcurrentstatus-usb-direct-takes-10-seconds-return; snapshot threads/00956.html; SHA-256 736950d794e7057f7d496b217fa54d7312d5214c8cad7f0c1c795b0beb045138. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Java SDK getCurrentStatus on USB direct takes 10 seconds to return</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            I
+          </div>
+          <div class="forum-topic__author-name">Ivano Luberti</div>
+          <div class="forum-topic__timestamp">4 years 11 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            115
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>I have downloaded the JAVA SDK and tried to pritn to a ZEBRA ZD620 using direct USB communication without driver<br>
+Printing labels is immediate while getting the printer status take about 10 seconds.<br>
+As you can see in the code I have used two ways to get the Host Status:</p>
+<p>Connection.sendAndWaitForResponse("~Hs".getBytes(), 2000, 2000, "V");<br>
+and<br>
+ZebraPrinter.getCurrentStatus();</p>
+<p>Any suggestion?</p>
+<p>public static void usbDriverlessTest() throws ConnectionException {<br>
+        System.out.println("Discovered USB printer list:\r\n");</p>
+<p>        DiscoveredUsbPrinter discoveredPrinter = null;<br>
+        for (DiscoveredUsbPrinter printer : UsbDiscoverer.getZebraUsbPrinters(new ZebraPrinterFilter())) {<br>
+            System.out.println(printer);<br>
+            discoveredPrinter = printer;<br>
+        }<br>
+        System.out.println("End USB printer list\r\n");</p>
+<p>        Connection imz = ConnectionBuilder.build(discoveredPrinter.address);<br>
+        try {<br>
+            imz.open();<br>
+            byte[] hi_return = null;<br>
+            ZebraPrinter printer = ZebraPrinterFactory.getInstance(imz);</p>
+<p>            String label = "^XA^FO17,16^GB379,371,8^FS^FT65,255^A0N,135,134^FDTEST^FS^PQ1,0,1,N^XZ";</p>
+<p>            // printer.sendCommand(label);</p>
+<p>            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");</p>
+<p>            System.out.println(sdf.format(new Date()));<br>
+            // <span data-original-href="https://live-zebratechnologies.devportal.apigee.io/thread/35973">https://live-zebratechnologies.devportal.apigee.io/thread/35973</span></p>
+<p>            PrinterStatus printerStatus = printer.getCurrentStatus();<br>
+            System.out.println("printerStatus.labelLengthInDots=" + printerStatus.labelLengthInDots);<br>
+            System.out.println("printerStatus.labelsRemainingInBatch=" + printerStatus.labelsRemainingInBatch);<br>
+            System.out.println("printerStatus.numberOfFormatsInReceiveBuffer=" + printerStatus.numberOfFormatsInReceiveBuffer);<br>
+            System.out.println("printerStatus.isReadyToPrint=" + printerStatus.isReadyToPrint);<br>
+            System.out.println("printerStatus.isReceiveBufferFull=" + printerStatus.isReceiveBufferFull);</p>
+<p>            System.out.println(sdf.format(new Date()));</p>
+<p>            hi_return = imz.sendAndWaitForResponse("~Hs".getBytes(), 2000, 2000, "V");</p>
+<p>            System.out.println(new String(hi_return));</p>
+<p>            System.out.println(sdf.format(new Date()));</p>
+<p>            hi_return = imz.sendAndWaitForResponse("~HQES".getBytes(), 2000, 2000, "V");</p>
+<p>            System.out.println(new String(hi_return));</p>
+<p>            System.out.println(sdf.format(new Date()));</p>
+<p>        } catch (ZebraPrinterLanguageUnknownException e) {<br>
+            // TODO Auto-generated catch block<br>
+            e.printStackTrace();<br>
+        } finally {<br>
+            imz.close();<br>
+        }<br>
+    }</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-49705" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Using the getCurrentStatus() is the correct way to obtain the printer status. Instead of using printer.getCurrentStatus(), I'd suggest to use either PrinterUtil.getCurrentStatus() or printerLinkOs.getCurrentStatus(). This way, you save about 5 seconds. See the code snippet below.</p>
+<pre><code class="language-java">imz.open();
+
+ZebraPrinter printer = ZebraPrinterFactory.getInstance(PrinterLanguage.ZPL, imz);
+
+...
+
+// Take 10sec to return. Slowest
+PrinterStatus printerStatus = printer.getCurrentStatus();
+
+... 
+
+// Take 5sec to return. Saved 5sec over printer.getCurrentStatus()
+PrinterStatus printerStatus = PrinterUtil.getCurrentStatus(imz, PrinterLanguage.ZPL);
+
+...
+
+// To use Link-OS printer object
+ZebraPrinterLinkOs printerLinkOs = ZebraPrinterFactory.createLinkOsPrinter(printer);
+
+// Take 5sec to return. Same as PrinterUtil.getCurrentStatus()
+PrinterStatus printerStatus = printerLinkOs.getCurrentStatus();</code></pre><p>Alternatively, we can modify the MaxTimeoutForRead on the connection object. The default is 5 seconds. To shorten the value, we call the setMaxTimeoutForRead() on the connection object. For example, if we want to change the default 5 seconds to a half second, we do the following. So that we shorten the time of the return from getCurrentStatus() .</p>
+<pre><code class="language-java">// Shorten the timeout to 0.5 second.
+imz.setMaxTimeoutForRead(500)</code></pre><p> </p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/java-sdk-getcurrentstatus-usb-direct-takes-10-seconds-return%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/java-sdk-getcurrentstatus-usb-direct-takes-10-seconds-return%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

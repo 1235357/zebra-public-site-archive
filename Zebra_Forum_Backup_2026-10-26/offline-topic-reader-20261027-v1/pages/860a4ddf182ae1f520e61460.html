@@ -1,0 +1,267 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra Printer ZT411 - RFID Printing</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Zebra Printer ZT411 - RFID Printing</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zebra-printer-zt411-rfid-printing; original snapshot: threads/00580.html; SHA-256: 4c239fa4683b7dcf2f78de0e17267a63334711bcbef188a60eaf43202dc0156a</small><pre id="topic">
+
+    
+        Zebra Printer ZT411 - RFID Printing
+
+
+        
+      
+                        
+                    
+            H
+          
+          Hariprasath Kamaraj
+          3 years 5 months ago
+        
+        
+      
+        
+            
+                  
+            
+            1211
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi, 
+
+  We use ZPL command to print RFID tags. While we are referring ZPL2 programming guide , we found that RFID tag data can be written in both EPC and also USER memory ^RFo,f,b,n,m.  We tried printing RFID tag in both EPC and USER memory at same time using the following command :
+
+^XA ^RFW,H,3,4,1^FD11112222^FS 
+^RFW,H,3,4,3^FD11112222^FS ^XZ
+
+We read the EPC data with help of printer by keeping it under RFID antenna. Only the EPC was displayed in the Read RFID data window but we couldn&#x27;t read the data written in the user memory, Is there a way to read data in the user memory or our understanding regarding user memory is wrong.
+
+We tried sending Read Command through zebra utility application but when we open the printer head to position label, printer goes pause mode and no response received. Same time when we resume printer to send command the label position gets changed.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There is a dedicated user manual for RFID related ZPL commands - RFID Programming 3. The ^RF command can read data from EPC, TID and User Memory Bank. For example, the following command reads 4 bytes from the user memory bank and return the data to the host.
+^XA
+^RFR,H,0,4,3^FN1^FS^HV1,,4-byte User Data:^FS
+^XZWhen work with RFID tags, we need to calibrate the media first, and then calibrate the RFID. The instructions are on the RFID Programming guide. When sending ZPL to the printer, a label will be advanced each time regardless the outcome. The printer needs to be in the ready-to-print state when trying to send ZPL to the printer. If the printer is in a paused state, the ZPL will be cached in the printer memory. When trying to read and write to the RFID tag, the read and write need to be within one ZPL script. We cannot separate the read and write into different ZPL script, as a label will be advanced after each ZPL script, which results in a different tag being placed on the RFID antenna in the printer. The programming guide has all the informations and examples.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              X
+            
+          
+                
+          
+            Xavier Thomassin
+          
+          
+            3 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            And would it be possible to read/write PC bits with ZPL commands or with another way ?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The PC bits are auto adjusted during the RFW write operation to reflect the number of bytes written to the EPC memory. The PC bits are then used during the RFR read operation to read out the number of bytes from the EPC memory. There is no direct read/write to the PC bits. See the RFID Programming Guide 3 for more details on the PC bits.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

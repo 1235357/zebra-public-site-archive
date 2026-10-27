@@ -1,0 +1,226 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Turkish character encoding issue while printing on ZQ220 with Zebra.Printer.SDK and Xamarin Forms</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Turkish character encoding issue while printing on ZQ220 with Zebra.Printer.SDK and Xamarin Forms</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/turkish-character-encoding-issue-while-printing-zq220-zebraprintersdk-and-xamarin-forms; original snapshot: threads/00897.html; SHA-256: 059d29d24a15eae289f617b9d23683bfc70414de7d7400f0008018aec4671520</small><pre id="topic">
+
+    
+        Turkish character encoding issue while printing on ZQ220 with Zebra.Printer.SDK and Xamarin Forms
+
+
+        
+      
+                        
+                    
+            A
+          
+          ahmet kocadogan
+          4 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            316
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello.
+I have a Zebra ZQ220 CPCL printer. I designed my receipt like below. I trimmed it for posting here.
+! 0 200 200 1550 1
+ENCODING ASCII
+T TH12.CPF 0 125 180    Tahsilat Makbuzu
+T TH8.CPF 0 1 225 Tarih : 01.01.2022     Makbuz No : 45879
+T TH8.CPF 0 1 260 CARİ : CARİ KOD
+T TH8.CPF 0 0 285 ABCDEFGH şŞğĞüÜöÖçÇiİıI
+PRINT
+When i print this on my windows computer, from Zebra Setup Utilities / Direct Printer Communication or from a test application i coded in C#, i can print and see Turkish characters without an issue.
+When i try to print same receipt from a Xamarin.Forms mobile application, i lose Turkish characters.
+The documentation and the source code provided with Zebra Link OS SDK uses
+        private const string TestLabelCpcl = &quot;! 0 200 200 406 1\r\n&quot; +
+                                     &quot;ON-FEED IGNORE\r\n&quot; +
+                                     &quot;BOX 20 20 380 380 8\r\n&quot; +
+                                     &quot;T 0 6 137 177 TESTÖÇŞİĞÜG\r\n&quot; +
+                                     &quot;PRINT\r\n&quot;;
+And i use it like that, just change this string with the string above.  
+The implementation in GetTestLabelBytes() in the example code is : return Encoding.UTF8.GetBytes(TestLabelCpcl)
+When i use UTF8, Turkish characters are printed wrong. Result is the same with Encoding.Default.
+When i use Encoding.ASCII, Turkish characters printed as ?.
+When i use Encoding.GetEncoding(&quot;ISO-8859-1&quot;), Turkish characters are converted like, Ş to S, Ğ to G, but i can see the characters like Ç, Ö and Ü are printed correctly.
+Which encoding should i use for printing from a Xamarin.Forms application? Is there any Zebra SDK spesific implementation for encoding ?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+Have you tried encoding: ISO 8859-9 ?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            ahmet kocadogan
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello,
+Yes  I tried encoding ISO-8859-9 and no luck.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

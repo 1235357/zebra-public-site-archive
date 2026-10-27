@@ -1,0 +1,236 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra CC6000 LC</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Zebra CC6000 LC</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zebra-cc6000-lc; original snapshot: threads/00912.html; SHA-256: 1e3b7a52d70eeac6eb03c13e8f66ed101f73bbd7dcaabb2114e7f47f050ac464</small><pre id="topic">
+
+    
+        Zebra CC6000 LC
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anna Evdokimova
+          4 years 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            165
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Good afternoon. When working with the scanner, and specifically for the scanner.read() - onStatus, scanner.disable(), scanner.release() - deInitScanner methods, a ScannerException occurs periodically without details, only with the message Failure.
+After that, the scanner either stops working or stops responding to any actions.
+There is no case for reproduction, the code is similar to the example from the documentation.
+Can you suggest what could be the cause of the problem? Why does a ScannerException occur when working with a scanner?
+_____________________________________________________________________________________________________________________________________________________
+override fun onStatus(statusData: StatusData) {
+        val state: StatusData.ScannerStates? = statusData.state
+        when (state) {
+            StatusData.ScannerStates.IDLE -&amp;gt; {
+                if (bSoftTriggerSelected) {
+                    scanner.triggerType = Scanner.TriggerType.SOFT_ONCE
+                    bSoftTriggerSelected = false
+                } else {
+                    scanner.triggerType = Scanner.TriggerType.HARD
+                }
+                if (bDecoderSettingsChanged) {
+                    setDecoders()
+                    bDecoderSettingsChanged = false
+                }
+                if (!scanner.isReadPending &amp;amp;&amp;amp; !bExtScannerDisconnected) {
+                    try {
+                         scanner.read()
+                    } catch (exception: ScannerException) {
+                        reportError(SCANNER_READ_EXCEPTION)
+                    }
+                }
+            }
+Exception: com.symbol.emdk.barcode.ScannerException: Failure
+	at com.symbol.emdk.barcode.Scanner.read(Scanner.java:541)
+	at app.price_checker.android.mobile_ui.delegates.BarcodeDelegate.onStatus(BarcodeDelegate.kt:171)
+	at com.symbol.emdk.barcode.StatusCallbackInternal$StatusCallbackThread.run(StatusCallbackInternal.java:74)
+_____________________________________________________________________________________________________________________________________________________
+private fun deInitScanner() {
+        if (scanner != null) {
+            try {
+                scanner?.disable()
+            } catch (exception: Exception) {
+                reportError(DISABLE_SCANNER_EXCEPTION)
+            }
+            try {
+                scanner?.removeDataListener(this)
+                scanner?.removeStatusListener(this)
+            } catch (exception: Exception) {
+                reportError(REMOVE_SCANNER_EXCEPTION)
+            }
+            try {
+                scanner?.release()
+            } catch (exception: Exception) {
+                reportError(RELEASE_SCANNER_EXCEPTION)
+            }
+            scanner = null
+        }
+    }
+Exception: com.symbol.emdk.barcode.ScannerException: Failure
+	at com.symbol.emdk.barcode.Scanner.disable(Scanner.java:407)
+	at app.price_checker.android.mobile_ui.delegates.BarcodeDelegate.deInitScanner(BarcodeDelegate.kt:214)
+	at app.price_checker.android.mobile_ui.delegates.BarcodeDelegate.pause(BarcodeDelegate.kt:74)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at androidx.lifecycle.ClassesInfoCache$MethodReference.invokeCallback(ClassesInfoCache.java:216)
+	at androidx.lifecycle.ClassesInfoCache$CallbackInfo.invokeMethodsForEvent(ClassesInfoCache.java:194)
+	at androidx.lifecycle.ClassesInfoCache$CallbackInfo.invokeCallbacks(ClassesInfoCache.java:185)
+	at androidx.lifecycle.ReflectiveGenericLifecycleObserver.onStateChanged(ReflectiveGenericLifecycleObserver.java:37)
+	at androidx.lifecycle.LifecycleRegistry$ObserverWithState.dispatchEvent(LifecycleRegistry.java:361)
+	at androidx.lifecycle.LifecycleRegistry.backwardPass(LifecycleRegistry.java:316)
+	at androidx.lifecycle.LifecycleRegistry.sync(LifecycleRegistry.java:334)
+	at androidx.lifecycle.LifecycleRegistry.moveToState(LifecycleRegistry.java:145)
+	at androidx.lifecycle.LifecycleRegistry.handleLifecycleEvent(LifecycleRegistry.java:131)
+	at androidx.lifecycle.ReportFragment.dispatch(ReportFragment.java:68)
+	at androidx.lifecycle.ReportFragment$LifecycleCallbacks.onActivityPrePaused(ReportFragment.java:193)
+	at android.app.Activity.dispatchActivityPrePaused(Activity.java:1294)
+	at android.app.Activity.performPause(Activity.java:7997)
+	at android.app.Instrumentation.callActivityOnPause(Instrumentation.java:1508)
+	at android.app.ActivityThread.performPauseActivityIfNeeded(ActivityThread.java:4494)
+	at android.app.ActivityThread.performPauseActivity(ActivityThread.java:4455)
+	at android.app.ActivityThread.handlePauseActivity(ActivityThread.java:4407)
+	at android.app.servertransaction.PauseActivityItem.execute(PauseActivityItem.java:46)
+	at android.app.servertransaction.TransactionExecutor.executeLifecycleState(TransactionExecutor.java:176)
+	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:97)
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2017)
+	at android.os.Handler.dispatchMessage(Handler.java:107)
+	at android.os.Looper.loop(Looper.java:214)
+	at android.app.ActivityThread.main(ActivityThread.java:7397)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:492)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:935)
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Anna,
+This typically occurs when the scanner is in the wrong state when trying to call one of the methods you mention (read / disable etc...). We have a diagram illustrating the different scanner states here: https://techdocs.zebra.com/emdk-for-android/4-0/guide/scanner/
+I appreciate this diagram is rather complicated, which is why we recommend all developers migrate to DataWedge APIs instead of the EMDK as DataWedge will take care of these issues for you. I would recommend migrating to DataWedge to resolve this issue, or raising a support ticket if that is not possible. 
+Migrating to DataWedge should be relatively easy as it is an intent based platform. Please see here for more info: https://techdocs.zebra.com/datawedge/11-2/guide/about/
+Additionally, DataWedge is prioritized for new features over the EMDK, so you will be future proofing your application by migrating.
+Hope this helps,
+James
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

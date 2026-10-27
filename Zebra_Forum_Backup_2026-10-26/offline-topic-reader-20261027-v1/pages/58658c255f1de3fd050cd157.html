@@ -1,0 +1,172 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How Download a new Font with ZPL code?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How Download a new Font with ZPL code?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/24758; original snapshot: threads/resume-00370.html; SHA-256: 4a1476c7ed84369d424b04066ba1b87843d5642ae2001055fd6079aa0887a71b</small><pre id="topic">
+
+    
+        How Download a new Font with ZPL code?
+
+
+        
+      
+                        
+                    
+            S
+          
+          System Admin
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            235
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  How Download a new Font with ZPL code?
+Hi everyone!
+I&#x27;m trying to download a new font for Zebra(GC420t) using ZPL.
+This is the code that i&#x27;ve use for this job.:
+teste += &quot;~DYR:OptimaLTStd,B,T,t,w,data&quot;
+and for printing with font:
+teste += &quot;^XA &quot;
+teste += &quot;^FWB &quot;
+teste += &quot;^FO290,150 &quot;
+teste += &quot;^A2,36,20,R:OptimaLTStd.FNT&quot;
+teste += &quot;^FD &quot; &amp; Etiqueta.Quantidade &amp; &quot;Kg ^FS &quot;
+teste += &quot;^FO335,90 &quot;
+teste += &quot;^A0,36,20,R:OptimaLTStd.FNT &quot;
+teste += &quot;^FD Validade:&quot; &amp; Etiqueta.Validade &amp; &quot; ^FS&quot;
+teste += &quot;^FO380,150 &quot;
+teste += &quot;^A0,36,20,R:OptimaLTStd.FNT &quot;
+teste += &quot;^FD &quot; &amp; Etiqueta.Lote &amp; &quot; ^FS &quot;
+teste += &quot;^XZ&quot; &#x27;Encerra o documento
+Whats happens: that font it&#x27;s not found and the printer is using default font
+model: GC420t
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            6 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Luis,
+Firstly, according to the ZPL documentation on ~DY, the ~DY command is the preferrred for True Type fonts. Based on the parameters you specified in ~DY command
+~DYR:OptimaLTStd,B,T,t,w,datait tells me that the font data is uncompressed, and the font file extension on the printer will be TTF. So the font file on the printer are are looking for would be R:OptimaLTStd.TTF. Can you confirm that&amp;nbsp;OptimaLTStd.TTF exist on R: drive on the printer? Please note, the R: drive means the RAM memorry on the printer.&amp;nbsp;
+Secondly, the following command is incorrect. Please refer to the ZPL doc on ^A for detail. You need to use ^CW command to assign a font identifier to the newly downloaded TTF font, then you can use ^A command to specify the font orientation and size. Hope this helps.
+teste += &quot;^A2,36,20,R:OptimaLTStd.FNT&quot;
+&amp;nbsp;
+&amp;nbsp;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

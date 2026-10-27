@@ -1,0 +1,251 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Setting a timeout on TagAccess.readEvent()</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Setting a timeout on TagAccess.readEvent()</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/setting-timeout-tagaccessreadevent; original snapshot: threads/00288.html; SHA-256: 7cc014e3dcf13c2d404d07c181ba665d2e28c0efc97b3f6fc2b9e3c6e582b572</small><pre id="topic">
+
+    
+        Setting a timeout on TagAccess.readEvent()
+
+
+        
+      
+                        
+                    
+            P
+          
+          Philippe Hacquin
+          2 years 7 months ago
+        
+        
+      
+        
+            
+                  
+            
+            170
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello, I am using the RFID SDK version 2.0.2.124 in Android 10, to read tags with a RFD40 + TC26. EPC memory bank is read first using a prefilter, then USER memory bank second after I have selected the EPC with the highest RSSI. I am using TagAccess.readEvent() to read user memory, and sometimes the operation will not complete because the tag is out of reach for example. The read operation seems to try to read forever.I want to handle a timeout of a few seconds on this operation, and have the library call a callback method/function so that I can warn user and reset the read cycle (look for tags, select EPC and try to read user memory again).How can I do that ? I could not find any solution to my problem (except maybe using TagAccess.readWait() maybe and handle a timeout by myself ?)Thanks for the feedback
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alex Lavie
+          
+          
+            2 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Not a dev expert but on a project we used the TriggerInfo or TriggerWithTimout to set some conditions prior to executing an Operation or sequence of operations.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alex Lavie
+          
+          
+            2 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            also going forward I recommend looking at IOTConnect which supports these operations and is perhaps more flexible. Check accesses section here: https://zebradevs.github.io/rfid-ziotc-docs/schemas/operating_modes/index.html  
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Philippe Hacquin
+          
+          
+            2 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Alex, thank you for the feedback. I managed to solve my problem with an Android Handler, but I will have a look at TriggerInfo + TriggerWithTimeout for the stop trigger. This one is not documented in the guides, and not used in 123RFID also, I was not aware of it.I had a quick look at the Zebra IoT Connector, but the TC26/RFD40 does not seem supported (?).Thanks anyway
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

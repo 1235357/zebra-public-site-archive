@@ -1,0 +1,272 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MX decoding error</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MX decoding error</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25960; original snapshot: threads/resume-00345.html; SHA-256: 8025f7ddcc2bffce0530a46496ea912e6ae3932147bfc5bf2708e7e25e2f7969</small><pre id="topic">
+
+    
+        MX decoding error
+
+
+        
+      
+                        
+                    
+            S
+          
+          System Admin
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            743
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi all,
+I am trying to create a profile for a TC70x device. It&#x27;s running Nougat 7.1.2, Lifeguard update 20. Settings show the MX as 9.0.4.3 . I tried to create a profile that is MX 8.0, but it was giving me batch decode errors about the MX version being newer than the one on the device. After checking out the Support/Downloads pages here: https://www.zebra.com/us/en/support-downloads/software/utilities/stageno... I noticed that Nougat only seems to support MX 7.0. That sucks, now I have to re-create my 28 step profile, but at least I know why it&#x27;s broken right? Wrong! Even with the MX of 7.0 in the profile it still fails. I have restarted Stagenow, and the device, but there is no change.
+Why is a device with an MX of 9+ unable to decode an MX of 7.0?
+Thank you
+edit: Error is now attached
+2nd edit: Can&#x27;t seem to see the image on this site, so here it is on Imgur: https://i.imgur.com/Wsel7U2.jpg
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Richard Venderbosch
+          
+          
+            5 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I saw similar errors when adding an APN on a TC75X running Android 7.1 with OS build number &quot;02-07-08.00-NN-U01-STD&quot; and &quot;Mxmf&quot; version &quot;9.4.0.2&quot;.
+Error message was (removed/changed some parameters for privacy reasons)
+ &#x27;&#x27;
+According to the MX documentation parameters &quot;CustomProtocol&quot; and &quot;CustomRoamingProtocol&quot; require &quot;MX: 9.3+&quot;.
+With MX version &quot;9.4.0.2&quot; adding them should not be a problem.
+But &quot;GprsMgr&quot; on the (non-GMS Nougat) TC75X device has only version &quot;8.4&quot; - and not 9.4 as expected or 9.3 as used by my code in the MX call.
+Is there a way to query the individual manager version numbers?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              N
+            
+          
+                
+          
+            Nish Pitigala
+          
+          
+            5 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You can see the here what MX version is required for each CSP.  You can also filter by device/MX version
+https://techdocs.zebra.com/mx/compatibility/
+Maybe you can see here if you are using a new functionality that requires a higher MX
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Darryn Campbell
+          
+          
+            5 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi, so that StageNow documentation link is confusing, although Nougat originally shipped with MX 7.0 you are right that the Lifeguard update 20 you have installed uses and should support MX 9.0.
+Looking at the Batch Manager (https://techdocs.zebra.com/mx/batchmgr/) I notice there are some attributes like Batch Action and Trusted Mode Certificate file that require MX 9.2.&amp;nbsp; I know you said you created the profile with MX8.0 and so these attributes should not have been included in the profile but I wonder if some conversion issue happened somewhere down the line and MX 9.2 requirements got included in your profile, that would at least explain why you are getting the errors about your MX version being too old.
+Another possibility is that the XML you are applying via the Batch Manager contains attributes that require an MX higher than 9.0 (I&#x27;m less sure about that as I&#x27;ve never used the batch manager)
+A device with an MX of 9+ SHOULD be able to decode a profile whose MX is 7, as you say.
+Could you try isolating the issue to a particular Manager? Or include the exact error details?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

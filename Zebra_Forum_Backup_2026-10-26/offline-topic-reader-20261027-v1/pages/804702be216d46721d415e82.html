@@ -1,0 +1,211 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>LinkOS Multiplatform SDK Null ref exception</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>LinkOS Multiplatform SDK Null ref exception</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/linkos-multiplatform-sdk-null-ref-exception; original snapshot: threads/00272.html; SHA-256: 29c6d32b167b392ad7c2f5083a5892542f09acbbae02df5c551e1543bccb71c9</small><pre id="topic">
+
+    
+        LinkOS Multiplatform SDK Null ref exception
+
+
+        
+      
+                        
+                    
+            R
+          
+          Rob Deans
+          2 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            104
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Using latest stable package on NuGet, 2.16.2905Encountering an issue where a null reference exception occurrs within the SDK. Specifically it occurrs in Zebra.SDK.Comm in DriverPrinterConnection with the method BytesAvailable(). Specifically line 176, ReadFromPrinter() is returning null and there is nothing in place to ensure that the value is not null. Currently 
+byte[] temporaryReadBuffer = ReadFromPrinter();
+if (temporaryReadBuffer.Length &lt; 0)
+{
+	throw new ConnectionException(&quot;Failed to read from the USB port: &quot; + PrinterName);
+}
+ Suggesting change 
+byte[] temporaryReadBuffer = ReadFromPrinter();
+if (temporaryReadBuffer == null)
+{
+	throw new ConnectionException(&quot;Failed to read from the USB port: &quot; + PrinterName);
+}
+	
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for pointing this out. It should have been fixed in Zebra.Printer.SDK v3.0.3271, which is available on NuGet.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Shifali J
+          
+          
+            2 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            i am using vb.net 4.8 version but zebra printer sdk isnot supporting my version so i tried installing its older version it got installed but while importing package to my code it gives the error type is not defined     Private Function ConvertZPLToImage(ByVal zplCommand As String) As Image      Try          &#x27; Initialize the SDK          Dim sdk As New ZebraPrinterSdk()          &#x27; Create a ZPL renderer          Dim renderer As New ZplRenderer()          &#x27; Render the ZPL command to an image          Dim imageBytes As Byte() = renderer.Render(zplCommand)          &#x27; Convert the image bytes to an Image object          Using ms As New MemoryStream(imageBytes)              Dim img As Image = Image.FromStream(ms)              Return img          End Using      Catch ex As Exception          &#x27; Handle any exceptions          MessageBox.Show(&quot;Error converting ZPL to image: &quot; &amp; ex.Message)          Return Nothing      End Try  End Function
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

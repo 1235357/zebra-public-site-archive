@@ -1,0 +1,477 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra ZE 500 buffer low event</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Zebra ZE 500 buffer low event</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zebra-ze-500-buffer-low-event; original snapshot: threads/00850.html; SHA-256: 011fe906cc58f94d3238c4fd12f26c41d3255778ffd0267e3996c04fbc494b84</small><pre id="topic">
+
+    
+        Zebra ZE 500 buffer low event
+
+
+        
+      
+                        
+                    
+            B
+          
+          Bostjan Bratusa
+          4 years 7 months ago
+        
+        
+      
+        
+            
+                  
+            
+            426
+          
+                
+                  
+            
+            6
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+I am using Zebra.Sdk.Printer for programming  Zebra ZE 500 printer.
+I&#x27;m wondering if it persists any event that would indicate that there is low data in the receive buffer?
+i have 10 saved formats in my receive buffer. I use the ^IS command to save template format, and  ^IL command for load a stored image of a format and merge it with additional data.
+I know, that there is a numberOfFormatsInReceiveBuffer propertie but I wonder if there is such a thing as being able to set a limit and point out that we have exceeded it.
+thanks for the help
+Bostjan
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      6 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            First of all, the buffer size is not user configurable, because the buffer is an internal thing. The numberOfFormatsInReceiveBuffer is specifically referring to the ZPL formats (or labels) that have been received and are queued up in the internal buffer for processing. When the printer is not ready to print, all the received ZPL formats will be stored and queued in this internal buffer and will be printed once the printer is ready to print.
+When use the ^IS command to store an image, the image is stored either in the R: drive (internal memory) or the E: drive (internal flash) depending on which drive is specified in the ^IS command. The image is not stored in the buffer. So the ^IS has no impact to the internal buffer.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Bostjan Bratusa
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            SSi1 thanks for the quick reply.
+obviously I don&#x27;t quite understand the basics yet.
+My job is to implement serialization with non-consecutive numbers. So what would be the most correct approach?
+our customers create their own basic print format, which we load using ISE (save to e: drive).
+at the machine start we obtain 20 non sequent serial numbers, which are then added to the saved template via ILE. so we have 20 filled templates and we wait for the trigger from PLC.
+when the number of formats falls below 5 we would get new variables, load them into the base format etc ...
+with the fastest devices we have 5 prints per second.
+Boštjan
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            When using ^IS command to store a label format, the ^IS command allows the user to specify a filename for the image file of the format. We could use the filename as a means for the serialization, e.g. , ^ISE:myFile01.GRF^FS, ^ISE:myFile02.GRF^FS, etc. Just a thought.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Bostjan Bratusa
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Currently i have:
+using Zebra.Sdk.Comm;
+using Zebra.Sdk.Printer;
+....
+Connection _printerConnection;
+  _printerConnection = new TcpConnection(ip, TcpConnection.DEFAULT_ZPL_TCP_PORT);  //DEFAULT_ZPL_TCP_PORT = 9100
+....
+//firstly I save the basic format
+if (_printerConnection.Connected)
+{
+    StringBuilder ISdata = new StringBuilder();
+    ISdata.AppendLine(&quot;^XA&quot;);
+    ISdata.AppendLine(&quot;^FO80,40^ADN,36,20^FDMyTest^FS&quot;);
+    ISdata.AppendFormat(&quot;^ISE:MYFILENAME.GRF,N&quot;);
+    ISdata.AppendLine(&quot;^XZ&quot;);
+    byte[] responseISE = new byte[] { };
+    responseISE = _printerConnection.SendAndWaitForResponse(Encoding.UTF8.GetBytes(ISdata.ToString()), 1000, 3000, &quot;,&quot;);
+}
+//serialization TEST loop, in real application parameter &quot;i&quot; replaces numbers like 548732153, 432678342, 4327864328 ... non sequential...
+  StringBuilder ILdata = new StringBuilder();
+  for (int i = 0; i &amp;lt; 10; i++) {
+     ILdata.AppendLine(&quot;^XA&quot;);
+     ILdata.AppendLine(&quot;^ILE:MYFILENAME.GRF^FS&quot;);
+     ILdata.AppendLine(&quot;^LL200^FS&quot;);
+     ILdata.AppendFormat(&quot;^FO80,80^ADN,36,20^FDSer: {0}^FS&quot;, i.ToString());
+     ILdata.AppendLine(&quot;^XZ&quot;);
+     ILdata.AppendLine(&quot; &quot;);
+    }
+    byte[] responseIL = new byte[] { };
+    responseIL = _printerConnection.SendAndWaitForResponse(Encoding.UTF8.GetBytes(ILdata.ToString()), 1000, 3000, &quot;,&quot;);
+with this code we create 10 formats that can be easily printed.
+formats do not even need to be named differently.
+with _zebraPrinter.GetCurrentStatus().numberOfFormatsInReceiveBuffer;  I get the number of formats loaded in the buffer, then every second I check if there are less than 5 and if yes, then I reload the data.
+is this the right way?
+is there any C# examples for that kind of &quot;problems&quot;?
+thanks
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Don&#x27;t use the SendAndWaitForResponse() for sending the ZPL label string, as the ZPL label formatting string doesn&#x27;t expect a return, unless the ZPL string is for querying the printer status. Just use the Write() to send the ZPL to the printer. Using the SendAndWaitForResponse() takes additional time due to the timeouts.
+Regarding the for-loop, there is no need to stick 10 ZPL labels together to send to the printer at once. Just simply send each label (a pair of ^XA .... ^XZ) to the printer with the Write() one at a time, followed by the GetCurrentStatus(). If the GetCurrentStatus().isReadyToPrint is true, then send the next ZPL label.
+There is no need to check the numberOfFormatsInReceiveBuffer, unless the GetCurrentStatus().isReadyToPrint is false.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Bostjan Bratusa
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for the explanation on using SendAndWaitForResponse and Write, I will consider.
+We deal with non-sequential serialization and obtain serial numbers in packets of 30. On all other printers we send the data to the printer buffer together and then take it out with a trigger (somewhere up to 5 prints per second). when the buffer level falls below a predetermined value, we retrieve the serial numbers and refill the buffer.
+I am currently using numberOfFormatsInReceiveBuffer to check if there are enough formats in the buffer to print...
+I will try both options on a real device (with loop and without - sending each pair of ^ XA .... ^ XZ) and I will see how this works in practice.
+thanks again for the help
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

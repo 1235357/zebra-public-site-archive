@@ -1,0 +1,171 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>RFD40 configure triggers</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>RFD40 configure triggers</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/rfd40-configure-triggers; original snapshot: threads/01007.html; SHA-256: b35a9e485c723a493c68c0201fe462523a1119db4d4641dd38f719347d2a0570</small><pre id="topic">
+
+    
+        RFD40 configure triggers
+
+
+        
+      
+                        
+                    
+            I
+          
+          Ivo Kampshof
+          5 years 1 month ago
+        
+        
+      
+        
+            
+                  
+            
+            281
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+I was wondering how I can configure the Trigger on the RFD40 so it will NOT enable the imager on my EC50. The Zebra RFID Mobile sample app does this when I go to the RapidRead screen but it is not really clear to me how this is done.
+Also its unclear to me what every config trigger related methods do. For the RFD8500 I only need the setTriggerMode.
+I already do some configuration:
+&lt;code&gt;
+   val startTrigger = rfidReader?.Config?.startTrigger
+        if (startTrigger != null) {
+            startTrigger.triggerType = START_TRIGGER_TYPE.START_TRIGGER_TYPE_IMMEDIATE
+            startTrigger.Handheld.handheldTriggerEvent = HANDHELD_TRIGGER_EVENT_TYPE.HANDHELD_TRIGGER_PRESSED
+        }
+        rfidReader?.Config?.setTriggerMode(ENUM_TRIGGER_MODE.RFID_MODE, false)
+        rfidReader?.Config?.setKeylayoutType(ENUM_KEYLAYOUT_TYPE.UPPER_TRIGGER_FOR_RFID)
+        rfidReader?.Config?.startTrigger = startTrigger
+&lt;/code&gt;
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Chuck Lin
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Please refer to the document link below to configure the RFD40 Trigger:
+https://techdocs.zebra.com/dcs/rfid/android/2-0-2-82/tutorials/triggerr…
+Code Snippets:
+    Try{
+        reader.Config.setKeylayoutType(ENUM_KEYLAYOUT_TYPE.UPPER_TRIGGER_FOR_RFID);
+    } catch (InvalidUsageException e) {
+        e.printStackTrace();
+    } catch (OperationFailureException e) {
+        e.printStackTrace();
+    }
+Hope helps,
+Chuck
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,314 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Kill RFID Tags with DS9908R</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Kill RFID Tags with DS9908R</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/kill-rfid-tags-ds9908r; original snapshot: threads/00431.html; SHA-256: 214e41298300951d45cfc184e6b3ad084a6712518a722db60dc73fed3b75e781</small><pre id="topic">
+
+    
+        Kill RFID Tags with DS9908R
+
+
+        
+      
+                        
+                    
+            J
+          
+          Jason Frost
+          2 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            541
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                          //Solved
+        
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m using a DS9908R scanner to read both barcodes and RFID epc information, all working well, but I need to create a process to &quot;kill&quot; tags and I&#x27;m struggling.  Has anyone got some examples?Actually the attribute set for the Kill looks simple enough, I&#x27;m having a hard time setting the kill password before I get to that point.  I&#x27;m using Windows Forms/C#.Thanks.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+        
+      
+        ✓ Accepted Solution
+      
+      
+          
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            2 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I&#x27;m going to generalize for most RFID when working with the Access bank, and the Kill Banks.  (MEMORY_BANK_RESERVED)Which   :   Words    :    OffsetRESERVED - 4 words - 0 offset.  ( 64-bits )Kill - 2-words - 0 offset. ( 32-bits )Access - 2 words  - 2 word offset.   ( 32-bits )Default Value: ( hexidecimal rep )0000 0000 0000 0000  ( Reserved )0000 0000  ____ ____ ( Kill )____  ____  0000 0000 ( Access )You set these by either writing the bytes ( 00 00 ) or the words ( 0000 ).   { This is SDK / API / dependent }Lets say we wish to set Access password to &quot; 8765 4321 &quot;and the Kill password to &quot; EEEE BBBB &quot;   - I&#x27;m using brutally simple hex values here.,EEEE BBBB 8765 4321  ( Reserved )  In the same way you write the EPC - you write these to the RESERVED memory bank - BEFORE - you use the password as the Permission.( Use Tag Read/Write for doing this data setup on the Reserved memory bank - but be careful - since the next steps below can cause an order of operations issue. )USES:  ( this is the permission / Privilege config )  Access Password is used when you define the Password and the correspondent Permission (Lock Privilege).   ***  see further below too ***For instance  RW - Permanent lock - Permanent unlock - Unlock -- &gt;against the target Memory Bank.Kill Password only does one thing like &quot;Privilege&quot; Which is &quot;KILL&quot; the tag - when you provide the EPC + the correct Password and you use the &quot;KILL&quot; Privilege operation for it.  ( And then you no longer can find the EPC when you scan for it - BECAUSE - you killed the tag. . .   -- BE CAREFUL - DONT DO THIS WITH EXPENSIVE TAGS!!  --) { word to the wise - have a LOT of tags you can spare to do killing with. Cheap / Free tags that are not locked - helps. }{ Permanent Lock, and Permanent Unlock } - these are specific use extremes:  Permanent Lock - you are unable to make changes to the affected Memory Bank.  Permanent Unlocked - means you cannot then use RW or even setup any Privilege properties to the memory bank in question.The two most common &quot;developer&quot; &quot;Access Password Usages - is the &quot;Read/Write&quot; Privilege, and &quot;Unlock&quot; Privilege. *** the Access operation / Privilege config *** - when you use this - and it is anything setup to the Memory Bank in question; your affect by this needs to function with the Password - used as the passed parameter (PASSWORD) for doing the operation.  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ To the above question  - See if you can write my suggested value with the DS9908 tools you are working with  - the Reserved Memory Bank. ( B = 0 )  Hint : &lt;value&gt;0xEE 0xEE 0xBB 0xBB 0x87 0x65 0x43 0x21 &lt;/value&gt; https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/barcode-scanners/general/ds9800/ds9x08r-rfid-api-programming-interface.pdf
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+      
+    
+  
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            2 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I&#x27;m going to generalize for most RFID when working with the Access bank, and the Kill Banks.  (MEMORY_BANK_RESERVED)Which   :   Words    :    OffsetRESERVED - 4 words - 0 offset.  ( 64-bits )Kill - 2-words - 0 offset. ( 32-bits )Access - 2 words  - 2 word offset.   ( 32-bits )Default Value: ( hexidecimal rep )0000 0000 0000 0000  ( Reserved )0000 0000  ____ ____ ( Kill )____  ____  0000 0000 ( Access )You set these by either writing the bytes ( 00 00 ) or the words ( 0000 ).   { This is SDK / API / dependent }Lets say we wish to set Access password to &quot; 8765 4321 &quot;and the Kill password to &quot; EEEE BBBB &quot;   - I&#x27;m using brutally simple hex values here.,EEEE BBBB 8765 4321  ( Reserved )  In the same way you write the EPC - you write these to the RESERVED memory bank - BEFORE - you use the password as the Permission.( Use Tag Read/Write for doing this data setup on the Reserved memory bank - but be careful - since the next steps below can cause an order of operations issue. )USES:  ( this is the permission / Privilege config )  Access Password is used when you define the Password and the correspondent Permission (Lock Privilege).   ***  see further below too ***For instance  RW - Permanent lock - Permanent unlock - Unlock -- &gt;against the target Memory Bank.Kill Password only does one thing like &quot;Privilege&quot; Which is &quot;KILL&quot; the tag - when you provide the EPC + the correct Password and you use the &quot;KILL&quot; Privilege operation for it.  ( And then you no longer can find the EPC when you scan for it - BECAUSE - you killed the tag. . .   -- BE CAREFUL - DONT DO THIS WITH EXPENSIVE TAGS!!  --) { word to the wise - have a LOT of tags you can spare to do killing with. Cheap / Free tags that are not locked - helps. }{ Permanent Lock, and Permanent Unlock } - these are specific use extremes:  Permanent Lock - you are unable to make changes to the affected Memory Bank.  Permanent Unlocked - means you cannot then use RW or even setup any Privilege properties to the memory bank in question.The two most common &quot;developer&quot; &quot;Access Password Usages - is the &quot;Read/Write&quot; Privilege, and &quot;Unlock&quot; Privilege. *** the Access operation / Privilege config *** - when you use this - and it is anything setup to the Memory Bank in question; your affect by this needs to function with the Password - used as the passed parameter (PASSWORD) for doing the operation.  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ To the above question  - See if you can write my suggested value with the DS9908 tools you are working with  - the Reserved Memory Bank. ( B = 0 )  Hint : &lt;value&gt;0xEE 0xEE 0xBB 0xBB 0x87 0x65 0x43 0x21 &lt;/value&gt; https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/barcode-scanners/general/ds9800/ds9x08r-rfid-api-programming-interface.pdf
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jason Frost
+          
+          
+            2 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks, that&#x27;s really helpful.  I&#x27;m struggling to get past the first stage at the moment, every time I try to write to a tag I get a RFID_COMMAND_STATUS of 5 back, but &#x27;5&#x27; is not one of the listed values so not a lot of help.  I&#x27;ll keep going...
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            2 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            ( Hint #2  See PP21 in the same guide for the Kill details. )
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

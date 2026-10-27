@@ -1,0 +1,232 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra ZQ520 Printer - Update Firmware - Using LinkOS SDK iOS</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Zebra ZQ520 Printer - Update Firmware - Using LinkOS SDK iOS</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zebra-zq520-printer-update-firmware-using-linkos-sdk-ios; original snapshot: threads/01055.html; SHA-256: cde2309fff0c0ec962a294259a5960d01849942db74d1cf38866e93cdda99dff</small><pre id="topic">
+
+    
+        Zebra ZQ520 Printer - Update Firmware - Using LinkOS SDK iOS
+
+
+        
+      
+                        
+                    
+            S
+          
+          System Admin
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            150
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We are having issues with the Zebra printer disconnecting when we send the firmware update to the iOS device. When we push the firmware to the device, the printer changes its text to &quot;Downloading Firmware&quot; but never finishes.
+Here is a code snippet
+id conn = [self getPrinterConnection:reject];
+    if (conn != nil) {
+        // Get the printer
+        NSError* printerError = nil;
+        [conn open];
+        [NSThread sleepForTimeInterval:1.0];
+        // Fetch the printer and file objects for file manipulation
+        if (printerError == nil) {
+            // Get the firmware file from app resources
+            NSURL* filePath = [[NSBundle mainBundle] URLForResource:@&quot;SP76-005093A&quot; withExtension:@&quot;.zpl&quot;];
+            NSData* firmwareData = [NSData dataWithContentsOfURL:filePath];
+            @try {
+                // Send the file to the printer
+                BOOL didSend = [conn write:firmwareData error:&amp;printerError];
+            } @catch (NSException* e) {
+                NSLog(@&quot;%@&quot;, [e reason]);
+                reject(@&quot;print_error&quot;, [e reason], [self getError:[e reason]]);
+            } @finally {
+                [conn close];
+            }
+        } else {
+            NSLog(@&quot;%@&quot;, [printerError localizedDescription]);
+        }
+        resolve(@&quot;Done!&quot;);
+    } else {
+        reject(@&quot;print_error&quot;, @&quot;Error connecting to printer&quot;, [self getError:@&quot;Error connecting to printer&quot;]);
+    }
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            7 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Instead of using the write API with 1 second delay, can you try the following&amp;nbsp;API from the FileUtil class?
+(BOOL) sendFileContents: (NSString *) filePath error: (NSError **) errorLet the sendFileContents API take care of the underneath regulation on the size of chunk behind the scene. I&#x27;ve tried this API a few minutes ago. It only took about ~20min to update a 20MB firmware.
+One more thing worth to mention here, do not use UI thread when open the Bluetooth&amp;nbsp;connection and send the firmware to the printer. Use a separate thread to do Bluetooth related work.
+&amp;nbsp;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            7 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Do you use iOS Bluetooth to send the firmware? The size of the firmware is about 30MB. We cannot use one write statement to send the 30MB data at once, which will blow off the buffer.&amp;nbsp;We need to break the 30MB data into small chunks and send one chunk at a time. Please try to write 1KB (1024 bytes) at a time. Hope this helps.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

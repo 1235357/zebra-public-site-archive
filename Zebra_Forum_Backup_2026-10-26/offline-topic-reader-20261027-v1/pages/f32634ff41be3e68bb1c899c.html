@@ -1,0 +1,201 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>OSUpdate Package Builder - Clear Application</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>OSUpdate Package Builder - Clear Application</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/26810; original snapshot: threads/01634.html; SHA-256: 079ae7e6f80f60f09664c4191b3a24e75ad36be433d119f78669fb0c429fb033</small><pre id="topic">
+
+    
+        OSUpdate Package Builder - Clear Application
+
+
+        
+      
+                        
+                    
+            M
+          
+          Marc Fluhrer
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            19
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I am trying to build an application image that updates the Fusion on a MC9090-G BSP43, and also puts a few files into the Application Directory during an OS upgrade. But I am having trouble clearing out the rest of the Application directory.   The customer has devices they are migrating from Avalanche to MSP. The devices have the Avalanche enabler on them, and the files exist in the \Application\Program Files\Wavelink (they select Application on the install).   I have created images with various options: CleanPS.bin; Clear Persistant Storage box checked; Created a Directory of \Application\Program Files\Wavelink as a part of my car/gar file and put blank txt files in it.   I have not had any luck completely clearing out the \Application\Program Files\Wavelink folder. There are five files of 16 that will not go away.   Any suggestions on how to completely clear out these folders?   Before:   [\Application\Program Files]  [\Application\Program Files\Wavelink]  [\Application\Program Files\Wavelink\Avalanche]  [\Application\Program Files\Wavelink\Avalanche\Windows]  31/01/2005 08:06         12800 717D7D48 oidlite.dll  31/01/2005 08:06             9 D638AC5F model.dat  31/01/2005 08:06           654 FD397715 AS-Enabler.dat  31/01/2005 08:06           184 AC13E522 AvaInit.dat  31/01/2005 08:06            38 E250FF39 Avalanche.wle  31/01/2005 08:06        580096 F87F730C Monitor.exe  31/01/2005 08:06         15872 6DBC95DC Enabler.exe  31/01/2005 08:06         44032 167D7C72 AvaDev.dll  31/01/2005 08:07         12288 17A5AF98 AvaScan.dll  31/01/2005 08:07         61952 1B3218F2 AvaInit.exe  31/01/2005 08:07         19456 693538FC MUQuery.exe  31/01/2005 08:07        290304 C1431E7B WLUNI.dll  31/01/2005 08:07         94208 D42CD526 WLFusion.dll  31/01/2005 08:07          6144 7EB34530 AddProps.dll  31/01/2005 08:07         62464 B73FBFE1 WLWEPRot.dll  31/01/2005 08:07         16384 24DE408B WLComDlg.dll  31/01/2005 08:07            62 BD601804 Avalanche.lnk  31/01/2005 08:07          1718 367EFCC0 AvaSetup.dat  31/01/2005 08:07           394 2F34F203 AvaInit.reg  [\Application\Program Files\Wavelink\Avalanche\Config]  31/01/2005 08:07          1980 5E19A7BD _AVACFG.PRF  31/01/2005 08:07          1094 94312DD8 _DEVPROP.PRF  31/01/2005 08:07             6 075BF7EC MAC.tmp  31/01/2005 08:07           341 77546D64 Avalanche.UNI  31/01/2005 08:07           341 77546D64 Avalanche.BAK  31/01/2005 08:07            27 E805E4E0 _VENDOR.PRF  31/01/2005 08:07            63 CE8CC878 _LOCAL.PRF   After:   [\Application\Program Files]  [\Application\Program Files\Wavelink]  [\Application\Program Files\Wavelink\Avalanche]  31/01/2005 08:06        580096 F87F730C Monitor.exe  31/01/2005 08:06         44032 167D7C72 AvaDev.dll  31/01/2005 08:07        290304 C1431E7B WLUNI.dll  31/01/2005 08:07         94208 D42CD526 WLFusion.dll  31/01/2005 08:07         62464 B73FBFE1 WLWEPRot.dll   Thanks.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Christopher Sather
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You can add Custom Options when creating the package.   -#&quot;0 9\Application\*.*&quot;    0 – (zero) Removes READONLY attribute on all files in the \Application folder prior to updating the application partition.&amp;nbsp; This may be necessary if a Gar/Car file is trying to overwrite a file that is Read-only.    9\Application\*.* - Erases the current contents of the \Application Directory
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Herbert De Jong
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Marc,   check out using&amp;nbsp; File Explorer over activesyn to the device if any of these files have a Archive Attribute.   ( sometimes files installed from a cabfile or othermethod have set a&amp;nbsp; archive /&amp;nbsp; read only attribute )   and CAR folder has trouble deleting those.   i most of time ended up with manually changing the attributes and then deleting them.   but there is one way to overcome this by&amp;nbsp;doing it in two steps automated.   first&amp;nbsp; flash the default HEX&amp;nbsp; Apllication folder format to wipe out the Read Only / Archive files   and then in a second step flash the CAR folder with your new files   ( make sure not to flash files with&amp;nbsp; Read Only / Archive attributes again )
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

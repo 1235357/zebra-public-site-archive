@@ -1,0 +1,148 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Restart or toggle Airplane Mode necessary to connect to WLAN after configuration using StageNow</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Restart or toggle Airplane Mode necessary to connect to WLAN after configuration using StageNow</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/restart-or-toggle-airplane-mode-necessary-connect-wlan-after-configuration-using-stagenow; original snapshot: threads/00324.html; SHA-256: 40cd93bc5decc078e76928d60c7c97cd02ab4eabd3df00f668cc0407269d42ab</small><pre id="topic">
+
+    
+        Restart or toggle Airplane Mode necessary to connect to WLAN after configuration using StageNow
+
+
+        
+      
+                        
+                    
+            J
+          
+          J G
+          6 months 1 week ago
+        
+        
+      
+        
+            
+                  
+            
+            283
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello everyone,I’m seeing a recurring issue on Zebra MC34 / MC94 devices: after applying the WLAN profile, the device only connects to our corporate Wi‑Fi if I either reboot it or briefly toggle airplane mode. Once that manual step is done the connection remains stable, but the network team won’t investigate the root cause.I want to automate a workaround in StageNow so each device performs the required action immediately after the WLAN configuration and connects without manual intervention. Is there a way to implement this in StageNow?I currently use two profiles to set up the handheld devices, and I currently have to apply the first profile again for it to work.Staging Profile 1 (Configuration):FileMgr -&gt; Transfer CA-certificate (embedded barcode)CertMgr -&gt; Install CA-certificateWiFi -&gt; Configure WLAN network (EAP-TTLS-MSCHAPV2)WiFi -&gt; Connect to WLAN networkClock -&gt; Set NTP server, Auto Time Zone, Auto TimeFileMgr -&gt; Transfer XML file from internal HTTPS server -&gt; &quot;Cancellation due to missing Wi‑Fi connection&quot;, Problem: Saved / IP Configuration FailureBatch -&gt; Execute XML fileStaging Profile 2 (Installation steps -&gt; XML file): e.g., APKs from internal HTTPS server, EHS, DataWedge Thank you in advance for the help. 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              I
+            
+          
+                
+          
+            Ian Hatton
+          
+          
+            6 months 1 week ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You can try modifying your profile to toggle the WiFi power off and on as per the XML example below:
+ 
+  &lt;characteristic version=&quot;11.5&quot; type=&quot;Wi-Fi&quot;&gt;   &lt;characteristic type=&quot;System&quot;&gt;     &lt;parm name=&quot;WiFiAction&quot; value=&quot;disable&quot; /&gt;     &lt;parm name=&quot;WifiWakeup&quot; value=&quot;1&quot; /&gt;   &lt;/characteristic&gt; &lt;/characteristic&gt;&lt;!-- delay 1s --&gt;  &lt;characteristic version=&quot;6.0&quot; type=&quot;ConditionMgr&quot;&gt;     &lt;parm name=&quot;DataType&quot; value=&quot;2&quot; /&gt;   &lt;characteristic type=&quot;IntegerDetails&quot;&gt;     &lt;parm name=&quot;IntegerSourceType&quot; value=&quot;2&quot; /&gt;     &lt;parm name=&quot;IntegerSystemValue&quot; value=&quot;1&quot; /&gt;     &lt;parm name=&quot;IntegerConditionTest&quot; value=&quot;1&quot; /&gt;     &lt;parm name=&quot;IntegerConstantValue&quot; value=&quot;0&quot; /&gt;   &lt;/characteristic&gt;   &lt;parm name=&quot;ConditionMetAction&quot; value=&quot;2&quot; /&gt;   &lt;parm name=&quot;ConditionNotMetAction&quot; value=&quot;2&quot; /&gt;   &lt;parm name=&quot;ConditionRepeatCount&quot; value=&quot;1&quot; /&gt;   &lt;parm name=&quot;ConditionRepeatInterval&quot; value=&quot;1&quot; /&gt;   &lt;parm name=&quot;ConditionFailMessage&quot; value=&quot;Condition Failed&quot; /&gt;   &lt;parm name=&quot;SuppressMessage&quot; value=&quot;1&quot; /&gt;   &lt;parm name=&quot;ConditionWaitMessage&quot; value=&quot;&quot; /&gt; &lt;/characteristic&gt;  &lt;characteristic version=&quot;11.5&quot; type=&quot;Wi-Fi&quot;&gt;   &lt;characteristic type=&quot;System&quot;&gt;     &lt;parm name=&quot;WiFiAction&quot; value=&quot;enable&quot; /&gt;     &lt;parm name=&quot;WifiWakeup&quot; value=&quot;1&quot; /&gt;   &lt;/characteristic&gt; &lt;/characteristic&gt;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,212 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra Android SDK printer not printing with android 11: bluetooth light is flashing but not printing</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/forum/26140; snapshot supplement/threads/8457bb76dbd4f6f0a093a4b3.html; SHA-256 f0e557e20445998bdb916c02c4ed4c109410818fff529458b27ef48df584f7d3. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Zebra  Android SDK printer not printing with android 11: bluetooth light is flashing but not printing</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            A
+          </div>
+          <div class="forum-topic__author-name">Anonymous</div>
+          <div class="forum-topic__timestamp">5 years 4 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            228
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>We have an android app in order to print images using the android sdk for zebra (ZSDK_ANDROID_API.jar). The printer is the ZQ320 model and is in ZPL_HYBRID mode.<br>
+The same app with the same  printer in some devices doesn't work: the bluetooth light flashing but it stopping flashing and ending up not printing anything meanwhile in other devices prints okey.<br>
+We are trying finding out if any exception is thrown but it seems no exception throws in all code as far as we know.<br>
+One of the devices that produces the issue has the following OS data:<br>
+Model: SAMSUNG S-10.<br>
+Android version: 11<br>
+knox VERSION: knox API LEVEL 33.<br>
+UI version: 3.1<br>
+Please could anyone give us a clue or some strategy to debug the problem?<br>
+Thanks in advance.<br>
+ public static void printBitmapZebra(ZebraPrinter printer, Bitmap path) throws ConnectionException {<br>
+        String setSizeCommand = "^XA^LL" + path.getHeight() + "^XZ";<br>
+        // Sets size.<br>
+        printer.sendCommand(setSizeCommand);<br>
+        ZebraImageAndroid oZebraImage = new ZebraImageAndroid(path);<br>
+        printer.printImage(<br>
+                oZebraImage, 0, 0,<br>
+                path.getWidth(),<br>
+                path.getHeight(), false);<br>
+    }<br>
+	And previous method is invoked from this from UI:<br>
+	   public void onClickPrint(View view) {<br>
+        new Thread(() -&gt; {<br>
+            Connection connection = null;<br>
+            try {<br>
+                String mac = macAddress.getText().toString();<br>
+                if (isNullOrEmpty(mac)) {<br>
+                    runOnUiThread(() -&gt; UIHelper.showCustomToast(<br>
+                            this,<br>
+                            "Debe de especificar una dirección para la impresora."));<br>
+                    return;<br>
+                }<br>
+                showModalLoadingDialog("Impresión", "Generando imagen");<br>
+                Bitmap bm = BitmapUtils.getBitmapFromWebview(oWebViewBmpGenerator);<br>
+                BitmapUtils.saveBitmapToTempFolder(this,bm);<br>
+                bm = BitmapUtils.toGrayScale(bm);<br>
+                bm = BitmapUtils.getScaledPrinterBitmap(bm, 203);  // 203 -&gt; ZEBRA ZQ320<br>
+                if (bm == null) {<br>
+                    throw new Exception("No se generó una imagen para imprimir.");<br>
+                }<br>
+                updateLoadingDialog( "Conectando con la impresora");<br>
+                SettingsHelper.saveBluetoothAddress(PrintZebraActivity.this, mac);<br>
+                connection = new BluetoothConnection(macAddress.getText().toString());<br>
+                connection.open();<br>
+                ZebraPrintUtils.setStatus(connection);<br>
+                ZebraPrinter printer = ZebraPrinterFactory.getInstance(connection);<br>
+                updateLoadingDialog("Enviando imagen");<br>
+                ZebraPrintUtils.printBitmapZebra(printer, bm);<br>
+                connection.close();<br>
+                connection = null;<br>
+            } catch (Exception e) {<br>
+                cclsLog.log(this, e);<br>
+                UIHelper.showWarning(this, e);<br>
+            } finally {<br>
+                dismissModalProgressDialog();<br>
+                if (connection != null) {<br>
+                    try {<br>
+                        connection.close();<br>
+                    } catch (Exception ignored) {<br>
+                    }<br>
+                }<br>
+            }<br>
+        }).start();<br>
+    }</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-48027" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Does this problem only happen on Android devices that run Android 11? To use Bluetooth on Android 10 and above, we need to add&amp;nbsp;ACCESS_FINE_LOCATION. Make sure that the FINE location permission is in the manifest file. Let us know if this solves the issue.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/forum/26140%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/forum/26140%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

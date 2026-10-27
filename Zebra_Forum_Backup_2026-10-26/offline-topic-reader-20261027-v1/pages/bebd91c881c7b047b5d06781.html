@@ -1,0 +1,181 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MC9190 not performing WPA2 handshake at startup (case 2865063)</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MC9190 not performing WPA2 handshake at startup (case 2865063)</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/3495; original snapshot: threads/01993.html; SHA-256: 74a07ec3629d024fc6bc05b70f6d24987f39be53ebd134c220c0961b389d149f</small><pre id="topic">
+
+    
+        MC9190 not performing WPA2 handshake at startup (case 2865063)
+
+
+        
+      
+                        
+                    
+            A
+          
+          Andrew Pengelly
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            247
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  We have a Motorola WiFi network incorporating RFS7000 switches, AP6532&#x27;s and a couple of AP300&#x27;s.  We have had problems with the new MC9190&#x27;s on this network and it also appears to extend to the odler MC9090&#x27;s.  Analysis of the WiFi traffic shows that when the MC9x90&#x27;s are first powered on they appear to connect to the local AP but DO NOT estabish a proper WPA or WPA2 connection.  There is no WPA handshake performed at all.  Our temporary work around is to force the MC9x90 to roam to the next AP which forces a WPA or WPA2 handshake and all works well until next time we power down the MC9x90.
+ 
+The very old MC9060&#x27;s do not have this probelm as they always renegotiate their WPA keys on start up.
+ 
+Motorola support have been advised but don&#x27;t have an answer yet so be interested to anyone in this forum has any answers.  Is there a way to force a WPA handshake on power on or clear the network cache during power off.
+Software we are using on teh MC9x90&#x27;s is WaveLink if that makes a difference.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Andrew Pengelly
+          
+          
+            13 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Here&#x27;s some further explaination of the fault after gettting an Airmagent capture ...
+&amp;nbsp;
+- It shows an MC9190 directly after the PWR button is pressed to ON.
+- The mobile associates to the same Access Point that it was previously connected to a few moments earlier.
+- The Log on the MC9190 shows the following type of error
+&amp;nbsp;&amp;nbsp;
+07:59:55&amp;nbsp; Unbinding adapter.
+08:00:05&amp;nbsp; Binding adapter.
+08:00:05&amp;nbsp; Disabling IPv6.
+08:00:06&amp;nbsp; Regulatory table downloaded to radio.
+08:00:06&amp;nbsp; Enabling 802.11d.
+08:00:09&amp;nbsp; Country code acquired: NZ
+08:00:09&amp;nbsp; Using profile: PDT_*****
+08:00:09&amp;nbsp; Setting SSID: ************
+08:00:11&amp;nbsp; Associated with b4:c7:99:**:**:27
+08:00:11&amp;nbsp; Authentication not required.
+08:00:11&amp;nbsp; Connected to network.
+08:00:26&amp;nbsp; Renewing IP address.
+08:00:41&amp;nbsp; Renewing IP address.
+08:00:56&amp;nbsp; Renewing IP address.
+08:01:11&amp;nbsp; Renewing IP address.
+- Although the MC9190 log shows &quot;Renewing IP address&quot; it isn&#x27;t actually sending any wireless packets, however it is sending Probes in the background.
+- As soon as the MC9190 roams to another Access point, it negotiates a new key, obtains an ip address and then works perfectly.
+- Log from MC9190 below shows a roam, negotiate a key, obtain an ip address, then it works fine.
+08:09:24&amp;nbsp; Renewing IP address.
+08:09:39&amp;nbsp; Renewing IP address.
+08:09:54&amp;nbsp; Renewing IP address.
+08:10:22&amp;nbsp; Associated with b4:c7:99:**:**:20
+08:10:22&amp;nbsp; Negotiating keys.
+08:10:22&amp;nbsp; Connected to network.
+08:10:26&amp;nbsp; IP Address: 172.***.***.***
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

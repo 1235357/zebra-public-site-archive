@@ -1,0 +1,222 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Get print status of KR403 printer when connect via USB cable</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Get print status of KR403 printer when connect via USB cable</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/get-print-status-kr403-printer-when-connect-usb-cable; original snapshot: threads/00415.html; SHA-256: d8daebacb63c2d15836ecdd6983d11c9b45479208852bcf28fdeef7a6ecf335b</small><pre id="topic">
+
+    
+        Get print status of KR403 printer when connect via USB cable
+
+
+        
+      
+                        
+                    
+            S
+          
+          Sophie Huynh
+          2 years 10 months ago
+        
+        
+      
+        
+            
+                  
+            
+            251
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  My WPF app is using .NET 7 and it need to connect with KR403 printer to check connectivity and print status. I installed Zebra.Printer.SDK v2.16.2905 to Visual Stusdio 2022 from Nuget but I can&#x27;t find the .dll files for .NET 7 to add my project. So I try to add the lib of .Net4.7.1 and I can check to connectivity but I always get below error when checking current status. Using this code:string printerName =&quot;&quot;;
+List&lt;DiscoveredPrinterDriver&gt; discoPrinters = UsbDiscoverer.GetZebraDriverPrinters();
+foreach (DiscoveredPrinterDriver device in discoPrinters)
+{
+	printerName = device.PrinterName;
+}
+Connection connection = new DriverPrinterConnection(printerName);
+connection.Open();
+ZebraPrinter printer = ZebraPrinterFactory.GetInstance(connection);
+PrinterStatus printerStatus = printer.GetCurrentStatus(); Exception message:Zebra.Sdk.Comm.ConnectionException: Malformed status response - unable to determine printer status
+  at Zebra.Sdk.Printer.Internal.PrinterStatusZpl.GetStatusInfoFromPrinter()
+  at Zebra.Sdk.Printer.Internal.PrinterStatusZpl.GetPrinterStatus()
+  at Zebra.Sdk.Printer.Internal.PrinterStatusZpl.UpdateStatus()
+  at Zebra.Sdk.Printer.PrinterStatus.GetStatusFromPrinter()
+  at Zebra.Sdk.Printer.PrinterStatus..ctor(Connection printerConnection)
+  at Zebra.Sdk.Printer.Internal.PrinterStatusZpl..ctor(Connection connection)
+  at Zebra.Sdk.Printer.Internal.ZebraPrinterZpl.GetCurrentStatus()So, how I get the status of the KR403? Anyone can help me to solve this error?Besides, is it normal if I use Windows PrintDocument.PrintPage Event to print receipt?
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            What is the setting of the device.languages on the KR403? A KR403 can be either on ZPL or on CPCL. If the device.languages and the printer instance mismatch, the malformed status response error will show.
+// Get a printer instance and assume the device.languages as ZPL by default
+ZebraPrinter printer = ZebraPrinterFactory.GetInstance(connection);
+PrinterStatus printerStatus = printer.GetCurrentStatus();// Get a printer instance explicitly using ZPL as the device.languages
+ZebraPrinter printer = ZebraPrinterFactory.GetInstance(PrinterLanguage.ZPL, connection);
+PrinterStatus printerStatus = printer.GetCurrentStatus();
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sophie Huynh
+          
+          
+            2 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I use the below command in Zebra Setup Utilities to check and result that the current language is ZPL. Then I use this code to get the status but it still gets the malformed status error. What do I need to do next?ZebraPrinter printer = ZebraPrinterFactory.GetInstance(PrinterLanguage.ZPL, connection);
+PrinterStatus printerStatus = printer.GetCurrentStatus();! U1 getvar &quot;device.languages&quot;
+! U1 getvar &quot;device.pnp_option&quot; &lt;CR&gt;&quot;hybrid_xml_zpl&quot;&quot;zpl&quot;
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

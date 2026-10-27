@@ -1,0 +1,322 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Get Weight &amp; Set Scale to Zero - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/getweight</code><br>Observed final URL: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/getweight/</code><br>Raw source: <code>raw/758bd719b656c0cc15110dab.html</code><br>Raw SHA-256: <code>e1cc1f295312c543078a395f1313b2bcfa00be753bc5dc81a534b9e430867c88</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs Home
+                        
+                                            DataWedge
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Get Started
+                            
+                        
+                        
+                            
+                                    Profiles
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Feature Matrix
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            US - English
+                          
+                          
+                                 CN - 普通话
+                                 JP - 日本語
+                          
+                                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Get Weight &amp; Set Scale to Zero
+                        
+                    GET_WEIGHT &amp; SET_SCALE_TO_ZEROGET_WEIGHTSET_SCALE_TO_ZEROFunction PrototypeParametersReturn ValuesExample CodeGet WeightSet Scale to Zero
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Get Weight &amp; Set Scale to Zero
+                                    
+                                            DataWedge
+                                            15.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        GET_WEIGHT &amp; SET_SCALE_TO_ZERO
+
+Introduced in DataWedge 11.4.
+
+GET_WEIGHT
+
+Retrieve the weight of the object on the connected MP7000 scale., then reset the scale to zero to ready it for weighing the next object.
+
+SET_SCALE_TO_ZERO
+
+Reset the weight scale to zero to ready it for weighing the next object.
+
+Function Prototype
+
+    Bundle bundleScale = new Bundle();
+    Bundle bundleScaleConfig = new Bundle();
+    bundleScaleConfig.putString(&quot;DEVICE_IDENTIFIER&quot;, &quot;&lt;scanner_identifier&gt;&quot;);
+    bundleScaleConfig.putString(&quot;COMMAND&quot;, &quot;&lt;command&gt;&quot;);
+    bundleScale.putBundle(&quot;SCALE_CONFIG&quot;, bundleScaleConfig);
+
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.setPackage(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.putExtra(&quot;SEND_RESULT&quot;,&quot;true&quot;);
+    i.putExtra(&quot;com.symbol.datawedge.api.SCALE&quot;, bundleScale);
+
+Parameters
+
+ACTION [String]: &quot;com.symbol.datawedge.api.ACTION&quot;
+
+PACKAGE [String]: &quot;com.symbol.datawedge&quot;
+
+EXTRA_DATA [Bundle]: &quot;com.symbol.datawedge.api.SCALE&quot;
+
+COMMAND [String]: “SET_SCALE_TO_ZERO” or “GET_WEIGHT”
+
+DEVICE_IDENTIFIER [String]: &quot;USB_TGCS_MP7000&quot;
+
+Return Values
+
+If the application uses the DataWedge result intent mechanism by incorporating the intent extras SEND_RESULT and COMMAND_IDENTIFIER, the following are the possible error codes returned:
+
+
+SCALE_NOT_CONNECTED – The MP7000 Scanner is not connected to the mobile computer.
+
+SCALE_IN_MOTION – The scale is not stable.
+
+SCALE_HARDWARE_ERROR – Hardware-related error.
+
+SCALE_READ_TIMEOUT – The scale was unable to read the weight within an acceptable time frame.
+
+SCALE_OVER_CAPACITY – The scale is overweight.
+
+SCALE_UNKNOWN_ERROR – There is an unknown error.
+
+SCANNER_IN_INVALID_STATE – The scanner is not in the correct state to query the weight.
+
+FAILED_TO_SET_SCANNER_TO_ZERO – Resetting the scale to zero failed.
+
+
+Example Code
+
+Get Weight
+
+    void getWeightAPICall()
+    {
+        Bundle bundleScale = new Bundle();
+        Bundle bundleScaleConfig = new Bundle();
+        bundleScaleConfig.putString(&quot;DEVICE_IDENTIFIER&quot;, &quot;USB_TGCS_MP7000&quot;);
+        bundleScaleConfig.putString(&quot;COMMAND&quot;, &quot;GET_WEIGHT&quot;);
+        bundleScale.putBundle(&quot;SCALE_CONFIG&quot;, bundleScaleConfig);
+
+        Intent i = new Intent();
+        i.setAction(DATAWEDGE_API_ACTION);
+        i.setPackage(DATAWEDGE_PACKAGE);
+        i.putExtra(&quot;SEND_RESULT&quot;,&quot;true&quot;);
+        i.putExtra(&quot;com.symbol.datawedge.api.SCALE&quot;, bundleScale);
+        sendBroadcast(i);
+    }
+
+Set Scale to Zero
+
+    void setScaleZeroAPICall()
+    {
+        Bundle bundleScale = new Bundle();
+        Bundle bundleScaleConfig = new Bundle();
+        bundleScaleConfig.putString(&quot;DEVICE_IDENTIFIER&quot;, &quot;USB_TGCS_MP7000&quot;);
+        bundleScaleConfig.putString(&quot;COMMAND&quot;, &quot;SET_SCALE_TO_ZERO&quot;);
+        bundleScale.putBundle(&quot;SCALE_CONFIG&quot;, bundleScaleConfig);
+
+        Intent i = new Intent();
+        i.setAction(DATAWEDGE_API_ACTION);
+        i.setPackage(DATAWEDGE_PACKAGE);
+        i.putExtra(&quot;SEND_RESULT&quot;,&quot;true&quot;);
+        i.putExtra(&quot;com.symbol.datawedge.api.SCALE&quot;, bundleScale);
+        sendBroadcast(i);
+    }
+
+
+
+SEE ALSO:
+
+Zebra Support Central | Integrator Guides, Product Manuals, Software Downloads and Support
+
+LaunchPad | Zebra Developer Community
+
+Intent | Android Developers
+
+Intents and Intent Filters | Android Developers
+
+Android Intents | Tutorial
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2024 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+      
+
+
+
+Back to Top</pre></body></html>

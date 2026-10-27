@@ -1,0 +1,201 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Android DataWedge - How to read EPC from a tag</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Android DataWedge - How to read EPC from a tag</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/android-datawedge-how-read-epc-tag; original snapshot: threads/00340.html; SHA-256: 23edbec3dfade5d2a79fbeadd2e3b15b7a36927e19db51b42d9262c7b3630cca</small><pre id="topic">
+
+    
+        Android DataWedge - How to read EPC from a tag
+
+
+        
+      
+                        
+                    
+            D
+          
+          David Corsalini
+          8 months 2 weeks ago
+        
+        
+      
+        
+            
+                  
+            
+            171
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m trying to read the EPC memory bank from an RFID tag, using the DataWedge intent APIs.I&#x27;m building the intent to set the DataWedge profile like this:private fun createRfidBundle(configuration: ScannerConfiguration, volatileConfiguration: VolatileScannerConfiguration?, scanType: ScanType): Bundle {
+   val pattern = volatileConfiguration?.getRfidFilterPattern()
+   val filterMemoryBank = volatileConfiguration?.getRfidFilterMemoryBank()
+   val enabled = volatileConfiguration?.wantsRfidCapability() == true &amp;&amp; pattern.isNullOrBlank().not()
+   val session = &quot;2&quot;
+   val barcodeParamListBundle = bundleOf(
+      &quot;rfid_input_enabled&quot; to if (enabled) &quot;true&quot; else &quot;false&quot;,
+      &quot;rfid_beeper_enable&quot; to &quot;false&quot;,
+      &quot;rfid_led_enable&quot; to &quot;false&quot;,
+      &quot;rfid_session&quot; to session, //Session
+      &quot;rfid_tag_read_duration&quot; to &quot;100&quot;,
+      &quot;rfid_memory_bank&quot; to &quot;4&quot;,//Memory bank EPC
+      &quot;rfid_antenna_transmit_power&quot; to &quot;30&quot;, //5-30dB
+      &quot;rfid_filter_duplicate_tags&quot; to &quot;false&quot;,
+      &quot;rfid_inventory_state&quot; to &quot;2&quot;, //inventory flip ab
+      &quot;tag_RSSI&quot; to &quot;true&quot;,
+
+      //TRIGGER MODE
+      &quot;rfid_hardware_trigger_enabled&quot; to when (scanType) {
+         ScanType.AUTO   -&gt; &quot;false&quot;
+         ScanType.MANUAL -&gt; &quot;true&quot;
+      },
+      &quot;rfid_trigger_mode&quot; to when (scanType) {
+         ScanType.AUTO   -&gt; &quot;1&quot;
+         ScanType.MANUAL -&gt; &quot;0&quot;
+      },
+
+      //Pre-filters
+      &quot;rfid_pre_filter_enable&quot; to if (pattern != null) &quot;true&quot; else &quot;false&quot;,
+      &quot;rfid_pre_filter_tag_pattern&quot; to pattern,
+      &quot;rfid_pre_filter_target&quot; to session, //Session
+      &quot;rfid_pre_filter_memory_bank&quot; to when (filterMemoryBank) {
+         RfidMemoryBank.EPC  -&gt; &quot;0&quot;
+         RfidMemoryBank.TID  -&gt; &quot;1&quot;
+         RfidMemoryBank.USER -&gt; &quot;2&quot;
+         null                -&gt; &quot;0&quot;
+      },
+      &quot;rfid_pre_filter_action&quot; to &quot;0&quot;,
+   )
+
+   return bundleOf(
+      &quot;PLUGIN_NAME&quot; to &quot;RFID&quot;,
+      &quot;RESET_CONFIG&quot; to &quot;false&quot;,
+      &quot;PARAM_LIST&quot; to barcodeParamListBundle
+   )
+}I&#x27;m expecting 2 things from this configuration:the prefilter should filter out tags where the EPC bank doesn&#x27;t respect the pattern (not required, but nice to have, not the focus of this question)that I get the content of the EPC memory bank in the Intent I receiveNumber 2 is required, and since I&#x27;m setting &quot;rfid_memory_bank&quot; to &quot;4&quot; in the bundle I&#x27;d expect it to work, but this is all I&#x27;m getting in the Intent I receive from DataWedgeaction: com.barcodescanner.sample.INCOMING_INTENT_ACTION
+data: null
+extras:
+ Bundle {
+  &#x27;com.motorolasolutions.emdk.datawedge.source&#x27;: rfid
+  &#x27;com.symbol.datawedge.source&#x27;: rfid
+  &#x27;com.symbol.datawedge.label_type&#x27;: E2801190A5030065899DE5EF -25
+  &#x27;com.motorolasolutions.emdk.datawedge.data_string&#x27;: E2801190A5030065899DE5EF -25
+  &#x27;com.symbol.datawedge.data_dispatch_time&#x27;: 1770651167195
+  &#x27;com.symbol.datawedge.data_string&#x27;: E2801190A5030065899DE5EF -25
+ }All I&#x27;m receiving is the tag ID (E2801190A5030065899DE5EF) and the RSSI (-25), no EPC in sight.I&#x27;m testing on a MC3300x.123RFID is able to read the EPC, so I&#x27;m guessing there is a way to read it.How do I read the EPC memory bank using the Intent APIs?
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              I
+            
+          
+                
+          
+            Ian Hatton
+          
+          
+            8 months 2 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Not sure if the EPC memory is supported in the version of Datawedge on that unit - you can check by creating a new profile in the Datawedge menu , enabling the RFID plugin and then configure the reader.  If there is a Memory Bank option and you can select EPC then you can attach the profile to a test app in order to check that it works. If so, then the issue is likely to be in your DW profile creation code which would either need to be fixed or you could switch to using a pre-installed profile with the settings already configured (assuming you don&#x27;t need to change the profile dynamically).
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

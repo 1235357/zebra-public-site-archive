@@ -1,0 +1,145 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Falha na gravação de Tags RFID em determinados coletor</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Falha na gravação de Tags RFID em determinados coletor</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/falha-na-gravacao-de-tags-rfid-em-determinados-coletor; original snapshot: threads/00293.html; SHA-256: 41cda456c580fa56fd7331249eb9165f575f59283f63b1fd55687f9dfde9607a</small><pre id="topic">
+
+    
+        Falha na gravação de Tags RFID em determinados coletor
+
+
+        
+      
+                        
+                    
+            L
+          
+          Luís Gustavo Nascimento
+          2 years 7 months ago
+        
+        
+      
+        
+            
+                  
+            
+            79
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Estou com um problema na gravação de Tags RFID. Tenho um coletor Zebra que esta na versão do Android 10 e outro no Android 11. Consigo realizar a gravação das tags com o coletor Android 10, mas quando tento realizar o memo processo no outro ocorre um erro que fecha a activity em questão e não consigo ter acesso ao erro. Segue trexo do codigo relacionado a configuração e gravação:  private void setAccessOperationConfiguration() {textInfo_GravAV_LGRFID.setText(&quot;Configurando Antena&quot;);// Define a potência da antena para 240dbm e configura outras definiçõessetAntennaPower(300);//setSingulation(SESSION.SESSION_S0,INVENTORY_STATE.INVENTORY_STATE_A);//reader.Config.setTriggerMode(START_TRIGGER_TYPE.START_TRIGGER_TYPE_IMMEDIATE);// Desativa o DPO se o leitor for RFD8500if (reader.getHostName().contains(&quot;RFD8500&quot;))setDPO(false);// Define o tempo limite da operação de acesso para 1 segundotry {reader.Config.setAccessOperationWaitTimeout(5000);} catch (InvalidUsageException | OperationFailureException e) {e.printStackTrace();}}// Método para configurar a potência da antenaprivate void setAntennaPower(int power) {textInfo_GravAV_LGRFID.setText(&quot;Configurando Potencia&quot;);Log.d(TAG, &quot;setAntennaPower &quot; + power);try {// Configurações da antenaAntennas.AntennaRfConfig config = reader.Config.Antennas.getAntennaRfConfig(1);config.setTransmitPowerIndex(power); // Define o índice de potência de transmissãoconfig.setrfModeTableIndex(0); // Define o índice da tabela de modo RFconfig.setTari(0); // Define o valor de Tarireader.Config.Antennas.setAntennaRfConfig(1, config); // Aplica as configurações à antena} catch (InvalidUsageException | OperationFailureException e) {e.printStackTrace();}}private void setSingulation(SESSION session, INVENTORY_STATE state) {Log.d(TAG, &quot;setSingulation &quot; + session);try {// Set the singulation controlAntennas.SingulationControl s1_singulationControl = reader.Config.Antennas.getSingulationControl(1);s1_singulationControl.setSession(session);s1_singulationControl.Action.setInventoryState(state);s1_singulationControl.Action.setSLFlag(SL_FLAG.SL_ALL);reader.Config.Antennas.setSingulationControl(1, s1_singulationControl);} catch (InvalidUsageException e) {e.printStackTrace();} catch (OperationFailureException e) {e.printStackTrace();}}// Método para controlar o DPOprivate void setDPO(boolean bEnable) {textInfo_GravAV_LGRFID.setText(&quot;Configurando o DPO&quot;);Log.d(TAG, &quot;setDPO &quot; + bEnable);try {// Controla o DPOreader.Config.setDPOState(bEnable ? DYNAMIC_POWER_OPTIMIZATION.ENABLE : DYNAMIC_POWER_OPTIMIZATION.DISABLE);} catch (InvalidUsageException | OperationFailureException e) {e.printStackTrace();}}// Método para realizar a operação de escrita na etiquetaprivate void writeTag(String sourceEPC, String password, MEMORY_BANK memoryBank, String data, int offset) {try {textInfo_GravAV_LGRFID.setText(&quot;Gravação iniciada&quot;);reader.Config.setDPOState(DYNAMIC_POWER_OPTIMIZATION.DISABLE);// Constrói os parâmetros de acesso de escritaTagData tagData = null;TagAccess tagAccess = new TagAccess();final TagAccess.WriteAccessParams writeAccessParams = tagAccess.new WriteAccessParams();writeAccessParams.setAccessPassword(Long.parseLong(password, 16));writeAccessParams.setMemoryBank(memoryBank);writeAccessParams.setOffset(offset);writeAccessParams.setWriteData(data);writeAccessParams.setWriteRetries(3); // Define as tentativaswriteAccessParams.setWriteDataLength(data.length() / 4); // Comprimento dos dados em palavrasboolean useTIDfilter = memoryBank == MEMORY_BANK.MEMORY_BANK_EPC;textInfo_GravAV_LGRFID.setText(&quot;Antes do doInBackground&quot;);new AsyncTask&lt;Void, Void, String&gt;(){@Overrideprotected String doInBackground(Void... voids){textInfo_GravAV_LGRFID.setText(&quot;Antes do Try&quot;);try {textInfo_GravAV_LGRFID.setText(&quot;Inicio da gravação&quot;);reader.Actions.TagAccess.writeWait(sourceEPC, writeAccessParams, null, tagData, true, useTIDfilter);textInfo_GravAV_LGRFID.setText(&quot;Depois da gravação&quot;);//reader.Config.setDPOState(DYNAMIC_POWER_OPTIMIZATION.ENABLE);GravOk();return &quot;Success&quot;; // Se não houver exceção, retornar &quot;Success&quot;} catch (Exception e) {textInfo_GravAV_LGRFID.setText(&quot;Erro: &quot; + e.getMessage());// Se ocorrer uma exceção, retornar a mensagem de erroreturn e.getLocalizedMessage();}}@Overrideprotected void onPostExecute(String result) {if (result.equals(&quot;Success&quot;)) {textInfo_GravAV_LGRFID.setText(&quot;Gravação Concluída!&quot;);ProcesseStats = result;} else {// Exibir o código e a descrição do erro na telatextInfo_GravAV_LGRFID.setText(&quot;Erro: &quot; + result);// Colocar o erro na área de transferênciaClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);ClipData clip = ClipData.newPlainText(&quot;Error&quot;, result);clipboard.setPrimaryClip(clip);}}}.execute();} catch (InvalidUsageException | OperationFailureException e) {e.printStackTrace();}}private void WriteEPC(){// one time setup to suite the access operation, if reader is already in that state it can be avoided//setAccessOperationConfiguration();//// EPC da etiqueta a ser escritaString EPC = old_tag;// Dados a serem escritos na etiquetaString dataToWrite = newTag;// Senha de acesso (se aplicável)String password = &quot;00&quot;; //nenhuma senha de acesso é usada// Banco de memória onde os dados serão gravadosMEMORY_BANK memoryBank = MEMORY_BANK.MEMORY_BANK_EPC;// Offset (deslocamento) a partir do qual os dados serão escritosint offset = 2;setAccessOperationConfiguration();// perform write, offset is two for EPC IDwriteTag(EPC, password, memoryBank, dataToWrite, offset);}
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alex Lavie
+          
+          
+            2 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Normally it should work the same on both platforms.On android 11 there might be new rules about where you save data and where you can access files etc...easier if you send an apk with your sample or try to run the sample application from our site to check that it does work on both platforms and then correct.https://techdocs.zebra.com/dcs/rfid/android/2-0-2-124/samples/hellorfid/ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

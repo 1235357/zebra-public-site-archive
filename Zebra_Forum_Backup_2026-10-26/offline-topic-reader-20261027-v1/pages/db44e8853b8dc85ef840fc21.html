@@ -1,0 +1,168 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>RS507 Pairing - determine abort by user</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>RS507 Pairing - determine abort by user</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/34354; original snapshot: threads/resume-00187.html; SHA-256: 0d1073bbdf3d754b4dcbdd85ab5cde5df0205c3c33165e89fd1825615da5043e</small><pre id="topic">
+
+    
+        RS507 Pairing - determine abort by user
+
+
+        
+      
+                        
+                    
+            M
+          
+          Markus Balschbach
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            30
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+ 
+I use MC67 (Android KK) with internal imager AND RS507.
+Within the application I have a switch to turn on RS507-usage.
+As result the system shows the pairing-screen where I can scan the BT-adress with the RS507.
+The pairing screen ist shown as result of the call &quot;scanner.enable&quot;; now the user doesn&#x27;t scan the barcode, but presses the back button...
+ 
+As shown in the EMDK-example as well, the lifecycle of our app tries to re-init the EMDK-Manager and the scanner and - as result of scanner.enable - shows the pairing-screen again :-(
+As long as the user presses the back-button the device is in an infinite loop between app and pairing-screen, this is reproducible in DW-Demo, too.
+ 
+Would be nice to have the result of the pairing-screen:
+1. user scanned BT-adress-barcode - scanner get connected
+2. user pressed back-button - next trial / abort activation of RS507
+ 
+Is there a way to get that info in EMDK Barcode Scanning API ?
+ 
+Kind Regards
+Markus
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Charitha Malla…
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Markus,
+In the sample application it pops out pairing app again and again as in onResume, it calls init function again if the scanner is null. You can simply have a variable to track if the app already tried to call scanner enable or init function in sample. So it can avoid calling scanner.enable or init function again and again recursively.
+If user has pressed the back button from pairing utility without scanning it, you can check the scanner object or the enabled status.
+Thanks,
+Charith.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

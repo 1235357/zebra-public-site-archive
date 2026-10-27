@@ -1,0 +1,157 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MC55 BSP27 DLL Isssue</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MC55 BSP27 DLL Isssue</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/22992; original snapshot: threads/01152.html; SHA-256: 87fc60d414230244d7ef8bcde911ff9c69a84ee418d9ff4c4b7b0abcfbe372ae</small><pre id="topic">
+
+    
+        MC55 BSP27 DLL Isssue
+
+
+        
+      
+                        
+                    
+            C
+          
+          Charles Malm
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            27
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Cliffs:1)Customer&#x27;s application copies files to the device2) Works without a hitch on BSP25, and many other devices.3) On BSP 27, a DLL (MFC90U) is present on the device but not &quot;seen&quot; by the customer application until it is renamed, and then renamed back to the original name.4) ...5) Help?Customer&#x27;s description of the problem:
+BACKGROUND
+We have a proprietary installation process for our RSMobile application, and no typical CAB file is used. Basically, our main client application on the workstation pushes all files, (.EXE, .DLL, .SQL, etc.), to a cradled device, asks the device to register anything needing registration, pushes down related applications and required DLLs, such as MFC90U.DLL and others, pushes data from the main SQL Server database to the device databases, and more. The goal was to make a rather complicated process easy for our customers, and to push a subset of customer-specific database records. It works very well; RSMobile is a previous &quot;Symbol Mobility Award&quot; recipient. This process has always worked, and works with the MC55 too, at least with the 1.25 platform.
+Things &quot;broke&quot; when we placed the 1.27 platform onto our MC55. Things worked right again when we placed the 1.25 platform back on the device.
+PROBLEM
+During our file copy operations, and all other operations on the device, no errors occur. That is to say, files are successfully placed where we want them. One file, MFC90U.dll is placed successfully into the \Windows folder. It can be observed there using Explorer on the device itself, or from a workstation when connected to that workstation. Great.
+One of the last things to occur during our installation is a device reboot, commanded by the application running on the workstation. The reboot succeeds, and our successfully installed application should now run at startup. But, it does not run, complaining that a component may be missing. Investigation revealed that MFC90U.dll could not be found. But, and this is the strange part, it DOES exist in \Windows and can be seen in Explorer on the device and from the workstation. Subsequent reboots change nothing; the MFC90U.dll file exists in \Windows, but is not &quot;found&quot; by our EXE.
+Here is the strangest part, and what I imagine will be a good clue as to the problem source; if I rename MFC90U.dll to anything, say MFC90U_orig.dll and then back to MFC90U.dll, everything works. That simple rename is all it takes to get MFC90U.dll to be &quot;found&quot;. Dragging MFC90U.dll elsewhere and dragging it back works too. Further reboots do not fix the issue.
+I should note that the Windows API CopyFile() function, as called from C++, is ultimately responsible for placing MFC90U.dll into the \Windows directory. (That may or may not be of some help. We use it for all on-device copy operations.)
+MOVING FORWARD
+I have more thoughts on the matter and possible OS problems that might cause such weirdness, but I&#x27;d rather not distract from the problem description, so I&#x27;ll end here. I&#x27;m available for conversation during normal business hours here on California. Again, our installation process is pretty basic, and works on all other Symbol devices, PDT81nn, PPT88nn, MC50, MC70, MC90nn. It even works on the MC55nn platform 1.25. It only fails on the latest 1.27 platform, leading me to believe a &quot;problem&quot; has been introduced.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            George Dellaratta
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There&#x27;s a lot of stuff in that description.&amp;nbsp; Probably some subtleties that I&#x27;m missing.&amp;nbsp; Can you ask this customer to write a sample application that demonstrates the problem?&amp;nbsp; Using their entire app is probably cumbersome.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,311 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MC75A: PTT button keycode query</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MC75A: PTT button keycode query</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/26376; original snapshot: threads/01555.html; SHA-256: f486e89596797c55bfba617f15914ef983026c5ee2799ecabe00676f72c8db86</small><pre id="topic">
+
+    
+        MC75A: PTT button keycode query
+
+
+        
+      
+                        
+                    
+            H
+          
+          Hunter Bradshaw
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            28
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Team,  we have a ISV wanting to use the PTT key within their app and they need the keycode. Keycheck doesn&#x27;t seem to display WM_CHAR number.  And just to complicate things I have remapped the PTT key to be Button 1 on the device (Button1 is set to open the customer&#x27;s app).  So my second question is; will the keycode still work within the app if the key has been remapped.   regards,  Daniel
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Dan,  &amp;nbsp;My suggestion for this would be to only use the registry keys to remap the PTT button i.e. you can remap PTT to launch an app using this format:  &amp;nbsp;[HKEY_LOCAL_MACHINE\Software\Symbol\ProgrammableKeys\P4] &quot;CommandLine&quot;=&quot;&quot; &quot;ApplicationPath&quot;=&quot;\windows\start menu\programs\otl.exe&quot; &quot;Action&quot;=dword:00000001  &amp;nbsp; When (or just before) you start the customer app, the app can change the PPT registry key to generate a keypress ( the registry changes are effective immediately without a reboot) as shown previously. If this method is used, the WM_CHAR character is generated when the PTT key is pressed so it should work as they require.
+Best Regards,
+Ian Hatton
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hunter Bradshaw
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hey Ian,  thanks for the response mate.   In my situation I have already remapped the PTT key using KBTools so the remapping side is OK. I remapped it to be Button1 and then assigned the customer&#x27;s app to be Button1.   The issue is the softeware vendor wants to capture the PTT button event within the app (once the app has started) and have some function be performed when pushed. (even though outside of the app the PTT button is remapped to starting up the app.   In order for the customer to use the PTT button in their app they need the Keycode. However Keycheck doesn&#x27;t show the WM_CHAR. It only shows the Keydown and KeyUp portions. Please see attached screen shot which show 005D for the WM_KEYDOWN &amp;amp; WM_KEYUP of the PTT button, but not the WM_CHAR. (But if I hit the ,&quot;w&quot;, button for example, I get KEYDOWN, KEYUP and WM_CHAR info.   Hope this makes sense.  cheers,  Dan   regards,  Daniel.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You use the API RegisterHotKey() to register for notification of a hot (app key) key press.&amp;nbsp; It will send the application a WM_HOTKEY message when its pressed.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Dan,   &amp;nbsp;&amp;nbsp; PTT (and volume up/down) key can be remapped via a registry key as follows:   &amp;nbsp;[HKEY_LOCAL_MACHINE\Software\Symbol\ProgrammableKeys\P4]  &quot;CommandLine&quot;=&quot;&quot;  &quot;ApplicationPath=&quot;&quot;  &quot;Action&quot;=dword:00000002  “KeyCode”=dword:0000000d  “Modifier”=dword:00000000   The keycode specifies the code to be generated when the key is pressed (in this case 0d = enter)   Best Regards,  Ian Hatton  EMS EMEA
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

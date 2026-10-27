@@ -1,0 +1,145 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Clear scanned barcodes cache upon (re)connection of RFD4031 to an Android app</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Clear scanned barcodes cache upon (re)connection of RFD4031 to an Android app</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/clear-scanned-barcodes-cache-upon-reconnection-rfd4031-android-app; original snapshot: threads/00030.html; SHA-256: 3d67b9ea1a6ddfa6611b45ab989853bc277b679689a5dbbb0c2f7cb1e5d41715</small><pre id="topic">
+
+    
+        Clear scanned barcodes cache upon (re)connection of RFD4031 to an Android app
+
+
+        
+      
+                        
+                    
+            H
+          
+          Honza Pospech
+          1 year 1 month ago
+        
+        
+      
+        
+            
+                  
+            
+            358
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,I am integrating the RFD4031 2D barcode scanner with a custom Android app.Using the most recent version (2.6.29.0) of the Scanner SDK for Android.Everything seems to work fine and I am struggling with just one last issue: In some of the app&#x27;s workflow I need to have a control of when a particular barcode was scanned. In particular, I need to make sure that a particular barcode was scanned while the RFD4031 scanner was actually connected to my app.What I am seeing is that the RFD4031 can be used to scan barcodes by pulling the trigger button. Those barcodes seem to be stored in the scanners internal memory and then delivered to my app once the app connects to the scanner. In my app, I want to be able to ignore such cached barcodes. However, there doesn&#x27;t seem to be any way to distinguish them from the barcodes scanned after the app connected to the scanner. They both get delivered via the same event and there&#x27;s no timestamp or anything like that.Is there any way how to either recognize the old barcodes when they are delivered to the Android app or to prevent the scanner from caching them while disconnected or to actively ask the scanner to clear its caches? (The RFID SDK for Android has com.zebra.api3.Actions.purgeTags() method that does this for the RFID tags.) Note: I have tried several workarounds like disabling the barcode scanning when disconnecting and reenabling upon reconnection as well as disabling/enabling particular barcode types so that they cannot even be scanned while disconnected. These solutions work to some degree but are not bulletproof. And they quite complicated compared to a single method call that exists for the RFID scanner.Thank you for any ideas or guidance.Honza
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            1 year ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Honza.The RFID SDK also contains the pertinent Scanner Control Libraries for the on-Scanner Barcode Scanner for the RFD40/RFD90.Please note - there is a better &quot;Android&quot; demo + Source code - to look at the Variety of &quot;Batchmode&quot; settings.I will use the BT Batchmode as a reference - since this one has the most history.https://techdocs.zebra.com/dcs/rfid/android/2-0-2-94/guide/batchmode/Also there is an RFID Techdoc for this for the RFID &quot;Batchmode&quot; too.NOTE: reader.Actions.getBatchedTags(); and reader.Actions.purgeTags();  // Are what is used to capture the RFID Data when you get batch mode data.( DONT FORGET TO PURGE!! ) NOTE:The Best app to demonstrate the BT Batchmode processing - is the 123RFID Mobile app (Support Portal) The 123RFID App - when &quot;BT Batchmode&quot; = &quot;ENABLE&quot; the code for both the RFID Operations - AS WELL AS THE BARCODE OPERATIONS, when you can for tags or scan for Barcodes - nothing is presented to the UI - until you &quot;release&quot; the trigger for the RFID - and in the &quot;Scan&quot; tab on 123RFID Mobile - app you tap the on-screen [ BATCH REQUEST ] button to get the Batched Barcode Scans.This Techdoc explains this for Barcode Scans:https://techdocs.zebra.com/dcs/rfid/android/2-0-2-116/tutorials/receivingbatchedbarcodedata/( If I recall - this operation is Self Purging - so When you see this demo on 123RFID Mobile app - there is not corresponding &quot;.purgeBarcodes();&quot; Like the RFID SDK does.{ DCSSDK_COMMAND_OPCODE.DCSSDK_DEVICE_BATCH_REQUEST }  
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

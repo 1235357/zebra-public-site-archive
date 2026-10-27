@@ -1,0 +1,340 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Notify API and TC21</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Notify API and TC21</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/notify-api-and-tc21; original snapshot: threads/00943.html; SHA-256: 25fbebe2724bb78d27cfea774c8e30520edf2fc8f8a10827a614c9a52937e665</small><pre id="topic">
+
+    
+        Notify API and TC21
+
+
+        
+      
+                        
+                    
+            J
+          
+          J.K. Oakley
+          4 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            61
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+Does the Notify API work on TC21? We&#x27;ve been trying the sample code in the link below without any success:
+https://techdocs.zebra.com/datawedge/latest/guide/api/notify/
+If TC21 doesn&#x27;t support the Notify API, how can we programmatically generate beeps on the device?
+Your help is much appreciated. 
+Thank you.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+The notify API is supported on the TC21, provided you&#x27;re running DataWedge 8.2 or later.
+If you have some more detail on your implementation I may be able to help you find the issue.
+Thanks,
+James
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            J.K. Oakley
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for your reply, James.
+We are using Xamarin Forms to create the app on a TC21; the device is running DataWedge 8.2.60.
+Here is a snippet of the implementation in Android we have so far:
+        private void SendNotification()
+        {
+            Intent dwIntent = new Intent();
+            Bundle notify = new Bundle();
+            Bundle notifyConfig = new Bundle();
+            dwIntent.SetAction(ACTION_DATAWEDGE_FROM_6_2);
+            notifyConfig.PutString(&quot;DEVICE_IDENTIFIER&quot;, &quot;AUTO&quot;);
+            notifyConfig.PutIntArray(&quot;NOTIFICATION_SETTINGS&quot;, new int[] { 17 });
+            notify.PutBundle(&quot;NOTIFICATION_CONFIG&quot;, notifyConfig);
+            dwIntent.PutExtra(EXTRA_NOTIFY, notify);
+            dwIntent.PutExtra(EXTRA_SEND_RESULT, &quot;true&quot;);
+            _context.SendBroadcast(dwIntent);
+        }
+It doesn&#x27;t generate any error, it simply doesn&#x27;t beep at all.
+Thank you,
+JK
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi JK,
+Just to confirm - this API is for sounding beeps on bluetooth scanners, specifically the RS6000, RS5100 and DS3678. Are you using one of these devices? If so, I think the issue is related to the DEVICE_IDENTIFIER extra; you&#x27;ll need to explicitly specify one of the above scanners instead of having &quot;AUTO&quot;
+If you&#x27;re just trying to make the TC21 itself beep, then I would recommend using Android APIs instead.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            J.K. Oakley
+          
+          
+            4 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for the heads-up, James. I was able to achieve what we needed using Android API.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

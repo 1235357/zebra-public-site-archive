@@ -1,0 +1,361 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Does the version of nodeJS have any bearing on the functionality of RC Push?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Does the version of nodeJS have any bearing on the functionality of RC Push?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/30840; original snapshot: threads/02200.html; SHA-256: 13194e35c5c86a8b35740a3087b4eab6c6b6b342b006e345c166e0367c694c5e</small><pre id="topic">
+
+    
+        Does the version of nodeJS have any bearing on the functionality of RC Push?
+
+
+        
+      
+                        
+                    
+            M
+          
+          Mark Nongkhlaw
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            109
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I had used Windows version of Rhomobile Suite installer v5.1.1. I upgraded node and npm to version 0.12.7 (ia32) and 2.11.3 respectively as I could not install Ionic with the rather old versions of node and npm which were shipped with the RMS installer.
+I tested RC Push, but I do not see any push messages in my Android device. I am using Rhoconnect-rb without any source adapters.However, I could login to Rhoconnect from the Rhodes client and syncing works fine. I wonder if it has anything to do with my node &amp; npm upgrade.
+I am giving here-under some snippets from the logs. I am hoping that they will help in resolving the problem :-
+After starting Rhoconnect &amp; Rails app :
+Thin web server (v1.6.3 codename Protein Powder)
+Maximum connections set to 1024
+Listening on 0.0.0.0:9292, CTRL+C to stop
+[4724][04:14:46.613 PM 2015-09-10] Use of the POST /api/source/save_adapter is d
+eprecated. Use Rhoconnect API v1 instead.
+10.179.22.5 - - [10/Sep/2015 16:14:46] &quot;POST /api/source/save_adapter HTTP/1.1&quot;
+200 23 0.0624
+After client logged in :
+127.0.0.1 - - [10/Sep/2015 16:17:48] &quot;POST /rc/v1/system/login HTTP/1.1&quot; 200 19
+0.0312
+127.0.0.1 - - [10/Sep/2015 16:17:48] &quot;GET /rc/v1/system/license HTTP/1.1&quot; 200 12
+4 0.0356
+127.0.0.1 - - [10/Sep/2015 16:17:48] &quot;GET /rc/v1/sources/type/app HTTP/1.1&quot; 200
+2 0.0100
+127.0.0.1 - - [10/Sep/2015 16:17:48] &quot;GET /rc/v1/system/appserver HTTP/1.1&quot; 200
+41 0.0100
+127.0.0.1 - - [10/Sep/2015 16:17:53] &quot;GET /rc/v1/users HTTP/1.1&quot; 200 8 0.0156
+127.0.0.1 - - [10/Sep/2015 16:17:54] &quot;GET /rc/v1/sources/type/all HTTP/1.1&quot; 200
+2 0.0356
+127.0.0.1 - - [10/Sep/2015 16:17:54] &quot;GET /rc/v1/users/mark/clients HTTP/1.1&quot; 20
+0 71 0.0586
+10.179.22.3 - - [10/Sep/2015 16:20:20] &quot;POST /rc/v1/app/login HTTP/1.1&quot; 200 - 0.
+4368
+10.179.22.3 - - [10/Sep/2015 16:20:29] &quot;GET /app/v1/Product?p_size=2000&amp;version=
+3 HTTP/1.1&quot; 200 270 0.6708
+10.179.22.3 - - [10/Sep/2015 16:20:30] &quot;GET /app/v1/Product?p_size=2000&amp;version=
+3&amp;token=211134029011272 HTTP/1.1&quot; 200 82 0.0936
+10.179.22.3 - - [10/Sep/2015 16:21:02] &quot;GET /app/v1/Product?p_size=2000&amp;version=
+3 HTTP/1.1&quot; 200 82 0.0780
+10.179.22.3 - - [10/Sep/2015 16:21:35] &quot;GET /app/v1/Product?p_size=2000&amp;version=
+3 HTTP/1.1&quot; 200 82 0.0780
+10.179.22.3 - - [10/Sep/2015 16:22:07] &quot;GET /app/v1/Product?p_size=2000&amp;version=
+3 HTTP/1.1&quot; 200 82 0.0780
+After Ping User from RC Console :
+127.0.0.1 - - [10/Sep/2015 16:25:34] &quot;GET /rc/v1/system/license HTTP/1.1&quot; 200 12
+4 0.0468
+127.0.0.1 - - [10/Sep/2015 16:25:34] &quot;GET /rc/v1/system/appserver HTTP/1.1&quot; 200
+41 0.0468
+127.0.0.1 - - [10/Sep/2015 16:25:34] &quot;GET /rc/v1/sources/type/app HTTP/1.1&quot; 200
+2 0.0468
+127.0.0.1 - - [10/Sep/2015 16:25:35] &quot;GET /rc/v1/users HTTP/1.1&quot; 200 8 0.0586
+127.0.0.1 - - [10/Sep/2015 16:25:43] &quot;GET /rc/v1/users/mark/clients HTTP/1.1&quot; 20
+0 71 0.0426
+127.0.0.1 - - [10/Sep/2015 16:25:43] &quot;GET /rc/v1/sources/type/all HTTP/1.1&quot; 200
+11 0.0210
+10.179.22.3 - - [10/Sep/2015 16:25:47] &quot;GET /app/v1/Product?p_size=2000&amp;version=
+3 HTTP/1.1&quot; 200 82 0.5910
+127.0.0.1 - - [10/Sep/2015 16:25:52] &quot;GET /rc/v1/sources/type/user HTTP/1.1&quot; 200
+ 11 0.0210
+[4724][04:26:05.298 PM 2015-09-10] Skipping ping for non-registered client_id &#x27;2
+9d89ec52a1337e3d271609a86d5b928&#x27;...
+[4724][04:26:05.301 PM 2015-09-10] Skipping ping for non-registered client_id &#x27;0
+a8ef2345198713993a7920c0a6fb555&#x27;...
+127.0.0.1 - - [10/Sep/2015 16:26:05] &quot;POST /rc/v1/users/ping HTTP/1.1&quot; 200 - 0.0
+540
+127.0.0.1 - - [10/Sep/2015 16:26:05] &quot;GET /rc/v1/users HTTP/1.1&quot; 200 8 0.0120
+10.179.22.3 - - [10/Sep/2015 16:26:19] &quot;GET /app/v1/Product?p_size=2000&amp;version=
+3 HTTP/1.1&quot; 200 82 0.0936
+10.179.22.3 - - [10/Sep/2015 16:26:51] &quot;GET /app/v1/Product?p_size=2000&amp;version=
+3 HTTP/1.1&quot; 200 82 0.0780
+RC Console :
+Device: 29d89ec52a1337e3d271609a86d5b928
+Attributes
+rho__id 29d89ec52a1337e3d271609a86d5b928
+user_id mark
+last_sync 2015-09-10T16:24:10+05:30
+app_id application
+Starting rhoconnect-push :
+D:\webstore-rc&gt;rhoconnect-push -i 10.179.22.3 -d 3
+## Configuration settings
+{ debugLevel: 3,
+  httpSecure: &#x27;n&#x27;,
+  certificateAuthorityFile: undefined,
+  appAuthHost: &#x27;10.179.22.3&#x27;,
+  appAuthPort: &#x27;9292&#x27;,
+  appAuthUrl: &#x27;/rc/v1/system/rps_login&#x27;,
+  userAuthHost: &#x27;10.179.22.3&#x27;,
+  userAuthPort: &#x27;9292&#x27;,
+  userAuthUrl: &#x27;/rc/v1/app/rps_login&#x27;,
+  ansServerPort: &#x27;8675&#x27;,
+  socketPoolSize: 5,
+  ansResponseTimeout: 300000,
+  authCredentialCacheEnabled: &#x27;y&#x27;,
+  authCredentialCacheSize: 10,
+  authCredentialLifetime: 60000,
+  registrationTimeout: 2592000,
+  clearDataBase: &#x27;n&#x27;,
+  redisToGoUrl: &#x27;redis://localhost:6379&#x27; }
+&amp;&amp;&amp;&amp; userAuthOptions : { host: &#x27;10.179.22.3&#x27;,
+  path: &#x27;/rc/v1/app/rps_login&#x27;,
+  port: &#x27;9292&#x27;,
+  method: &#x27;GET&#x27;,
+  headers: { connection: &#x27;keep-alive&#x27;, &#x27;content-type&#x27;: &#x27;application/json&#x27; },
+  agent:
+   { domain: null,
+     _events: { free: [Function] },
+     _maxListeners: undefined,
+     defaultPort: 80,
+     protocol: &#x27;http:&#x27;,
+     options: { path: null },
+     requests: {},
+     sockets: {},
+     freeSockets: {},
+     keepAliveMsecs: 1000,
+     keepAlive: false,
+     maxSockets: 5,
+     maxFreeSockets: 256,
+     freeSocketQueue: [],
+     addRequest: [Function] } }
+## RhoConnect push server: Listening on port 8675
+RhoConnect push server started...
+No further output from RC Push Server
+Thanks.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mark Nongkhlaw
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I am giving my settings hereunder, if that will help further :
+My rails version : 3.2.6 (running on a separate machine with IP: 10.179.22.5)
+My RhoConnect app is running on 10.179.22.3
+My rails model file (product.rb) :
+class Product &amp;lt; ActiveRecord::Base
+include Rhoconnect::Resource
+#include Rhoconnectrb::Resource
+def partition
+ lambda { &quot;mark&quot; }
+end
+def self.rhoconnect_query(partition, attributes = nil)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Product.all
+end
+&amp;nbsp; attr_accessible :brand, :name, :price, :quantity, :sku
+end
+My rails initializer file (rhoconnect.rb) :
+Rhoconnect.configure do |config|
+&amp;nbsp; config.uri=&quot;http://10.179.22.3:9292&amp;quot;
+&amp;nbsp; config.token=&quot;my-rhoconnect-token&quot;
+&amp;nbsp; config.app_endpoint=&quot;http://10.179.22.5:3000&amp;quot;
+&amp;nbsp; config.authenticate=lambda { |credentials| return true }
+&amp;nbsp;
+end
+RhoConnect settings.yml
+#:sources:
+#&amp;nbsp; Product:
+#&amp;nbsp;&amp;nbsp;&amp;nbsp; :poll_interval: 300
+:development:
+&amp;nbsp; :licensefile: settings/license.key
+&amp;nbsp; :redis: localhost:6379
+&amp;nbsp; :syncserver: http://10.179.22.3:9292
+&amp;nbsp; :push_server: http://someappname@localhost:8675/
+&amp;nbsp; :api_token: my-rhoconnect-token
+&amp;nbsp; :push_notify: true
+:test:
+&amp;nbsp; :licensefile: settings/license.key
+&amp;nbsp; :redis: localhost:6379
+&amp;nbsp; :syncserver: http://10.179.22.3:9292/api/application/
+&amp;nbsp; :push_server: http://someappname@localhost:8675/
+&amp;nbsp; :api_token: my-rhoconnect-token
+&amp;nbsp; :push_notify: true
+:production:
+&amp;nbsp; :licensefile: settings/license.key
+&amp;nbsp; :redis: localhost:6379
+&amp;nbsp; :syncserver: http://10.179.22.3:9292
+&amp;nbsp; :push_server: http://someappname@localhost:8675/
+&amp;nbsp; :push_notify: true
+Rhodes app rhoconfig.txt (relevant lines only)
+syncserver = &#x27;http://10.179.22.3:9292&amp;#039;
+sync_poll_interval=30
+# Add Rhoconnect Push Server URL
+Push.rhoconnect.pushServer = &#x27;http://10.179.22.3:8675&amp;#039;
+# App Name token for push
+Push.rhoconnect.pushAppname = &#x27;someappname&#x27;
+Rhodes app build.yml (relevant lines only)
+android:
+# Note: in order to simplify debugging only app messages and system channels with priority informative and higher, and any errors are enabled by default
+&amp;nbsp; # version: &quot;2.3.3&quot;
+&amp;nbsp; minSDK: 11
+&amp;nbsp; logcatFilter: &quot;APP:I StrictMode:I DEBUG:I *:E&quot;
+&amp;nbsp; extensions:
+&amp;nbsp; - rhoconnect-client
+&amp;nbsp; - json
+&amp;nbsp; - rhoconnect-push
+Rhodes app application.rb :
+require &#x27;rho/rhoapplication&#x27;
+class AppApplication &amp;lt; Rho::RhoApplication
+&amp;nbsp; def initialize
+&amp;nbsp;&amp;nbsp;&amp;nbsp; # Tab items are loaded left-&amp;gt;right, @tabs[0] is leftmost tab in the tab-bar
+&amp;nbsp;&amp;nbsp;&amp;nbsp; # Super must be called *after* settings @tabs!
+&amp;nbsp;&amp;nbsp;&amp;nbsp; @tabs = nil
+&amp;nbsp;&amp;nbsp;&amp;nbsp; #To remove default toolbar uncomment next line:
+&amp;nbsp;&amp;nbsp;&amp;nbsp; #@@toolbar = nil
+&amp;nbsp;&amp;nbsp;&amp;nbsp; super
+&amp;nbsp;&amp;nbsp;&amp;nbsp; # Added as per docs:
+&amp;nbsp;&amp;nbsp;&amp;nbsp; #Rho::startNotifications &#x27;/app/Settings/push_callback&#x27;
+&amp;nbsp;&amp;nbsp;&amp;nbsp; if SyncEngine::logged_in &amp;gt; 0
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Rho::Push.startNotifications &#x27;/app/Settings/push_callback&#x27;
+&amp;nbsp;&amp;nbsp;&amp;nbsp; end
+&amp;nbsp;&amp;nbsp;&amp;nbsp; # Uncomment to set sync notification callback to /app/Settings/sync_notify.
+&amp;nbsp;&amp;nbsp;&amp;nbsp; # Rho::RhoConnectClient.setObjectNotification(&quot;/app/Settings/sync_notify&quot;)
+&amp;nbsp;&amp;nbsp;&amp;nbsp; Rho::RhoConnectClient.setNotification(&#x27;*&#x27;, &quot;/app/Settings/sync_notify&quot;, &#x27;&#x27;)
+&amp;nbsp; end
+end
+Rhodes app model file (product.rb)
+# The model has already been created by the framework, and extends Rhom::RhomObject
+# You can add more methods here
+class Product
+&amp;nbsp; include Rhom::PropertyBag
+&amp;nbsp; # Uncomment the following line to enable sync with Product.
+&amp;nbsp;&amp;nbsp; enable :sync
+&amp;nbsp; #add model specific code here
+end
+Rhodes app controller.rb :
+&amp;nbsp; # Added as per docs:
+&amp;nbsp;
+&amp;nbsp; def push_callback
+&amp;nbsp;&amp;nbsp;&amp;nbsp; Rho::Notification.showPopup({&#x27;message&#x27; =&amp;gt; @params[&#x27;alert&#x27;], &#x27;buttons&#x27; =&amp;gt; [&#x27;OK&#x27;]})
+&amp;nbsp; end
+Is there anything wrong in the above settings that might be the cause for RC Push not working?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

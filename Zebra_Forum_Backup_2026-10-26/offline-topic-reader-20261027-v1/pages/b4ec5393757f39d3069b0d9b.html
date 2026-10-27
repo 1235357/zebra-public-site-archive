@@ -1,0 +1,153 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Sending data to the printer for printing</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Sending data to the printer for printing</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/sending-data-printer-printing; original snapshot: threads/00670.html; SHA-256: d96b9f5785142ce78a165c08ec942dae06e8b3283d052b4b0fc98989fba0777a</small><pre id="topic">
+
+    
+        Sending data to the printer for printing
+
+
+        
+      
+                        
+                    
+            Z
+          
+          Zolf Jafari
+          3 years 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            787
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello there,
+I am implementing a business logic where I need to send thousands of serial number with other data related to the serial number to ZT411 printer. My application is using Java to communicate with the printer and I have prepared the ZPL code for the print format along with the variable data&#x27;s in it. 
+Now I want to know the best practice to implement this situation. For e.g. do I send all the serials in one go to the printer or send them in chucks of 100 or so. 
+Also I want to know for e.g. I send a chunk of 100 serials to print, how can the application know that the printer has finished printing those 100 serials and I can now send the other batches till all the serials are printed. I mean printer acknowledgment to the application that printing has finished.
+I will appreciate if I get feedback on it.
+cheers
+Zolf
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The best practices are documented in this article: Best Practices for Printing. In general, thermal printers are considered as slow and single-tasked accessories. Printers print one label at a time. Labels (a.k.a. jobs) should be serialized and sent to a printer one at a time. Depending on the data size of the labels, we need to be mindful when sending the data to a printer as we don&#x27;t want to overflow the receiving buffer on the printer. It&#x27;s always recommended to check the printer status (via the getCurrentStatus() API) prior to sending data to the printer and check the printer status again prior to closing the connection.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,165 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Is there a way to close/kill a running application with the help of MX?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Is there a way to close/kill a running application with the help of MX?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/34973; original snapshot: threads/resume-00222.html; SHA-256: 0112f9f92ffc7120fcb1ec28ed4644751f5324c10d08806f86630c21a5d429f2</small><pre id="topic">
+
+    
+        Is there a way to close/kill a running application with the help of MX?
+
+
+        
+      
+                        
+                    
+            M
+          
+          Michael Stjernborg
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            702
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  We are using stageNow in order to do various task on a MC18 Android (5.1.1).
+One of the MX components we are using is Condition Manager.
+If a certain condition is met we would like to close/kill an app. In this case Enterprise Browser 1.5.
+Is there a way to close an app with mx? Intent?
+ 
+/Michael
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I had a customer who also needed a way to exit EB.&amp;nbsp; In this case they needed to exit EB when they started another app from the SOTI launcher,&amp;nbsp; so we put together a SOTI script to trigger EB to exit when the user pressed the icon for the second app,&amp;nbsp; but the same method should work for you.&amp;nbsp; The idea is to use the EB Intent API as the trigger,&amp;nbsp; and we used DOM injection to add some javascript to the pages to make it work because they did not have the ability to change the existing web app.&amp;nbsp; If you can change the web app, you could skip the dom injection part and do that right on the webserver.&amp;nbsp; See the EB docs for details on these features
+ About Enterprise Browser 1.7 - Zebra Technologies TechDocs 
+In config.xml,&amp;nbsp; set up the Intent receiver like this:
+&amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; 
+Set up dom injection in config.xml like this:
+  myTags.txt and eb-exit.js go into the same folder as config.xml. ebapi-modules.js,eb.intent.js, and eb.application.js  would also need to be copied to the device in the same folder as config.xml.&amp;nbsp; These files can be found on your PC in C:\EnterpriseBrowser\JavaScriptFiles\EnterpriseBrowser\Android
+content of myTags.txt below.&amp;nbsp; This will inject these 4 javacscript files into every page that EB navigates to:
+Content of eb-exit.js below.&amp;nbsp; This sets up the intent API to start listening and the callback will quit EB if EB receives the intent it is looking for.
+function intentCB(data){
+ if(data.action==&quot;Intent.QUITEB&quot;){
+ EB.Application.quit();
+ }
+}
+EB.Intent.startListening(intentCB)
+If the above is all configured properly,&amp;nbsp; you should see EB exit if you send a broadcast intent with the action &quot;Intent.QUITEB&quot;.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

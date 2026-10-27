@@ -1,0 +1,301 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>MDNA Licensing - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/emdk-for-android/latest/guide/licensing</code><br>Observed final URL: <code>https://techdocs.zebra.com/emdk-for-android/latest/guide/licensing/</code><br>Raw source: <code>raw/fe9334f7087f28d5182097c2.html</code><br>Raw SHA-256: <code>d3bef9bf7044bd8c3fd58d46ee3642bde1c4e0aa107e7560c1584ddd2d64b794</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                           EMDK For Android 15.1
+                          
+                          
+                                EMDK For Android 4.2
+                                EMDK For Android 4.0
+                          
+                                            
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Set Up
+                            
+                        
+                        
+                            
+                                    Tutorials
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Profile Manager
+                            
+                        
+                        
+                            
+                                    FAQs
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            MDNA Licensing
+                        
+                    OverviewMulti-barcode in Barcode APIExisting AppsApps Under Development
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    MDNA Licensing
+                                    
+                                            EMDK For Android
+                                            15.1
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+For Zebra Professional-series devices, the following EMDK features require the purchase of a Mobility DNA (MDNA) Enterprise license:
+
+
+Multi-barcode scanning
+
+Image/document capture
+
+
+For more information, please visit the MDNA Enterprise licensing page.
+
+
+
+Multi-barcode in Barcode API
+
+Existing Apps
+
+Licensed Scenario
+
+Running an existing scanning app with multi-barcode capability enabled on a MDNA-licensed Zebra Professional device with EMDK 8.0 (and later) will perform as expected.
+
+Unlicensed Scenario
+
+Running an existing EMDK-complied scanning app with multi-barcode capability enabled on a Zebra Professional device without an MDNA Enterprise license results in a ScannerException in the scanner.setConfig() API call. Such apps are capable of scanning only single barcodes until an MDNA Enterprise license is acquired and applied.
+
+License Expired Scenario
+
+If an MDNA Enterprise license expires while an app with multi-barcode capabilities is in use, the next scanner.read() API call will fail with ScannerException embedding an “UNLICENSED_FEATURE” result code. This immediately halts multi-barcode scanning, even if the user had previously been doing so during their current scanning session. Only single barcode scanning is possible thereafter until an MDNA Enterprise license is renewed and applied.
+
+
+
+Apps Under Development
+
+Licensed Scenario
+
+Building and running an existing scanning app with multi-barcode capability enabled on a MDNA-licensed Zebra Professional device with EMDK 8.0 will perform as expected.
+
+Unlicensed Scenario
+
+Running an existing EMDK-complied scanning app with multi-barcode capability enabled on a Zebra Professional device without an MDNA Enterprise license results in a ScannerException in the scanner.setConfig() API call. Such apps are capable of scanning only single barcodes until an MDNA Enterprise license is acquired and applied.
+
+Code snippet showing the unlicensed scenario:
+
+
+try {
+   // Getting scanner configuration
+   ScannerConfig config = scanner.getConfig();
+
+   // Enabling multi-barcode feature for imager
+    config.readerParams.readerSpecific.imagerSpecific.scanMode = ScannerConfig.ScanMode.MULTI_BARCODE;
+
+   // Enabling multi-barcode feature for camera
+    config.readerParams.readerSpecific.cameraSpecific.scanMode = ScannerConfig.ScanMode.MULTI_BARCODE;
+
+   // Setting scanner configuration
+   scanner.setConfig(config);
+
+  } catch (ScannerException e) {
+
+    String scannerResult = e.getResult().toString();
+
+    // Check the error code
+    if(scannerResult.equalsIgnoreCase(“UNLICENSED_FEATURE”)){
+
+        // If the scanner.setConfig() API call is failing with the result
+                // code “UNLICENSED_FEATURE” means the device is not licensed to use
+                 // Multi-barcode feature and an MDNA Enterprise License is required.
+
+        }
+  }
+
+License Expired Scenario
+
+If an MDNA Enterprise license expires while an app with multi-barcode capabilities is in use, the next scanner.read() API call will fail with ScannerException embedding an “UNLICENSED_FEATURE” result code. This immediately halts multi-barcode scanning, even if the user had previously been doing so during their current scanning session. Only single barcode scanning is possible thereafter until an MDNA Enterprise license is renewed and applied.
+
+Code snippet showing the license expiration scenario:
+
+
+try {
+    // Submit a new read.
+    scanner.read();
+
+} catch (ScannerException e) {
+
+    String scannerResult = e.getResult().toString();
+
+    // Check the error code
+    if(scannerResult.equalsIgnoreCase(“UNLICENSED_FEATURE”)){
+
+        // If the scanner.read() API call is failing with the result
+                // code “UNLICENSED_FEATURE” means the device is not licensed to use
+                 // Multi-barcode feature and an MDNA Enterprise License is required.
+         }
+}
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

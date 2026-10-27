@@ -1,0 +1,172 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra ZQ320 Plus Image pringing, .NET MAUI</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Zebra ZQ320 Plus Image pringing, .NET MAUI</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zebra-zq320-plus-image-pringing-net-maui; original snapshot: threads/00111.html; SHA-256: 3578f73dc62526eafb168b334e66e7b2134ca1e20aa9e9239eeb014820a8cc38</small><pre id="topic">
+
+    
+        Zebra ZQ320 Plus Image pringing, .NET MAUI 
+
+
+        
+      
+                        
+                    
+            C
+          
+          Claudio Vasquez
+          1 year 10 months ago
+        
+        
+      
+        
+            
+                  
+            
+            276
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Currently, I am engaged in the development of an Android app utilizing .NET Maui.However, I am encountering an issue with my Zebra ZQ320 Plus printer, which is currently running Link OS.The problem arises when I attempt to print an image using the printing function provided by the Zebra Link OS Sdk. Instead of printing the actual image content, the printer outputs a lengthy string that, while accurately describing the image in string format, does not actually print out the actual image.Does the Zebra ZQ3320+ have the necessary support to address this issue and print the image content as intended?				var connection = new BluetoothConnection(deviceAddress);
+
+                connection.Open();
+
+
+                using var stream = await FileSystem.OpenAppPackageFileAsync(&quot;logo_cobranza2.png&quot;);
+
+                Debug.Write(stream);
+                var tempFilePath = Path.Combine(FileSystem.CacheDirectory, &quot;temp_logo_cobranza2.png&quot;);
+
+
+                using (var fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write))
+                {
+                    await stream.CopyToAsync(fileStream);
+                }
+                var printerInstance = ZebraPrinterFactory.GetInstance(connection);
+
+                int x = 0;
+                int y = 0;
+
+                printerInstance.PrintImage(tempFilePath, x, y);
+
+                byte[] bytBuffer = System.Text.Encoding.GetEncoding(0).GetBytes(textContent);
+
+                connection.Write(bytBuffer);
+
+                connection.Close();Everything that comes after the printerInstance.PrintImage prints correctly and as intended. Its just that one that prints out as a huge String instead of the image.  
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            1 year 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            If the printerInstance.PrintImage() prints a garbage like text string, it&#x27;s most likely the device.languages setting on the ZQ320 is set to line_print model. You can use the Zebra Printer Setup app to verify the device.langauges setting on the printer. By default, the ZebraPrinterFactory.GetInstance(connection) returns a ZPL printer instance, and the subsequent statement of printerInstance.PrintImage(tempFilePath, x, y) tries to convert the image file into ZPL format before sending the converted ZPL to the ZQ320 to print. If the device.languages setting on the ZQ320 is set to line_print, then the ZQ320 prints everything it receives as text on the label instead of image.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

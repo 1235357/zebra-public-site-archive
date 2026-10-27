@@ -1,0 +1,252 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Pin 9 Power 5v Hardware</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Pin 9 Power 5v Hardware</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/pin-9-power-5v-hardware; original snapshot: threads/00117.html; SHA-256: 9324b19aff46ab4a4c3248ac7a08af4ea8b01e4cb8b299a721fc4c2b223b0134</small><pre id="topic">
+
+    
+        Pin 9 Power 5v Hardware
+
+
+        
+      
+                        
+                    
+            N
+          
+          Nathan Gidney
+          2 months 2 weeks ago
+        
+        
+      
+        
+            
+                  
+            
+            174
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello, I&#x27;m designing an internal company product that utilizes a microcontroller interface that prints to a ZD621 printer and takes in input from an RS232 stream from industrial equipment and is controlled by a bluetooth app. I&#x27;m currently powering the microcontroller from the printer&#x27;s USB-A port, however, it would solve so many design problems if I could power it from the 5V rail on pin 1 or pin 9 from the printers RS232 DB9 port. However every time I try to add any kind of load between pin 9 and pin 5, the printer&#x27;s onboard FET collapses the voltage down to .1V and then cycles on and off. I can get SOME improvement by using a &#x27;heavy duty&#x27; scanner cable which seems to have something built in that pumps the voltage to 5.5v. However once again, when i add a device in between 9 and 5, the rail collapses to 1.6v. What kind of power conditioning is required to safely keep a steady 5V from the port? I would like to remove all reliance on USB and just design the rs232 connector into the PCB so I can just have one cable end going to the industrial equipment. ANY HELP AT ALL or pointing in the right direction would make me eternally grateful.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mike Masotti
+          
+          
+            2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            For my application (scanner w/ cradle to ZD621 via RS232 simultaneously with USB Keyboard attached), I needed to use a cable with a separate power supply (and gender changing adapter). Without this configuration, the power was cut from USB during cradle charging.This doc might help you find the needed cables and/or power adapters: https://www.zebra.com/content/dam/zebra_dam/en/guide/configuration-and-accessories/barcode-scanners-cable-guide-accessory-en-us.xlsx  
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              N
+            
+          
+                
+          
+            Nathan Gidney
+          
+          
+            2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you. I am familiar with the serial cables that support external power, however this is exactly the thing I&#x27;m trying to distance my solution from. I&#x27;m trying to eliminate extra power cables all together. The microcontroller should not be using more than 600 milliamps of power at peak transmission, Zebra&#x27;s own documentation says there is a 750 mA power budget shared between the serial port and the USB-A port (hence why your solution would brown out, using a scanner/cradle combo plus a keyboard is probably pulling too much). All the technical documentation I have says the serial port alone should be able to provide enough current and I&#x27;ve even tried using Zebra&#x27;s own product cables to power my device. However, if I even try to power an LED on Pin 9/5 (literally only an LED, Pin 9 - LED, Resistor - Pin 5) the printers&#x27; built in FET protection kicks in and won&#x27;t provide the power to any load I put on it. This is reproduceable across ZF, GX, and GK series printers. I think there&#x27;s something missing from the equation.What I think is missing is some kind of hardware solution to provide power conditioning to the load to slowly ramp up the current draw rather than pulling all at once. I&#x27;ve ordered some additional microchips to try and test this while I wait for a response from Zebra&#x27;s product design team. The other possibility is that there is some signal required on one of the other seldom used DB9 pins (ready to receive / ready to send pins maybe?) but at the moment I don&#x27;t have an easy way to listen on every pin to find out what that might be. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            2 weeks 6 days ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Since you are referring to the Desktop Series of Printers - where the IO ports and Support are limited in context to &quot;Vehicle Mount Terminals&quot; ETC - and similar - I would advise to contact the Zebra Account Teams to see if the Professional Services teams can look into your issue.The existing Ports have limited Support- and it seems your solutions approach to try to use that may need additional Subject Matter expertise to assist.This forum is not the domain to provide that level of in-Depth knowledge in a safe and secure manner when operating the ZD6xx printer in Desktop Solutions.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

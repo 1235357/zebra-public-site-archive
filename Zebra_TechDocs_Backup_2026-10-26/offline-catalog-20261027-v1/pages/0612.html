@@ -1,0 +1,310 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Enumerate Workflows - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/enumerateworkflows</code><br>Observed final URL: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/enumerateworkflows/</code><br>Raw source: <code>raw/82065481162b3b362c7dfb28.html</code><br>Raw SHA-256: <code>8461aff3a86c583a1721a7ad081e67087728159e65471ddcc895dfe6c457b2be</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs Home
+                        
+                                            DataWedge
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Get Started
+                            
+                        
+                        
+                            
+                                    Profiles
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Feature Matrix
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            US - English
+                          
+                          
+                                 CN - 普通话
+                                 JP - 日本語
+                          
+                                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Enumerate Workflows
+                        
+                    ENUMERATE_WORKFLOWSFunction PrototypeParametersReturn ValuesExample Code
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Enumerate Workflows
+                                    
+                                            DataWedge
+                                            15.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        ENUMERATE_WORKFLOWS
+
+Generates a list of workflow inputs available on the device. Returns the workflow ID and name, regardless of whether the workflow is licensed.
+
+Function Prototype
+
+Intent intent = new Intent();
+intent.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+intent.putExtra(&quot;com.symbol.datawedge.api.ENUMERATE_WORKFLOWS&quot;, &quot;&quot;);
+
+Parameters
+
+ACTION [String]: &quot;com.symbol.datawedge.api.ENUMERATE_WORKFLOWS&quot;
+
+Return Values
+
+The enumerated list of workflows is returned via the broadcast intent com.symbol.datawedge.api.RESULT_ENUMERATE_WORKFLOWS. The list of workflows is returned as a string array, arrayList&lt;String&gt;.
+
+Example Code
+
+Sample code to register/unregister the broadcast intent to enumerate workflows, send the intent and retrieve the results:
+
+    /*Call before sending the enumerate workflows query*/
+    private void registerReceivers() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(&quot;com.symbol.datawedge.api.RESULT_ACTION&quot;);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        registerReceiver(broadcastReceiver, filter);
+    }
+
+    /* Send the enumerate workflows command to DataWedge intent API*/
+    private void enumerateWorkflows() {
+        Intent intent = new Intent();
+        intent.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+        intent.putExtra(&quot;com.symbol.datawedge.api.ENUMERATE_WORKFLOWS&quot;, &quot;&quot;);
+        sendBroadcast(intent);
+    }
+
+    /*unregister the broadcast receiver*/
+    private void unRegisterReceivers() {
+        unregisterReceiver(broadcastReceiver);
+    }
+
+    /*Create broadcast receiver to receive the enumerate workflows result*/
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            Log.d(&quot;EnumerateWorkflows&quot;, &quot;Action: &quot; + action);
+            if (action.equals(&quot;com.symbol.datawedge.api.RESULT_ACTION&quot;)) {
+                if (intent.hasExtra(&quot;com.symbol.datawedge.api.RESULT_ENUMERATE_WORKFLOWS&quot;)) {
+                    Bundle workflowBundle = (Bundle) intent.getExtras().get(&quot;com.symbol.datawedge.api.RESULT_ENUMERATE_WORKFLOWS&quot;);
+                    String strData = &quot;&quot;;
+                    int count = 1;
+                    ArrayList&lt;String&gt; workflowList = new ArrayList&lt;&gt;();
+                    if (workflowBundle != null) {
+                        for (String key : workflowBundle.keySet()) {
+                            String value = workflowBundle.getString(key);
+                            if (value != null) {
+                                String listItem = count + &quot;) &quot; +key +&quot; - &quot;+ value;
+                                workflowList.add(listItem);
+                                strData += listItem + &quot;\n&quot;;
+                                count++;
+                            }
+                        }
+                        Log.d(&quot;EnumerateWorkflows&quot;,strData );
+                    }
+                }
+            }
+        }
+    };
+
+Sample output data:
+
+    /* workflowID - WorkflowName */
+
+    1) tin_number - Tire Identification Number(TIN)
+    2) license_plate - License Plate
+    3) container_scanning - Shipping Container ID
+    4) free_form_ocr - Free - Form OCR
+    5) free_form_capture - Free - Form Image Capture
+    6) meter_reading - Meter
+    7) document_capture - Document Capture
+    8) id_scanning - Identification Documents
+    9) vin_number - Vehicle Identification Number(VIN)
+
+
+
+SEE ALSO:
+
+Zebra Support Central | Integrator Guides, Product Manuals, Software Downloads and Support
+
+Developer Portal | Zebra Developer Community
+
+Intent | Android Developers
+
+Intents and Intent Filters | Android Developers
+
+Android Intents | Tutorial
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2024 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+      
+
+
+
+Back to Top</pre></body></html>

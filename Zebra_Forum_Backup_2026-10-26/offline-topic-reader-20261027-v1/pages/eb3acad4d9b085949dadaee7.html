@@ -1,0 +1,556 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>DataWedge control when fast Pause/Resume with the power button,</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>DataWedge control when fast Pause/Resume with the power button,</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/datawedge-control-when-fast-pauseresume-power-button; original snapshot: threads/00637.html; SHA-256: 7941eebd1dc2ec4a0df57c5b9257de62a50648d8707408d5a3dab81b0ab1ca31</small><pre id="topic">
+
+    
+        DataWedge control when fast Pause/Resume with the power button,
+
+
+        
+      
+                        
+                    
+            H
+          
+          Hiro Matt
+          3 years 7 months ago
+        
+        
+      
+        
+            
+                  
+            
+            150
+          
+                
+                  
+            
+            6
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                          //Solved
+        
+  
+
+    
+    
+        
+      
+            
+                  (Questions about developing an application for TC20* terminals (*Japan only))
+I am using DataWedge 11.0 to control a built-in scanner.
+I would like to know how to control DataWedge for fast Pause/Resume with the power button.
+
+[What we would like to do]
+I want to enable/disable scanning for each input field in the application, 
+so I am using &quot;com.symbol.datawedge.api.SWITCH_SCANNER_PARAMS&quot; + (&quot;barcode_trigger_mode&quot; , &quot;1 &quot;or &quot;0&quot;) Intent.
+
+[Problem]
+Pause/Resume by power button is not working properly.
+
+(1).If the trigger key is disabled in the input field and Pause/Resume is performed,
+    the trigger key is forced to be enabled.
+(2).I&#x27;m trying to solve the problem of (1),
+    I used Intent (&quot;com.symbol.datawedge.api.SCANNER_INPUT_PLUGIN&quot;, &quot;SUSPEND_PLUGIN&quot;) when the OnPause() Function,
+    and I used Intent (&quot;com.symbol.datawedge.api.SCANNER_INPUT_PLUGIN&quot;, &quot;SUSPEND_PLUGIN&quot;) when OnResume() Function.
+   So, I got the desired behavior.
+(3).However, even if the desired operation is performed under (2), if I do a fast Pause/Resume with the power button, the trigger key is forced to be enabled.
+
+Can you please tell me how to control DataWedge for fast pause/resume with the power button?
+ 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+        
+      
+        ✓ Accepted Solution
+      
+      
+          
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Daniel Neamtu
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Hiro,
+So, If I understand correctly you want to enable the scanner only for some or all input fields in a specific Activity/Fragment?
+You could easily do that by keeping the profile disabled by default and enable it only when the user switches the focus on the wanted EditText.
+As soon as the the EditText has the focus, just send the broadcast as described here to enable the scanner.
+https://techdocs.zebra.com/datawedge/latest/guide/api/scannerinputplugi…
+ 
+And, once the EditText loses the focus, just do the opposite and switch off the scanner.
+I couldn&#x27;t understand exactly what you&#x27;re doing with the &quot;PowerButton&quot; can you elaborate more please...
+Maybe you wanted to say &quot;ScanButton&quot;?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+      
+    
+  
+      
+    
+      6 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Daniel Neamtu
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Hiro,
+So, If I understand correctly you want to enable the scanner only for some or all input fields in a specific Activity/Fragment?
+You could easily do that by keeping the profile disabled by default and enable it only when the user switches the focus on the wanted EditText.
+As soon as the the EditText has the focus, just send the broadcast as described here to enable the scanner.
+https://techdocs.zebra.com/datawedge/latest/guide/api/scannerinputplugi…
+ 
+And, once the EditText loses the focus, just do the opposite and switch off the scanner.
+I couldn&#x27;t understand exactly what you&#x27;re doing with the &quot;PowerButton&quot; can you elaborate more please...
+Maybe you wanted to say &quot;ScanButton&quot;?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hiro Matt
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Dear Daniel.
+Thank you for your response.
+
+I referred to the URL you provided.
+As a result, I was able to resolve the issue of enabling/disabling the scanner when the focus is moved in the application by RESUME_PLUGIN in enabling, SUSPEND_PLUGIN in disabling, and nothing is executed in the OnPause()/OnResume() function.
+
+
+An addendum about the &quot;power button&quot;.
+I am referring to the application&#x27;s response when the power button on the mobile computer is pressed, or when the Android home/task button is pressed.
+
+Even if the scanner is in Disable state, if the interval between OFF/ON by the power button is short (quick sleep/resume), the scanner will be forcibly enabled. If the interval between OFF/ON is long, there is no problem(still disable).
+
+This issue is also occurred for the interval between Android home/task button presses. In short interval, the scanner will be forcibly enabled. And in long interval, the scanner will be still disabled.
+
+For this reason I would like to know how to solve this in the OnResume()/OnSleep() function of my application.
+
+best regards.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Daniel Neamtu
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Hiro,
+Unfortunately there&#x27;s always going to be a short delay while switching the status of the scanner but normally it should take very little.
+I&#x27;m wondering, are we talking here about seconds or something like less than 2 seconds? While performing the tests and transitioning between the lifecycle of the app.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hiro Matt
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Usually this occurs when I Sleep/Resume the terminal within 1 second.
+If I wait more than 2 seconds before Sleep/Resume the terminal, it does not occur.
+
+I tried to find a solution myself before I received the answer.
+
+When I performed a Sleep/Resume on a field that was in SUSPEND_PLUGIN state, I used OnResume() to add a 1.5 second wait before performing the SUSPEND_PLUGIN again. Then SUSPEND_PLUGIN was executed correctly.
+
+
+But I am not sure if this is the correct way to handle this.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Daniel Neamtu
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Hiro,
+If you&#x27;re able to pause/resume the scanner now by checking the focus on the input fields, why complicating with the activity lifecycle states?
+You should not do that anymore if you&#x27;re controlling the scanner by the focus of the input fields, it would just create conflicts. If your goal is to enable the scanner just for some input fields, then the scanner should be kept disabled by default.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hiro Matt
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Dear Daniel
+
+Thank you for your reply.
+You are certainly right, &quot;If your goal is to enable the scanner just for some input fields, then the scanner should be kept disabled by default.&quot;
+
+I am considering the activity lifecycle because I have ported an app I created on another model to Zebra.
+In the other models, the scanner is controlled by a device-specific API, so I needed to control the enable/disable of the scanner according to the activity lifecycle.
+
+DataWedge, on the other hand, automatically changes the scanner profile based on the activity lifecycle.This is the cause of our concern.
+
+
+I will try the disable by default method.
+With the answers I received from you, I would like to make it my solution.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

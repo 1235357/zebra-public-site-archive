@@ -1,0 +1,214 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Example of PDF file printing using Zebra Browser Print SDK</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Example of PDF file printing using Zebra Browser Print SDK</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/35997; original snapshot: threads/resume-00261.html; SHA-256: fa7a09f0d76c31c2455dcf80144db7fecd741637fc2aa3d56d91dbcf37069e8d</small><pre id="topic">
+
+    
+        Example of PDF file printing using Zebra Browser Print SDK
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anders Bilfeldt
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            980
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi
+Does anyone have an example of how to print a PDF file using the Zebra Browser Print SDK?
+We have a simple test that is capable of printing a text using:
+function printTest() {    BrowserPrint.getDefaultDevice(&#x27;printer&#x27;, function(printer)        {            if((typeof printer != &quot;undefined&quot;) &amp;&amp; (printer.connection == undefined))            {                alert(&quot;No default printer found. &quot; + &quot;Setup a default printer in Zebra Browser Print.&quot;);                    // give option to choose printer            }            else{                alert(&quot;Printer name: &quot; + printer.name);                printer.send(format_start + txtToPrint + format_end);            }        },        function(error_response)        {            // This alert doesn&#x27;t pop either            alert(&quot;An error occured while attempting to connect to your Zebra Printer. &quot; +                &quot;You may not have Zebra Browser Print installed, or it may not be running. &quot; +                &quot;Install Zebra Browser Print, or start the Zebra Browser Print Service, and try again.&quot;);        }    );    alert(&quot;After BrowserPrint&quot;); //This alert pops up immediately instead of waiting}
+But the alert &quot;Ater BrowserPrint&quot; is shown immediately (and then the error), and we have no idea how to print a PDF file instead of raw text.
+Thanks.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Anders, Did you set the default printer in Browser Print?&amp;nbsp; This is separate from the Windows Default printer.
+getDefaultDevice is asynchronous, so the &quot;After BrowserPrint&quot; will almost always show up before the default device is found.
+Past that, is the printer capable of taking PDF files?&amp;nbsp; You need special software installed on the printer to print PDFs directly.
+Once you have determined that, I would recommend using the sendUrl() function to send the PDF.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anders Bilfeldt
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Robin
+It makes sense that the &quot;After BrowserPrint&quot; alert is shown before the job is printed, since getDefaultDevice is asynchronous.
+Regarding PDF files:&amp;nbsp; Most of our users use something like a Zebra GK420d, but some use others. I have come to the conclusion now, that we can only send ZPL II or PNG|BMP|JPEG directly to the printer with the Browser Print SDK.
+My current workaround is simply converting the PDF to PNG and then trying to send the PNG image to the printer. But this is of cause not ideal.
+Do you have an example of sending a base 64 encoded PNG (or a HTML5 canvas element) to the printer using the Browser Print SDK?
+Thanks.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

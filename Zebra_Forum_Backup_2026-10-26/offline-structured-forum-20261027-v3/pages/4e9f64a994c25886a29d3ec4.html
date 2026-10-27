@@ -1,0 +1,168 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Can you advise us how to optimize the SendAndWaitForResponse(Byte[], Int32, Int32, String) method?</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/forum/26013; snapshot threads/resume-00615.html; SHA-256 1f3b35fe8ad5d20bdb81adaaa451c641291bc698454c2a41cd66ecf16d6d3574. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Can you advise us how to optimize the SendAndWaitForResponse(Byte[], Int32, Int32, String) method?</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            A
+          </div>
+          <div class="forum-topic__author-name">Anonymous</div>
+          <div class="forum-topic__timestamp">5 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            203
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>We are finding that setting the printer response time and initial timeout<br>
+is causing operations to be very slow. With the below code -<br>
+thePrinterConn.SendAndWaitForResponse(Encoding.UTF8.GetBytes(zplData),<br>
+960,650, "null")<br>
+^XA<br>
+^RFW,H^FD30361F8A7803428000000001^FS^FN1<br>
+^RFR,H^FS^HV1^FS<br>
+^XZ<br>
+We need to ensure that we first encode each tag &amp; then read the data on<br>
+each tag, but with the send and wait for response command, and the values<br>
+960 and 650 - the process is very slow. However when we decrease the<br>
+values, then the printer ends up skipping tags &amp; we do not have control on<br>
+the tags.<br>
+We are using the UsbConnection Class - not the driver printer class.<br>
+Can you advise us how to optimize the SendAndWaitForResponse(Byte[], Int32, Int32, String) method?<br>
+Or an alternative and faster way to send commands and get a response from the printer?<br>
+following is code for ref:<br>
+ Connection myConnection = new Zebra.Sdk.Comm.DriverPrinterConnection("ZDesigner R110Xi4 300 dpi");<br>
+ for (int i = 1; i </p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-47767" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 7 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>There are a few things to keep in mind. First of all, the RFID tag read/write plus label printing is generally slower than a regular ZPL label printing. Secondly, the USB connection generally is slower than TCP connection. The sum of the two timeouts in SendAndWaitForResponse() API will be the max time to wait before the API returns. If we can shorten either one of them, we will shorten the total time to wait. One thing noticed in your post is that "null" is passed to the API call for the string terminator parameter. If we know the response string from the printer is ended with a specific string, we can pass that specific string as the terminator to the SendAndWaitForResponse() API call, so that the API call will return immediately after receiving that&amp;nbsp;specific string. If we don't know the specific ending string, we can always use "\r" as the terminator because all&amp;nbsp;response string will have it at the end. This way we can shorten the second timeout.<br>
+Another way to improve this is to use&amp;nbsp;myConnection.write() and&amp;nbsp;myConnection.read() directly, which bypasses the inherent delays and timeouts in&amp;nbsp;SendAndWaitForResponse() API. Hope this helps.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/forum/26013%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/forum/26013%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

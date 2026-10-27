@@ -1,0 +1,327 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to handle printer alerts in Zebra mobile SDK when printer language is set to different languages apart from English</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to handle printer alerts in Zebra mobile SDK when printer language is set to different languages apart from English</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/how-handle-printer-alerts-zebra-mobile-sdk-when-printer-language-set-different-languages-apart-english; original snapshot: threads/00910.html; SHA-256: e286230fb05b448d5d84245970c0e4b4cd67e94ce7fc52c4f1866e90e0d1c36d</small><pre id="topic">
+
+    
+        How to handle printer alerts in Zebra mobile SDK when printer language is set to different languages apart from English
+
+
+        
+      
+                        
+                    
+            S
+          
+          Senthil Subramanian
+          4 years 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            32
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  HI,
+I am using Zebra-ZD500R printer along with Android mobile SDK.
+When printer language is set to English i am getting alerts like,
+ALERT: PQ JOB COMPLETED [2021-11-24 14:40:08] [99J212700479]
+But when printer language is set to other languages then alert is also getting notified in the same language. For example when i set the language to spanish, i received alerts like,
+ALERTA: TRABAJO PQ COMPL [2021-11-24 14:40:08] [99J212700479]
+Because of this i am not able to find out what that alert was, since that is notified in different language and SDK doesn&#x27;t know all these. Is there any efficient way how we can handle the alerts when printer is set to different languages?
+Thanks and Regards,
+Arunvishal S
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            It&#x27;s correct that the language used in the alerts is the language set by the display.language SGD. From the application perspective, you can query the setting of the display.language via SGD.GET(&quot;display.language&quot;, printerConnection). Then the application can handle the alerts accordingly based on the language.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Senthil Subramanian
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi, Thanks for your input. I have few queries on your input. How can an app understand the alerts in an language agnostic way? Should I raise this as an improvement to the firmware/sdk? Or is there any way to set the printer settings in such a way that irrespective of any display language, the alerts should always be in English?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The alerts are designed to be descriptive for the users, because the alerts can be redirected to the user directly through the email when the alerts&#x27; destination is set as E-MAIL. Therefore the language used in the alerts is based on the setting of the display.language. Unfortunately, the alert language cannot be tied to one specific language at the moment.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Senthil Subramanian
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            OK. I will use the display.language to set the language of the printer to handle this case.
+However, I was wondering if it would it help if there was a &quot;error_code&quot; that was always English and the &quot;error_description&quot; was in respective languages. Since error description makes sense mostly for email alerts and apps can handle it with their own custom text, we should separate them.
+Some of the benefits I see are:
+1. Host app does not need to know the error description for all languages.
+2. If the error description is changed, then the app need not be updated
+3. If a new language support is added to the printer, then the app need not be updated
+Let me know if this can raised as a feedback or improvement in any support/here and I will do so.
+For now, you can soft close this.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

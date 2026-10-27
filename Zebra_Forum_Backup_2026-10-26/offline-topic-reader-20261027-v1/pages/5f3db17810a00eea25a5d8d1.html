@@ -1,0 +1,172 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Issue connecting to ZT410 using Zebra Printer SDK</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Issue connecting to ZT410 using Zebra Printer SDK</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/26092; original snapshot: threads/resume-00402.html; SHA-256: 165daed27bebfdedb2ace4ad52fc6a34b37ebcf981fbc0eb27d6fe058bd3eac8</small><pre id="topic">
+
+    
+        Issue connecting to ZT410 using Zebra Printer SDK
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            65
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  First, we connect successfully to the Printer API using the following lines:
+Zebra.Sdk.Comm.Connection _ZebraApiConnection = ConnectionBuilder.Build(&quot;TCP_MULTI:10.100.120.236:9100:9200&quot;);
+_ZebraApiConnection.Open();
+Next, with an open connection to the Zebra Printer API, we attempt to call ZebraPrinterFactory.GetLinkOsPrinter(_ZebraApiConnection) which returns null.
+We can access the printer through the web ui and says:
+Status: READY
+This issue happens on multiple ZT410 printers with the latest sdk (V2.15.2634), firmware (V75.20.21Z) and link-os (V6.2).
+We are using C# .NET.
+Link to SDK here https://www.nuget.org/packages/Zebra.Printer.SDK/2.15.2634?_src=template
+Separate from above issue, on one of the printers when executing the following code:
+Zebra.Sdk.Comm.Connection _ZebraApiConnection = ConnectionBuilder.Build(&quot;TCP_MULTI:10.100.120.237:9100:9200&quot;);
+_ZebraApiConnection.Open();
+We receive the following exception:
+Zebra.Sdk.Comm.ConnectionException: Could not open connection
+  at Zebra.Sdk.Comm.MultichannelConnection.Open()
+The printer throwing the connection exception is available through the web ui and shows the following status:
+Status: PAUSED
+ERROR CONDITION PAPER OUT
+Both of these issues happen consistently every time the code is executed. Has anyone else had this issue and any luck resolving. Happy to provide additional details if helpful.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Do the two issues happen only to the particular printers or&amp;nbsp;happen to all printers in your network?
+Before calling ZebraPrinterFactory.GetLinkOsPrinter(_ZebraApiConnection), could&amp;nbsp;you check if&amp;nbsp;_ZebraApiConnection is truly open, i.e.&amp;nbsp;_ZebraApiConnection.Connected is true.&amp;nbsp;
+Zebra.Sdk.Comm.Connection _ZebraApiConnection = ConnectionBuilder.Build(&quot;TCP_MULTI:10.100.120.236:9100:9200&quot;);
+_ZebraApiConnection.Open();
+ZebraPrinterLinkOs printer = null;
+if (_ZebraApiConnection.Connected) {
+  printer = ZebraPrinterFactory.GetLinkOsPrinter(_ZebraApiConnection);
+}Regarding the 2nd issue, it looks like a different manifest of the first issue. I suspect that your network configuration may have restrictions on accessing the printers.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

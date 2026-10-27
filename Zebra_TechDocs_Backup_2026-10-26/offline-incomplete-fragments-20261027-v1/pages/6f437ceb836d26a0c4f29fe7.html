@@ -1,0 +1,1644 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>INCOMPLETE - APIs - TechDocs</title></head><body><header><h1>Incomplete captured fragment</h1><p>This is a partial DOM snapshot; content ends prematurely and must not be mistaken for a complete document. No live links, scripts or remote assets.</p><p>Source: https://techdocs.zebra.com/identityguardian/latest/api/</p><p>Original file: raw/6f437ceb836d26a0c4f29fe7.html | SHA-256: a490e11eee30675feaef055e01375a7272e797969a4c9af81b90c4ad3da3ad52</p></header><main><div class="row" id="mainContent">
+<div class="col-sm-12">
+<div class="blog-post blog-large wow fadeInLeft animated" data-wow-delay="0ms" data-wow-duration="300ms">
+<!-- Start of guide -->
+<div class="service-box wow fadeInRight animated">
+<div class="">
+<p></p><h2 class="anchor" id="overview"><a aria-disabled="true" class="heading-anchor" data-original-href="#overview"><span></span></a>Overview</h2>
+<p>This guide discusses the APIs provided by <strong>Identity Guardian,</strong> which uses a content provider interface to securely retrieve and share data between applications. The content provider URI is composed of four distinct parts: <code>&lt;Scheme:&gt;//&lt;Authority&gt;/&lt;API&gt;/&lt;Data&gt;</code></p>
+<ul>
+<li><strong>Scheme -</strong> Identifies the URI accessing a content source, typically represented as: <code>content://</code>.</li>
+<li><strong>Authority -</strong> The name of the provider authority, usually in the form <code>packagename.provider</code>.</li>
+<li><strong>API -</strong> The path that differentiates the content data.</li>
+<li><strong>Data -</strong> The key that points to specific data in the path.</li>
+</ul>
+<p>Example of content provider URI:   <span>content://com.zebra.mdna.els.provider/&lt;API&gt;/&lt;data&gt;</span></p>
+<p>Replace <code>&lt;API&gt;</code> and <code>&lt;data&gt;</code> with the appropriate string for specific use cases.</p>
+<hr/>
+<h2 class="anchor" id="apis-1"><a aria-disabled="true" class="heading-anchor" data-original-href="#apis-1"><span></span></a>APIs</h2>
+<h4 class="anchor" id="currentapis"><a aria-disabled="true" class="heading-anchor" data-original-href="#currentapis"><span></span></a>Current APIs</h4>
+<table border="1" class="facelift" padding="5px">
+<tbody><tr bgcolor="#dce8ef">
+<th>API Name</th>
+<th>Description</th>
+<th>Usage Context</th>
+</tr>
+<tr>
+<td><a aria-disabled="true" data-original-href="#getlockscreenstatus">Get Lock Screen Status</a> (previously Register for Notifications)</td>
+<td>Enables applications to check the status of the Identity Guardian lock screen.</td>
+<td>Applicable when Identity Guardian is used for user authentication at either the device or application level.</td>
+</tr>
+<tr>
+<td><a aria-disabled="true" data-original-href="#getcurrentusersession">Get Current User Session</a></td>
+<td>Retrieves information about the current user session.</td>
+<td>Applicable when Identity Guardian is used for user authentication at either the device or application level.</td>
+</tr>
+<tr>
+<td><a aria-disabled="true" data-original-href="#getprevioususersession">Get Previous User Session</a></td>
+<td>Retrieves information about the previous user session.</td>
+<td>Applicable when Identity Guardian is used for user authentication at either the device or application level.</td>
+</tr>
+<tr>
+<td><a aria-disabled="true" data-original-href="#setcurrentusersession">Set Current User Session</a></td>
+<td>Notifies Identity Guardian of user sign-in/sign-out events when third-party apps are used to block the device screen instead of Identity Guardian. This is applicable when <a aria-disabled="true" data-original-href="../usage/#proxymode">Proxy Mode</a> is enabled.</td>
+<td>Applicable for organizations using custom blocking screen apps for device access, aiming to track user activity across Zebra apps.</td>
+</tr>
+<tr>
+<td><a aria-disabled="true" data-original-href="#startauthentication">Start Authentication</a></td>
+<td>Activates Identity Guardian’s user authentication screen to confirm user credentials for device access.</td>
+<td>Used when Identity Guardian is employed for application-level authentication instead of device-level.</td>
+</tr>
+<tr>
+<td><a aria-disabled="true" data-original-href="#getauthenticationstatus">Get Authentication Status</a></td>
+<td>Retrieves information about the Identity Guardian lock screen state.</td>
+<td>Applicable when Identity Guardian is used for user authentication at either the device or application level.</td>
+</tr>
+<tr>
+<td><a aria-disabled="true" data-original-href="#lockscreenmessage">Lock Screen Message</a></td>
+<td>Displays a message on the Identity Guardian lock screen to notify users of important information.</td>
+<td>Applicable when Identity Guardian is used for user authentication at either the device or application level.</td>
+</tr>
+<tr>
+<td><a aria-disabled="true" data-original-href="#logoutuser">Logout User</a></td>
+<td>Enables applications to terminate the current user session and lock the screen.</td>
+<td>Applicable when Identity Guardian is used for user authentication at either the device or application level.</td>
+</tr>
+</tbody></table>
+<h4 class="anchor" id="legacyapis"><a aria-disabled="true" class="heading-anchor" data-original-href="#legacyapis"><span></span></a>Legacy APIs</h4>
+<table border="1" class="facelift" padding="5px">
+<tbody><tr bgcolor="#dce8ef">
+<th>API Name</th>
+<th>Description</th>
+<th>Usage Context</th>
+</tr>
+<tr>
+<td><a aria-disabled="true" data-original-href="#getcurrentusersessionlegacy">Get Current User Session (Legacy)</a></td>
+<td>Retrieves information about the current user session.</td>
+<td>Applicable when Identity Guardian is used for user authentication at either the device or application level.</td>
+</tr>
+</tbody></table>
+<hr/>
+<h2 class="anchor" id="requirements"><a aria-disabled="true" class="heading-anchor" data-original-href="#requirements"><span></span></a>Requirements</h2>
+<ul>
+<li><p><strong>Modify AndroidManifest.xml:</strong> In your application's AndroidManifest.xml, include the necessary permission and the <code>&lt;queries&gt;</code> tag to specify the Identity Guardian package name:</p>
+<pre class="prettyprint prettyprinted"><code><span class="tag">&lt;uses-permission</span><span class="pln"> </span><span class="atn">android:name</span><span class="pun">=</span><span class="atv">"com.zebra.mdna.els.permission.PROVIDER"</span><span class="pln"> </span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;queries&gt;</span><span class="pln">
+    </span><span class="tag">&lt;package</span><span class="pln"> </span><span class="atn">android:name</span><span class="pun">=</span><span class="atv">"com.zebra.mdna.els"</span><span class="pln"> </span><span class="tag">/&gt;</span><span class="pln">
+</span><span class="tag">&lt;/queries&gt;</span></code></pre></li>
+<li><p><strong>Allowlist Your App:</strong> For security, your app must be on Identity Guardian's allowlist using <a aria-disabled="true" data-original-href="/mx/accessmgr">AccessMgr CSP</a> from <a aria-disabled="true" data-original-href="/flux/about">Zebra Device Manager (ZDM)</a>. Create a profile via <a aria-disabled="true" data-original-href="/stagenow">StageNow</a> to configure your app's allowlist. Set the following parameters:</p>
+<ul>
+<li><strong>Operation Mode:</strong> "Single User without Whitelist"</li>
+<li><strong>Service Access Action</strong>: "Allow Caller to Call Service"</li>
+<li><strong>Service Identifier</strong>: &lt;delegation scope of the API category&gt;</li>
+<li><strong>Specify Caller Package Name</strong>: &lt;enter app package name, e.g.: com.company.appname&gt;</li>
+<li><strong>Caller Signature</strong>: &lt;select signature file that contains the app certificate&gt;</li></ul>
+<p>For information on generating a signature file, see <a aria-disabled="true" data-original-href="/mx/accessmgr/#caller-signature">Caller Signature</a> in the Access Mgr CSP documentation. After creating the StageNow profile, use StageNow to scan the generated barcode or deploy the XML file via Enterprise Mobility Management (EMM) software.</p></li>
+<li><p><strong>Add APIs to Your App's Allowlist:</strong> Identity Guardian APIs must be added to your application's allowlist.</p>
+<p><strong>Prerequisites:</strong></p>
+<ul>
+<li><strong>Download <a aria-disabled="true" data-original-href="/emdk-for-android/latest/samples/sigtools/">SigTools.jar</a>.</strong> This is used to generate the certificate to create a signature file for security purposes.</li>
+<li><strong>Place your .APK app and <a aria-disabled="true" data-original-href="/emdk-for-android/latest/samples/sigtools/">SigTools.jar</a> in the same folder</strong> on your host computer.</li>
+<li><strong>Download <a aria-disabled="true" data-original-href="/stagenow">StageNow</a>.</strong> This is used to create the profile to allowlist the APIs.</li></ul>
+<p><strong>Procedure:</strong></p>
+<p>Use StageNow to add your app into the allowlist with access to Identity Guardian APIs:</p></li>
+</ul>
+<ol>
+<li><p>From the command line, navigate to the directory containing your .APK and "SigTools.jar.".</p></li>
+<li><p>Generate the certificate by executing the following command, replacing "LOB_app.apk" with your .APK file's name:</p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">  java </span><span class="pun">-</span><span class="pln">jar </span><span class="typ">SigTools</span><span class="pun">.</span><span class="pln">jar getcert </span><span class="pun">-</span><span class="pln">inform apk </span><span class="pun">-</span><span class="pln">outform der </span><span class="pun">-</span><span class="kwd">in</span><span class="pln"> LOB_app</span><span class="pun">.</span><span class="pln">apk </span><span class="pun">-</span><span class="pln">outfile app</span><span class="pun">.</span><span class="pln">crt</span></code></pre></li>
+<li><p>From your host system, open StageNow and click on <strong>Create New Profile.</strong></p></li>
+<li><p>Select the MX version that matches or exceeds the one on your device. Refer to the <a aria-disabled="true" data-original-href="/mx/mx-version-on-device/">MX documentation</a> for guidance on how to determine the version.</p></li>
+<li><p>Select <strong>Expert Mode</strong> and click <strong>Create.</strong>
+<img alt="image" class="img-responsive" data-original-src="../../images/3-2/sn-wizard.jpg"/></p></li>
+<li><p>Enter a profile name and click <strong>Start.</strong>
+<img alt="image" class="img-responsive" data-original-src="../../images/3-2/sn-profile-name.png"/></p></li>
+<li><p>Click the plus (+) sign next to <strong>AccessMgr.</strong> This adds AccessMgr to the Config tab on the right side. Click <strong>Add.</strong>
+<img alt="image" class="img-responsive" data-original-src="../../images/3-2/sn-accessmgr.png"/></p></li>
+<li><p>Enter/select the following for <strong>AccessMgr:</strong></p>
+<ul>
+<li><strong>Service Access Action:</strong> Allow Caller to Call Service</li>
+<li><strong>Service Identifier:</strong> [Enter the API URI, see step 11. For example: <code>content://com.zebra.mdna.els.provider/lockscreenaction/startauthentication</code>]</li>
+<li><strong>Caller Package Name:</strong> [Enter the package name for your .APK app file.]</li>
+<li><strong>Caller Signature:</strong> [Browse to the .CRT certificate generated from step 2 above.]
+<img alt="image" class="img-responsive" data-original-src="../../images/3-2/sn-accessmgr-options.png"/></li></ul></li>
+<li><p>Click <strong>Continue.</strong></p></li>
+<li><p>Click <strong>Complete Profiles.</strong></p></li>
+<li><p>Repeat steps 3 to 10 for each API to allowlist in your app, replacing <strong>Service Identifier</strong> with the desired API URI:</p>
+<ul>
+<li><span>content://com.zebra.mdna.els.provider/lockscreenaction/startauthentication</span> (Start Authentication)</li>
+<li><span>content://com.zebra.mdna.els.provider/previoussession</span> (Previous User Session)</li>
+<li><span>content://com.zebra.mdna.els.provider/currentsession</span> (Current User Session)</li>
+<li><span>content://com.zebra.mdna.els.provider/lockscreenaction/authenticationstatus</span> (Authentication Status)</li>
+<li><span>content://com.zebra.mdna.els.provider/lockscreenaction/logout</span> (Logout)</li></ul>
+<p>After creating the StageNow profiles, use one of the following methods based on the desired tool for device deployment:</p></li>
+</ol>
+<ul>
+<li><strong>StageNow:</strong> Generate the barcode from the StageNow profile. Open StageNow client on the device and scan the barcode(s) generated from the installation, configuration and/or BLE profile.</li>
+<li><strong>EMM:</strong> Export each StageNow XML file from the StageNow installation, connection and BLE profiles. <em>Do not edit the XML file</em> - it can cause unexpected behavior. Send the XML using either <a aria-disabled="true" data-original-href="/oemconfig">OEMConfig</a> or <a aria-disabled="true" data-original-href="/mx/overview/">MX</a> to configure the app and grant all required permissions. The installation profile and server connectivity profile XML files must be used separately.</li>
+</ul>
+<hr/>
+<h2 class="anchor" id="getlockscreenstatus"><a aria-disabled="true" class="heading-anchor" data-original-href="#getlockscreenstatus"><span></span></a>Get Lock Screen Status</h2>
+<p>(Previously known as <em>Register for Notifications.</em>)</p>
+<p><strong>Description:</strong> Provides a reliable mechanism for Line of Business (LOB) applications to query the real-time status of the Identity Guardian (IG) lock screen. Applications can query on-demand and register a <code>ContentObserver</code> to receive push notifications whenever the lock screen state changes.</p>
+<p>The primary use case is to allow applications to adapt their behavior based on the device's security state, ensuring that sensitive functions are only accessible when the device is securely unlocked.</p>
+<p>This API is only applicable when the <a aria-disabled="true" data-original-href="../mc/#usagemode">Application Mode</a> in Managed Configuration is set to one of the following:</p>
+<ul>
+<li>PERSONALLY ASSIGNED</li>
+<li>AUTHENTICATION</li>
+<li>PROXY (with "Imprivata" or "Workspace ONE" as the "Preferred Authentication App")</li>
+</ul>
+<p>If the Application Mode is not one of these, the API will return an ERROR or HIDDEN state.</p>
+<p><strong>Best Practices:</strong></p>
+<ul>
+<li><strong>Lifecycle Management:</strong> This API should be registered in the <code>onCreate()</code> method and unregistered in the <code>onDestroy()</code> method.</li>
+<li><strong>Resiliency:</strong> The LOB app should register for the Identity Guardian content provider after installation. Following registration, Zebra recommends a 5-second delay before the initial state is queried.</li>
+<li><strong>Immediate Notifications:</strong> To receive notifications immediately, the LOB app must register to the content provider in the foreground service.</li>
+</ul>
+<p><strong>Content URI:</strong>   <span>content://com.zebra.mdna.els.provider/lockscreenstatus/state</span></p>
+<p><strong>Response:</strong> Returns a JSON response with the lock screen state, corresponding message, and time stamp.</p>
+<table border="1" class="facelift" padding="5px">
+<tbody><tr bgcolor="#dce8ef">
+<th>State</th>
+<th>Message</th>
+<th>Description &amp; Common Triggers</th>
+</tr>
+<tr>
+<td rowspan="2" valign="top">SHOWN</td>
+<td>No Identity Guardian user is currently logged in, so the Identity Guardian lock screen is active.</td>
+<td rowspan="2" valign="top"><b>Description:</b> The lock screen is active, blocking user access.<br/><b>Triggers:</b><br/>   • User logs out<br/>   • Device lock event<br/>   • Docking/undocking device</td>
+</tr>
+<tr>
+<td>No Imprivata  or Workspace ONE user is currently logged in, so the lock screen is active.</td>
+</tr>
+<tr>
+<td rowspan="3" valign="top">HIDDEN</td>
+<td>An Identity Guardian user is currently logged in, so the Identity Guardian lock screen is not active.</td>
+<td rowspan="3" valign="top"><b>Description:</b> The lock screen is not visible. <br/><b>Triggers:</b><br/>   • Successful login<br/>   • Imprivata or Workspace ONE app not installed in a proxy setup</td>
+</tr>
+<tr>
+<td>An Imprivata or Workspace ONE user is currently logged in, so the lock screen is not active.</td>
+</tr>
+<tr>
+<td>The Preferred Authentication App is set to Imprivata, but the Imprivata Mobile Device Access (MDA) app is not installed.</td>
+</tr>
+<tr>
+<td rowspan="5" valign="top">ERROR</td>
+<td>The Application Mode is not set in Managed Configurations. Please set a valid application mode.</td>
+<td rowspan="5" valign="top"><b>Description:</b> API cannot determine the status. <br/><b>Triggers:</b><br/>   • Application Mode is not set<br/>   • Application Mode is unsupported (e.g., ENROLLMENT, PROXY with Identity Guardian as the preferred app)<br/>   • Device is not licensed</td>
+</tr>
+<tr>
+<td>The current Application Mode is ENROLLMENT. The lock screen state cannot be queried in this mode.</td>
+</tr>
+<tr><td>The Application Mode is set to Proxy and the Preferred Authentication App is set to Identity Guardian. This combination is not supported.</td>
+</tr><tr>
+<td>The specified Application Mode is not supported. Please check the device configuration.</td>
+</tr>
+<tr>
+<td>This device does not have a valid Identity Guardian license. Please apply a valid license.</td>
+</tr>
+<tr>
+</tr></tbody></table>
+<h4 class="anchor" id="samplecode"><a aria-disabled="true" class="heading-anchor" data-original-href="#samplecode"><span></span></a>Sample Code</h4>
+<p>To register for lock screen state changes (SHOWN, HIDDEN, or ERROR):</p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">    </span><span class="com">// The ContentObserver mechanism is standard. Register an observer for the URI.</span><span class="pln">
+    </span><span class="typ">Uri</span><span class="pln"> URI_CURRENT_LOCKSCREEN_STATE </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Uri</span><span class="pun">.</span><span class="pln">parse</span><span class="pun">(</span><span class="str">"content://com.zebra.mdna.els.provider/lockscreenstatus/state"</span><span class="pun">);</span><span class="pln">
+
+    getContentResolver</span><span class="pun">().</span><span class="pln">registerContentObserver</span><span class="pun">(</span><span class="pln">URI_CURRENT_LOCKSCREEN_STATE</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span><span class="pln"> lockScreenStateContentObserver</span><span class="pun">);</span><span class="pln">
+
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="typ">ContentObserver</span><span class="pln"> lockScreenStateContentObserver </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">ContentObserver</span><span class="pun">(</span><span class="pln">mainHandler</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="lit">@Override</span><span class="pln">
+        </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> onChange</span><span class="pun">(</span><span class="pln">boolean selfChange</span><span class="pun">,</span><span class="pln"> </span><span class="lit">@Nullable</span><span class="pln"> </span><span class="typ">Uri</span><span class="pln"> uri</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">super</span><span class="pun">.</span><span class="pln">onChange</span><span class="pun">(</span><span class="pln">selfChange</span><span class="pun">,</span><span class="pln"> uri</span><span class="pun">);</span><span class="pln">
+            getCurrentLockScreenState</span><span class="pun">();</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">};</span></code></pre>
+<p>To get the current lock screen state:</p>
+<p><strong>Note:</strong> Zebra recommends to call the <code>getCurrentLockScreenState()</code> in a worker thread to query the state without blocking the main thread.</p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> AUTHORITY </span><span class="pun">=</span><span class="pln"> </span><span class="str">"com.zebra.mdna.els.provider"</span><span class="pun">;</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="typ">String</span><span class="pln"> METHOD </span><span class="pun">=</span><span class="pln"> </span><span class="str">"lockscreenstatus/state"</span><span class="pun">;</span><span class="pln">
+
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> getCurrentLockScreenState</span><span class="pun">(){</span><span class="pln">
+
+        </span><span class="kwd">try</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="typ">Bundle</span><span class="pln"> call </span><span class="pun">=</span><span class="pln"> getContentResolver</span><span class="pun">().</span><span class="pln">call</span><span class="pun">(</span><span class="pln">AUTHORITY</span><span class="pun">,</span><span class="pln"> METHOD</span><span class="pun">,</span><span class="str">""</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">);</span><span class="pln">
+
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">call </span><span class="pun">!=</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                </span><span class="typ">String</span><span class="pln"> json </span><span class="pun">=</span><span class="pln"> call</span><span class="pun">.</span><span class="pln">getString</span><span class="pun">(</span><span class="str">"RESULT"</span><span class="pun">);</span><span class="pln">
+                </span><span class="typ">JSONObject</span><span class="pln"> jsonObject </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">JSONObject</span><span class="pun">(</span><span class="pln">json</span><span class="pun">);</span><span class="pln">
+                </span><span class="typ">String</span><span class="pln"> lockScreenState </span><span class="pun">=</span><span class="pln"> jsonObject</span><span class="pun">.</span><span class="pln">getString</span><span class="pun">(</span><span class="str">"state"</span><span class="pun">);</span><span class="pln">
+                </span><span class="typ">String</span><span class="pln"> message </span><span class="pun">=</span><span class="pln"> jsonObject</span><span class="pun">.</span><span class="pln">getString</span><span class="pun">(</span><span class="str">"message"</span><span class="pun">);</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln">
+            </span><span class="kwd">else</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                </span><span class="com">// Handle the case where the call returns null</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+        </span><span class="kwd">catch</span><span class="pln"> </span><span class="pun">(</span><span class="typ">Exception</span><span class="pln"> e</span><span class="pun">){</span><span class="pln">
+            </span><span class="com">// Handle exceptions appropriately</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">}</span></code></pre>
+<h4 class="anchor" id="sampleresponse"><a aria-disabled="true" class="heading-anchor" data-original-href="#sampleresponse"><span></span></a>Sample Response</h4>
+<p>Sample responses returned in JSON format.</p>
+<p>Success State (SHOWN):</p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">    </span><span class="pun">{</span><span class="pln">  
+        </span><span class="str">"state"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"SHOWN"</span><span class="pun">,</span><span class="pln">  
+        </span><span class="str">"message"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"No Identity Guardian user is currently logged in, so the Identity Guardian lock screen is active."</span><span class="pun">,</span><span class="pln">  
+        </span><span class="str">"lastchangedtimestamp"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Apr 10,2026 19:07:38.18"</span><span class="pln">
+    </span><span class="pun">}</span></code></pre>
+<p>Error State (ERROR):</p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"state"</span><span class="pun">:</span><span class="str">"ERROR"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"message"</span><span class="pun">:</span><span class="str">"The Application Mode is not set in Managed Configurations. Please set a valid application mode."</span><span class="pln">
+        </span><span class="str">"lastchangedtimestamp"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Apr 10,2026 19:05:18.20"</span><span class="pln">
+    </span><span class="pun">}</span></code></pre>
+<hr/>
+<h2 class="anchor" id="getusersession"><a aria-disabled="true" class="heading-anchor" data-original-href="#getusersession"><span></span></a>Get User Session</h2>
+<p>Retrieve session data associated with the current or previous user. <em><strong>When the device is in a locked state, these APIs are functional if the lock state is activated by specific device system events,</strong> <u>not</u> by an application triggering the lock state.</em> The lock screen can be activated by the following device system events, based on <a aria-disabled="true" data-original-href="../mc/#shareddeviceauthentication">Shared Device Authentication</a>:</p>
+<ul>
+<li>Unlocking the device (OnUnlock)</li>
+<li>Rebooting the device (OnReboot)</li>
+<li>Connecting the device to AC power (OnACPowerConnected)</li>
+<li>Disconnecting the device from AC power (OnACPowerDisconnected)</li>
+</ul>
+<p>An application can activate the lock screen by invoking <a aria-disabled="true" data-original-href="#startauthentication">Start Authentication</a>.</p>
+<hr/>
+<h3 class="anchor" id="getcurrentusersession"><a aria-disabled="true" class="heading-anchor" data-original-href="#getcurrentusersession"><span></span></a>Get Current User Session</h3>
+<p><strong>Description:</strong> This API uses a content URI to retrieve data from the current user session. It accesses the cursor’s extras and extracts the result string from the extras bundle. If the result string is populated, it must be parsed into a JSON object, which is the expected output format.</p>
+<p>When <strong><a aria-disabled="true" data-original-href="../usage/#proxymode">Proxy Mode</a> is configured with either Imprivata or Workspace ONE,</strong> registered apps can automatically receive user session details during login or logout events to ensure device accountability and streamline administrative tracking. Pairing Identity Guardian with Imprivata or Workspace ONE secures shared environments, where Identity Guardian serves as a bridge, broadcast-sharing authentication event details from the third-party client directly to the registered Line of Business (LOB) apps.</p>
+<ul>
+<li><strong>For Imprivata:</strong> This bridge delivers details triggered by two specific events: username/password logins/logouts and NFC card tap logins/logouts. For immediate notification, Zebra recommends registering the observer within a foreground service.</li>
+<li><strong>For Workspace ONE:</strong> Identity Guardian automatically broadcasts state changes, allowing registered LOB apps acting as content observers to receive immediate callbacks with secure, logged-in or logged-out user data.</li>
+</ul>
+<p>To ensure immediate notification for either integration, Zebra recommends registering the observer within a foreground service.</p>
+<blockquote>
+<p><i class="fa fa-exclamation-triangle"></i> <b>Note:</b> Zebra recommends using this API instead of the <a aria-disabled="true" data-original-href="#getcurrentusersessionlegacy">Get Current User Session (Legacy)</a> API.</p>
+</blockquote>
+<p><strong>Content URI:</strong>   <span>content://com.zebra.mdna.els.provider/v2/currentsession</span></p>
+<p><strong>Input Keys:</strong> None</p>
+<p><strong>Response:</strong> A Cursor object in JSON string format containing the required bundle. A null or empty cursor indicates that no user is signed into the device. The table below details the key/value pairs returned in the response. The "Supported Mode" depends on the <strong>Application Mode</strong> set under <a aria-disabled="true" data-original-href="../mc/#usagemode">Usage Mode</a> in the Managed Configurations:</p>
+<ul>
+<li><strong>Authentication -</strong> Applies strictly when operating in Authentication mode</li>
+<li><strong>Proxy -</strong> Applies strictly when operating in Proxy mode</li>
+<li><strong>Both -</strong> Applies to both Authentication and Proxy modes</li>
+</ul>
+<table border="1" class="facelift" padding="5px">
+<tbody><tr bgcolor="#dce8ef">
+<th>Key</th>
+<th>Type</th>
+<th>Supported Mode</th>
+<th>Description/Value (Authentication Mode)</th>
+<th>Description/Value (Proxy Mode)</th>
+</tr>
+<tr>
+<td>authenticationFactors</td>
+<td>JSON object</td>
+<td>Authentication </td>
+<td>[Returns authentication factor details. See <a aria-disabled="true" data-original-href="#sampleauthenticationresults">Sample Authentication Results</a> below.]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>adminByPassFactors</td>
+<td>Array</td>
+<td>Authentication </td>
+<td>[Returns authentication factor details. See <a aria-disabled="true" data-original-href="#sampleauthenticationresults">Sample Authentication Results</a> below.]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>alternateFactors</td>
+<td>Array</td>
+<td>Authentication </td>
+<td>[Returns authentication factor details. See <a aria-disabled="true" data-original-href="#sampleauthenticationresults">Sample Authentication Results</a> below.]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>displayName</td>
+<td>String</td>
+<td>Proxy</td>
+<td>Specifies the user display name shared by Imprivata or Workspace ONE</td>
+<td>For example: John Doe</td>
+</tr>
+<tr>
+<td>domain</td>
+<td>String</td>
+<td>Proxy</td>
+<td>Specifies the domain shared by Imprivata</td>
+<td>For example: sample.com</td>
+</tr>
+<tr>
+<td>userName</td>
+<td>String</td>
+<td>Proxy</td>
+<td>User name shared by Imprivata  or Workspace ONE</td>
+<td>For example: JohnD</td>
+</tr>
+<tr>
+<td>factor</td>
+<td>String</td>
+<td>Authentication </td>
+<td>Specifies the type of authentication used:<br/>   • <b>PASSCODE</b><br/>   • <b>FACE</b><br/>   • <b>SSO</b><br/>   </td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>factorType</td>
+<td>String</td>
+<td>Authentication </td>
+<td>Defines the level of authentication used: <br/>   • <b>PRIMARYPRIMARYFACTOR -</b> Primary authentication<br/>   • <b>PRIMARYSECONDARYFACTOR1 -</b> Secondary authentication<br/>   • <b>FALLBACKFACTOR1 -</b>Fallback authentication</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>status</td>
+<td>String</td>
+<td>Both</td>
+<td>Current authentication status: <br/><b>   • EXECUTED -</b>  Successful authentication<br/><b>   • EXECUTED BUT NOT CONSIDERED -</b> Primary authentication was successful but secondary authentication failed<br/><b>   • TIMEDOUT -</b> The authentication request timed out<br/><b>   • USERSKIPPED -</b>The user bypassed the SSO login prompt by pressing the back button, resulting to fallback authentication</td>
+<td>Current authentication status: <br/><b>   • SUCCESS -</b> Successful authentication<br/><b>   • FAILED -</b> Unsuccessful authentication</td>
+</tr>
+<tr>
+<td>eventType</td>
+<td>String</td>
+<td>Both</td>
+<td>Specifies the event that occurred: <br/><b>   • Login -</b> The user logged in to the device<br/><b>   • Logout -</b> The user logged out from the device</td>
+<td>Specifies the event that occurred: <br/><b>   • Login -</b> The user logged in to the device<br/><b>   • Logout -</b> The user logged out from the device</td>
+</tr>
+<tr>
+<td>isSSOInformationAvailable</td>
+<td>Boolean</td>
+<td>Both</td>
+<td>Availability of Single Sign-On (SSO) data: <br/><b>   • 1 -</b>  SSO information is available; <code>ssoInformation</code> can be parsed for details<br/><b>   • 0 -</b> SSO information is not available<br/></td>
+<td>[Empty value returned]</td>
+</tr>
+<tr>
+<td>schemaVersion</td>
+<td>String</td>
+<td>Both</td>
+<td>[Version of the authentication factors schema]</td>
+<td>[Version of the authentication factors schema]</td>
+</tr>
+<tr>
+<td>userLoggedInState</td>
+<td>Integer</td>
+<td>Both</td>
+<td>User login status on the device: <br/><b>   • 1 -</b> The user is signed in or has checked out the device, updating the userLoginTime<br/><b>   • 0 -</b> The user is signed out or has checked in the device, updating the userLogoutTime<br/></td>
+<td>User login status on the device:<br/><b>   • 1 -</b> The user is signed in or has checked out the device, updating the userLoginTime<br/><b>   • 0 -</b> The user is signed out or has checked in the device, updating the userLogoutTime<br/></td>
+</tr>
+<tr>
+<td>userId</td>
+<td>String</td>
+<td>Both</td>
+<td>[Identifier for the user signed into the device, e.g., user1@zebra.com]</td>
+<td>[Identifier for the user signed into the device, e.g., user1@zebra.com]</td>
+</tr>
+<tr>
+<td>enrollmentInformation</td>
+<td>JSON object</td>
+<td>Authentication </td>
+<td>[Parent key]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>enrollmentCreatedOn</td>
+<td>Long</td>
+<td>Authentication </td>
+<td>[Timestamp when the barcode was created, in EPOCH time, e.g., 1737983880029]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>enrollmentCreatedOnDeviceModel</td>
+<td>String</td>
+<td>Authentication </td>
+<td>[Device model on which the barcode was created, e.g., TC58]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>enrollmentCreatedOnDeviceSerialNo</td>
+<td>String</td>
+<td>Authentication </td>
+<td>[Serial number of device where the barcode was created]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>enrollmentExpiryDate</td>
+<td>Long</td>
+<td>Authentication </td>
+<td>[Expiration date of the barcode, in EPOCH time, e.g., 1738156680000]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>enrollmentId</td>
+<td>String</td>
+<td>Authentication </td>
+<td>[Unique identifier for the barcode, e.g., 1237983906027D4BA34E]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>enrollmentType</td>
+<td>String</td>
+<td>Authentication </td>
+<td>Type of enrollment: <br/>   • <b>BARCODE</b><br/>   • <b>DEVICE</b></td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>securityTypes</td>
+<td>String</td>
+<td>Authentication </td>
+<td>Types of security mechanism in use: <br/>   • <b>FACE</b><br/>   • <b>PASSCODE</b><br/>   • <b>SSO</b></td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>storageType</td>
+<td>String</td>
+<td>Authentication </td>
+<td>Type of storage used for authentication:<br/>   • <b>BARCODE -</b> For shared devices<br/><b>   • DEVICE -</b> For personal devices</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>logOutInformation</td>
+<td>JSON object</td>
+<td>Both</td>
+<td>[Parent key]</td>
+<td>[Parent key - Visibly only when a user signs in under Proxy Mode]</td>
+</tr>
+<tr>
+<td>logoutReason</td>
+<td>String</td>
+<td>Authentication </td>
+<td>Specifies the event that triggered the user logout: <br/><b>   • on_lock -</b> The user locked the device.<br/><b>   • manual_logout -</b> The user manually signed out using the <b>Sign out</b> button in Identity Guardian<br/><b>   • user_change -</b> The user signed out and another user signed in.<br/><b>   • onAcPowerConnect -</b>The device was connected to a power source.<br/><b>   • onACPowerDisconnect -</b>The device was disconnected from a power source.</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>userLogoutTime</td>
+<td>String</td>
+<td>Both</td>
+<td>[Timestamp when user logged out, in EPOCH format]</td>
+<td>[Timestamp when user logged out, in EPOCH format]</td>
+</tr>
+<tr>
+<td>loginInformation</td>
+<td>JSON object</td>
+<td>Both</td>
+<td>[Parent key]</td>
+<td>[Parent key - Visibly only when a user signs in under Proxy Mode]</td>
+</tr>
+<tr>
+<td>userLoginTime</td>
+<td>String</td>
+<td>Both</td>
+<td>[Timestamp when user logged in, in EPOCH format]</td>
+<td>[Timestamp when user logged in, in EPOCH format]</td>
+</tr>
+<tr>
+<td>ssoInformation</td>
+<td>JSON object</td>
+<td>Both</td>
+<td>[Parent key]</td>
+<td>[Parent key]</td>
+</tr>
+<tr>
+<td>ssoAccessToken</td>
+<td>String</td>
+<td>Authentication </td>
+<td>[Access token for Single Sign-On]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>ssoDataReceivedFromIDP</td>
+<td>String</td>
+<td>Authentication </td>
+<td>[Data received from Identity Provider]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>ssoIDToken</td>
+<td>String</td>
+<td>Authentication </td>
+<td>[Single Sign-On ID token]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>ssoProvider</td>
+<td>string</td>
+<td>Authentication </td>
+<td>Single Sign-On provider in use: <br/><b>   • PingId</b><br/><b>   • Microsoft</b><br/><b>   • OKTA</b></td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>status</td>
+<td>String</td>
+<td>Both</td>
+<td>Indicates the API response outcome: <br/><b>   • SUCCESS</b><br/><b>   • FAILED</b></td>
+<td>Indicates the API response outcome: <br/><b>   • SUCCESS</b><br/><b>   • FAILED</b></td>
+</tr>
+<tr>
+<td>userInformation</td>
+<td>JSON object</td>
+<td>Both</td>
+<td>[Parent key]</td>
+<td>[Parent key with empty object]</td>
+</tr>
+<tr>
+<td>userId</td>
+<td>String</td>
+<td>Both</td>
+<td>Identifier for the user signed into the device, e.g., user1@zebra.com</td>
+<td>Identifier for the user signed into the device, e.g., user1@zebra.com</td>
+</tr>
+<tr>
+<td>userRole</td>
+<td>String</td>
+<td>Authentication </td>
+<td>[Role identifier based on data from the SSO provider]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>errorCode</td>
+<td>Integer</td>
+<td>Both</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p><br/></p>
+<p><strong>Error Handling:</strong></p>
+<p>Expected data may not be returned to the LOB app in the following scenarios:</p>
+<ul>
+<li><strong>Empty Cursor:</strong> Returned if the LOB application is not authorized with MX Access Manager; refer to the <a aria-disabled="true" data-original-href="#requirements">Requirements</a> section.</li>
+<li><strong>No RESULT Object:</strong> Returned if an internal error occurs in Identity Guardian during data manipulation.</li>
+</ul>
+<p><strong>Exceptions:</strong></p>
+<ul>
+<li><strong>NullPointerException –</strong> Returned if the URI or method is null</li>
+<li><strong>IllegalArgumentException –</strong> Returned if the URI is not known</li>
+</ul>
+<p><strong>Known Limitations:</strong></p>
+<ul>
+<li><strong>Imprivata Guest Logins:</strong> When a user unlocks the device using Imprivata with a "Guest" login, Identity Guardian does not register this as a standard login event. It does not retrieve user data or send notifications to registered applications.
+
+
+<ul>
+<li><strong>Workaround:</strong> To detect when the device is unlocked by Imprivata under any condition (including Guest mode), applications should instead monitor the <a aria-disabled="true" data-original-href="#getlockscreenstatus">Get Lock Screen Status API</a>.</li></ul>
+</li>
+<li><strong>Workspace ONE User Login Delay:</strong> A 10- to 25-second delay may occur during user login while waiting to receive the callback from Workspace ONE.</li>
+</ul>
+<p><br/></p>
+<h4 class="anchor" id="samplecode-1"><a aria-disabled="true" class="heading-anchor" data-original-href="#samplecode-1"><span></span></a>Sample Code</h4>
+<p>There are three types of samples available:</p>
+<ul>
+<li><a aria-disabled="true" data-original-href="#retrieve-user-session">Retrieve Current User Session (Non-Proxy Mode)</a></li>
+<li><a aria-disabled="true" data-original-href="#retrieve-user-session-proxy">Retrieve Current User Session for Proxy Mode with Imprivata</a></li>
+<li><a aria-disabled="true" data-original-href="#retrieve-user-session-proxy-w">Retrieve Current User Session for Proxy Mode with Workspace ONE</a></li>
+</ul>
+<h4 class="anchor" id="retrieve-user-session"><a aria-disabled="true" class="heading-anchor" data-original-href="#retrieve-user-session"><span></span></a>Retrieve Current User Session (Non-Proxy Mode)</h4>
+<p>This sample demonstrates how to fetch current user session data from the content provider and parse it into a JSON object.</p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> final </span><span class="typ">Uri</span><span class="pln"> URI_USER_CURRENT_SESSION_V2 </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Uri</span><span class="pun">.</span><span class="pln">parse</span><span class="pun">(</span><span class="str">"content://com.zebra.mdna.els.provider/v2/currentsession"</span><span class="pun">);</span><span class="pln">
+
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> fetchCurrentUserSessionDataV2</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="typ">ContentResolver</span><span class="pln"> cr </span><span class="pun">=</span><span class="pln"> getContentResolver</span><span class="pun">();</span><span class="pln"> </span><span class="com">// Get the content resolver to query the provider</span><span class="pln">
+        </span><span class="typ">Cursor</span><span class="pln"> cursor </span><span class="pun">=</span><span class="pln"> cr</span><span class="pun">.</span><span class="pln">query</span><span class="pun">(</span><span class="pln">URI_USER_CURRENT_SESSION_V2</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">);</span><span class="pln"> </span><span class="com">// Query the provider using the V2 URI</span><span class="pln">
+        </span><span class="kwd">try</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">cursor </span><span class="pun">!=</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="com">// Check if the cursor is not null</span><span class="pln">
+                </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">i</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"Cursor info"</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> cursor</span><span class="pun">.</span><span class="pln">getExtras</span><span class="pun">());</span><span class="pln"> </span><span class="com">// Log cursor information</span><span class="pln">
+                </span><span class="typ">Bundle</span><span class="pln"> extras </span><span class="pun">=</span><span class="pln"> cursor</span><span class="pun">.</span><span class="pln">getExtras</span><span class="pun">();</span><span class="pln"> </span><span class="com">// Get any extras data from the cursor</span><span class="pln">
+                </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">extras </span><span class="pun">!=</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                    </span><span class="typ">String</span><span class="pln"> result </span><span class="pun">=</span><span class="pln"> extras</span><span class="pun">.</span><span class="pln">getString</span><span class="pun">(</span><span class="str">"RESULT"</span><span class="pun">,</span><span class="pln"> </span><span class="str">""</span><span class="pun">);</span><span class="pln"> </span><span class="com">// Retrieve the "RESULT" data from the extras</span><span class="pln">
+                    </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">i</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"getDataForCurrentUser: key is "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> result</span><span class="pun">);</span><span class="pln"> </span><span class="com">// Log the result string</span><span class="pln">
+
+                    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(!</span><span class="pln">result</span><span class="pun">.</span><span class="pln">isEmpty</span><span class="pun">())</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="com">// Proceed if the result is not empty</span><span class="pln">
+                        </span><span class="kwd">try</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                            </span><span class="typ">JSONObject</span><span class="pln"> resultObject </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">JSONObject</span><span class="pun">(</span><span class="pln">result</span><span class="pun">);</span><span class="pln"> </span><span class="com">// Parse the result string into a JSON object</span><span class="pln">
+                            </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">i</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"Json Result : "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> resultObject</span><span class="pun">.</span><span class="pln">toString</span><span class="pun">(</span><span class="lit">1</span><span class="pun">));</span><span class="pln"> </span><span class="com">// Log the formatted JSON result</span><span class="pln">
+                        </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">catch</span><span class="pln"> </span><span class="pun">(</span><span class="typ">Exception</span><span class="pln"> e</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="com">// Catch any exceptions during JSON parsing</span><span class="pln">
+                            </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">i</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"Exception in parsing  "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> e</span><span class="pun">.</span><span class="pln">getMessage</span><span class="pun">());</span><span class="pln"> </span><span class="com">// Log any parsing errors</span><span class="pln">
+                        </span><span class="pun">}</span><span class="pln">
+                    </span><span class="pun">}</span><span class="pln">
+                </span><span class="pun">}</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">catch</span><span class="pln"> </span><span class="pun">(</span><span class="typ">Exception</span><span class="pln"> e</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="com">// Catch any other exceptions during the query process</span><span class="pln">
+            </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">e</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"Exception in getDataForCurrentUser  "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> e</span><span class="pun">.</span><span class="pln">getMessage</span><span class="pun">());</span><span class="pln"> </span><span class="com">// Log the exception</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">finally</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">cursor </span><span class="pun">!=</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="com">// Ensure that the cursor is closed to prevent memory leaks</span><span class="pln">
+                cursor</span><span class="pun">.</span><span class="pln">close</span><span class="pun">();</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">}</span></code></pre>
+<p><strong>Example Response:</strong> Sample response after a user authenticates and logs in to Identity Guardian in authentication mode:</p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"authenticationFactors"</span><span class="pun">:{</span><span class="pln">
+            </span><span class="str">"adminByPassFactors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[],</span><span class="pln">
+            </span><span class="str">"alternateFactors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[],</span><span class="pln">
+            </span><span class="str">"factors"</span><span class="pun">:[</span><span class="pln">
+                </span><span class="pun">{</span><span class="pln">
+                    </span><span class="str">"factor"</span><span class="pun">:</span><span class="str">"PASSCODE"</span><span class="pun">,</span><span class="pln">
+                    </span><span class="str">"factorType"</span><span class="pun">:</span><span class="str">"PRIMARYPRIMARYFACTOR"</span><span class="pun">,</span><span class="pln">
+                    </span><span class="str">"status"</span><span class="pun">:</span><span class="str">"EXECUTED"</span><span class="pln">
+                </span><span class="pun">},</span><span class="pln">
+                </span><span class="pun">{</span><span class="pln">
+                    </span><span class="str">"factor"</span><span class="pun">:</span><span class="str">"SSO"</span><span class="pun">,</span><span class="pln">
+                    </span><span class="str">"factorType"</span><span class="pun">:</span><span class="str">"PRIMARYSECONDARYFACTOR1"</span><span class="pun">,</span><span class="pln">
+                    </span><span class="str">"status"</span><span class="pun">:</span><span class="str">"EXECUTED"</span><span class="pln">
+                </span><span class="pun">}</span><span class="pln">
+            </span><span class="pun">],</span><span class="pln">
+            </span><span class="str">"schemaVersion"</span><span class="pun">:</span><span class="str">"1.0"</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"enrollmentInformation"</span><span class="pun">:{</span><span class="pln">
+            </span><span class="str">"enrollmentCreatedOn"</span><span class="pun">:</span><span class="str">"1737983880029"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"enrollmentCreatedOnDeviceModel"</span><span class="pun">:</span><span class="str">"TC58"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"enrollmentCreatedOnDeviceSerialNo"</span><span class="pun">:</span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"enrollmentExpiryDate"</span><span class="pun">:</span><span class="str">"1738156680000"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"enrollmentId"</span><span class="pun">:</span><span class="str">"1737983906027D4BA34E"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"enrollmentType"</span><span class="pun">:</span><span class="str">"BARCODE"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"securityTypes"</span><span class="pun">:</span><span class="str">"PASSCODE"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"storageType"</span><span class="pun">:</span><span class="str">"BARCODE"</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"errorCode"</span><span class="pun">:</span><span class="lit">0</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"eventType"</span><span class="pun">:</span><span class="str">"Login"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"lockScreenEventType"</span><span class="pun">:””</span><span class="pln">
+        </span><span class="str">"isSSOInformationAvailable"</span><span class="pun">:</span><span class="lit">1</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"logOutInformation"</span><span class="pun">:{</span><span class="pln">
+            </span><span class="str">" logoutReason "</span><span class="pun">:</span><span class="str">""</span><span class="pln">
+            </span><span class="str">"userLogoutTime"</span><span class="pun">:</span><span class="str">""</span><span class="pln">
+
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"loginInformation"</span><span class="pun">:{</span><span class="pln">
+            </span><span class="str">"userLoginTime"</span><span class="pun">:</span><span class="str">"1738247487590"</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"schemaVersion"</span><span class="pun">:</span><span class="str">"2.0"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"ssoInformation"</span><span class="pun">:{</span><span class="pln">
+            </span><span class="str">"ssoAccessToken"</span><span class="pun">:</span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"ssoDataReceivedFromIDP:"",
+            "</span><span class="pln">ssoIDToken</span><span class="str">":"",
+            "</span><span class="pln">ssoProvider</span><span class="str">":"</span><span class="typ">Microsoft</span><span class="str">"
+        },
+        "</span><span class="pln">status</span><span class="str">":"</span><span class="pln">SUCCESS</span><span class="str">",
+        "</span><span class="pln">userInformation</span><span class="str">":{
+            "</span><span class="pln">userId</span><span class="str">":"</span><span class="pln">user1@zebra</span><span class="pun">.</span><span class="pln">com</span><span class="str">",
+            "</span><span class="pln">userRole</span><span class="str">":""
+        },
+        "</span><span class="pln">userLoggedInState</span><span class="str">":"</span><span class="lit">1</span><span class="str">"
+    }</span></code></pre>
+<p><strong>Sample Authentication Results:</strong> Examples of <u>authentication results,</u> demonstrating the success or failure of primary, secondary, and fallback methods, illustrating various scenarios and their outcomes:</p>
+<ul>
+<li><p><strong>Primary and Secondary Authentication Successful:</strong></p>
+<pre class="prettyprint prettyprinted"><code><span class="str">"factors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYPRIMARYFACTOR"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYSECONDARYFACTOR1"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">],</span></code></pre></li>
+<li><p><strong>Primary Authentication Timed Out, Fallback Authentication Successful:</strong></p>
+<pre class="prettyprint prettyprinted"><code><span class="str">"factors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYPRIMARYFACTOR"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"TIMEDOUT"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"FALLBACKFACTOR1"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">],</span></code></pre></li>
+<li><p><strong>Primary Authentication Successful, Secondary and Fallback Authentication Timed Out:</strong></p>
+<pre class="prettyprint prettyprinted"><code><span class="str">"factors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYPRIMARYFACTOR"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED BUT NOT CONSIDERED"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"Factor"</span><span class="pun">:</span><span class="str">"PASSCODE"</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYSECONDARYFACTOR1"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"TIMEDOUT"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"FALLBACKFACTOR1"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">],</span></code></pre></li>
+<li><p><strong>Primary Authentication Successful for SSO, Secondary Skipped by User, Fallback Authentication Successful:</strong></p>
+<pre class="prettyprint prettyprinted"><code><span class="str">"factors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYPRIMARYFACTOR"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Factor"</span><span class="pun">:</span><span class="str">"SSO"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED BUT NOT CONSIDERED"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYSECONDARYFACTOR1"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"USERSKIPPED"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"FALLBACKFACTOR1"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">],</span></code></pre></li>
+<li><p><strong>For a Personal Device, Primary Authentication is "ANDROID_LOCK" and "Enable SSO" is set to "true":</strong></p>
+<pre class="prettyprint prettyprinted"><code><span class="pun">{</span><span class="pln">
+    </span><span class="str">"schemaVersion"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"1.0"</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"factors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"factor"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"ANDROID_LOCK"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"factorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYPRIMARYFACTOR"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"factor"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"SSO"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"factorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYSECONDARYFACTOR1"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">],</span><span class="pln">
+    </span><span class="str">"eventType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"CurrentUser"</span><span class="pln">
+</span><span class="pun">}</span></code></pre></li>
+<li><p><strong>For a Personal Device, Primary Authentication is "ANDROID_LOCK" and "Enable SSO" is set to "false":</strong></p>
+<pre class="prettyprint prettyprinted"><code><span class="pun">{</span><span class="pln">
+    </span><span class="str">"schemaVersion"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"1.0"</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"factors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"factor"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"ANDROID_LOCK"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"factorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYPRIMARYFACTOR"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">],</span><span class="pln">
+    </span><span class="str">"eventType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"CurrentUser"</span><span class="pln">
+</span><span class="pun">}</span></code></pre></li>
+<li><p><strong>For a Personal Device, Primary Authentication is "FACE" and "Enable SSO" is set to "true":</strong></p>
+<pre class="prettyprint prettyprinted"><code><span class="pun">{</span><span class="pln">
+    </span><span class="str">"schemaVersion"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"1.0"</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"factors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"factor"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"FACE"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"factorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYPRIMARYFACTOR"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"factor"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"SSO"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"factorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYSECONDARYFACTOR1"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">],</span><span class="pln">
+    </span><span class="str">"eventType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"CurrentUser"</span><span class="pln">
+</span><span class="pun">}</span></code></pre></li>
+<li><p><strong>For a Personal Device, Primary Authentication is "FACE" and "Enable SSO" is set to "false":</strong></p>
+<pre class="prettyprint prettyprinted"><code><span class="pun">{</span><span class="pln">
+    </span><span class="str">"schemaVersion"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"1.0"</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"factors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"factor"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"FACE"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"factorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYPRIMARYFACTOR"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">],</span><span class="pln">
+    </span><span class="str">"eventType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"CurrentUser"</span><span class="pln">
+</span><span class="pun">}</span></code></pre></li>
+<li><p><strong>For a Personal Device, Primary Authentication is "PASSCODE" and "Enable SSO" is set to "true":</strong></p>
+<pre class="prettyprint prettyprinted"><code><span class="pun">{</span><span class="pln">
+    </span><span class="str">"schemaVersion"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"1.0"</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"factors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"factor"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PASSCODE"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"factorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYPRIMARYFACTOR"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"factor"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"SSO"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"factorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYSECONDARYFACTOR1"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">],</span><span class="pln">
+    </span><span class="str">"eventType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"CurrentUser"</span><span class="pln">
+</span><span class="pun">}</span></code></pre></li>
+<li><p><strong>For a Personal Device, Primary Authentication is "PASSCODE" and "Enable SSO" is set to "false":</strong></p>
+<pre class="prettyprint prettyprinted"><code><span class="pun">{</span><span class="pln">
+    </span><span class="str">"schemaVersion"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"1.0"</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"factors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"factor"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PASSCODE"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"factorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYPRIMARYFACTOR"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">],</span><span class="pln">
+    </span><span class="str">"eventType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"CurrentUser"</span><span class="pln">
+</span><span class="pun">}</span></code></pre></li>
+</ul>
+<h4 class="anchor" id="retrieve-user-session-proxy"><a aria-disabled="true" class="heading-anchor" data-original-href="#retrieve-user-session-proxy"><span></span></a>Retrieve Current User Session (Proxy Mode with Imprivata)</h4>
+<p>This sample demonstrates how to retrieve current user session data from the content provider and parse it into a JSON object. This applies when <strong>Proxy Mode</strong> is in use with Imprivata using the following <a aria-disabled="true" data-original-href="../mc/">Managed Configurations</a>:</p>
+<ul>
+<li><strong>Application Mode:</strong> Proxy</li>
+<li><strong>Preferred Authentication App:</strong> Imprivata</li>
+</ul>
+<p>First, register the content observer to content resolver:</p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">    </span><span class="com">//Content provider API for current user session V2</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> final </span><span class="typ">Uri</span><span class="pln"> URI_USER_CURRENT_SESSION_V2 </span><span class="pun">=</span><span class="typ">Uri</span><span class="pun">.</span><span class="pln">parse</span><span class="pun">(</span><span class="str">"content://com.zebra.mdna.els.provider/v2/currentsession"</span><span class="pun">);</span><span class="pln">
+
+    </span><span class="com">//Register the content observer to content resolver</span><span class="pln">
+    getContentResolver</span><span class="pun">().</span><span class="pln">registerContentObserver</span><span class="pun">(</span><span class="pln">URI_USER_CURRENT_SESSION_V2</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln"> contentObserverV2</span><span class="pun">);</span><span class="pln">
+
+    </span><span class="com">//Content observer to listen whenever Identity Guardian notifies on user events</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> final </span><span class="typ">ContentObserver</span><span class="pln"> contentObserverV2 </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">ContentObserver</span><span class="pun">(</span><span class="pln">mainHandler</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="lit">@Override</span><span class="pln">
+        </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> onChange</span><span class="pun">(</span><span class="pln">boolean selfChange</span><span class="pun">,</span><span class="pln"> </span><span class="lit">@Nullable</span><span class="pln"> </span><span class="typ">Uri</span><span class="pln"> uri</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">super</span><span class="pun">.</span><span class="pln">onChange</span><span class="pun">(</span><span class="pln">selfChange</span><span class="pun">,</span><span class="pln"> uri</span><span class="pun">);</span><span class="pln">
+            </span><span class="com">//Always run provider queries in background thread to avoid ANR</span><span class="pln">
+            </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Thread</span><span class="pun">(()</span><span class="pln"> </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                fetchCurrentUserSessionDataV2</span><span class="pun">();</span><span class="pln">
+            </span><span class="pun">}).</span><span class="pln">start</span><span class="pun">();</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">};</span></code></pre>
+<p>Next, retrieve the current user session data:</p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> fetchCurrentUserSessionDataV2</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="typ">ContentResolver</span><span class="pln"> cr </span><span class="pun">=</span><span class="pln"> getContentResolver</span><span class="pun">();</span><span class="pln">
+        </span><span class="typ">Cursor</span><span class="pln"> cursor </span><span class="pun">=</span><span class="pln"> cr</span><span class="pun">.</span><span class="pln">query</span><span class="pun">(</span><span class="pln">URI_USER_CURRENT_SESSION_V2</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">try</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">cursor </span><span class="pun">!=</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                    </span><span class="typ">Bundle</span><span class="pln"> extras </span><span class="pun">=</span><span class="pln"> cursor</span><span class="pun">.</span><span class="pln">getExtras</span><span class="pun">();</span><span class="pln">
+                    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">extras </span><span class="pun">!=</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                        </span><span class="typ">String</span><span class="pln"> result </span><span class="pun">=</span><span class="pln"> extras</span><span class="pun">.</span><span class="pln">getString</span><span class="pun">(</span><span class="str">"RESULT"</span><span class="pun">,</span><span class="pln"> </span><span class="str">""</span><span class="pun">);</span><span class="pln">
+                        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(!</span><span class="pln">result</span><span class="pun">.</span><span class="pln">isEmpty</span><span class="pun">())</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                            </span><span class="kwd">try</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                                </span><span class="typ">JSONObject</span><span class="pln"> resultObject </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">JSONObject</span><span class="pun">(</span><span class="pln">result</span><span class="pun">);</span><span class="pln">
+                                </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">i</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"Json Result : "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> resultObject</span><span class="pun">.</span><span class="pln">toString</span><span class="pun">(</span><span class="lit">1</span><span class="pun">));</span><span class="pln"> </span><span class="com">//Actual result available here</span><span class="pln">
+                            </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">catch</span><span class="pln"> </span><span class="pun">(</span><span class="typ">Exception</span><span class="pln"> e</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                                </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">e</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"Exception in parsing  "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> e</span><span class="pun">.</span><span class="pln">getMessage</span><span class="pun">());</span><span class="pln">
+                            </span><span class="pun">}</span><span class="pln">
+                        </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">else</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                            </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">i</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"No RESULT found in extras"</span><span class="pun">);</span><span class="pln">
+                        </span><span class="pun">}</span><span class="pln">
+                    </span><span class="pun">}</span><span class="pln">
+                </span><span class="pun">}</span><span class="pln">
+                </span><span class="kwd">else</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                    </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">i</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"Cursor is null"</span><span class="pun">);</span><span class="pln">
+                </span><span class="pun">}</span><span class="pln">
+                </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">catch</span><span class="pln"> </span><span class="pun">(</span><span class="typ">Exception</span><span class="pln"> e</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                    </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">e</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"Exception in getDataForCurrentUser  "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> e</span><span class="pun">.</span><span class="pln">getMessage</span><span class="pun">());</span><span class="pln">
+                </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">finally</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">cursor </span><span class="pun">!=</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                        cursor</span><span class="pun">.</span><span class="pln">close</span><span class="pun">();</span><span class="pln">
+                </span><span class="pun">}</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln">
+        </span><span class="pun">}</span></code></pre>
+<p><strong>Example Responses:</strong>
+In the login and logout responses below, the <code>displayName</code>, <code>domain</code>, and <code>userName</code> properties are only populated when the following Managed Configurations are set:</p>
+<ul>
+<li>In <a aria-disabled="true" data-original-href="../mc/#usagemode">Usage Mode</a>, Application Mode is set to "Proxy."</li>
+<li>In <a aria-disabled="true" data-original-href="../mc/#authenticationconfiguration">Authentication Configuration</a>, Preferred Authentication App is set to "Imprivata."</li>
+</ul>
+<p>In all other configurations, these values return null.</p>
+<p><strong>Sample Response: User Login</strong></p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"authenticationFactors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"adminByPassFactors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[],</span><span class="pln">
+        </span><span class="str">"alternateFactors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[],</span><span class="pln">
+        </span><span class="str">"factors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[],</span><span class="pln">
+        </span><span class="str">"legacyFactors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[],</span><span class="pln">
+        </span><span class="str">"schemaVersion"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"2.0"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"enrollmentInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"enrollmentCreatedOn"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"enrollmentCreatedOnDeviceModel"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"enrollmentCreatedOnDeviceSerialNo"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"enrollmentExpiryDate"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"enrollmentId"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"enrollmentType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"securityTypes"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"storageType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"errorCode"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"eventType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Login"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"isSSOInformationAvailable"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"logOutInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"logoutReason"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"userLogoutTime"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"loginInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"userLoginTime"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"1780729211857"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"schemaVersion"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"2.0"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"ssoInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"ssoAccessToken"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"ssoDataReceivedFromIDP"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"ssoIDToken"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"ssoProvider"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"SUCCESS"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"userInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"displayName"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Zebra Con1"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"domain"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"demo.com"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"userId"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"ZCon1@demo.com"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"userName"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"ZCon1"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"userRole"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"userLoggedInState"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"1"</span><span class="pln">
+    </span><span class="pun">}</span></code></pre>
+<p><strong>Sample Response: User Logout</strong></p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"authenticationFactors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"adminByPassFactors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[],</span><span class="pln">
+        </span><span class="str">"alternateFactors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[],</span><span class="pln">
+        </span><span class="str">"factors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[],</span><span class="pln">
+        </span><span class="str">"legacyFactors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[],</span><span class="pln">
+        </span><span class="str">"schemaVersion"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"2.0"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"enrollmentInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"enrollmentCreatedOn"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"enrollmentCreatedOnDeviceModel"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"enrollmentCreatedOnDeviceSerialNo"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"enrollmentExpiryDate"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"enrollmentId"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"enrollmentType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"securityTypes"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"storageType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"errorCode"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"eventType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Logout"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"isSSOInformationAvailable"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"logOutInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"logoutReason"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"userLogoutTime"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"1780729642471"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"loginInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"userLoginTime"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"1780729211857"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"schemaVersion"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"2.0"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"ssoInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"ssoAccessToken"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"ssoDataReceivedFromIDP"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"ssoIDToken"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"ssoProvider"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"SUCCESS"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"userInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"displayName"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Zebra Con1"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"domain"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"demo.com"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"userId"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"ZCon1@demo.com"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"userName"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"ZCon1"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"userRole"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"userLoggedInState"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"0"</span><span class="pln">
+    </span><span class="pun">}</span></code></pre>
+<h4 class="anchor" id="retrieve-user-session-proxy-w"><a aria-disabled="true" class="heading-anchor" data-original-href="#retrieve-user-session-proxy-w"><span></span></a>Retrieve Current User Session (Proxy Mode with Workspace ONE)</h4>
+<p>This sample demonstrates how to retrieve current user session data from the content provider and parse it into a JSON object. This applies when <strong>Proxy Mode</strong> is in use with Workpace ONE using the following <a aria-disabled="true" data-original-href="../mc/">Managed Configurations</a>:</p>
+<ul>
+<li><strong>Application Mode:</strong> Proxy</li>
+<li><strong>Preferred Authentication App:</strong> Workspace ONE</li>
+</ul>
+<p>First, register the content observer to content resolver:</p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">    </span><span class="com">// Content provider API for current user session V2</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> final </span><span class="typ">Uri</span><span class="pln"> URI_USER_CURRENT_SESSION_V2 </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Uri</span><span class="pun">.</span><span class="pln">parse</span><span class="pun">(</span><span class="str">"content://com.zebra.mdna.els.provider/v2/currentsession"</span><span class="pun">);</span><span class="pln">
+
+    </span><span class="com">// Register the content observer to content resolver</span><span class="pln">
+    getContentResolver</span><span class="pun">().</span><span class="pln">registerContentObserver</span><span class="pun">(</span><span class="pln">URI_USER_CURRENT_SESSION_V2</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln"> contentObserverV2</span><span class="pun">);</span><span class="pln">
+
+    </span><span class="com">// Content observer to listen whenever Identity Guardian notifies on user events</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> final </span><span class="typ">ContentObserver</span><span class="pln"> contentObserverV2 </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">ContentObserver</span><span class="pun">(</span><span class="pln">mainHandler</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="lit">@Override</span><span class="pln">
+        </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> onChange </span><span class="pun">(</span><span class="pln">boolean selfChange</span><span class="pun">,</span><span class="pln"> </span><span class="lit">@Nullable</span><span class="pln"> </span><span class="typ">Uri</span><span class="pln"> uri</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">super</span><span class="pun">.</span><span class="pln">onChange</span><span class="pun">(</span><span class="pln">selfChange</span><span class="pun">,</span><span class="pln"> uri</span><span class="pun">);</span><span class="pln">
+            </span><span class="com">//Always run provider queries in background thread to avoid ANR</span><span class="pln">
+            </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Thread</span><span class="pun">(()</span><span class="pln"> </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> 
+                 fetchCurrentUserSessionDataV2</span><span class="pun">();</span><span class="pln">
+            </span><span class="pun">}).</span><span class="pln">start</span><span class="pun">();</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">};</span></code></pre>
+<p>Next, retrieve the current user session data:</p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> fetchCurrentUserSessionDataV2</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="typ">ContentResolver</span><span class="pln"> cr </span><span class="pun">=</span><span class="pln"> getContentResolver</span><span class="pun">();</span><span class="pln">
+        </span><span class="typ">Cursor</span><span class="pln"> cursor </span><span class="pun">=</span><span class="pln"> cr</span><span class="pun">.</span><span class="pln">query</span><span class="pun">(</span><span class="pln">URI_USER_CURRENT_SESSION_V2</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">try</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">cursor </span><span class="pun">!=</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                </span><span class="typ">Bundle</span><span class="pln"> extras </span><span class="pun">=</span><span class="pln"> cursor</span><span class="pun">.</span><span class="pln">getExtras</span><span class="pun">();</span><span class="pln">
+                </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">extras </span><span class="pun">!=</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                    </span><span class="typ">String</span><span class="pln"> result </span><span class="pun">=</span><span class="pln"> extras</span><span class="pun">.</span><span class="pln">getString</span><span class="pun">(</span><span class="str">"RESULT"</span><span class="pun">,</span><span class="pln"> </span><span class="str">""</span><span class="pun">);</span><span class="pln">
+                    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(!</span><span class="pln">result</span><span class="pun">.</span><span class="pln">isEmpty</span><span class="pun">())</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                        </span><span class="kwd">try</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                            </span><span class="typ">JSONObject</span><span class="pln"> resultObject </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">JSONObject</span><span class="pun">(</span><span class="pln">result</span><span class="pun">);</span><span class="pln">
+                            </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">i</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"Json Result : "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> resultObject</span><span class="pun">.</span><span class="pln">toString</span><span class="pun">(</span><span class="lit">1</span><span class="pun">));</span><span class="pln"> </span><span class="com">//Actual result available here</span><span class="pln">
+                        </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">catch</span><span class="pln"> </span><span class="pun">(</span><span class="typ">Exception</span><span class="pln"> e</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                            </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">e</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"Exception in parsing  "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> e</span><span class="pun">.</span><span class="pln">getMessage</span><span class="pun">());</span><span class="pln">
+                        </span><span class="pun">}</span><span class="pln">
+                    </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">else</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                        </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">i</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"No RESULT found in extras"</span><span class="pun">);</span><span class="pln">
+                    </span><span class="pun">}</span><span class="pln">
+                </span><span class="pun">}</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">else</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">i</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"Cursor is null"</span><span class="pun">);</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">catch</span><span class="pln"> </span><span class="pun">(</span><span class="typ">Exception</span><span class="pln"> e</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">e</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"Exception in getDataForCurrentUser  "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> e</span><span class="pun">.</span><span class="pln">getMessage</span><span class="pun">());</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">finally</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">cursor </span><span class="pun">!=</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                cursor</span><span class="pun">.</span><span class="pln">close</span><span class="pun">();</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">}</span></code></pre>
+<p><strong>Example Responses:</strong>
+In the login and logout responses below, the <code>displayName</code>, <code>domain</code>, and <code>userName</code> properties are only populated when the following Managed Configurations are set:</p>
+<ul>
+<li>In <a aria-disabled="true" data-original-href="../mc/#usagemode">Usage Mode</a>, Application Mode is set to "Proxy."</li>
+<li>In <a aria-disabled="true" data-original-href="../mc/#authenticationconfiguration">Authentication Configuration</a>, Preferred Authentication App is set to "Workpace ONE."</li>
+</ul>
+<p>In all other configurations, these values return null.</p>
+<p><strong>Sample Response: User Login</strong></p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"authenticationFactors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"adminByPassFactors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[],</span><span class="pln">
+            </span><span class="str">"alternateFactors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[],</span><span class="pln">
+            </span><span class="str">"factors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[],</span><span class="pln">
+            </span><span class="str">"legacyFactors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[],</span><span class="pln">
+            </span><span class="str">"schemaVersion"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"2.0"</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"enrollmentInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"enrollmentCreatedOn"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"enrollmentCreatedOnDeviceModel"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"enrollmentCreatedOnDeviceSerialNo"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"enrollmentExpiryDate"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"enrollmentId"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"enrollmentType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"securityTypes"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"storageType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"errorCode"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"eventType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Login"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"isSSOInformationAvailable"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"logOutInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"logoutReason"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"loginInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"userLoginTime"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"1786433951721"</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"schemaVersion"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"2.0"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"ssoInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"ssoAccessToken"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"ssoDataReceivedFromIDP[AC1.1]"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"ssoIDToken"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"ssoProvider"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"SUCCESS"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"userInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"displayName"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"IG"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"domain"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"userId"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"IG"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"userName"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"IG"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"userRole"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Manager"</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"userLoggedInState"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"1"</span><span class="pln">
+    </span><span class="pun">}</span></code></pre>
+<p><strong>Sample Response: User Logout</strong></p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"authenticationFactors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"adminByPassFactors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln"> </span><span class="pun">],</span><span class="pln">
+            </span><span class="str">"alternateFactors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln"> </span><span class="pun">],</span><span class="pln">
+            </span><span class="str">"factors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln"> </span><span class="pun">],</span><span class="pln">
+            </span><span class="str">"legacyFactors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln"> </span><span class="pun">],</span><span class="pln">
+            </span><span class="str">"schemaVersion"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"2.0"</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"enrollmentInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"enrollmentCreatedOn"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"enrollmentCreatedOnDeviceModel"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"enrollmentCreatedOnDeviceSerialNo"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"enrollmentExpiryDate"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"enrollmentId"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"enrollmentType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"securityTypes"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"storageType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"errorCode"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"eventType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Login"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"isSSOInformationAvailable"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"logOutInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"logoutReason"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"loginInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"userLoginTime"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"1786433951721"</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"schemaVersion"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"2.0"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"ssoInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"ssoAccessToken"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"ssoDataReceivedFromIDP"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"ssoIDToken"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"ssoProvider"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"SUCCESS"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"userInformation"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"displayName"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"IG"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"domain"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"userId"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"IG"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"userName"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"IG"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"userRole"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Manager"</span><span class="pln">
+        </span><span class="pun">},</span><span class="pln">
+        </span><span class="str">"userLoggedInState"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"0"</span><span class="pln">
+    </span><span class="pun">}</span></code></pre>
+<hr/>
+<h3 class="anchor" id="getcurrentusersessionlegacy"><a aria-disabled="true" class="heading-anchor" data-original-href="#getcurrentusersessionlegacy"><span></span></a>Get Current User Session (Legacy)</h3>
+<p><strong>Description:</strong> This API uses a content URI to access data from the current user session. It retrieves the cursor’s extras and extracts the result string from the extras bundle. If the result string is not empty, it must be parsed into a JSON object since that is the expected format for the result.</p>
+<blockquote>
+<p><i class="fa fa-exclamation-triangle"></i> <b>Warning:</b> This API is deprecated and will be removed in a future release. Zebra recommends to use the <a aria-disabled="true" data-original-href="#getcurrentusersession">Get Current User Session</a> API instead.</p>
+</blockquote>
+<p><strong>Content URI:</strong>   <span>content://com.zebra.mdna.els.provider/currentsession</span></p>
+<p><strong>Input Keys:</strong> None</p>
+<p><strong>Response:</strong> A Cursor object in JSON string format that contains the required bundle. A null or empty cursor indicates that no user is signed into the device.</p>
+<table border="1" class="facelift" padding="5px">
+<tbody><tr bgcolor="#dce8ef">
+<th>Key</th>
+<th>Type</th>
+<th>Description/Value</th>
+</tr>
+<tr>
+<td>code</td>
+<td>integer</td>
+<td>Status code indicating success or failure: <br/><b>0 -</b> Success<br/><b>1 -</b> Failure</td>
+</tr>
+<tr>
+<td>status</td>
+<td>string</td>
+<td>Indicates the API response outcome: <br/><b>SUCCESS</b><br/><b>FAILED</b></td>
+</tr>
+<tr>
+<td>schemaVersion</td>
+<td>string</td>
+<td>[Returns the version of the authentication factors schema]</td>
+</tr>
+<tr>
+<td>authenticationFactors</td>
+<td>JSON object</td>
+<td>[Returns authentication factor details. <a aria-disabled="true" data-original-href="#sampleauthenticationresults">Sample Authentication Results</a> below.]</td>
+</tr>
+<tr>
+<td>factor</td>
+<td>string</td>
+<td>Specifies the type of authentication used:<br/>   • <b>PASSCODE</b><br/>   • <b>FACE</b><br/>   • <b>SSO</b><br/>   • <b>ADMINBYPASS</b><br/>   • <b>NONE -</b> Applies to "PRIMARYSECONDARYFACTOR1" and "FALLBACKFACTOR1" FactorType<br/>   • <b>NO_COMPARISON - Applies to "PRIMARYPRIMARYFACTOR" FactorType</b></td>
+</tr>
+<tr>
+<td>factorType</td>
+<td>String</td>
+<td>Defines the level of authentication used: <br/>   • <b>PRIMARYPRIMARYFACTOR -</b> Primary authentication<br/>   • <b>PRIMARYSECONDARYFACTOR1 -</b> Secondary authentication<br/>   • <b>FALLBACKFACTOR1 -</b>Fallback authentication</td>
+</tr>
+<tr>
+<td>status</td>
+<td>string</td>
+<td>Current authentication status: <br/><b>   • EXECUTED -</b>  Successful authentication<br/><b>   • EXECUTED BUT NOT CONSIDERED -</b> Primary authentication was successful but secondary authentication failed<br/><b>   • TIMEDOUT -</b> The authentication request timed out<br/><b>   • USERSKIPPED -</b>The user bypassed the SSO login prompt by pressing the back button, resulting to fallback authentication</td>
+</tr>
+<tr>
+<td>eventType</td>
+<td>string</td>
+<td>Specifies the event that occurred: <br/><b>   • Login</b><br/><b>   • Logout</b></td>
+</tr>
+<tr>
+<td>lockScreenEventType</td>
+<td>string</td>
+<td>Specifies the event that triggered the lock screen: <br/><b>   • on_lock -</b> The user locked the device.<br/><b>   • manual_logout -</b> The user manually signed out using the <b>Sign out</b> button in Identity Guardian<br/><b>   • user_change -</b> The user signed out and another user signed in.<br/><b>   • onAcPowerConnect -</b>The device was connected to a power source.<br/><b>   • onACPowerDisconnect -</b>The device was disconnected from a power source.</td>
+</tr>
+<tr>
+<td>authenticationScheme</td>
+<td>string</td>
+<td>The authentication scheme used: <br/><b>   • authenticationScheme1</b><br/><b>   • authenticationScheme2</b><br/><b>   • authenticationScheme3</b><br/><b>   • authenticationScheme4</b></td>
+</tr>
+<tr>
+<td>barcodeAuthenticatedOnDeviceSerialNo</td>
+<td>string</td>
+<td>[Serial number of device where barcode authentication occurred]</td>
+</tr>
+<tr>
+<td>barcodeCreatedOn</td>
+<td>string</td>
+<td>[Timestamp when the barcode was created, in format yyyy-MM-dd HH:mm.sss+SSSZ, e.g., 2025-01-27 18:48.029+0530]</td>
+</tr>
+<tr>
+<td>barcodeCreatedOnDeviceModel</td>
+<td>string</td>
+<td>[Device model where the barcode was created, e.g., TC58]</td>
+</tr>
+<tr>
+<td>barcodeCreatedOnDeviceSerialNo</td>
+<td>string</td>
+<td>[Serial number of device where the barcode was created]</td>
+</tr>
+<tr>
+<td>barcodeExpiryDate</td>
+<td>string</td>
+<td>[Expiration date of the barcode, in format yyyy-MM-dd HH:mm, e.g., 29-01-2025 18:48]</td>
+</tr>
+<tr>
+<td>barcodeId</td>
+<td>string</td>
+<td>[Unique identifier for the barcode, e.g., 1737983906027D4BA34E]</td>
+</tr>
+<tr>
+<td>deviceModel</td>
+<td>string</td>
+<td>[Device model in use, e.g., TC58]</td>
+</tr>
+<tr>
+<td>securityTypes</td>
+<td>string</td>
+<td>Type of security mechanism in use: <br/>   • <b>FACE</b><br/>   • <b>PASSCODE</b><br/>   • <b>SSO</b></td>
+</tr>
+<tr>
+<td>ssoAccessToken</td>
+<td>string</td>
+<td>[Access token for Single Sign-On]</td>
+</tr>
+<tr>
+<td>ssoData</td>
+<td>string</td>
+<td>[Data related to SSO]</td>
+</tr>
+<tr>
+<td>ssoProvider</td>
+<td>string</td>
+<td>Single Sign-On provider in use: <br/><b>   • PingId</b><br/><b>   • Microsoft</b><br/><b>   • OKTA</b></td>
+</tr>
+<tr>
+<td>storageType</td>
+<td>string</td>
+<td>Type of storage used for authentication:<br/>   • <b>BARCODE -</b> For shared devices<br/><b>   • DEVICE -</b> For personal devices</td>
+</tr>
+<tr>
+<td>userId</td>
+<td>string</td>
+<td>Identifier for the user signed into the device, e.g., user1@zebra.com</td>
+</tr>
+<tr>
+<td>userLoggedInState</td>
+<td>string</td>
+<td>Represents the user's login status on the device: <br/><b>   • 1 -</b> The user is signed in or has checked out the device, updating the userLoginTime <br/><b>   • 0 -</b> The user is signed out or has checked in the device, updating the userLogoutTime</td>
+</tr>
+<tr>
+<td>userLoginTime</td>
+<td>string</td>
+<td>[Timestamp when user signed in, formatted as yyyy-MM-dd HH:mm.sss+SSSZ, e.g. 2025-01-30 20:01.590+0530]</td>
+</tr>
+<tr>
+<td>userLogoutTime</td>
+<td>string</td>
+<td>[Timestamp when user signed in, formatted as yyyy-MM-dd HH:mm.sss+SSSZ]</td>
+</tr>
+<tr>
+<td>logoutReason</td>
+<td>string</td>
+<td>Specifies the event that triggered the user logout: <br/><b>   • on_lock -</b> The user locked the device.<br/><b>   • manual_logout -</b> The user manually signed out using the <b>Sign out</b> button in Identity Guardian<br/><b>   • user_change -</b> The user signed out and another user signed in.<br/><b>   • onAcPowerConnect -</b>The device was connected to a power source.<br/><b>   • onACPowerDisconnect -</b>The device was disconnected from a power source.</td>
+</tr>
+<tr>
+<td>userRole</td>
+<td>string</td>
+<td>[Role identifier based on data from the SSO provider]</td>
+</tr>
+</tbody></table>
+<p><strong>Note:</strong> The following keys are returned in date/time format as "yyyy-MM-dd HH:mm.sss": userLoginTime, userLogoutTime, and barcodeCreatedOn.</p>
+<p>Example response when a user logs into the device in authentication mode:</p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"code"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">0</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"SUCCESS"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"userData"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="str">"authenticationFactors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                </span><span class="str">"schemaVersion"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"1.0"</span><span class="pun">,</span><span class="pln">
+                </span><span class="str">"factors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+                    </span><span class="pun">{</span><span class="pln">
+                    </span><span class="str">"factor"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PASSCODE"</span><span class="pun">,</span><span class="pln">
+                    </span><span class="str">"factorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYPRIMARYFACTOR"</span><span class="pun">,</span><span class="pln">
+                    </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+                    </span><span class="pun">},</span><span class="pln">
+                    </span><span class="pun">{</span><span class="pln">
+                    </span><span class="str">"factor"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"SSO"</span><span class="pun">,</span><span class="pln">
+                    </span><span class="str">"factorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYSECONDARYFACTOR1"</span><span class="pun">,</span><span class="pln">
+                    </span><span class="str">"status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+                    </span><span class="pun">}</span><span class="pln">
+                </span><span class="pun">],</span><span class="pln">
+                </span><span class="str">"eventType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"CurrentUser"</span><span class="pln">
+                </span><span class="str">"lockScreenEventType"</span><span class="pun">:””</span><span class="pln">
+            </span><span class="pun">},</span><span class="pln">
+            </span><span class="str">"authenticationScheme"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"authenticationScheme1"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"barcodeAuthenticatedOnDeviceSerialNo"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"barcodeCreatedOn"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"2025-01-27 18:48.029+0530"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"barcodeCreatedOnDeviceModel"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"TC58"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"barcodeCreatedOnDeviceSerialNo"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"barcodeExpiryDate"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"29-01-2025 18:48"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"barcodeId"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"1737983906027D4BA34E"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"deviceModel"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"TC58"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"securityTypes"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PASSCODE"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"ssoAccessToken"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"."</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"ssoData"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"ssoProvider"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Microsoft"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"storageType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"BARCODE"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"userId"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"user1@zebra.com"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"userLoggedInState"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"1"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"userLoginTime"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"2025-01-30 20:01.590+0530"</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"userLogoutTime"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+            </span><span class="str">"logoutReason "</span><span class="pun">:</span><span class="str">""</span><span class="pln">
+            </span><span class="str">"userRole"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">}</span></code></pre>
+<!--
+**The `cursor` result is returned as a JSON string format.** If the `cursor` is null or empty, no user is signed into the device. The result includes an **authentication factors** section, detailing the multifactor authentication factors, each represented as an object.
+
+**`Cursor` model:** This outlines keys with their possible values (values are separated by '/' and custom values enclosed in '[ ]'):
+
+        {
+            "schemaVersion": "2.0",
+            "status": "SUCCESS",
+            "errorcode": 0,
+            "userLoggedInState": "1",
+            "eventType":"Login/Logout",
+            "isSSOInformationAvailable":"1",
+            "loginInformation":
+            {
+                "userLoginTime":"[EPOC time]",
+            },
+
+            "logOutInformation":
+            {
+                "userLogoutTime":"[EPOC time]",
+                "logoutReason":"on_lock/manual_logout/user_change/onAcPowerConnect/onACPowerDisconnect"
+            },
+
+            "userInformation":
+            {
+                "userId": "test_user",
+                "userRole": "test_group"
+            },
+
+            "authenticationFactors":
+            {
+                {
+                    "schemaVersion":"2.0",    "factors":
+                    [
+                        {
+                            "factorType": "PRIMARYPRIMARYFACTOR",
+                            "factor": "FACE",
+                            "status": "EXECUTED/TIMEDOUT/USERSKIPPED"
+                        },
+                        {
+                           "factorType":"PRIMARYSECONDARYFACTOR1",
+                           "factor": "PASSCODE/SSO/FACE",
+                           "status": "EXECUTED/TIMEDOUT/USERSKIPPED "
+                        }
+
+                        {
+                            "factorType": "FALLBACKFACTOR1",
+                            "factor": "PASSCODE/FACE/SSO/ADMINBYPASS/NONE",
+                            "status": "EXECUTED/TIMEDOUT/USERSKIPPED"
+                        },
+
+                        "eventType":"CurrentUser",
+                        "lockScreenEventType":"on_unlock/manual_logout/user_change/onAcPowerConnect/onACPowerDisconnect"
+                    ]
+                }
+            },
+
+            "ssoInformation":
+            {
+                "ssoProvider": "PingId/Microsoft/OKTA",
+                "ssoAccessToken": "[string]",
+                "ssoIDToken":"",
+                "ssoDataReceivedFromIDP":
+                {
+
+                    "sub": "[user@company.com]",
+                    "aud": "[test123_new_test_none]",
+                    "jti": "[54321edcba]",
+                    "iss": "[https://test.test.com]",
+                    "iat": [1727352498],
+                    "exp": [1727352647],
+                    "AdminJobID": "[test-group]",
+                    "location": "[NY]",
+                    "JobId": "[testuser]",
+                    "GroupID": "[test-Group]",
+                    "pi.sri": "[46tGa230SsfoUoasdfJFzUTE.dXMtZWFzdC0y]",
+                    "sid": "[46tGa230SsfoUasdfAJFzUTE.dXMtZWFzdC0y]",
+                    "nonce": "[-W3pLAleOnWdfd8wqOW3pg]"
+                }
+            },
+
+            "enrollmentInformation":
+            {
+                "enrollmentType":"Barcode",
+                "enrollmentId": "[string]",
+                "securityTypes":"FACE/PASSCODE/SSO",
+                "validThrough":"[EPOC time]",
+                "storageType": "Barcode/Device",
+                "enrollmentExpiryDate":"[EPOC time]",
+                "enrollmentCreatedOn":"[EPOC time]",
+                "enrollmentCreatedOnDeviceModel":"[TC57]",
+                "enrollmentCreatedOnDeviceSerialNo":"[string]"
+            }
+        }
+
+**Important properties of the `cursor` result (not exhaustive):**
+
+- **status -** Indicates the API response outcome:
+  - **SUCCESS**
+  - **FAILED**
+- **userLoggedInState -** User's login status on the device:
+  - **1 -** User is signed in or has checked out the device, updating the `userLoginTime`.
+  - **0 -** User is signed out or has checked in the device, updating the `userLogoutTime`.
+- **eventType -** Specifies the event that occurred:
+  - **Login**
+  - **Logout**
+- **isSSOInformationAvailable -** Availability of single sign-on (SSO) data:
+  - **1 -** SSO information is available; `ssoInformation` can be parsed for details.
+  - **0 -** SSO information is not available.
+- **userLoginTime -** Timestamp in EPOCH format when user signed in.
+- **userLogoutTime -** Timestamp in EPOCH format when user signed out.
+- **logoutReason -** Event during user logout:
+  - **on_lock -** User locked the device.
+  - **manual_logout -** User signed out manually via the **Sign out** button in Identity Guardian
+  - **user_change -** User signed out and another user signed into the device.
+  - **onAcPowerConnect -** Device connected to power.
+  - **onACPowerDisconnect -** Device disconnected from power.
+- **user_id -** Identifier for the user signing into the device. In [Proxy Mode](../usage/#proxymode), it appears in the user name field of the Zebra app receiving user session information. For example, in Device Tracker, this name is shown in the Checked-Out field.
+- **userRole -** Role identifier based on data from the SSO provider.
+- **Factor -** Type of authentication:
+  - **PASSCODE**
+  - **FACE**
+  - **SSO**
+  - **ADMINBYPASS**
+  - **NONE -** Applies to "PRIMARYSECONDARYFACTOR1" and "FALLBACKFACTOR1" FactorType
+  - **NO_COMPARISON -** Applies to "PRIMARYPRIMARYFACTOR" FactorType
+- **FactorType -** The level of authentication:
+  - **PRIMARYPRIMARYFACTOR -** Primary authentication.
+  - **PRIMARYSECONDARYFACTOR1 -** Secondary authentication.
+  - **FALLBACKFACTOR1 -** Fallback authentication.
+- **Status -** Current authentication status:
+  - **EXECUTED -** Successful authentication.
+  - **EXECUTED BUT NOT CONSIDERED -** Primary authentication was successful but secondary authentication failed.
+  - **TIMEDOUT -** The authentication request timed out.
+  - **USERSKIPPED -** User bypassed the SSO login prompt by pressing the back button, resulting to fallback authentication.
+- **eventType -** Specifies authentication user, useful for tracking sessions or determining access rights:
+  - **PreviousUser**
+  - **CurrentUser**
+- **lockScreenEventType -** Trigger for lock screen:
+  - **on_unlock -** User unlocked the device.
+  - **manual_logout -** User signed out manually through the **Sign out** button in Identity Guardian.
+  - **user_change -** User signed out and another user signed into the device.
+  - **onAcPowerConnect -** Device connected to power.
+  - **onACPowerDisconnect -** Device disconnected from power.
+- **ssoProvider -** SSO provider in use:
+  - **PingId**
+  - **Microsoft**
+  - **OKTA**
+- **securityTypes -** Authentication method for device checkout:
+  - **FACE**
+  - **PASSCODE**
+  - **SSO**
+- **validThrough -** Date until the user barcode is valid, in EPOCH time, set by the administrator.
+- **storageType -** User data storage location:
+  - **Barcode -** For shared devices.
+  - **Device -** For personal devices.
+- **enrollmentExpiryDate -** Barcode expiration date in EPOC time.
+- **enrollmentCreatedOn -** Barcode creation date in EPOC time.
+- **enrollmentCreatedOnDeviceModel -** Model of device used for barcode creation.
+- **enrollmentCreatedOnDeviceSerialNo -** Serial number of device used for barcode creation.
+-->
+<!--
+- **signed_in_state -** Indicates a user's sign-in status on the device. This is mandatory.
+  - **1 -** User is signed in or has checked out the device, updating the **signin_time**.
+  - **0 -** User is signed out or checked in the device, updating the **signout_time**.
+- **signin_time -** Timestamp formatted as a string (“yyyy-dd-MM HH:mm:ss.SSSZ”), applicable without Proxy Mode.
+- **signout_time -** Timestamp formatted as a string (“yyyy-dd-MM HH:mm:ss.SSSZ”), applicable without Proxy Mode.
+- **enrollmentInformation -** (Optional) Details about user enrollment, including enrollment type, security type, device model, etc.
+-->
+<!--
+The Response is received by the caller application in the form of a bundle:
+* **RESULT:**
+    * If successful: `{ "status":"SUCCESS","message":"successfully executed" }`
+    * If failed: `{ "status":"FAILURE","message":"[error description]" }`, where the "error description" is based on the type of error encountered.
+-->
+<p><strong>Exceptions:</strong></p>
+<ul>
+<li><strong>NullPointerException –</strong> Returned if the URI or method is null</li>
+<li><strong>IllegalArgumentException –</strong> Returned if the URI is not known</li>
+</ul>
+<h4 class="anchor" id="sampleauthenticationresults"><a aria-disabled="true" class="heading-anchor" data-original-href="#sampleauthenticationresults"><span></span></a>Sample Authentication Results</h4>
+<p>Examples of <u>authentication results,</u> demonstrating the success or failure of primary, secondary, and fallback methods, illustrating various scenarios and their outcomes:</p>
+<ul>
+<li><p><strong>Primary and Secondary Authentication Successful:</strong></p>
+<pre class="prettyprint prettyprinted"><code><span class="str">"factors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYPRIMARYFACTOR"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYSECONDARYFACTOR1"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">],</span></code></pre></li>
+<li><p><strong>Primary Authentication Timed Out, Fallback Authentication Successful:</strong></p>
+<pre class="prettyprint prettyprinted"><code><span class="str">"factors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYPRIMARYFACTOR"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"TIMEDOUT"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"FALLBACKFACTOR1"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">],</span></code></pre></li>
+<li><p><strong>Primary Authentication Successful, Secondary and Fallback Authentication Timed Out:</strong></p>
+<pre class="prettyprint prettyprinted"><code><span class="str">"factors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYPRIMARYFACTOR"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED BUT NOT CONSIDERED"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"Factor"</span><span class="pun">:</span><span class="str">"PASSCODE"</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYSECONDARYFACTOR1"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"TIMEDOUT"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"FALLBACKFACTOR1"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">],</span></code></pre></li>
+<li><p><strong>Primary Authentication Successful for SSO, Secondary Skipped by User, Fallback Authentication Successful:</strong></p>
+<pre class="prettyprint prettyprinted"><code><span class="str">"factors"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYPRIMARYFACTOR"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Factor"</span><span class="pun">:</span><span class="str">"SSO"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED BUT NOT CONSIDERED"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"PRIMARYSECONDARYFACTOR1"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"USERSKIPPED"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">"FactorType"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"FALLBACKFACTOR1"</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">"Status"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"EXECUTED"</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">],</span></code></pre></li>
+</ul>
+<h4 class="anchor" id="samplecode-2"><a aria-disabled="true" class="heading-anchor" data-original-href="#samplecode-2"><span></span></a>Sample Code</h4>
+<p>There are three types of samples available:</p>
+<ul>
+<li><a aria-disabled="true" data-original-href="#retrieve-user-session-old">Retrieve Current User Session (Non-Proxy Mode)</a></li>
+<li><a aria-disabled="true" data-original-href="#retrieve-user-session-proxy-old">Retrieve Current User Session for Proxy Mode with Imprivata</a></li>
+<li><a aria-disabled="true" data-original-href="#retrieve-user-session-proxy-old-w">Retrieve Current User Session for Proxy Mode with Workspace ONE</a></li>
+</ul>
+<h4 class="anchor" id="retrieve-user-session-old"><a aria-disabled="true" class="heading-anchor" data-original-href="#retrieve-user-session-old"><span></span></a>Retrieve Current User Session (Non-Proxy Mode)</h4>
+<p>This sample demonstrates how to retrieve current user session data from the content provider and parse it into a JSON object.</p>
+<p><strong>URI Declaration:</strong> The <code>URI_USER_CURRENT_SESSION</code> is a static final URI that interacts with a content provider managing the current user session data. It is used to query the content provider for the current session data associated with the user.</p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> final </span><span class="typ">Uri</span><span class="pln"> URI_USER_CURRENT_SESSION </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Uri</span><span class="pun">.</span><span class="pln">parse</span><span class="pun">(</span><span class="str">"content://com.zebra.mdna.els.provider/currentsession"</span><span class="pun">);</span></code></pre>
+<p><strong>Method to Get Current Session Data:</strong> This method demonstrates how to fetch current user session data from the content provider and parse it into a JSON object.</p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> fetchCurrentUserSessionData</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="typ">ContentResolver</span><span class="pln"> cr </span><span class="pun">=</span><span class="pln"> getContentResolver</span><span class="pun">();</span><span class="pln"> </span><span class="com">// Get the content resolver to query the provider</span><span class="pln">
+        </span><span class="typ">Cursor</span><span class="pln"> cursor </span><span class="pun">=</span><span class="pln"> cr</span><span class="pun">.</span><span class="pln">query</span><span class="pun">(</span><span class="pln">URI_USER_CURRENT_SESSION</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">);</span><span class="pln"> </span><span class="com">// Query the provider using the URI</span><span class="pln">
+        </span><span class="kwd">try</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">cursor </span><span class="pun">!=</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="com">// Check if cursor is not null</span><span class="pln">
+                </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">i</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"Cursor info"</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> cursor</span><span class="pun">.</span><span class="pln">getExtras</span><span class="pun">());</span><span class="pln"> </span><span class="com">// Log cursor information</span><span class="pln">
+                </span><span class="typ">Bundle</span><span class="pln"> extras </span><span class="pun">=</span><span class="pln"> cursor</span><span class="pun">.</span><span class="pln">getExtras</span><span class="pun">();</span><span class="pln"> </span><span class="com">// Get any extras data from the cursor</span><span class="pln">
+                </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">extras </span><span class="pun">!=</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                    </span><span class="typ">String</span><span class="pln"> result </span><span class="pun">=</span><span class="pln"> extras</span><span class="pun">.</span><span class="pln">getString</span><span class="pun">(</span><span class="str">"RESULT"</span><span class="pun">,</span><span class="pln"> </span><span class="str">""</span><span class="pun">);</span><span class="pln"> </span><span class="com">// Retrieve the "RESULT" data from the extras</span><span class="pln">
+                    </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">i</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"getDataForCurrentUser: key is "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> result</span><span class="pun">);</span><span class="pln"> </span><span class="com">// Log the result string</span><span class="pln">
+
+                    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(!</span><span class="pln">result</span><span class="pun">.</span><span class="pln">isEmpty</span><span class="pun">())</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="com">// Proceed if the result is not empty</span><span class="pln">
+                        </span><span class="kwd">try</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                            </span><span class="typ">JSONObject</span><span class="pln"> resultObject </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">JSONObject</span><span class="pun">(</span><span class="pln">result</span><span class="pun">);</span><span class="pln"> </span><span class="com">// Parse the result string into a JSON object</span><span class="pln">
+                            </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">i</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"Json Result : "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> resultObject</span><span class="pun">.</span><span class="pln">toString</span><span class="pun">(</span><span class="lit">1</span><span class="pun">));</span><span class="pln"> </span><span class="com">// Log the formatted JSON result</span><span class="pln">
+                        </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">catch</span><span class="pln"> </span><span class="pun">(</span><span class="typ">Exception</span><span class="pln"> e</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="com">// Catch any exceptions that occur during JSON parsing</span><span class="pln">
+                            </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">i</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"Exception in parsing  "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> e</span><span class="pun">.</span><span class="pln">getMessage</span><span class="pun">());</span><span class="pln"> </span><span class="com">// Log parsing exceptions</span><span class="pln">
+                        </span><span class="pun">}</span><span class="pln">
+                    </span><span class="pun">}</span><span class="pln">
+                </span><span class="pun">}</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">catch</span><span class="pln"> </span><span class="pun">(</span><span class="typ">Exception</span><span class="pln"> e</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="com">// Catch any other exceptions during the query process</span><span class="pln">
+            </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">e</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"Exception in getDataForCurrentUser  "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> e</span><span class="pun">.</span><span class="pln">getMessage</span><span class="pun">());</span><span class="pln"> </span><span class="com">// Log the exception</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">finally</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">cursor </span><span class="pun">!=</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="com">// Ensure the cursor is closed to avoid memory leaks</span><span class="pln">
+                cursor</span><span class="pun">.</span><span class="pln">close</span><span class="pun">();</span><span class="pln">
+            </span><span class="pun">}</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">}</span></code></pre>
+<h4 class="anchor" id="retrieve-user-session-proxy-old"><a aria-disabled="true" class="heading-anchor" data-original-href="#retrieve-user-session-proxy-old"><span></span></a>Retrieve Current User Session (Proxy Mode with Imprivata)</h4>
+<p>This sample demonstrates how to retrieve current user session data from the content provider and parse it into a JSON object. This applies when <strong>Proxy Mode</strong> is in use with Imprivata using the following <a aria-disabled="true" data-original-href="../mc/">Managed Configurations</a>:</p>
+<ul>
+<li><strong>Application Mode:</strong> Proxy</li>
+<li><strong>Preferred Authentication App:</strong> Imprivata</li>
+</ul>
+<p>First, register the content observer to content resolver:</p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">    </span><span class="com">// Content provider API for current user session</span><span class="pln">
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> final </span><span class="typ">Uri</span><span class="pln"> URI_USER_CURRENT_SESSION </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Uri</span><span class="pun">.</span><span class="pln">parse</span><span class="pun">(</span><span class="str">"content://com.zebra.mdna.els.provider/currentsession"</span><span class="pun">);</span><span class="pln">
+
+    </span><span class="com">// Register the content observer to content resolver</span><span class="pln">
+    getContentResolver</span><span class="pun">().</span><span class="pln">registerContentObserver</span><span class="pun">(</span><span class="pln">URI_USER_CURRENT_SESSION</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln"> contentObserverV1</span><span class="pun">);</span><span class="pln">
+    </span><span class="com">// Content observer to listen whenever Identity Guardian notifies on user events</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> final </span><span class="typ">ContentObserver</span><span class="pln"> contentObserverV1</span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">ContentObserver</span><span class="pun">(</span><span class="pln">mainHandler</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="lit">@Override</span><span class="pln">
+        </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> onChange</span><span class="pun">(</span><span class="pln">boolean selfChange</span><span class="pun">,</span><span class="pln"> </span><span class="lit">@Nullable</span><span class="pln"> </span><span class="typ">Uri</span><span class="pln"> uri</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">super</span><span class="pun">.</span><span class="pln">onChange</span><span class="pun">(</span><span class="pln">selfChange</span><span class="pun">,</span><span class="pln"> uri</span><span class="pun">);</span><span class="pln">
+            </span><span class="com">//Always run provider queries in background thread to avoid ANR</span><span class="pln">
+            </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">Thread</span><span class="pun">(()</span><span class="pln"> </span><span class="pun">-&gt;</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                fetchCurrentUserSessionData</span><span class="pun">();</span><span class="pln">
+            </span><span class="pun">}).</span><span class="pln">start</span><span class="pun">();</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">};</span></code></pre>
+<p>Next, retrieve the current user session data:</p>
+<pre class="prettyprint prettyprinted"><code><span class="pln">    </span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> fetchCurrentUserSessionData</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="typ">ContentResolver</span><span class="pln"> cr </span><span class="pun">=</span><span class="pln"> getContentResolver</span><span class="pun">();</span><span class="pln">
+        </span><span class="typ">Cursor</span><span class="pln"> cursor </span><span class="pun">=</span><span class="pln"> cr</span><span class="pun">.</span><span class="pln">query</span><span class="pun">(</span><span class="pln">URI_USER_CURRENT_SESSION</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">);</span><span class="pln">
+        </span><span class="kwd">try</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">cursor </span><span class="pun">!=</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">i</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"Cursor info"</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> cursor</span><span class="pun">.</span><span class="pln">getExtras</span><span class="pun">());</span><span class="pln">
+                </span><span class="typ">Bundle</span><span class="pln"> extras </span><span class="pun">=</span><span class="pln"> cursor</span><span class="pun">.</span><span class="pln">getExtras</span><span class="pun">();</span><span class="pln">
+                </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">extras </span><span class="pun">!=</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                    </span><span class="typ">String</span><span class="pln"> result </span><span class="pun">=</span><span class="pln"> extras</span><span class="pun">.</span><span class="pln">getString</span><span class="pun">(</span><span class="str">"RESULT"</span><span class="pun">,</span><span class="pln"> </span><span class="str">""</span><span class="pun">);</span><span class="pln">
+                    </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">i</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"getDataForCurrentUser: key is "</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> result</span><span class="pun">);</span><span class="pln">
+                    </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(!</span><span class="pln">result</span><span class="pun">.</span><span class="pln">isEmpty</span><span class="pun">())</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                        </span><span class="kwd">try</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+                            </span><span class="typ">JSONObject</span><span class="pln"> resultObject </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">JSONObject</span><span class="pun">(</span><span class="pln">result</span><span class="pun">);</span><span class="pln">
+                            </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">i</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,&lt;/sp[Truncated]</span></code></pre></div></div></div></div></div></main></body></html>

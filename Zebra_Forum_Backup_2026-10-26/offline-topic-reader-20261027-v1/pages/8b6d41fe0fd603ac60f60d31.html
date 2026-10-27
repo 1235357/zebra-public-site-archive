@@ -1,0 +1,251 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>TC27/RFD40 Behaviour RFID Scanning</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>TC27/RFD40 Behaviour RFID Scanning</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/tc27rfd40-behaviour-rfid-scanning; original snapshot: threads/00086.html; SHA-256: b46e9071e8ae66526359c13acc2b16f2515ffe751d8433e8c35858b4466f8f5d</small><pre id="topic">
+
+    
+        TC27/RFD40 Behaviour RFID Scanning
+
+
+        
+      
+                        
+                    
+            G
+          
+          Gijs Schalk
+          1 year 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            198
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  hi,I&#x27;am working on a .NET MAUI app which scans the epc codes of RFID tags.I want the RFID scanning behaviour to be like the 123RFID profile &#x27;fastest read&#x27; .The singulation settings are in this mode: I try to replicate this behaviour using the MauiRfidSample which is included in the Zebra RFID Reader SDK for MAUI version 2.0.3.148 ( which is the latest on the Zebra website)I&#x27;ve made the singulation settings the same as 123RFID:                        var singulation = rfidReader.Config.Antennas.GetSingulationControl(1);                       singulation.Session = SESSION.SessionS0;                       singulation.Action.InventoryState = INVENTORY_STATE.InventoryStateAbFlip;                       singulation.Action.SetPerformStateAwareSingulationAction(false);                       singulation.Action.SLFlag = SL_FLAG.SlAll;                       rfidReader.Config.Antennas.SetSingulationControl(1, singulation);But the behaviour is strange:In 123RFID every time I scan all the tags in the field are read. This is the behaviour I want.In the mauirfidsample after the first scan seems mostly fine. But when I scan again (also after restarting the application!) most of the time the tags are not read anymore!But when I scan new tags they are read, its like the RFD40 &#x27;rembembers&#x27; that these tags are already scanned!What is the problem here? can this be another setting I have to apply? Another thing that I noticed, the version of the MAUI sdk is 2.0.3.148 and the version of 123RFID is 2.0.4.177best regards,Gijs 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            chetan patel
+          
+          
+            1 year 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            To read the MEMORY_BANK_USER content use the tag access mode during configurerfidreader.Events.setAttachTagDataWithReadEvent(true); and the code for the event handlerclass EventHandler implements RfidEventsListener {  // Read Event Notification  public void eventReadNotify(RfidReadEvents e) {    TagData tag = e.getReadEventData().tagData;    if (tag.getOpCode() == ACCESS_OPERATION_CODE.ACCESS_OPERATION_READ          &amp;&amp; tag.getOpStatus() == ACCESS_OPERATION_STATUS.ACCESS_SUCCESS) {      Log.d(TAG, &quot;eventReadNotify - tag id &quot; + tag.getTagID() + &quot; and mem bank &quot; + tag.getMemoryBankData());    }  }}
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gijs Schalk
+          
+          
+            1 year 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            hi, was this an answer to my question?My question was about singulation, not about reading the USER memory bank.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gijs Schalk
+          
+          
+            1 year 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            hi, is this an answer to my question? My question was not about reading the user memory bank.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,399 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Text OCR Model - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/ai-datacapture/4-1/model/textocr</code><br>Observed final URL: <code>https://techdocs.zebra.com/ai-datacapture/4-1/model/textocr/</code><br>Raw source: <code>raw/3a4651dd510110284ffd92f7.html</code><br>Raw SHA-256: <code>d1771e5b37fc8ed74886c6e604d14c79af43b5f36ae9638e4798b19c9330c49b</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            AI Data Capture SDK
+                                            4.1
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Setup
+                            
+                        
+                        
+                            
+                                    Localizer
+                            
+                        
+                        
+                            
+                                    Product Recognition
+                            
+                        
+                        
+                            
+                                    Barcode Decoder
+                            
+                        
+                        
+                            
+                                    Text OCR
+                            
+                        
+                        
+                            
+                                    CameraX
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Text OCR Model
+                        
+                    OverviewVersion HistoryNew in v2.10.1New in v2.9.0New in v2.8.1RequirementsPerformance DetailsResourcesRelated Guides
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Text OCR Model
+                                    
+                                            AI Data Capture SDK
+                                            4.1
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+Model Name: text-ocr-recognizer
+
+Text OCR is used to detect and recognize text within a given image. It is capable of handling use cases involving printed text in various sizes and non-stylized fonts, as well as dot peen fonts and handwriting.​
+
+Note: Zebra strongly recommends updating to the latest models.
+
+
+
+
+
+
+
+
+Version History
+
+New in v2.10.1
+
+
+Improved overall pipeline top-1 recall by 3% to 20% across key target benchmarks (including LicensePlate, IMV-TIN, EMC-VIN, shipping-label, DPM-Linde, DPM-Dot, Currency, Covity, longstrings_url, WIS_nonperspective) as well as key customer datasets. 
+
+
+New in v2.9.0
+
+
+Improved accuracy across multiple use cases and data sets, particularly:
+
+
+
+Longer Strings - If the updated model does not yield the required results, utilizing the tiling settings is recommended as an alternative.
+
+Unexpected String Splitting - The new model mitigates unwanted splits caused by subtle character spacing differences. If further adjustments are necessary, utilizing the grouping settings is recommended.
+
+Direct Part Marking (DPM) - Character accuracy is improved for select DPM use cases, primarily for single-word metal DPM images.
+
+
+Changes to unclip ratio: Due to changes in the Text OCR model the unclip ratio range has shifted from 1.5-2.0 to 0.4-0.7 (0.6 is the default). Applications using non-default values should be updated to this new range. Use the following guidance for mapping values:
+
+
+
+A previous value of 1.5 (original default) should be updated to 0.6.
+
+A previous value of 2.0 value should be updated to 0.7.
+
+Values between 1.5 and 2.0 should be scaled proportionally across the new 0.4 to 0.7 range.
+
+
+
+New in v2.8.1
+
+
+Improved overall performance, leading to increased accuracy.
+
+Added support for Q-6690 device platform.
+
+
+
+
+Requirements
+
+
+Supported Zebra Devices: Refer to the Zebra support portal for compatible hardware.
+
+Operating System: Android 14 or higher. For specific OS versions, refer to AI Data Capture SDK Release Notes from the Zebra support portal.
+
+Minimum SDK Version: AI Data Capture SDK v4.0.0 or later.
+
+Memory Requirements: Since running multiple on-device models concurrently is highly resource-intensive, using multiple models within the AI Data Capture SDK is recommended for high-memory devices only.
+
+
+
+
+Performance Details
+
+
+    
+        Model
+        Model Dimensions
+        Typical Load Time (ms)
+        Typical Inference Time (ms)
+        Typical Maximum Read Distance (cm)8pt font (Times New Roman)
+        Typical Maximum Read Distance (cm)12pt font (Times New Roman)
+        Typical Maximum Read Distance (cm)36pt font (Times New Roman)
+    
+    
+        text-ocr-recognizer​
+        640x640
+        1580
+        110
+        No Read
+        20
+        55
+    
+    
+        text-ocr-recognizer​
+        1280x1280
+        1780
+        180
+        25
+        40
+        130
+    
+    
+        text-ocr-recognizer​
+        1600x1600
+        1740
+        270
+        35
+        40
+        145
+    
+    
+        text-ocr-recognizer​
+        2560x2560
+        1840
+        480
+        50
+        65
+        165
+    
+
+
+Measurements Notes:
+
+
+All measurements are estimations​.
+
+Measurements were conducted using the Zebra TC53 device equipped with the Qualcomm 6490 chipset operating on the DSP AI accelerator​.
+
+Images were 4MP Resolution under 300 Lux​ lighting conditions.
+
+Read distance met at least 90% Recall.
+
+
+
+
+Resources
+
+
+
+
+
+
+
+
+
+
+
+
+
+Related Guides
+
+
+About
+
+Setup
+
+Localizer
+
+
+
+Models: Barcode, Product &amp; Shelf
+
+
+Product Recognition - Model: Model
+
+
+
+Feature Extractor
+
+Feature Storage
+
+Recognizer
+
+
+Barcode Decoder
+
+Text OCR
+
+
+
+Model
+
+
+CameraX
+
+
+
+EntityTrackerAnalyzer
+
+Detectors
+
+EntityViewfinder
+
+
+Image Attributes Detector
+
+Image Transform Detector
+
+Custom Detector
+
+Entity
+
+Data Types
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

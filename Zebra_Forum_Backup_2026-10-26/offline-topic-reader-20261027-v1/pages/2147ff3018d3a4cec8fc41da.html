@@ -1,0 +1,478 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>RFIDDemosource code</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>RFIDDemosource code</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/23039; original snapshot: threads/01168.html; SHA-256: 1a461f5cd85382ce8fa3818088bd6a199b00a28aece26e01dab76349496a858a</small><pre id="topic">
+
+    
+        RFIDDemosource code
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            37
+          
+                
+                  
+            
+            7
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Team,  Where can I get the souce code of  our RFIDDemo sample shipped on MC9090?  With this demo one can select a tag by EPC ID and then write only to this tag.  Our developer would like how it&#x27;s done because they have not been able to achieve the same from their application - all visible tags are being programmed...  Thanks, Valery
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      7 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Prashant,  .NET is preferable. I need the same as shipped with MC9090 EU R1 units with ability to select&amp;nbsp;EN302-208 channel(s) to operate on.  Thanks, Valery
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Ian,  yes but the description of this function says &quot;The mask limits the list of tags that can be&amp;nbsp; READ based on the current mask&quot;  But - just got info from support that under certain conditions it is true for writing as well . Will give it a try.  Thanks for feedback! Valery
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Our developer claims it works. I have yet to check this myself but I don&#x27;t have a demo unit right now...
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Just tried&amp;nbsp;with MC9090 EU R1 and RFIDDemo 1.18., RFIDAPI 3.26, Firmware 4.11 It programs all tags under antenna... Will investigate further
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Valery,  &amp;nbsp;I think that the tag mask function is used to program a specific tag i.e. you first&amp;nbsp;set the mask to match all the tagID bits as follows:
+HANDLE hReader;TAG_MASK TagMask;
+BYTE *pTagBitMask &amp;nbsp;= ”\x10\x20\x30\x40\x50\x60\x70\x80”;
+TagMask.cBitLen = 8*8; &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;// Match all 64 bits of the TAG IDTagMask.cBitStartOffset = 16; &amp;nbsp;&amp;nbsp;&amp;nbsp;// Start matching after the first 16 bits.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;// These bits are reserved by the tag.// set the tag mask bitsmemcpy(TagMask.cTagMask, pTagBitMask, 8);
+RFID_SetTagMask(hReader, &amp;amp;TagMask);Once you have set the mask , it should only program the TagID which is passed in the program function:
+pTagID = &quot;\x01\x02\x03\x04\x05\x06\x07\x08”;cTagLength = 8;cTagVerifyCount = 3;cEraseAttempts = 3;cProgramAttempts = 3;
+dwStatus &amp;nbsp;= RFID_ProgramTags(hRFIDReader, pTagID, cTagLength, cTagVerifyCount, cEraseAttempts, cProgramAttempts);if(dwStatus == RFID_SUCCESS)
+{&amp;nbsp;&amp;nbsp;// Tag programmed};&amp;nbsp;The above code extracts are from the EMDK for C help file which contains some useful info+code snippets&amp;nbsp;on the API.Best Regards,Ian HattonEMb EMEA
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Charles Malm
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The source code is not available.  Please contract Motorola Support at 1-800-653-5350 or emb.support@motorola.com and open a case if your developer is having an issue using our API.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            We don&#x27;t provide source code for a&amp;nbsp;DEMO program? Why?  I have&amp;nbsp;two cases opened with EMEA support on other RFID programming questions - not too much success so far...  From RFIDDemo it&#x27;s clearly seen that writing to a single tag is possible. Unfortunately there nothing in our EMDK explaining how it can be done as there is no explicit way to select a particular tag for writing. For reading - yes, there is a tag mask but it doesn&#x27;t work for writing.  There is already a case 1827227 (not mine) with exact the same question. The first reply from the support was that this is not possible. After a long discussion customer said that RFIDDemo does this just fine and asked for source as well. The request has been sent&amp;nbsp;for the source code and clarification whether it&#x27;s possible to program the selected tag. This was at the beginning of March. The case is still open...
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

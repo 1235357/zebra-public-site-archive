@@ -1,0 +1,1179 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>barcode scanner -PL5000-AM000R - Android Developer support</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>barcode scanner -PL5000-AM000R - Android Developer support</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/barcode-scanner-pl5000-am000r-android-developer-support; original snapshot: threads/00823.html; SHA-256: cee87bb5a47bb2473b84695e4d98220a9f9d6c16d1c0e4d1a044a14a8a23c7ea</small><pre id="topic">
+
+    
+        barcode scanner -PL5000-AM000R - Android Developer support
+
+
+        
+      
+                        
+                    
+            V
+          
+          venkatesh Ramanadham
+          4 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            103
+          
+                
+                  
+            
+            19
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi ,
+We are using Barcode scanner to develop android application .We have multiple queries
+Engine	Zebra	SE4100-LM000R
+Decoder	Zebra	PL5000-AM000R
+Flexi	Zebra	FLXPL5AMCL
+1 . Can we trigger barcode more than 10 seconds ,if yes how we can achieve .
+ 2 . Can we on Led more than 10 seconds
+In the above 2 seniors we have given the count down timer for 60 second to release the trigger or to off led but it works for 10 seconds only .
+could you please suggest us how we can achieve the 60 sec scanner duration.
+Thanks ,
+venkatesh
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      19 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Max decode session timeout is 9.9 seconds
+Seems you have two options
+Option 1: have timer to send trigger event each 10 seconds and reset it at barcode event .
+Option 2: set the decoder into présentation mode , this will allow the engine to start decode session automatically when detecting barcode . You can add scan enable disable events to control the decoding session if needed .
+In case you still require decode session to be above 10 seconds them only left option is to request custom firmware through your zebra account team or distributor .
+Regards
+Riad
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              V
+            
+          
+                
+          
+            venkatesh Ramanadham
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Raid,
+Thank you for your response , we will plan to go Option 1 .
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              V
+            
+          
+                
+          
+            venkatesh Ramanadham
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            could you please share us an example to trigger presentation mode in Option 2
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You will have to change trigger mode setting parameter #138 . By default it&#x27;s set to standard level . Change it to Presentation Blink .
+The enable / disable can be achieved using api DCSSDK_DEVICE_SCAN_ENABLE and DCSSDK_DEVICE_SCAN_DISABLE  ( refer to https://techdocs.zebra.com/dcs/scanners/sdk-android/dev-guide/ )
+Here description of all different set for that parameter .
+*Standard (Level) - A trigger press activates decode processing. Decode processing continues until
+the barcode decodes, you release the trigger, or the Decode Session Timeout on  occurs.
+• Presentation (Blink) - The decoder activates decode processing when it detects a barcode in its field
+of view. After a period of non-use, the LEDs turn off until the decoder senses motion.
+• Host - A host command issues the decode signal. The decoder interprets an actual trigger pull as a
+Level triggering option.
+• Auto Aim - The decoder projects the aiming pattern when the decoder senses motion. A trigger press
+activates decode processing. After a period of inactivity the aiming pattern shuts off.
+• Auto Aim with Illumination - The decoder projects the aiming pattern and internal illumination LEDs
+when the decoder senses motion. A trigger pull activates decode processing. After 2 seconds of
+inactivity the aiming pattern and internal illumination LEDs automatically shut off.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              V
+            
+          
+                
+          
+            venkatesh Ramanadham
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you Raid.
+could you please share a sample code for the presentation mode. I cant find any reference for presentation blink
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              V
+            
+          
+                
+          
+            venkatesh Ramanadham
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Could you please share a sample code for the presentation mode. I cant find any reference for presentation blink
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            What do you mean by sample code ? Trigger mode is parameter that you change by reading parameter barcode from the guide or you can  do it using 123scan
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              V
+            
+          
+                
+          
+            venkatesh Ramanadham
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            1 . Trigger mode is parameter that you change by reading parameter barcode .
+Could you please explain about the above point .as i was not able to understand .
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            All zebra scanners including OEM decoder got different parameters that can be modified by reading the parameter barcode in question which is in the manual or can be loaded or generated using 123 scan .
+Here article which got presentation blink trigger mode that is also included in the manual 
+https://www.zebra.com/us/en/support-downloads/knowledge-articles/evm/DS…
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              F
+            
+          
+                
+          
+            FirstName LastName
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for providing a simple and useful guide to save my time https://techdocs.zebra.com/dcs/scanners/sdk-android/dev-guide/ Which is helpful to my website https://lordsapk.com/zombie-diary-2-mod-apk/&amp;quot; android apps simple.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Sample called SCA scanner control app for Android  is available with source code within SDK .
+Refer to
+https://github.com/zebra-technologies/Scanner-SDK-for-Android
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              V
+            
+          
+                
+          
+            venkatesh Ramanadham
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you Raid,
+Is it possible to stop Blink in Presentation Mode and make led to stay without blink ?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I&#x27;m sorry but I&#x27;m not quiet sure to understand what you mean . Is it possible to share video ?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              V
+            
+          
+                
+          
+            venkatesh Ramanadham
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            https://drive.google.com/file/d/1HS3BiiTQKQBFaUmtMfCEccr95UxsJm9z/view?…
+Please look into video ,The barcode scanners Led is Blinking when scanner is in presentation Mode .
+We need the Led to stay without Blink .
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Did you change any settings than enabling présentation mode ? Please make sure to set it to default and enable only the présentation mode . Normally the decode session timeout by default is 9.9 seconds
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              V
+            
+          
+                
+          
+            venkatesh Ramanadham
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Yes i have done &quot;Set Factory Defaults&quot; and enabled Presentation Mode .Still I can Observe Led Blink .
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Which barcode exactly you scanned from the manual to enable presentation mode?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              V
+            
+          
+                
+          
+            venkatesh Ramanadham
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I Have Used the below xml to enable presentation mode
+Opcode :  DCSSDK_RSM_ATTR_SET(5004),
+and Xml is :
+ &quot;&quot; + dcsScannerInfo.getScannerID() + &quot;&quot; + 138 + &quot;B&quot; + 7+ &quot;&quot;;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The parameter and setting are right .
+It might be the function detects contrast changes causing the continuous scan sessions. Difficult to say from just this video. What happens if you cover the working kit from contrast changes, e.g. scanning onto a nearby wall?
+I have only SE47xx so tested here and I don&#x27;t see such behavior .. the illumination for decode session start when detect movement and would turn down within 1-2 seconds if no barcode detected ( which is normal as this is controlled by hands free decode session timeout - parameter 400 )
+check manual page161 https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/barcode-sc…
+try to set it for 50 or 100 and see the result
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

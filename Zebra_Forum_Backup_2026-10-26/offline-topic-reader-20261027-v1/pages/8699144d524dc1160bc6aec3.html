@@ -1,0 +1,165 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Printer Buffer Overrun</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Printer Buffer Overrun</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/printer-buffer-overrun; original snapshot: threads/00125.html; SHA-256: d511b738affcef75e6cd9c719c059bccac7f1e146c489c68c05ed9da77f8e55a</small><pre id="topic">
+
+    
+        Printer Buffer Overrun
+
+
+        
+      
+                        
+                    
+            R
+          
+          Richard Way
+          3 months 1 week ago
+        
+        
+      
+        
+            
+                  
+            
+            334
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I have a multi-threaded program that handles sending labels to over a hundred different label printers across multiple warehouses. It works fine for any manual processes as only one or two labels is being sent at a time. However, for our bulk operations, everything goes to a print room, where there is 1 label printer. Last week we had a batch process come down with 315 labels to be printed. Less than half of the labels actually printed. We typically start seeing missing labels when we get over ~50 print calls. I added a check for isReceiveBufferFull, but I&#x27;ve not seen it return True, even when I put the process in a loop and send 50+ print requests in under 5 seconds. I did get an exception: &#x27;Zebra.Sdk.Comm.ConnectionException&#x27; in SdkApi.Core.dll on the 55th print request.Am I missing something? Is there some other way I should be inspecting the printer before I send the next command? Any help would be greatly appreciated!   try
+ {
+     _zplPrintLock.TryAdd(printInfo.LabelPrinter, new object());
+     lock (_zplPrintLock[printInfo.LabelPrinter])
+     {
+         var printerConn = new Zebra.Sdk.Comm.TcpConnection(printInfo.LabelPrinter, 6101); 
+         printerConn.Open();
+         var printerInstance = Zebra.Sdk.Printer.ZebraPrinterFactory.GetInstance(printerConn);
+         while (printerInstance.GetCurrentStatus().isReceiveBufferFull)
+         {
+             Debug.WriteLine(&quot;sleeping!&quot;);
+             Thread.Sleep(250);
+         }
+         printerInstance.SendCommand(decodedString);
+
+         printerConn.Close();
+     }
+ }
+ catch (Exception e)
+ {
+    //....
+ }
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Greg Kujawa
+          
+          
+            2 months 1 week ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            In my C# app I use for sending print jobs to the Zebra I just hardcode in a one-second Thread.Sleep at the end of my method. Not the most elegant or efficient angle to take, but after adding this to my app we haven&#x27;t run into the buffer overruns. I have this app running as a web app, where internal users make API requests to send the print job. Theoretically, multiple users could make API requests pretty much concurrently which could still overwhelm the Zebra printer despite the one-second pause in my method. But for us, our users are in the same department area right next to the networked Zebra. So really only one user at a time is sending print jobs to it as a rule. Out of curiosity, what model are the Zebra printers in your situation? If they are mobile-type printers then this one property is always false, per Zebra docs --&gt; https://techdocs.zebra.com/link-os/3-00/pc_net/content/html/a9c62600-ae8b-e4fd-15a7-f2e24afd3026.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

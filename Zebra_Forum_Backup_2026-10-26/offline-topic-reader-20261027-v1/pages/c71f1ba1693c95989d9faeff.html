@@ -1,0 +1,377 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra ZC300 Operating System (OS)</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Zebra ZC300 Operating System (OS)</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zebra-zc300-operating-system-os; original snapshot: threads/00472.html; SHA-256: 3407294da18c0e2cd8a0683115aa0ec3cfaa90000e9049d9d54ab09ffecd8659</small><pre id="topic">
+
+    
+        Zebra ZC300 Operating System (OS)
+
+
+        
+      
+                        
+                    
+            S
+          
+          SDK NDD
+          3 years ago
+        
+        
+      
+        
+            
+                  
+            
+            204
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                          //Solved
+        
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+
+We are implementing printer monitoration for the ZC300 and one information that we would like to get from the device is the Operating System (Name and Version).
+
+But looking at the Link-OS PC-Card SDK there is not a field that we could get such information.
+
+ 
+
+Do you know what Operational System this device runs on?
+
+And there is any way that we could get that information via Card SDK ?
+
+ 
+
+Best regards.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+        
+      
+        ✓ Accepted Solution
+      
+      
+        
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The firmware on card printers is completely different from the firmware on label printers and it doesn&#x27;t adopt the Link-OS architecture from label printers. Card printers do not have the Link-OS in its firmware, even though the card printer&#x27;s SDK is bundled together with the SDKs for Link-OS printers. The firmware version is the only info for the firmware the card printers operate on.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+      
+    
+  
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There a few APIs you may want to try for getting the printer information. The printer firmware information should be in one of the settings returned from getAllSettings() API.
+
+getPrinterInformation() - Method in interface com.zebra.sdk.common.card.device.DeviceUtil
+
+Returns the printer&#x27;s specific device information.
+
+getPrinterModel() - Method in class com.zebra.sdk.common.card.graphics.ZebraCardGraphics
+
+Returns the printer model.
+
+getAllSettings() - Method in interface com.zebra.sdk.settings.SettingsProvider
+
+Retrieve all settings and their attributes.
+
+getAllSettingValues() - Method in interface com.zebra.sdk.settings.SettingsProvider
+
+Retrieves all of the device&#x27;s setting values.
+
+
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            SDK NDD
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+
+ 
+
+Thank you for the information.
+
+We found the place that returns the firmware version:
+
+ZebraCardPrinter.getPrinterInformation().firmwareVersion
+
+ 
+
+Now what we are looking for is the information of the name and version of the operational system that the device runs.
+
+For example, for the label devices like the ZT231, we know that is something like this: Link-OS v6.7 (from: SGD &quot;appl.link_os_version&quot;)
+
+ 
+
+What would be the equivalent of &quot;Link-OS v6.7&quot; for the ZC300? It looks like the ZC300 does not run on Link-OS.
+
+We didn&#x27;t find anything related to the Operational System on the SDK, only the firmware version.
+
+ 
+
+Best regards.
+
+ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The firmware on card printers is completely different from the firmware on label printers and it doesn&#x27;t adopt the Link-OS architecture from label printers. Card printers do not have the Link-OS in its firmware, even though the card printer&#x27;s SDK is bundled together with the SDKs for Link-OS printers. The firmware version is the only info for the firmware the card printers operate on.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

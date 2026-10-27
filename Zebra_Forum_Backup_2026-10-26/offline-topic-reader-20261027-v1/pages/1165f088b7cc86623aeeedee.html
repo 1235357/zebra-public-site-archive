@@ -1,0 +1,223 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Issue with Zebra RFID Xamarin SDK on Android 14 (Target API Level 34) - SecurityException during Receiver Registration</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Issue with Zebra RFID Xamarin SDK on Android 14 (Target API Level 34) - SecurityException during Receiver Registration</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/issue-zebra-rfid-xamarin-sdk-android-14-target-api-level-34-securityexception-during-receiver-registration; original snapshot: threads/00200.html; SHA-256: d75e078088737331dd751be069a19c7701c88d21735b0bde11504750e4fed1bc</small><pre id="topic">
+
+    
+        Issue with Zebra RFID Xamarin SDK on Android 14 (Target API Level 34) - SecurityException during Receiver Registration
+
+
+        
+      
+                        
+                    
+            B
+          
+          Bindiya Rathod
+          2 years 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            627
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Due to Google&#x27;s requirement to target Android 14 (API level 34), I have updated the target version of my Xamarin. Forms project accordingly. However, when I run the project, I&#x27;m encountering the following error.I also tested the latest Zebra sample (version 2.0.1.116, released in May 2023) to verify the issue, and it occurs there as well.Could anyone provide guidance on this? Any feedback would be greatly appreciated.Steps to Reproduce:1. Download the latest project from the link below.2. Change the target version in the manifest file to 34.3. Run the project on a device running Android 14.at Java.Interop.JniEnvironment+InstanceMethods.CallNonvirtualVoidMethod (Java.Interop.JniObjectReference instance, Java.Interop.JniObjectReference type, Java.Interop.JniMethodInfo method, Java.Interop.JniArgumentValue* args) [0x00088] in /Users/runner/work/1/s/xamarin-android/external/Java.Interop/src/Java.Interop/obj/Release/JniEnvironment.g.cs:12324 
+ at Java.Interop.JniPeerMembers+JniInstanceMethods.FinishCreateInstance (System.String constructorSignature, Java.Interop.IJavaPeerable self, Java.Interop.JniArgumentValue* parameters) [0x0003e] in /Users/runner/work/1/s/xamarin-android/external/Java.Interop/src/Java.Interop/Java.Interop/JniPeerMembers.JniInstanceMethods.cs:174 
+ at Com.Zebra.Rfid.Api3.Readers..ctor (Android.Content.Context p0, Com.Zebra.Rfid.Api3.ENUM_TRANSPORT p1) [0x0009d] in &lt;78f6d5917680408aa117caf05e0d0f76&gt;:0 
+ at ZebraRFIDXamarinDemo.Models.ReaderModel.GetAvailableReaders () [0x0001d] in D:\ZebraRFIDXamarinDemo\ZebraRFIDXamarinDemo\ZebraRFIDXamarinDemo\Models\ReaderModel.cs:209 
+ --- End of managed Java.Lang.SecurityException stack trace ---
+java.lang.SecurityException: com.zebra.rfid.Xamarin.demo: One of RECEIVER_EXPORTED or RECEIVER_NOT_EXPORTED should be specified when a receiver isn&#x27;t being registered exclusively for system broadcasts
+    at android.os.Parcel.createExceptionOrNull(Parcel.java:3057)
+    at android.os.Parcel.createException(Parcel.java:3041)
+    at android.os.Parcel.readException(Parcel.java:3024)
+    at android.os.Parcel.readException(Parcel.java:2966)
+    at android.app.IActivityManager$Stub$Proxy.registerReceiverWithFeature(IActivityManager.java:5684)
+    at android.app.ContextImpl.registerReceiverInternal(ContextImpl.java:1852)
+    at android.app.ContextImpl.registerReceiver(ContextImpl.java:1792)
+    at android.app.ContextImpl.registerReceiver(ContextImpl.java:1780)
+    at android.content.ContextWrapper.registerReceiver(ContextWrapper.java:755)
+    at com.zebra.rfid.api3.Readers.a(Unknown Source:26)
+    at com.zebra.rfid.api3.Readers.&lt;init&gt;(Unknown Source:20)
+Caused by: android.os.RemoteException: Remote stack trace:
+    at com.android.server.am.ActivityManagerService.registerReceiverWithFeature(ActivityManagerService.java:13927)
+    at android.app.IActivityManager$Stub.onTransact(IActivityManager.java:2570)
+    at com.android.server.am.ActivityManagerService.onTransact(ActivityManagerService.java:2720)
+    at android.os.Binder.execTransactInternal(Binder.java:1339)
+    at android.os.Binder.execTransact(Binder.java:1275)Link to Download:https://www.zebra.com/ap/en/support-downloads/software/rfid-software/zebra-rfid-xamarin-sdk-and-demoapp-for-android.html?downloadId=b1b9ff56-7d9e-4f59-b973-5e4fa2598129#Ta-item-269f7fab75-tabFile Name:Zebra_RFIDAPI3_XAMARIN_SDK_2.0.1.116.zip
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              I
+            
+          
+                
+          
+            Ian Hatton
+          
+          
+            2 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I think this is the issue discussed here: https://stackoverflow.com/questions/77235063/one-of-receiver-exported-or-receiver-not-exported-should-be-specified-when-a-rec
+Are you able to include the workaround suggested in the sample code and retest ?
+To allow the broadcast receiver to receive broadcasts from other apps, register the receiver using the following code:
+context.registerReceiver(broadcastReceiver, intentFilter, RECEIVER_EXPORTED);
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Josef Štěpánek
+          
+          
+            2 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I have same problem in Java. But i canť test it without access to source code when brodcast is not declared via Android manifest but dynamically in source code. Or?Is this how you handle it? https://developer.android.com/about/versions/14/behavior-changes-14#runtime-receivers-exported 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,278 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Set decoder selection via Datawedge API</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/set-decoder-selection-datawedge-api; snapshot threads/00383.html; SHA-256 9b3f3c63a65d3f99f3f313d8c6a742534d2770e3d8803e62dd2ff3f59e1533cc. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Set decoder selection via Datawedge API</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            J
+          </div>
+          <div class="forum-topic__author-name">Joeri Klomp</div>
+          <div class="forum-topic__timestamp">2 years 9 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            305
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            3
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello,</p>
+<p>I am trying to modify the active profile to only enable certain decoders within particular screens in my application via the Datawedge API, but I can't get it to work.</p>
+<p>It returns a RESULT of SUCCESS, that is the weird thing, but I can't scan any of the barcodes.</p>
+<p>This is the code (it's for a .NET MAUI application):</p>
+<pre><code class="language-plaintext">Bundle mainBundle = new Bundle();
+mainBundle.PutString("PROFILE_NAME", "MauiTest");
+mainBundle.PutString("CONFIG_MODE", "UPDATE");
+
+Bundle configBundle = new Bundle();
+configBundle.PutString("PLUGIN_NAME", "BARCODE");
+
+Bundle paramsBundle = new Bundle();
+paramsBundle.PutString("decoder_qrcode", "true");
+paramsBundle.PutString("decoder_datamatrix", "true");
+paramsBundle.PutString("decoder_ean8", "true");
+paramsBundle.PutString("decoder_ean13", "true");
+
+configBundle.PutBundle("PARAM_LIST", paramsBundle);
+mainBundle.PutBundle("PLUGIN_CONFIG", configBundle);
+
+Intent intent = new Intent();
+intent.SetAction("com.symbol.datawedge.api.ACTION");
+intent.PutExtra("SEND_RESULT", "true");
+intent.PutExtra("com.symbol.datawedge.api.SET_CONFIG", mainBundle);
+
+SendBroadcast(intent);</code></pre>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      3 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-52567" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>David Garratt</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 8 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Did you make any progress with this. One of my customers just upgraded from a Windows Mobile MC92n0 Enterprise Browser 1.8 config to an Android MC9300 with Enterprise Brower and DataWedge combo and it proved extremely difficult. Zebra seems to want you to use DataWedge API from the browser (via EB) but it did not seem to work for me and with very little to go on when it comes to diagnosing the problem.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-52568" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 8 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Quick Question.</p><p>The profile in question "MauiTest" - when you send this enablement - do you see this change the state of these decoders in the "MauiTest" profile in Datawedge?</p><p>I ask since this Maui sample - looks close to the "Datacapture1" sample app (Android Studio) but I think you may have missed the degree of freedom for the PARAM_LIST for the Bundle Property.</p><p>Datacapture1 and the github repo can be found here:</p><p><span data-original-href="https://techdocs.zebra.com/datawedge/13-0/guide/samples/barcode1/">https://techdocs.zebra.com/datawedge/13-0/guide/samples/barcode1/</span>    { Datacapture1 app}</p><p><span data-original-href="https://github.com/ZebraDevs/DataWedge-Android-Samples">https://github.com/ZebraDevs/DataWedge-Android-Samples</span>  { GitHib Repo }</p><p> </p><p>Take a look carefully in the GIT for "MainActivity.java" and look carefully at the " btnSetDecoders.setOnClickListener();" part.<br>The Bundle Setup look s to me like:</p><p>profileConfig (new bundle),</p><p>barcodeConfig (new bundle),</p><p>barcodeProps (new bundle).  ( So far with your sample, above this looks good )</p><p>but... look further down.</p><p>appConfig (new bundle).  ( this is the : Action - that Puts the parsable array into the app correspondent DW Profile for DW to process.)</p><p>Its subtle - but this is why I ask if your code "Actually" changes anything.  I think the way you are intent-ing to the Broadcast Intent channel is not targeting Your Maui app DW profile, but may not be doing anything at all.</p><p> </p><p>Hope this helps with pointing you in the direction that "Datacapture1" sample app behaves / works - for your MAUI project.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-52569" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 8 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>FYI: Nikola De Zolt - just published this in the blog.<br><span data-original-href="https://github.com/ZebraDevs/datawedge-MAUI-SampleApp/">https://github.com/ZebraDevs/datawedge-MAUI-SampleApp/.</span><br><br>From the posting here:<br><span data-original-href="https://developer.zebra.com/blog/developing-net-maui-zebra-androidtm-devices">https://developer.zebra.com/blog/developing-net-maui-zebra-androidtm-devices</span></p><p>Enjoy.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/set-decoder-selection-datawedge-api%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/set-decoder-selection-datawedge-api%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

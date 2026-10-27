@@ -1,0 +1,483 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Switch Data Capture - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/switchdatacapture</code><br>Observed final URL: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/switchdatacapture/</code><br>Raw source: <code>raw/e757add4f916dd3cf408fdb1.html</code><br>Raw SHA-256: <code>59bcbece0b43127a72a8a39f03392f5a5c655ccdf83bdf26156724011fcb3eae</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs Home
+                        
+                                            DataWedge
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Get Started
+                            
+                        
+                        
+                            
+                                    Profiles
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Feature Matrix
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            US - English
+                          
+                          
+                                 CN - 普通话
+                                 JP - 日本語
+                          
+                                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Switch Data Capture
+                        
+                    SWITCH_DATACAPTUREFunction PrototypeParametersResult CodesExample CodeSwitch between barcode scanning and highlightingSwitch between workflow options
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Switch Data Capture
+                                    
+                                            DataWedge
+                                            15.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        SWITCH_DATACAPTURE
+
+Introduced in DataWedge 11.2.
+
+Used to switch between the following at runtime:
+
+
+Barcode scanning and Barcode Highlighting, e.g. to have the ability to alternate between scanning barcodes and using the viewfinder (or preview screen) to highlight barcodes to aid in finding items.
+
+Workflow Input options, e.g. to scan a driver license and read a license plate in the same app.
+
+
+Note: Settings configured by this API remain in effect until the Profile is switched to a different Profile.
+
+Function Prototype
+
+Intent i = new Intent();
+i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+i.putExtra(&quot;APPLICATION_PACKAGE&quot;, getPackageName());
+i.setPackage(&quot;com.symbol.datawedge&quot;);
+i.putExtra(&quot;SEND_RESULT&quot;, &quot;LAST_RESULT&quot;);
+i.putExtra(&quot;com.symbol.datawedge.api.SWITCH_DATACAPTURE&quot;, &quot;&lt;Input plugin name&gt;&quot;);
+
+Bundle paramList = new Bundle();
+
+paramList.putString(&quot;scanner_selection_by_identifier&quot;, &quot;&lt;Selected scanner&gt;&quot;); //INTERNAL_IMAGER
+
+paramList.putString(&quot;&lt;Param1ID&gt;&quot;, &quot;&lt;Param1Value&gt;&quot;);
+
+i.putExtra(&quot;PARAM_LIST&quot;, paramList);
+
+sendBroadcast(i);
+
+Parameters
+
+ACTION [String]: &quot;com.symbol.datawedge.api.ACTION&quot;
+
+EXTRA_DATA [String]: &quot;APPLICATION_PACKAGE&quot; – calling application package name
+
+EXTRA_DATA [String]: &quot;com.symbol.datawedge.api.SWITCH_DATACAPTURE&quot;
+
+PACKAGE: com.symbol.datawedge
+
+EXTRA_DATA [String]: &quot;PARAM_LIST&quot; – param list to be passed to the input plugin
+
+Result Codes
+
+DataWedge returns the following error codes if the app includes the intent extras SEND_RESULT:
+
+
+DATAWEDGE_DISABLED - DataWedge is disabled
+
+PROFILE_DISABLED - Profile is disabled
+
+PLUGIN_DISABLED - Scanner plug-in is disabled
+
+NO_ACTIVE_PROFILE – no active profile loaded
+
+PLUGIN_NOT_SUPPORTED – specified plugin is not supported on the device
+
+INVALID_WORKFLOW – invalid Workflow ID specified
+
+UNLICENSED_FEATURE – no valid license available for the parameter or feature being switched to
+
+PARAMETER_INVALID - the parameter is invalid
+
+PARAMETER_NOT_SUPPORTED - the parameter is not supported
+
+VALUE_INVALID - the value for the parameter is invalid
+
+VALUE_NOT_SUPPORTED - the value for the parameter is not supported
+
+
+Example Code
+
+Switch between barcode scanning and highlighting
+
+This sample code demonstrates how to switch from barcode scanning to barcode highlighting at runtime:
+
+public void onClickHighlight(View view) {
+
+    //Specify the DataWedge action and SWITCH_DATACAPTURE API parameters
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.putExtra(&quot;APPLICATION_PACKAGE&quot;, getPackageName());
+    i.setPackage(&quot;com.symbol.datawedge&quot;);
+    i.putExtra(&quot;SEND_RESULT&quot;, &quot;LAST_RESULT&quot;);
+    i.putExtra(&quot;com.symbol.datawedge.api.SWITCH_DATACAPTURE&quot;, &quot;BARCODE&quot;);
+
+    Bundle paramList = new Bundle();
+    //Specify the scanner to use (Only internal imager and camera are supported currently)
+    paramList.putString(&quot;scanner_selection_by_identifier&quot;, &quot;INTERNAL_IMAGER&quot;);
+    //Enable barcode highlighting
+    paramList.putString(&quot;barcode_highlighting_enabled&quot;, &quot;true&quot;);
+
+    //Create a barcode highlighting Rule 1 [Start]
+    Bundle rule1 = new Bundle();
+    rule1.putString(&quot;rule_name&quot;, &quot;Rule1&quot;);
+        Bundle rule1Criteria = new Bundle();
+
+    //Set the criteria/condition. Specify the contains parameter.
+    Bundle bundleContains1 = new Bundle();
+    bundleContains1.putString(&quot;criteria_key&quot;, &quot;contains&quot;);
+    bundleContains1.putString(&quot;criteria_value&quot;, &quot;090986&quot;);
+
+    //Container is just one parameter of identifier group.
+    // There are other params such as ignore case, min length, max length
+    ArrayList&lt;Bundle&gt; identifierParamList = new ArrayList&lt;&gt;();
+    identifierParamList.add(bundleContains1);
+
+    //Add the parameters of &quot;identifier&quot; group as a ParcelableArrayList to criteria list
+    rule1Criteria.putParcelableArrayList(&quot;identifier&quot;, identifierParamList);
+
+    //Add the criteria to Rule bundle
+    rule1.putBundle(&quot;criteria&quot;, rule1Criteria);
+
+    //Set up the action bundle by specifying the color to be highlight
+    Bundle bundleFillColor = new Bundle();
+    bundleFillColor.putString(&quot;action_key&quot;, &quot;fillcolor&quot;);
+    bundleFillColor.putString(&quot;action_value&quot;, &quot;#CEF04E6E&quot;);
+
+    ArrayList&lt;Bundle&gt; rule1Actions = new ArrayList&lt;&gt;();
+    rule1Actions.add(bundleFillColor);
+    rule1.putParcelableArrayList(&quot;actions&quot;, rule1Actions);
+    //Create a barcode highlighting Rule 1 [Finish]
+
+    //Create a barcode highlighting Rule 2 [Start]
+    Bundle rule2 = new Bundle();
+    rule2.putString(&quot;rule_name&quot;, &quot;Rule2&quot;);
+    Bundle rule2Criteria = new Bundle();
+
+    Bundle bundleContains2 = new Bundle();
+    bundleContains2.putString(&quot;criteria_key&quot;, &quot;contains&quot;);
+    bundleContains2.putString(&quot;criteria_value&quot;, &quot;7777&quot;);
+
+    ArrayList&lt;Bundle&gt; identifierParamList2 = new ArrayList&lt;&gt;();
+    identifierParamList2.add(bundleContains2);
+
+    rule2Criteria.putParcelableArrayList(&quot;identifier&quot;, identifierParamList2);
+
+    rule2.putBundle(&quot;criteria&quot;, rule2Criteria);
+    Bundle rule2BundleStrokeColor = new Bundle();
+    rule2BundleStrokeColor.putString(&quot;action_key&quot;, &quot;fillcolor&quot;);
+    rule2BundleStrokeColor.putString(&quot;action_value&quot;, &quot;#CE7F2714&quot;);
+    ArrayList&lt;Bundle&gt; rule2Actions = new ArrayList&lt;&gt;();
+    rule2Actions.add(rule2BundleStrokeColor);
+    rule2.putParcelableArrayList(&quot;actions&quot;, rule2Actions);
+    //Create a barcode highlighting Rule 1 [Finish]
+
+    //Add the two created rules to the rule list
+    ArrayList&lt;Bundle&gt; ruleList = new ArrayList&lt;&gt;();
+    ruleList.add(rule1);
+    ruleList.add(rule2);
+
+
+    //Assign the rule list to barcode_overlay parameter
+    Bundle ruleBundlebarcodeOverlay = new Bundle();
+    ruleBundlebarcodeOverlay.putString(&quot;rule_param_id&quot;, &quot;barcode_overlay&quot;);
+    ruleBundlebarcodeOverlay.putParcelableArrayList(&quot;rule_list&quot;, ruleList);
+
+
+    ArrayList&lt;Bundle&gt; ruleParamList = new ArrayList&lt;&gt;();
+    ruleParamList.add(ruleBundlebarcodeOverlay);
+
+    paramList.putParcelableArrayList(&quot;rules&quot;, ruleParamList);
+
+    i.putExtra(&quot;PARAM_LIST&quot;, paramList);
+
+    sendBroadcast(i);
+}
+
+public void onClickRegular(View view) {
+
+    //Specify the DataWedge action and SWITCH_DATACAPTURE API parameters
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.putExtra(&quot;APPLICATION_PACKAGE&quot;, getPackageName());
+    i.setPackage(&quot;com.symbol.datawedge&quot;);
+    i.putExtra(&quot;SEND_RESULT&quot;, &quot;LAST_RESULT&quot;);
+    i.putExtra(&quot;com.symbol.datawedge.api.SWITCH_DATACAPTURE&quot;, &quot;BARCODE&quot;);
+
+    Bundle paramList = new Bundle();
+    //Specify the scanner to use (Only internal imager and camera are supported currently)
+    paramList.putString(&quot;scanner_selection_by_identifier&quot;, &quot;INTERNAL_IMAGER&quot;);
+    //Disable barcode highlighting
+    paramList.putString(&quot;barcode_highlighting_enabled&quot;, &quot;false&quot;);
+
+    i.putExtra(&quot;PARAM_LIST&quot;, paramList);
+
+    sendBroadcast(i);
+}
+
+Switch between workflow options
+
+This sample code demonstrates how to switch between identification document scanning to meter reading at runtime:
+
+public void switchToIDScanning()
+{
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.putExtra(&quot;APPLICATION_PACKAGE&quot;, getPackageName());
+    i.setPackage(&quot;com.symbol.datawedge&quot;);
+    i.putExtra(&quot;SEND_RESULT&quot;,&quot;LAST_RESULT&quot;);
+    i.putExtra(&quot;com.symbol.datawedge.api.SWITCH_DATACAPTURE&quot;, &quot;WORKFLOW&quot;);
+
+    Bundle paramList = new Bundle();
+    paramList.putString(&quot;workflow_name&quot;,&quot;id_scanning&quot;);
+    paramList.putString(&quot;workflow_input_source&quot;,&quot;2&quot;);
+
+    Bundle paramSet1 = new Bundle();
+    paramSet1.putString(&quot;module&quot;,&quot;IDDecoderModule&quot;);
+    Bundle moduleAParams = new Bundle();
+    moduleAParams.putString(&quot;session_timeout&quot;, &quot;25000&quot;);
+    paramSet1.putBundle(&quot;module_params&quot;,moduleAParams);
+
+    ArrayList&lt;Bundle&gt; paramSetList = new ArrayList&lt;&gt;();
+    paramSetList.add(paramSet1);
+
+    paramList.putParcelableArrayList(&quot;workflow_params&quot;, paramSetList);
+
+    i.putExtra(&quot;PARAM_LIST&quot;, paramList);
+
+    sendBroadcast(i);
+}
+
+public void switchToMeterReading()
+{
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.putExtra(&quot;APPLICATION_PACKAGE&quot;, getPackageName());
+    i.setPackage(&quot;com.symbol.datawedge&quot;);
+    i.putExtra(&quot;SEND_RESULT&quot;,&quot;LAST_RESULT&quot;);
+    i.putExtra(&quot;com.symbol.datawedge.api.SWITCH_DATACAPTURE&quot;, &quot;WORKFLOW&quot;);
+
+    Bundle paramList = new Bundle();
+    paramList.putString(&quot;workflow_name&quot;,&quot;meter_reading&quot;);
+    paramList.putString(&quot;workflow_input_source&quot;,&quot;2&quot;);
+
+    Bundle paramSet1 = new Bundle();
+    paramSet1.putString(&quot;module&quot;,&quot;MeterReaderModule&quot;);
+    Bundle moduleAParams = new Bundle();
+    moduleAParams.putString(&quot;session_timeout&quot;, &quot;15000&quot;);
+
+    paramSet1.putBundle(&quot;module_params&quot;,moduleAParams);
+
+    ArrayList&lt;Bundle&gt; paramSetList = new ArrayList&lt;&gt;();
+    paramSetList.add(paramSet1);
+
+    paramList.putParcelableArrayList(&quot;workflow_params&quot;, paramSetList);
+
+    i.putExtra(&quot;PARAM_LIST&quot;, paramList);
+
+    sendBroadcast(i);
+}
+
+
+
+SEE ALSO:
+
+Zebra Support Central | Integrator Guides, Product Manuals, Software Downloads and Support
+
+LaunchPad | Zebra Developer Community
+
+Intent | Android Developers
+
+Intents and Intent Filters | Android Developers
+
+Android Intents | Tutorial
+
+Workflow Input
+
+Workflow Input Programmer&#x27;s Guide
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2024 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+      
+
+
+
+Back to Top</pre></body></html>

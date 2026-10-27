@@ -1,0 +1,251 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Link-OS iOS SDK Apple Submission Issue</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Link-OS iOS SDK Apple Submission Issue</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/link-os-ios-sdk-apple-submission-issue; original snapshot: threads/00362.html; SHA-256: 23f7f75774f77096bb0926cf82f89de998dabd798dc7215b2d5baab7a861e1f5</small><pre id="topic">
+
+    
+        Link-OS iOS SDK Apple Submission Issue
+
+
+        
+      
+                        
+                    
+            C
+          
+          Christopher White
+          1 year ago
+        
+        
+      
+        
+            
+                  
+            
+            169
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We have tried to submit an app to the Apple App Store that includes a version of the Link-OS iOS ZSDK_API.xcframework but Apple will not accept the build.Apple gives us the following error:ERROR: [altool.600001D4C1C0] [ContentDelivery.Uploader.600001D4C1C0] Validation failed (409) Invalid bundle structure. The “.app/Frameworks/ZSDK_API.a” binary file is not permitted. Your app cannot contain standalone executables or libraries, other than a valid CFBundleExecutable of supported bundles. For details, visit: Placing content in a bundle | Apple Developer Documentation (https://developer.apple.com/documentation/bundleresources/placing-content-in-a-bundle)  (ID: ad706a06-32ad-444e-8576-88d75b225132)We downloaded the latest iOS ZSDK_API.xcframework, version 1.6.1158, but noticed it still contains the ZSDK_API.a binary file (https://www.zebra.com/gb/en/support-downloads/software/printer-software/link-os-multiplatform-sdk.html?downloadId=244e0a9e-642c-48ab-8625-0b19b8ef0847).Do you have a version of the iOS ZSDK_API.xcframework that addresses this issue or have a timeline for releasing an update?
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Christopher White
+          
+          
+            1 year ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            This is an additional note we received from Apple: &quot;Validation failedUnexpected file found in Frameworks. The “.app/Frameworks/ZSDK_API.a” file is in the Frameworks directory, but the Swift runtime libraries are the only files permitted in that directory. Please remove this file and upload a new build. (ID: a60cc2ca-1fa4-4b9f-9106-c0259336bc38)&quot;
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              L
+            
+          
+                
+          
+            Lavakush Verma
+          
+          
+            12 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Christopher,The error msg shows the current issue is that the ZSDK_API.a file should not be included in the Framework folder of the project. Please move the ZSDK_API.a file to a lib folder in the Xcode project.Please make the changes as suggested and resubmit your app.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Bandaru Phanindhra
+          
+          
+            8 months 1 week ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Christopher,I&#x27;m experiencing similar issues with the Link-OS iOS SDK v1.6.1158 xcframework. I have a few questions about your setup:1. **Simulator support**: Are you able to run the app with the ZSDK_API.xcframework on the iOS Simulator, or does it only work on physical devices? I&#x27;m getting build failures on simulator due to architecture limitations.2. **Swift Package Manager (SPM)**: Is your project using Swift Package Manager? I&#x27;m working with a fully SPM-based project and having integration issues when mixing the manually-added xcframework with other SPM dependencies.3. **SwiftUI compatibility**: Is your project built with SwiftUI? I&#x27;m getting `Command SwiftGeneratePch failed with a nonzero exit code` when trying to integrate the xcframework in my SwiftUI project.**My specific issues:**- The xcframework contains `ZSDK_API.a` binary files (static library) instead of a proper framework binary- Documentation shows incorrect integration steps (static library steps instead of xcframework steps)- No official SPM support or Package.swift available- Simulator builds fail due to arm64-only architectureDid you face any of these issues? And were you able to get simulator builds working?Thanks in advance!
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

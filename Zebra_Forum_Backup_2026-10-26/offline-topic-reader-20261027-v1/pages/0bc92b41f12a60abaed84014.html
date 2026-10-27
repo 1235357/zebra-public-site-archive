@@ -1,0 +1,259 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Concurrent TCP and Weblink connections to printer</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Concurrent TCP and Weblink connections to printer</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/concurrent-tcp-and-weblink-connections-printer; original snapshot: threads/00183.html; SHA-256: 94162fa966986506d43099232a4328cef4516c2fae8c3bc821c0080596a3655f</small><pre id="topic">
+
+    
+        Concurrent TCP and Weblink connections to printer
+
+
+        
+      
+                        
+                    
+            H
+          
+          Hayden Yates
+          2 years 1 month ago
+        
+        
+      
+        
+            
+                  
+            
+            1281
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi, I have a question/issue regarding whether all Zebra printers can support multiple concurrent network connections and communications from a server. I have seen documentation for Weblink that says a printer that supports Weblink is able to host up to 10 Weblink connections at once (if I recall correctly), and in the Link-OS documentation it mentions that the raw TCP port is on a first-come-first-served basis but is there a recommended way to programmatically manage both types of connections to the same printer?I ask this because currently we have a ZD621 to test with and we have printing over TCP and Weblink separately working perfectly via our Win32 C++ server, but if our server tries to host both a TCP and Weblink connection to it then we get some less desirable behavior. For instance if TCP connection was established first, then any ZPL print jobs or queries sent by Weblink are written to the printer without issue but we receive no responses to queries and no print jobs are executed until the TCP connection sends its own ZPL to essentially flush the printer&#x27;s received buffer. And then the reverse order is true, where a Weblink connection established first then prevents any TCP operations until the next Weblink operation occurs. Closing down the first received connection type also seems to effectively flush out any queued operations from the other connection type as well.So is there any way to neatly maintain and support both of these connections at the same time or is there some setting to enable that I am missing for this? Or is this just working as intended and the only way to get my desired behavior is by closing the first received connection if the second one has an operation to execute? Because currently that seems to be the only option here which is not preferred since re-connecting the closed connection every time will have quite a bit of overhead for us.Any help or confirmation would be greatly appreciated, thank you.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            All Zebra printers supports multiple concurrent TCP connections. However, there is only one print engine on a printer. If print jobs are sent to the printer on all TCP connections at the same time, the print engine will be taken on a first come and first served basis. In other words, the printer will take the print job that arrives first, then take the job arrives second after the previous job finishes, and so on.
+For the Weblink connection, all Zebra Link-OS printers support two Weblink connections (via the settings of the weblink.ip.conn1.location and weblink.ip.conn2.location), i.e., a Link-OS printer can connect to two different webservers via the two Weblinks at the same time. As described above, there is only one print engine on a printer. This print engine is shared between the TCP connections, Weblink connections, USB connection, and Bluetooth connection on a first come and first served basis.
+Because of different connection types and multiple connections may coexist concurrently, we have to be mindful of not occupying the print engine for too long, as this could potentially block the access from the other connections to the print engine. Here is one example. If only half of a ZPL is sent via the connection A to the printer, the print engine is occupied by the connection A. The print engine will be waiting on the connection A until it receives the second half of the ZPL. This essentially blocks the other connections. If the second half ZPL never comes over the connection A, the other connections will be blocked forever.
+To keep the printer running smoothly with multiple connections, always make sure don&#x27;t leave the print engine waiting for more data.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hayden Yates
+          
+          
+            2 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you for the quick reply, that explanation makes sense but seems to mean then that the printer is always expecting more ZPL data from us even with the most basic queries. An example of this is TCP connection established first and Weblink established second and we poll all connections every minute with the ~HQES query. Our server&#x27;s TCP connection sends that query first and gets a reply back immediately with a valid printer status message and then some time after that we send the same query over Weblink. From our end it shows it succeeded to send the query packet to the printer but does not receive a response back until the next time our TCP connection sends that status query again. So is there something missing from the first ~HQES packet that needs to signify end of data or is there some separate command to send to assert that we are done sending data?I noticed a similar issue when trying to use PuTTY in addition to one of our connections, i.e. if I connect and then send &quot;~HQES&quot; over PuTTy and then our server connects to the printer and sends the same query it will not get a response back until I send something else over PuTTY.Edit: I played around with PuTTY + our TCP connection a bit more and found that I can assert the end of data by sending a separate packet of just &quot;^XZ&quot; after the query over PuTTY and then my TCP connection can send its own query and get a response just fine. Edited the server code to do this as well and now it is able to receive valid responses from both connection types perfectly fine. Edit 2: Did more testing on the print job side and found that sending &quot;^XA^FO100,100^ADN,36,20^FDHello from Weblink!^FS^XZ&quot; would leave the print engine waiting for more data and requires an extra ^XZ packet sent to it but changing it to &quot;^XA\r\n^FO100,100^ADN,36,20^FDHello from Weblink!^FS\r\n^XZ&quot; with the carriage return and newline included frees it up and allows print jobs from the other connection without an extra ^XZ packet. This behavior makes sense but still leaves me wondering why it is not the same for &quot;~HQES\r\n^XZ&quot; since I tested variations of wrapping ~HQES with the label signifiers ^XA and ^XZ and including newlines and carriage returns but every attempt still requires an extra follow-up &quot;^XZ&quot; packet to free the print engine.  Final Edit: It seems to me that ^XZ can only be treated as the ETX character &#x27;\3&#x27; if it is sent on its own, otherwise if it is sent in concatenation with the ~HQES command then it is read only as the ^XZ tag and since that doesn&#x27;t apply to ~HQES since it is not a label string then it is just treated as a no-op. So from that I found that sending &quot;~HQES\3&quot; works the same as sending ~HQES and then ^XZ separately since it doesn&#x27;t require the printer to substitute ^XZ for &#x27;\3&#x27; in this context. I was aware that response messages are wrapped with characters &#x27;\2&#x27; and &#x27;\3&#x27; but I didn&#x27;t see anywhere in the docs saying that the queries to the printer need to be wrapped the same way.Thanks again for the help, that was plenty of information to narrow down the cause of this behavior and sort things out.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for sharing the details of your observation. To print labels and monitor status of the printer at the same time, it is recommended to use separate TCP ports on the printer. There are two TCP ports, i.e., 9100 (raw port) and 9200 (status port). The 9100 port is for a TCP raw connection and connected to the internal ZPL print engine for label printing. The 9200 port is the dedicated status port that only accepts the SGD commands in JSON format for printer configuration and status query. If we decouple the label printing and the status query by using different ports, then the label printing and the status query will be completely independent and won&#x27;t inter-locking on each other. Otherwise, we likely run into issues, such as the inter-locking that you observed above, in many different scenarios. For details on how to use the SGD commands in JSON form, pleaser refer to the JSON (JavaScript Object Notation) section of the ZPL Programming Guide.
+The same concept is also implemented in the Weblink connection, in which they are called the Raw Channel and the Status Channel respectively. Same as the TCP connection, the Raw Channel is for printing, while the Status Channel is for status query and printer configuration. See the Weblink / WebSocket Endpoint Configuration document for details.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

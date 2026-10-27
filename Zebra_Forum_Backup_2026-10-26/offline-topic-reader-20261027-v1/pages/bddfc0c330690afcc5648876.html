@@ -1,0 +1,331 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Is bluetooth API supported for Win32 builds?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Is bluetooth API supported for Win32 builds?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/29711; original snapshot: threads/02074.html; SHA-256: 94e0b5b90a7c02b38682b9f6088e9a1c1cf584f6d6b6236bd0a62f394859b6e9</small><pre id="topic">
+
+    
+        Is bluetooth API supported for Win32 builds?
+
+
+        
+      
+                        
+                    
+            M
+          
+          Mark Nongkhlaw
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            39
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I need to connect my desktop (via a bluetooth dongle) or my laptop (which already has BT support) to a handheld BT RFID reader.
+Is Rho bluetooth API supported for Win32 builds?
+Alternatively, is there an Android/Windows Phone emulator that supports bluetooth on desktops and laptops?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            For Production:
+For a RhoApp on WIN32, my best suggestion is to setup the BT RFID device to use HID as the data entry (USB Keyboard Human Interface Device) then you do not have to do anything, except do validation on the Text Box when the pages or context is submitted. 
+That or use a Serial to Keyboard wedge utility&amp;nbsp; -- most BT barcode scanners which use SPP have a PC-based utility to act as a Keyboard Wedge. That same wedge would behave similar to the above.
+-sean
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mark Nongkhlaw
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            From Rhomobile | Bluetooth&amp;nbsp; :
+Bluetooth API provide access to Bluetooth serial port connection between phone and another phone, phone and PC, phone and external Bluetooth device (for example external Bluetooth GPS device).
+Not sure if BT serial port connection between PC and external Bluetooth device is supported by the API.
+Can anyone clarify, please?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Mark.
+Usually a Bluetooth {BT} data capture device is connected to a system and will either use: 1) Keyboard wedge of some kind (USB HID), or 2) Serial Port Protocol (SPP) data.
+(There is a third kind, but I won&#x27;t go into detail here about that {SSI} since it is Symbol/Moto/Ztc specific.)
+Since the connection is either of these two, you have the choice of doing nothing (USB HID) since the data is coming from a keyboard entry.&amp;nbsp; (TextBox)
+Or connect a stream to the COM port wherever you decide to setup the data capture device to.
+Are you asking in order to use Bluetooth API to communicate to something specific?&amp;nbsp; As well, you did not indicate what the BT RFID reader is configured for Bluetooth in this case?
+-sean
+Sean M Kennedy
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mark Nongkhlaw
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Ok, looks like I didn&#x27;t  make the question clear enough. First, I&#x27;m not using a Moto device as an RFID reader. This is a Feig bluetooth handheld RFID Reader (specifically, PRH101B). It reads RFID tags, and communicates to a mobile/PC/other BT devices thru Bluetooth, not by tethering it via USB or serial port (of course in this case, its a serial device but with a BT serial port rather than a conventional  serial port).  I&#x27;ve been able to pair the device with a PC as well as mobile thru BT. In fact, I&#x27;ve developed a mobile app (not with Rho) which displays and records what it reads in the mobile. Now I need to do the same but with a PC rather than a mobile device. I&#x27;m looking at the possibility of using Rho for this via Win32 build or via Android /WP standalone emulators where the apk and XAp built with Rho can be deployed. Ive yet to come across emulators with BT support.
+So my question is in 2 parts : 
+1. Will the Rho BT API work on a PC having BT to connect and read the signal being sent by afore-mentioned FEIG RFID Reader? I&#x27;m thinking of going  with rake run:win32 here if Rho BT API supports it, but I have my doubts...
+2. If no, then can we use Rho to build an Android/WP app &amp;amp; then deploy the resulting apk/xap to an emulator running on a PC but the emulator must have BT support.
+Hope I made myself clear.
+Thanks.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

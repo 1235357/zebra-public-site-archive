@@ -1,0 +1,236 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>RhoElements Scan and Print issue</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>RhoElements Scan and Print issue</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/17194; original snapshot: threads/02047.html; SHA-256: eba1a5ffb3f67e7b74e9d3ce10475c371e19b93cdd8c6b98fe0eac5b898cb311</small><pre id="topic">
+
+    
+        RhoElements Scan and Print issue
+
+
+        
+      
+                        
+                    
+            P
+          
+          Peter Arcuri
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            15
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Wondering if anyone came across an issue with the scanner in RhoElements shared runtime 4.1 for WinCE on a MC92N0 device with printing capabilities. I&#x27;ve never had any issues with my javascript scanning function until including print methods. In fact both functionalities work fine independently but when merged I get a scan lockup immediately after printing to the portable printer.
+I launch RhoE and scan a barcode without any issues. Then I print a label to a QL320 printer without any issues. But now my scanner trigger does not response. I&#x27;ve repeat execution of enableScanner() function immediately following a print and that seams to execute. But when pulling the trigger it doesn&#x27;t make it to the callback onBarcodeEvent(). Any one would see from the code below that its pretty much straightforward: the ensableScanner() function executes upon page onload and printLabel() is called by a label prep function.
+printLabel = function(format, copies) {
+apd.PSExternal(261,&quot;0000C53&quot;);
+     if(!copies)
+            copies = 1;
+      for(var i = 0; i  copies; i++)
+      {
+            if(apd.PSExternalEx(266, format) &gt; 0)                          
+                  //return nb.PSGetLastMessage();
+                  continue;
+            else
+                  continue;
+      }
+      var navto = enableScanner(); //added this line in case the scanner disabled by the print function
+      return true;
+}
+function enableScanner()
+{
+    var defaultScanner = Rho.Barcode.getDefault();
+    defaultScanner.allDecoders = true;
+    Rho.Barcode.setDefault(defaultScanner);
+    Rho.Barcode.enable({}, onBarcodeEvent);
+}
+function onBarcodeEvent(barcode)
+{
+    document.getElementById(&#x27;barcode-data&#x27;).value = barcode.data;
+}
+All comments are welcome!
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Peter Arcuri
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Given there is no documentation on APD under RhoElements v4.1 I would presume it&#x27;s not supported so shifting strategy to RhoElements ZebraPrinter APIs as per doc outlined here Rhomobile | PrinterZebra
+However the doc covers only the BlueTooth Connection Type. 
+Rho.Printer.searchPrinters({
+&amp;nbsp;&amp;nbsp; connectionType:Rho.Printer.CONNECTION_TYPE_BLUETOOTH,&amp;nbsp;
+&amp;nbsp;&amp;nbsp; printerType: Rho.Printer.PRINTER_TYPE_ZEBRA
+&amp;nbsp; },
+Has anyone acquired knowledge on establishing a serial connection to a cable tethered printer???
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Glenn Sayer
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Peter,
+There is an issue with 4.1 when it looses focus from the screen and when you have debug buttons enabled.&amp;nbsp;&amp;nbsp;&amp;nbsp; Disable the debug buttons and see if it works.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

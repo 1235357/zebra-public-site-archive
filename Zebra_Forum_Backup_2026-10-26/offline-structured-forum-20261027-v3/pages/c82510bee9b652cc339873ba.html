@@ -1,0 +1,420 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>CASE#2371349 - MC9598 DEVICE LOCKUP</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/thread/26836; snapshot threads/01642.html; SHA-256 40d014d28226cb617f6c44d02998c3cb8736d10fb53890033b8a8e4a8e3859bb. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">CASE#2371349 - MC9598 DEVICE LOCKUP</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            R
+          </div>
+          <div class="forum-topic__author-name">Reginald Corpuz</div>
+          <div class="forum-topic__timestamp">5 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            17
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            6
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>MC9598 BSP19 Wm6.1 eMscript installed   Customer is reporting that the device will just freeze or lockup intermittently.  Attached is the eMscript log file that captured the failure on lines 20-21 (resource.csv).  Looking at the rtlog.bak.txt the only thing I noticed was this  Data Abort: Thread=86491400 Proc=8076d950 'Dw.exe'    Can anybody explain why the device suspended for no reason and if I need additional tools to triage this?  thanks.</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      6 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-29520" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              H
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Herbert De Jong</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Reggie,   from resource.csv&amp;nbsp; 5/6/2011&amp;nbsp; 1:35:26 PM&amp;nbsp; it looks backlight was off and device put on AC charger    but from RTlog.bak&amp;nbsp; it looks the display tried to turn on but infact went into unknown state.    2011-05-06 13:35:12 | 25.439.348.307 | 06e03cb6h | 26b06d72h | SA2VIDEO: SetDisplayPower+&amp;nbsp;&amp;nbsp;  2011-05-06 13:35:12 | 25.439.397.538 | 06e03cb6h | 26b06d72h | LH370V01: Init_pin: spam reg already mapped!&amp;nbsp;  2011-05-06 13:35:12 | 25.439.445.230 | 06e03cb6h | 26b06d72h | LCDInitControllerCommon lccr1 0x000001df @ 0xab200000&amp;nbsp;  2011-05-06 13:35:13 | 26.107.944.615 | 07f70ef6h | e5f24ce6h | read timeout 500&amp;nbsp;  2011-05-06 13:35:13 | 26.129.003.384 | 06e03cb6h | 26b06d72h | SA2VIDEO: SetDisplayPower-&amp;nbsp;&amp;nbsp;  2011-05-06 13:35:13 | 26.129.015.384 | 06e03cb6h | 26b06d72h | Display: set backlight to PwrDeviceUnspecified&amp;nbsp;  2011-05-06 13:35:13 | 26.145.554.461 | 06e03cb6h | 26b06d72h | SA2Video: IOCTL_POWER_SET 0    looks maybe like&amp;nbsp; unable to resume issue on WM.   also this OEM 19,0003 has the bad FlashFX driver Compiled Aug&amp;nbsp; 5 2009&amp;nbsp;&amp;nbsp;</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-29521" class="comment forum-topic__reply js-comment by-anonymous forum-topic__reply--comment by-viewer">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              A
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Anonymous (not verified)</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Reggie,   It looks like there was some kind of exception in the wan driver:   2011-05-06 13:38:30 | 42.790.220.000 | 07f70ef6h | 26e1a92ah | Data Abort: Thread=86e1a6e8 Proc=8076d2c0 'device.exe' &amp;nbsp;  2011-05-06 13:38:30 | 42.790.281.538 | 07f70ef6h | 26e1a92ah | AKY=00000005 PC=0155c18c(rilcdma.dll+0x0001c18c) RA=0155c19c(rilcdma.dll+0x0001c19c) BVA=bb7b00a2 FSR=00000003 &amp;nbsp;   Can you reproduce this? &amp;nbsp;If yes, do you see this exact message every time?</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-29522" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              R
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Reginald Corpuz</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>The eMscript log came from my customer.&amp;nbsp; I asked him to install this hotfix  Device stuck on Splash Screen - SPR 18183, 19034, 19126  and awaiting feedback.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-29518" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              R
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Reginald Corpuz</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Anybody had a chance to look at the logs?</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-29519" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              R
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Reginald Corpuz</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Forgot to add the response time and customer info  CASE#2371349 - Customer STATE OF MAIN DRILLING &amp;amp; BLASTING  4HR response.   I have about 2 different customers (total 3) that are reporting a similar (almost) &amp;nbsp;issue on the MC95 and this is the only 1 that I was able to capture&amp;nbsp;eMscript logs because of the intermittent nature of the problem.   Need ECRT guidance on the next steps    #2 CASE, 2370767 - MC9598 Touch screen stops responding to taps. Cold boot or re-flash does not solve the issue, devices have to be sent in for service.  Customer American Airlines. Number of devices affected 80 out of 179. Customer stated they have seen a significant rate failure increase. Partner requested for a case to be opened and escalated for engineering investigation.   #3 CASE 2358460 - MC9590 - SnapOnTools  Device Suspends on its own and pressing the Pwr btn wont bering it back up.<br>
+&amp;nbsp;</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-29517" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              R
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Reginald Corpuz</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>eMscript attached</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/thread/26836%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/thread/26836%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

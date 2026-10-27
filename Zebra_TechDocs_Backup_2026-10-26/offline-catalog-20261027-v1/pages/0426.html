@@ -1,0 +1,270 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Frequently Asked Questions - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/flux/faq</code><br>Observed final URL: <code>https://techdocs.zebra.com/flux/faq/</code><br>Raw source: <code>raw/730cd3f4c1b8ceea99e42e08.html</code><br>Raw SHA-256: <code>8d6fc6002462d998d8fdc539b4e17cee144ee8d61bd469e139b848474753acf9</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            Android Platform Transition
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About Transition
+                            
+                        
+                        
+                            
+                                    About MX
+                            
+                        
+                        
+                            
+                                    MX Feature Matrix
+                            
+                        
+                        
+                            
+                                    Setup
+                            
+                        
+                        
+                            
+                                    Query Device
+                            
+                        
+                        
+                            
+                                    Delegate Access
+                            
+                        
+                        
+                            
+                                    Architecture
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Frequently Asked Questions
+                        
+                    Why is Zebra changing its platform architecture?What Are Delegation Scopes?Are Delegation Scopes and Zebra Device Manager related?What is Scoped Storage?What is the Android Content Provider model?What is Secure Storage Manager?What is the Zebra Data Encryption Tool?
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Frequently Asked Questions
+                                    
+                                            Android Platform Transition
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        
+
+Why is Zebra changing its platform architecture?
+
+A: Zebra is updating its architecture in reaction to requirements by Google to increase device security and data privacy, but also to modernize its platform and make it less proprietary. Zebra&#x27;s &quot;Mobility Extensions&quot; (MX) framework was introduced in 2015, and has served reliably to control and configure Zebra&#x27;s Android devices while helping Zebra customers and partners to avoid the complexities of platform signing. A proprietary system was required then because early versions of Android lacked the ability to interface with many Zebra-device features and peripherals, and very few centralized management systems existed to aid in device deployment across an enterprise. 
+
+Since 2015, Android has seen tremendous growth. Most of the interfaces Zebra first built are now part of the platform, accessible through public, non-proprietary methods such as Android Managed Configurations. This has allowed Zebra to shift its focus to platform innovation, value-added features and faster times to market. One such innovation was to decouple the application layer from the multiple proprietary underlying frameworks such as MX, allowing Zebra to develop its value-added solutions more reliably, in less time and with fewer dependencies. 
+
+
+
+What Are Delegation Scopes?
+
+A: Delegation Scopes refers to a method by which the Android Device Policy Manager (DPM) APIs allow a device owner (DO) such as an EMM agent to enable other apps to use some DPM functions. Under Android 11 and later, an app can declare that access to its interfaces should be controlled, and that an administrator can be allowed to delegate access to other apps within a given scope. The Android DPM implementation of Delegation Scopes covers package and certificate management and a few other categories. Zebra has adopted and expanded Delegation Scopes to allow applications to control access to their interfaces by limiting their use to applications to which the administrator has granted a suitable Delegation Scope.
+
+Developers that currently protect their app interfaces using MX/AccessMgr will need to change to protect their interfaces using Delegation Scopes and ZDM. Administrators that are accustomed to granting access to app interfaces using MX/AccessMgr will need to change to granting that access using Delegation Scopes and Zebra OEMConfig. NOTE: Apps that use protected services do NOT need to be modified for these changes. See the Delegation Scopes Usage Guide for more information. 
+
+
+
+Are Delegation Scopes and Zebra Device Manager related?
+
+A: Yes, but the relationship is usually transparent to the developer. When an app attempts to use an interface that the implementing app has chosen to protect using a Delegation Scope, the implementing app queries ZDM to determine whether the calling app has been granted, by the administrator, the Delegation Scope that the implementing app has decided should grant access to that interface. Similar to using an &quot;allowlist&quot; or &quot;whitelist&quot; in MX/AccessMgr, the calling app would not really &quot;know&quot; that ZDM was involved, but should be designed to gracefully handle instances when the implementing app rejects the calling app&#x27;s attempt to use a protected interface.
+
+The exception is when the calling app accesses an interface indirectly, such as through an intent. As in the MX/AccessMgr model, the calling app must acquire a token, which in the new model comes from ZDM. The token is sent by the calling app via intent to the implementing app, which checks with ZDM to determine whether the token was issued to an app entitled to access the protected API. See the Delegation Scopes Usage Guide for more information. 
+
+Key Takeaways:
+
+
+Developers that currently protect their app interfaces using MX/AccessMgr must switch to using Delegation Scopes and ZDM. 
+
+Administrators formerly granting access using MX/AccessMgr must switch to using Delegation Scopes and Zebra OEMConfig. 
+
+
+
+
+What is Scoped Storage?
+
+A: Introduced with Android 10 (API level 29), scoped storage was originally intended to provide more user control over stored files and reduce the clutter that often occurs on external device storage over time. It limits apps targeting API 29 (and later) to an app-specific device folder and to media types it creates. In practical terms, scoped storage could limit or prevent an app from accessing device folders formerly available, including the /enterprise partition on Zebra devices. Enhancements delivered with Android 11 (API level 30) enforce greater protections on app and user data stored externally. Apps targeting Android 10 (API level 29) can opt out of restrictions imposed by Android 11 by setting a flag in the app&#x27;s manifest. Apps that target Android 11 ignore this flag. 
+
+Upgrading to Android 11
+
+An app installed on a device running Android 10 and specifying both the preserveLegacyExternalStorage and requestLegacyExternalStorage flags will not be subject to Scoped Storage if the device is upgraded to Android 11. But if the same app is uninstalled and then reinstalled after the upgrade to Android 11, or simply installed for the first time after the upgrade, the app will be subject to the Scoped Storage restrictions of Android 11.
+
+Also see
+
+Scoped Storage in Enterprise Apps | Info from Zebra engineering 
+
+Storage Changes in Android 11 | From the Android development community
+
+
+
+What is the Android Content Provider model?
+
+A: The Android Content Provider model is a set of publicly specified APIs through which apps can publish information about a given device for consumption by apps running on the device. The framework offers a unified and secure way of app data sharing. 
+
+
+
+What is Secure Storage Manager?
+
+A: Secure Storage Manager (SSM) is an application built into Zebra devices running Android 11 (and later) that provides a mechanism for securely sharing data from an originating app to one or more specified target apps. The originating app can use SSM to share data with another app, or store data to be consumed by the originating app itself. SSM encrypts data while in storage and decrypts it upon delivery.
+
+
+
+What is the Zebra Data Encryption Tool?
+
+A: Data Encryption Tool(DET) is used to encrypt sensitive data shared among Zebra apps. It can be used alone or as an added security measure for SSM, which encrypts data only while in storage. When DET is used with SSM, data also is encrypted while in transit and upon delivery, leaving the responsibility of decryption to the receiving app.
+
+
+
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2025 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

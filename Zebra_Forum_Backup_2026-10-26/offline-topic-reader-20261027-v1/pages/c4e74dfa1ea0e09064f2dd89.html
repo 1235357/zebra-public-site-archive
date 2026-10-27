@@ -1,0 +1,305 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>ZQ310 bluetooth error not intercept</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>ZQ310 bluetooth error not intercept</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zq310-bluetooth-error-not-intercept; original snapshot: threads/00836.html; SHA-256: 525b9479cab0b935d6586d8710027265b17404590aa7ee977cba74e9edca65ab</small><pre id="topic">
+
+    
+        ZQ310 bluetooth error not intercept
+
+
+        
+      
+                        
+                    
+            A
+          
+          Andrea Greggio
+          4 years 7 months ago
+        
+        
+      
+        
+            
+                  
+            
+            51
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi, we are working on Android 11 with link-os SDK 2.14.5198.
+The system developed to print travel tickets is based on the fact that the printer prints and does not return any printing errors.
+We check the printer status before printing, send it to print, wait 500ms and double check the printer status to verify that no errors have occurred.
+A user sent the print, the printer did not print, did not return any errors and the title ended up in the purchase table and should not have seen it did not print but I did not catch any errors.
+What could have happened and why was I unable to intercept the problem?
+At the code level I took the one provided in the documentation of the sdk for checking the printer status.
+We use variable status to register the error or the status 1 that is printed.
+So this is the code:
+1) Method to start Print:
+private int connectAndSendLabel(final String mac, String dataPass, String type, String url, String printerType) {
+        printerConnection = new BluetoothConnection(mac);
+        int Status = 0;
+        try {
+            printerConnection.open();
+            ZebraPrinter printer = null;
+            if (printerConnection.isConnected()) {
+                printer = ZebraPrinterFactory.getInstance(printerConnection);
+                if (printer != null) {
+                    Status = sendTestLabel(dataPass, type, url, printerType);
+                    printerConnection.close();
+                }
+            } else {
+                Status = -5;
+            }
+        } catch (ConnectionException e) {
+            Status = -2;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Status = -4;
+        } finally {
+            return Status;
+    }
+}
+2) Method to sent title to printer:
+private int sendTestLabel(String dataPass, String type, String url, String printerType) throws Exception {
+    int Status = 0;
+    Status=checkPrinterStatus(printerConnection);
+    if (Status == 1) {
+        try {
+            String s = createZplReceipt(dataPass, type, url, printerType);
+            byte[] configLabel = s.getBytes();
+            printerConnection.write(configLabel);
+            if (printerConnection instanceof BluetoothConnection) {
+                DemoSleeper.sleep(500);
+                Status=checkPrinterStatus(printerConnection);
+            }
+            //buffer reset to deny reprint
+            if (Status == 2 || Status == 3 || Status ==4 || Status == -1 || Status == -2 || Status == -3) {
+                String reset =&quot;~JA&quot;;
+                byte[] buffreset = reset.getBytes();
+                printerConnection.write(buffreset);
+            }
+        } catch (ConnectionException e) {
+            Status = -2;
+        }
+    }
+    return Status;
+}
+3) method to check printer status.
+public int checkPrinterStatus(Connection conn) throws Exception {
+        int status = 0;
+        try {
+            ZebraPrinter printer = ZebraPrinterFactory.getInstance(conn);
+            PrinterStatus printerStatus = printer.getCurrentStatus();
+            Boolean paused = false;
+            Boolean HeadOpen = false;
+            Boolean PaperOut = false;
+            Boolean PrintOk = false;
+            if(printerStatus.isReadyToPrint){
+                PrintOk = true;
+            }
+            if(printerStatus.isPaused){
+                paused = true;
+            }
+            if(printerStatus.isHeadOpen){
+                HeadOpen = true;
+            }
+            if(printerStatus.isPaperOut){
+                PaperOut = true;
+            }
+            if (PrintOk) {   //print ok
+                status = 1;
+            } else if (paused &amp;amp;&amp;amp; !HeadOpen &amp;amp;&amp;amp; !PaperOut){  //pause print
+                status = 2;
+            } else if (paused &amp;amp;&amp;amp; HeadOpen &amp;amp;&amp;amp; !PaperOut){   //
+                status = 3;
+            } else if (paused &amp;amp;&amp;amp; !HeadOpen &amp;amp;&amp;amp; PaperOut){   //paper empty
+                status = 4;
+            }  else {           //all other cases
+                status = -1;
+            }
+        } catch (ConnectionException e) {
+            e.printStackTrace();
+            status = -2;
+        } catch (ZebraPrinterLanguageUnknownException e) {
+            e.printStackTrace();
+            status = -3;
+        } finally {  }
+        return status;
+}
+Have you some suggestions ?
+Thanks
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+It&#x27;s possible that the file was sent to the printer, but the connection was closed before the file transfer was complete. When the error occurred, was the file larger than usual?
+Perhaps try increasing the sleep time in your application to see if this resolves the issue.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            As James has pointed put, the connection is closed right after the call to the sendTestLabel() without checking the Status variable in your connectAndSendLabel() function. Suggest to check the printer status or add some delay before calling the printerConnection.close().
+Without checking the status after calling the printerConnection.write(buffreset) or add some delay before calling the printerConnection.close() is likely the root cause of the issue you&#x27;ve described.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

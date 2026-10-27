@@ -1,0 +1,174 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to add RS, GS, EOT to QRcode</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to add RS, GS, EOT to QRcode</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/34760; original snapshot: threads/resume-00209.html; SHA-256: 4f12382171dc15f95b1b4adcd2337581f7c6ce326995708472d3edabf7e5ee17</small><pre id="topic">
+
+    
+        How to add RS, GS, EOT to QRcode
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            339
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  ! 0 200 200 240 1
+PW 480
+TONE 50
+SPEED 2
+SETFF 0 5
+ON-FEED FEED
+NO-PACE
+GAP-SENSE
+B QR 330 30 M 2 U 2
+HA,RS GS 109100857 GS 10287360 GS R1707061 GS 170706 GS 180705 GS 10120501 GS 20 GS GS GS EOT
+ENDQR
+PRINT
+ 
+I can&#x27;t do this in this way.
+HM,B001E,AQRcode,B001D0123456789012345,A,B0004
+ 
+With ZPL, I know it&#x27;s done, but CPCL doesn&#x27;t know how to achieve this effect.
+ 
+ 
+ Data: qrcode
+ The {data} field presentation:
+LM,AQRcode,N0123456789012345,AQRCODE,B0006qrcode
+ 
+The above example：The special character is a space, in the example, B 0006
+The ASCII of the space is 32, and the BCD is: 00110010, how do you get 0006?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            For sure, we can use CPCL to encode these printable special characters listed on the ASCII table. To do so, the Data Input Mode has to be in manual mode. Then the special character (the printable special characters, such as ~ _@^()[]{}, including white space) can be encoded with B. For example, the following CPCL encode the &quot;123456789123456789AABCDEFGHIJKLM ~ _@^()[]{}abcdefg&quot; string in QR code
+! 0 200 200 240 1PW 480TONE 50SPEED 2SETFF 0 5ON-FEED FEEDNO-PACEGAP-SENSEB QR 330 30 M 2 U 5LM,N123456789123456789,AABCDEFGHIJKLM,B0019 ~ _@^()[]{}abcdefgENDQRPRINT
+If we want to encode &quot;B 0006&quot; in QR code as you&#x27;ve asked, we can use the following CPCL. Please pay attention to &quot;B0001 ,&quot; (with a space in between).
+! 0 200 200 240 1PW 480TONE 50SPEED 2SETFF 0 5ON-FEED FEEDNO-PACEGAP-SENSEB QR 330 30 M 2 U 5LM,AB,B0001 ,N0006ENDQRPRINT
+Hope this helps.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

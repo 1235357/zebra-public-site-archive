@@ -1,0 +1,215 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Device Phone Number</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Device Phone Number</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/27818; original snapshot: threads/01808.html; SHA-256: a5d47b694b9aebb31bcbccd609f7a2de541563d2f319de3c0f7031a04956af3c</small><pre id="topic">
+
+    
+        Device Phone Number
+
+
+        
+      
+                        
+                    
+            M
+          
+          Marc Fluhrer
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            32
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Is there a way through a registry entry or SymScript to get the phone number for a device?   This seems to be obtained from a Microsoft API call that does not seem to work for the customer, but I was wondering if anyone has had luck using another method.   The customer is not using MSP, so they cannot get it that way.   Thanks for any help.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The phone number needs to be stored on the SIM for the API&#x27;s to work.   There are API&#x27;s in SymScript - but these only return the phone number if stored on the SIM.   Most carriers do not store the number on the SIM.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Marc Fluhrer
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Just some information from the customer I wanted to add so it can be tracked:
+I’d seen the referenced article - but it states: 
+”For this sample, it is assumed that the mobile device uses a SIM with the device&#x27;s phone number programmed into it. Some devices do not store their phone number on a SIM. For these devices, there is no way to programmatically determine the device&#x27;s phone number and this sample will not successfully return the number.” 
+As none of the Intermecs have SIM cards and I don’t believe the new ES400s from Verizon will have SIM cards, I had rejected this as a solution. 
+  &amp;nbsp; 
+A new search &amp;nbsp;on this topic lead me to the following article http://msdn.microsoft.com/en-us/library/aa446543.aspx which again references SIM API calls. 
+“To get the SIM user&#x27;s phone number from your code using C#, call: Microsoft.Wireless.Sim.GetPhoneNumber() (which returns a string)” 
+Even though the documentation clearly states that it only works with SIM card equipped devices &amp;nbsp;I gave it a try on the&amp;nbsp;ES400 you sent over and low and behold - it worked on both that device and the CN3. 
+  &amp;nbsp; 
+Microsoft’s documentation was also wrong on how to invoke the method. It should be called from C# like this: 
+Microsoft.Wireless.PhoneAddress phoneAddress = new Microsoft.Wireless.PhoneAddress(); 
+phoneAddress = Microsoft.Wireless.Sim.GetPhoneNumber(); 
+string telephoneNumber = phoneAddress.Address.ToString(); 
+  &amp;nbsp; 
+NOTE: The undocumented Micorsoft.Wireless namespace can only be obtained by downloading the example given on that article and installing it.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

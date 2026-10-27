@@ -1,0 +1,192 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Cant print on printer Qln420 over network or bluetooth</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Cant print on printer Qln420 over network or bluetooth</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/cant-print-printer-qln420-over-network-or-bluetooth; original snapshot: threads/02188.html; SHA-256: dffdcc55fb33dfe83145f1e9706eced40220407d647ff9cb103fc6156f80f78f</small><pre id="topic">
+
+    
+        Cant print on printer Qln420 over network or bluetooth
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            63
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi all i have this devices:
+1 Zebra Printer model: qln420&amp;nbsp;&amp;nbsp; (connection wireless and Bluetooth)
+1 Pocket Honeywell, model 60sL0 with Windows Embeed HandHeld 6.5 Classic. (connection wireless and Bluetooth)
+my scenario:
+1) conected the pocket to wireless and can surf on internet (google.com)&amp;nbsp; (https://www.honeywellaidc.com/CatalogDocuments/7600User%20Guides/DEMOS%…)
+2) connected the printer via wireless same as described here: https://www.zebra.com/content/dam/zebra/manuals/en-us/networking/mobile…
+static ip: 172.16.11.207
+i can ping&amp;nbsp; from my computer to the ip: 172.16.11.207
+&amp;nbsp;
+i tested these code on C#:
+private void button1_Click(object sender, EventArgs e)&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; string ipAddress = &quot;172.16.11.207&quot;;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; int port = 6101;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; port = 6101;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // CPCL Command(s)&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; string CPCLString = &quot;! 0 200 200 580 ! UTILITIES&quot; + Environment.NewLine + &quot;BARCODE 128 .4 2 10 6 58 12345678&quot; +&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;FORM&quot; + Environment.NewLine + &quot;PRINT&quot;+ Environment.NewLine;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; try&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // Open connection&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; System.Net.Sockets.TcpClient client = new System.Net.Sockets.TcpClient();&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; client.Connect(ipAddress, port);&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // Write CPCL String to connection&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; System.IO.StreamWriter writer =&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; new System.IO.StreamWriter(client.GetStream());&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; writer.Write(CPCLString);&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; writer.Flush();&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // Close Connection&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; writer.Close();&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; client.Close();&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; catch (Exception ex)&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // Catch Exception&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }&amp;nbsp;
+3) run the program and click on the button, no error, but too not print anything.
+&amp;nbsp;
+4) tested too these Java code:
+&amp;nbsp;
+cod= &quot;! 0 200 200 210 1\n&quot; + &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;TEXT 4 0 30 40 Hello World\n&quot; +&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;FORM\n&quot; +&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;PRINT&quot;;if (dp.conectarZebra(ip)) {&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; System.out.println(&quot;Imprimiendo&amp;nbsp;&amp;nbsp;&amp;nbsp; &quot; + cod);&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dp.sendZebra(cod);&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; dp.closeZebra();&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return true;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } else {&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; System.out.println(&quot;Error no se conecto a la impresora &quot; + ip);&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; //cod = &quot;no se pudo conectar&quot;;}where:
+&amp;nbsp;
+ public void sendZebra(String comando)&amp;nbsp;&amp;nbsp;&amp;nbsp; throws IOException&amp;nbsp; {&amp;nbsp;&amp;nbsp;&amp;nbsp; this.outToZebra.writeBytes(comando);&amp;nbsp; }&amp;nbsp;&amp;nbsp; public Boolean conectarZebra(String ip)&amp;nbsp; {&amp;nbsp;&amp;nbsp;&amp;nbsp; try&amp;nbsp;&amp;nbsp;&amp;nbsp; {&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; clientSocket2 = new Socket();&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; clientSocket2.connect(new InetSocketAddress(ip, 6101), 3000);&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; this.outToZebra = new DataOutputStream(clientSocket2.getOutputStream());&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return Boolean.valueOf(clientSocket2.isConnected());&amp;nbsp;&amp;nbsp;&amp;nbsp; }&amp;nbsp;&amp;nbsp;&amp;nbsp; catch (IOException ex)&amp;nbsp;&amp;nbsp;&amp;nbsp; {&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; System.out.println(&quot;zebra &quot; + ex.toString());&amp;nbsp;&amp;nbsp;&amp;nbsp; }&amp;nbsp;&amp;nbsp;&amp;nbsp; return Boolean.valueOf(false);&amp;nbsp; }&amp;nbsp;
+the Java Code and C# code no error of compilation no error of syntax.
+run the program and click on the button, no error, but too not print anything.
+&amp;nbsp;
+also i tested:
+&amp;nbsp;
+1) Add new printer on a windows 8 with zebra utilities, added new port, specified the ip and tested from a word document.
+here send the document to ip zebra Qln420 printer and printed!!!!
+wich i am do wrong..
+&amp;nbsp;
+&amp;nbsp;
+2) Other case, i want connect the printer with the pocket pc, but not lucky the honeywell never detect the printer via bluetooth, and cant connect, in both devices i have enabled the bluetooth, why? any advice?
+&amp;nbsp;
+Other question, why when i open the printer for put labels, close and extract 4 labels?
+i loose much labels every time, see the image:
+i added some photos, and want solve this problem at soon possible.
+thanks Thanks
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Miguel,
+I ran through your C# code and found it is fine.&amp;nbsp; From a brief look the Java code looks fine as well.&amp;nbsp; The issue is actually how you are creating the CPCL strings.&amp;nbsp; You are very close, but CPCL is very picky about several things, especially ending in carriage returns.&amp;nbsp; Every line needs to end in a carriage return and line feed for it to work.&amp;nbsp; You also need to specify a print quantity in CPCL.
+Your C# code would look like this:
+string CPCLString = &quot;! 0 200 200 580 1&quot; + Environment.NewLine + &quot;! UTILITIES&quot; + Environment.NewLine + &quot;BARCODE 128 4 2 10 6 58 12345678&quot; + Environment.NewLine +
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;FORM&quot; + Environment.NewLine + &quot;PRINT&quot; + Environment.NewLine;
+I recommend you use the following format instead.&amp;nbsp; You can&#x27;t guarantee that Environment.NewLine always converts to hex 0x0D 0x0A.&amp;nbsp; That&#x27;s the point, it converts to the standard for that OS.&amp;nbsp; You need to guarantee what is sent is always carriage return &amp;amp; line feed :
+string CPCLString = &quot;! 0 200 200 580 1\r\n! UTILITIES\r\nBARCODE 128 4 2 10 6 58 12345678\r\nFORM\r\nPRINT\r\n&quot;;
+The Java code should be this:
+cod= &quot;! 0 200 200 210 1\r\n&quot; +
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;TEXT 4 0 30 40 Hello World\r\n&quot; +
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;FORM\r\n&quot; +
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;PRINT\r\n&quot;;
+Try this and let me know.
+Robin
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

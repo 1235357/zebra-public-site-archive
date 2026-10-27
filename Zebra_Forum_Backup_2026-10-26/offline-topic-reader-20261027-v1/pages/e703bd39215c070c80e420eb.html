@@ -1,0 +1,272 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Is it possible to set an exact width for a DataMatrix barcode?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Is it possible to set an exact width for a DataMatrix barcode?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/it-possible-set-exact-width-datamatrix-barcode; original snapshot: threads/00256.html; SHA-256: 648303473463ae3affa39b8d07418da587ee844b24f39a423f43dce61657da1c</small><pre id="topic">
+
+    
+        Is it possible to set an exact width for a DataMatrix barcode?
+
+
+        
+      
+                        
+                    
+            M
+          
+          Mingliang Huang
+          2 years 5 months ago
+        
+        
+      
+        
+            
+                  
+            
+            606
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Recently, we got a development requirement with our ZD420 printer. The production line has requested that the DataMatrix barcode be printed with dimensions precisely 12mm x 12mm. Upon investigation, we found that the printer can only print a whole number of dots, which makes it impossible to set an exact size for the DataMatrix. It&#x27;s possible that our investigation was incorrect, so we&#x27;re seeking expert advice. thanks a lot.Is there a way to set an exact printing size for the DataMatrix, such as 12x12 mm, 13x13 mm, etc.? Below is our printing command for reference.^XA^FO10,10^BXN,6,200,24,24^FD2325500336USN2HCWOJ03ASA0115369390000000002^FS^XZ 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The dimension of a DataMatrix barcode (^BX command in ZPL) cannot be precisely specified in ZPL. The dimension can approximately match with 12mm x 12mm with the following ZPL, by changing the module dimension from 6 to 4.
+^XA
+^FO10,10
+^BXN,4,200,24,24
+^FD2325500336USN2HCWOJ03ASA0115369390000000002^FS
+^XZ
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mingliang Huang
+          
+          
+            2 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I got it, thanks a lot.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jessica Wade
+          
+          
+            2 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            To print a DataMatrix barcode with precise dimensions on your ZD420 printer, you need to adjust the barcode size in dots according to the printer&#x27;s DPI (dots per inch).Determine Printer DPI: Find out if your printer is 203, 300, or 600 DPI.Calculate Dots for 12mm:For 203 DPI: 12mm ≈ 96 dotsFor 300 DPI: 12mm ≈ 142 dotsFor 600 DPI: 12mm ≈ 283 dotsAdjust ZPL Command:For 203 DPI:Copy code^XA
+^FO10,10
+^BXN,8,96
+^FD2325500336USN2HCWOJ03ASA0115369390000000002^FS
+^XZ
+For 300 DPI:Copy code^XA
+^FO10,10
+^BXN,12,142
+^FD2325500336USN2HCWOJ03ASA0115369390000000002^FS
+^XZ
+For 600 DPI:Copy code^XA
+^FO10,10
+^BXN,24,283
+^FD2325500336USN2HCWOJ03ASA0115369390000000002^FS
+^XZ
+Adjust the ^BXN parameters (module height and symbol size) based on your printer&#x27;s DPI to achieve the desired 12mm x 12mm size.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

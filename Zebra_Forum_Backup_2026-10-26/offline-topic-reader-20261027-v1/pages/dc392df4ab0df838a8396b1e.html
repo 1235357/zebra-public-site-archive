@@ -1,0 +1,340 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to configure a Datawedge profile programatically in an Android Kotlin app?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to configure a Datawedge profile programatically in an Android Kotlin app?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/how-configure-datawedge-profile-programatically-android-kotlin-app; original snapshot: threads/00129.html; SHA-256: 4baa556cea435f6f733645a1cba88faac0336e613891fbe506c687fd822dea2d</small><pre id="topic">
+
+    
+        How to configure a Datawedge profile programatically in an Android Kotlin app?
+
+
+        
+      
+                        
+                    
+            P
+          
+          Pierrick Valentin
+          1 year 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            587
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I am developing an Android inventory app in Kotlin for Zebra TC21 devices, and I would like to configure a Datawedge profile programmatically. I need to scan qr codes with the integrated scanner, and RFID tags with a Zebra RFD4031. I would like the scanned data to be transmitted by &quot;Intent output&quot; with Broadcast mode. I also want the &quot;key output&quot; to be disabled.I tried with this code:class DatawedgeConfig {
+
+  val baseConfig = createBaseConfig()
+
+ 
+
+  fun initialize(context: Context) {
+
+    try {
+
+      createProfile(context)
+
+      configureProfile(context)
+
+      configureInput(context)
+
+      configureOutput(context)
+
+      Log.d(&quot;DatawedgeConfig&quot;, &quot;DataWedge initialized successfully&quot;)
+
+    } catch (e: Exception) {
+
+      Log.e(&quot;DatawedgeConfig&quot;, &quot;Error initializing DataWedge&quot;, e)
+
+    }
+
+  }
+
+ 
+
+  private fun createBaseConfig(): Bundle {
+
+    return Bundle().apply {
+
+      putString(&quot;PROFILE_NAME&quot;, DATAWEDGE_PROFILE_NAME)
+
+      putString(&quot;PROFILE_ENABLED&quot;, &quot;true&quot;)
+
+      putString(&quot;CONFIG_MODE&quot;, &quot;UPDATE&quot;)
+
+    }
+
+  }
+
+ 
+
+  fun createProfile(context: Context) {
+
+    val intent = Intent()
+
+    intent.action = &quot;com.symbol.datawedge.api.ACTION&quot;
+
+    intent.putExtra(&quot;com.symbol.datawedge.api.CREATE_PROFILE&quot;, DATAWEDGE_PROFILE_NAME)
+
+    try {
+
+      context.sendBroadcast(intent)
+
+      Log.d(&quot;DatawedgeConfig&quot;, &quot;Profile created successfully&quot;)
+
+    } catch (e: Exception) {
+
+      Log.e(&quot;DatawedgeConfig&quot;, &quot;Error creating profile&quot;, e)
+
+    }
+
+  }
+
+ 
+
+  fun configureProfile(context: Context) {
+
+    val intent = Intent()
+
+    intent.action = &quot;com.symbol.datawedge.api.ACTION&quot;
+
+    intent.putExtra(&quot;com.symbol.datawedge.api.SET_CONFIG&quot;, Bundle().apply {
+
+      baseConfig.putParcelableArray(&quot;APP_LIST&quot;, arrayOf(Bundle().apply {
+
+        putString(&quot;PACKAGE_NAME&quot;, context.packageName)
+
+        putStringArray(&quot;ACTIVITY_LIST&quot;, arrayOf(&quot;*&quot;))
+
+      }))
+
+    })
+
+ 
+
+    Log.d(&quot;DataWedgeConfig&quot;, &quot;Configuring profile: $baseConfig&quot;)
+
+ 
+
+    try {
+
+      context.sendBroadcast(intent)
+
+      Log.d(&quot;DatawedgeConfig&quot;, &quot;Profile configured successfully (PACKAGE_NAME : ${context.packageName})&quot;)
+
+    } catch (e: Exception) {
+
+      Log.e(&quot;DatawedgeConfig&quot;, &quot;Error configuring profile&quot;, e)
+
+    }
+
+  }
+
+ 
+
+  fun configureInput(context: Context) {
+
+    val intent = Intent()
+
+    intent.action = &quot;com.symbol.datawedge.api.ACTION&quot;
+
+    intent.putExtra(&quot;com.symbol.datawedge.api.SET_CONFIG&quot;, Bundle().apply {
+
+      baseConfig.putParcelableArray(&quot;PLUGIN_CONFIG&quot;, arrayOf(Bundle().apply {
+
+        putString(&quot;PLUGIN_NAME&quot;, &quot;BARCODE&quot;)
+
+        putString(&quot;RESET_CONFIG&quot;, &quot;true&quot;)
+
+        putBundle(&quot;PARAM_LIST&quot;, Bundle().apply {
+
+          putString(&quot;scanner_selection&quot;, &quot;auto&quot;)
+
+          putString(&quot;decoder_rfid&quot;, &quot;true&quot;)
+
+          putString(&quot;decoder_qr_code&quot;, &quot;true&quot;)
+
+        })
+
+      }))
+
+    })
+
+    try {
+
+      context.sendBroadcast(intent)
+
+      Log.d(&quot;DatawedgeConfig&quot;, &quot;Input configured successfully&quot;)
+
+    } catch (e: Exception) {
+
+      Log.e(&quot;DatawedgeConfig&quot;, &quot;Error configuring input&quot;, e)
+
+    }
+
+  }
+
+ 
+
+  fun configureOutput(context: Context) {
+
+    val intent = Intent()
+
+    intent.action = &quot;com.symbol.datawedge.api.ACTION&quot;
+
+    intent.putExtra(&quot;com.symbol.datawedge.api.SET_CONFIG&quot;, Bundle().apply {
+
+      baseConfig.putParcelableArray(&quot;PLUGIN_CONFIG&quot;, arrayOf(Bundle().apply {
+
+        putString(&quot;PLUGIN_NAME&quot;, &quot;INTENT&quot;)
+
+        putString(&quot;RESET_CONFIG&quot;, &quot;true&quot;)
+
+        putBundle(&quot;PARAM_LIST&quot;, Bundle().apply {
+
+          putString(&quot;intent_output_enabled&quot;, &quot;true&quot;)
+
+          putString(&quot;intent_action&quot;, DATAWEDGE_ACTION)
+
+          putString(&quot;intent_delivery&quot;, &quot;2&quot;)
+
+        })
+
+      }))
+
+    })
+
+    try {
+
+      context.sendBroadcast(intent)
+
+      Log.d(&quot;DatawedgeConfig&quot;, &quot;Output configured successfully&quot;)
+
+    } catch (e: Exception) {
+
+      Log.e(&quot;DatawedgeConfig&quot;, &quot;Error configuring output&quot;, e)
+
+    }
+
+  }
+
+} The profile is actually created if it doesn&#x27;t exist, but none of the options in the &quot;SET_CONFIG&quot; bundle is apllied. So, my app isn&#x27;t associated with the created profile, and the intent output isn&#x27;t neither enabled nor configured with the given values.I don&#x27;t understand why.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Pierrick Valentin
+          
+          
+            1 year 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I&#x27;ve finally found a solution. I share it for those who&#x27;d be interested:```kotlinimport android.content.Contextimport android.content.Intentimport android.os.Bundleimport dagger.hilt.android.qualifiers.ApplicationContextimport javax.inject.Injectimport javax.inject.Singleton@Singletonclass DWConfig @Inject constructor(   @ApplicationContext private val context: Context,) {   val setConfigBundle = Bundle().apply {       putString(&quot;PROFILE_NAME&quot;, DATAWEDGE_PROFILE_NAME)       putString(&quot;PROFILE_ENABLED&quot;, &quot;true&quot;)       putString(&quot;CONFIG_MODE&quot;, &quot;CREATE_IF_NOT_EXIST&quot;)   }   val appConfig = Bundle().apply {       putString(&quot;PACKAGE_NAME&quot;, context.packageName)       putStringArray(           &quot;ACTIVITY_LIST&quot;, arrayOf(               &quot;${context.packageName}.MainActivity&quot;,           )       )   }   val barcodeParamList = Bundle().apply {       putString(&quot;scanner_input_enabled&quot;, &quot;true&quot;)       putString(&quot;scanner_selection&quot;, &quot;auto&quot;)       putString(&quot;charset_name&quot;, &quot;ISO-8859-1&quot;)       putString(&quot;auto_charset_preferred_order&quot;, &quot;UTF-8;GB2312&quot;)       putString(&quot;auto_charset_failure_option&quot;, &quot;UTF-8&quot;)       putString(&quot;volume_slider_type&quot;, &quot;3&quot;)   }   val barcodeConfigBundle = Bundle().apply {       putString(&quot;PLUGIN_NAME&quot;, &quot;BARCODE&quot;)       putString(&quot;RESET_CONFIG&quot;, &quot;true&quot;)   }   val intentParamList = Bundle().apply {       putString(&quot;intent_output_enabled&quot;, &quot;true&quot;)       putString(&quot;intent_action&quot;, DATAWEDGE_INTENT_ACTION)       putString(&quot;intent_delivery&quot;, &quot;2&quot;)   }   val intentConfigBundle = Bundle().apply {       putString(&quot;PLUGIN_NAME&quot;, &quot;INTENT&quot;)       putString(&quot;RESET_CONFIG&quot;, &quot;true&quot;)   }   val rfidParamList = Bundle().apply {       putString(&quot;rfid_input_enabled&quot;, &quot;true&quot;)       putString(&quot;rfid_beeper_enable&quot;, &quot;false&quot;)       putString(&quot;rfid_led_enable&quot;, &quot;true&quot;)       putString(&quot;rfid_antenna_transmit_power&quot;, &quot;30&quot;)       putString(&quot;rfid_memory_bank&quot;, &quot;3&quot;)       putString(&quot;rfid_session&quot;, &quot;1&quot;)       putString(&quot;rfid_trigger_mode&quot;, &quot;0&quot;)       putString(&quot;rfid_filter_duplicate_tags&quot;, &quot;true&quot;)       putString(&quot;rfid_hardware_trigger_enabled&quot;, &quot;true&quot;)       putString(&quot;rfid_tag_read_duration&quot;, &quot;250&quot;)   }   val rfidConfigBundle = Bundle().apply {       putString(&quot;PLUGIN_NAME&quot;, &quot;RFID&quot;)       putString(&quot;RESET_CONFIG&quot;, &quot;true&quot;)   }   val keystrokeParamList = Bundle().apply {       putString(&quot;keystroke_output_enabled&quot;, &quot;false&quot;)   }   val keystrokeConfigBundle = Bundle().apply {       putString(&quot;PLUGIN_NAME&quot;, &quot;KEYSTROKE&quot;)       putString(&quot;RESET_CONFIG&quot;, &quot;true&quot;)   }   private fun setAppList() {       setConfigBundle.putParcelableArray(           &quot;APP_LIST&quot;, arrayOf(               appConfig           )       )   }      private fun setPluginConfig() {       setConfigBundle.remove(&quot;PLUGIN_CONFIG&quot;)       barcodeConfigBundle.putBundle(&quot;PARAM_LIST&quot;, barcodeParamList)       intentConfigBundle.putBundle(&quot;PARAM_LIST&quot;, intentParamList)       rfidConfigBundle.putBundle(&quot;PARAM_LIST&quot;, rfidParamList)       keystrokeConfigBundle.putBundle(&quot;PARAM_LIST&quot;, keystrokeParamList)       setConfigBundle.putParcelableArrayList(           &quot;PLUGIN_CONFIG&quot;, arrayListOf(               barcodeConfigBundle,               intentConfigBundle,               rfidConfigBundle,               keystrokeConfigBundle           )       )   }   private fun sendConfig() {       val intent = Intent().apply {           action = &quot;com.symbol.datawedge.api.ACTION&quot;           putExtra(&quot;com.symbol.datawedge.api.SET_CONFIG&quot;, setConfigBundle)       }       context.sendBroadcast(intent)   }   fun initialize() : Boolean {       try {                      setAppList()           setPluginConfig()           sendConfig()           return true                  } catch (e: Exception) {                      Log.e(&quot;DWConfig&quot;, &quot;Error initializing DataWedge&quot;, e)           return false                  }   }}```I call `initialize()` method during the launch of my app:```kotlin@HiltViewModelclass MainViewModel @Inject constructor(   private val dwConfig: DWConfig) : ViewModel() {   fun initializeDataWedge(): Boolean {       return dwConfig.initialize()   }   ...}``````kotlin@HiltAndroidAppclass MainApplication : Application() {   @Composable   fun App(activity: MainActivity, mainViewModel: MainViewModel) {       LaunchedEffect(Unit) {           val dataWedgeJob = async { mainViewModel.initializeDataWedge() }                      ...           dataWedgeJob.await()           ...}```I found most of the informations that I needed here (unfortunately, all the examples are written in Java) :https://techdocs.zebra.com/datawedge/13-0/guide/api/setconfig/Almost all the parameters that you can configure in the Datawedge App are referenced here with their ids and their possible values that you can set programmatically.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

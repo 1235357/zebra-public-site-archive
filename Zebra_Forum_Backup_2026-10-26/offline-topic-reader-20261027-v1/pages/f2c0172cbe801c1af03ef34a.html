@@ -1,0 +1,200 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Cannot get RFID reader to read tags.</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Cannot get RFID reader to read tags.</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25963; original snapshot: threads/resume-00602.html; SHA-256: 2fdd58c90d09c2c8e48906da01c8abdb153928e0bca2f7bd785e24e5e1e72301</small><pre id="topic">
+
+    
+        Cannot get RFID reader to read tags.
+
+
+        
+      
+                        
+                    
+            R
+          
+          Robert Harrington
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            367
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  EDIT: Sorry, in the title I meant: Cannot get *UHF* reader to read tags.
+Hi there, I needed some help with the android sdk .
+What I am trying to do is simply start scanning (I don&#x27;t need to apply filters or anything like that), and store the scanned tags in an arraylist or something similar.
+(ideally I should be able to use the trigger/gun of the handheld reader device, but that&#x27;s probably not relevant to this thread.
+Anyways, I created a class called EventHandler that implements RfidEventsListener.
+Inside of it there&#x27;s the eventReadNotify method that as a parameter has RfidReadEvents.
+code:
+```
+class EventHandler implements RfidEventsListener {
+    // Read Event Notification
+    public void eventReadNotify(RfidReadEvents e) {
+        TagData tag = e.getReadEventData().tagData;
+        if (tag.getOpCode() == ACCESS_OPERATION_CODE.ACCESS_OPERATION_READ
+                &amp;&amp; tag.getOpStatus() == ACCESS_OPERATION_STATUS.ACCESS_SUCCESS) {
+            Log.d(&quot;Main Activity&quot;, &quot;eventReadNotify - tag id &quot; + tag.getTagID() + &quot; and mem bank &quot; + tag.getMemoryBankData());
+        }
+    }
+    @Override
+    public void eventStatusNotify(RfidStatusEvents rfidStatusEvents) {
+    }
+}
+```
+when I actually call the function in the MainActivity I don&#x27;t know what to pass inside the eventReadNotify method. I know that it expects an RfidReadEvents, but I don&#x27;t know how to initialize it.
+There&#x27;s no mention of it in the documentation and I tried to do a lot of research the past few days online, but couldn&#x27;t find anything useful.
+ I also tried another code for the eventReadNotify method that I found somewhere online, it looks like this:
+```
+public void eventReadNotify() {
+        myTags = MainActivity.reader.Actions.getReadTags(100);
+            if (myTags != null) {
+                for (TagData myTag : myTags) {
+                    Log.d(&quot;MainActivity&quot;, &quot;Tag ID &quot; + myTag.getTagID());
+                }
+            }
+    }
+```
+With the latter one, if I go into debug mode, I can see that myTags is always null.
+I attached a copy of my code down (sorry if the code is a mess, I&#x27;ll have to fix that but I&#x27;m just trying to get things done first);
+So if I  could get help with that, it would be great, otherwise if there&#x27;s any other way to read tags and store their ID it would be good as well.
+At the moment we are using a mc3300r for testing and developing.
+Many thanks in advance for your help!
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            5 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Robert,
+I&#x27;d recommend testing our sample application here:&amp;nbsp;https://techdocs.zebra.com/dcs/rfid/android/2-15/samples/hellorfid/&amp;nbsp;
+From a quick look at your source code&amp;nbsp;you need to populate the code inside the eventReadNotify callback on line 139/140 with the code required to validate and store the RFIDReadEvent, something like:
+/**
+* Untested
+*/
+RfidEventsListener eventHandler = new RfidEventsListener() {
+    @Override
+    public void eventReadNotify(RfidReadEvents rfidReadEvents) {
+        e.getReadEventData().getTagID();
+    }
+    @Override
+    public void eventStatusNotify(RfidStatusEvents rfidStatusEvents) {
+    }
+};&amp;nbsp;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

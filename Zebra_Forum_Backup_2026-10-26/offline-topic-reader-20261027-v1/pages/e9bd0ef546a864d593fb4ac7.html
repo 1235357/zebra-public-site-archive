@@ -1,0 +1,393 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Is there a way, using Powershell, to query an LS2208?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Is there a way, using Powershell, to query an LS2208?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/there-way-using-powershell-query-ls2208; original snapshot: threads/00891.html; SHA-256: 6a046bdbc92116129cd7533f12f83c8e1a1a2b6a290e6975140e1c196e9f55b5</small><pre id="topic">
+
+    
+        Is there a way, using Powershell, to query an LS2208?
+
+
+        
+      
+                        
+                    
+            B
+          
+          Blake Clausnitzer
+          4 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            486
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I currently have the CoreScanner Driver installed with the service running.  The other services for Driver and Scanner discovery are running as well.  123Scan works fine and is able to detect the scanner.
+I am trying to query via Powershell the status of an LS2208 Scanner.  The attached image is what I am trying to do, but nothing happens.  It is a valid WMI Class according to the PCs I have tested on but I am getting nothing.
+
+              
+
+                    
+          
+      
+              
+ Powershell Symbol.png
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I do not have LS2208 with me but tested with DS8108 ok . did you make sure that your LS2208 is set to IBM handheld or SNAPI ?
+in my test following command
+(Get-WmiObject -Query &quot;SELECT * FROM Symbol_BarcodeScanner&quot;).PartNumber
+get me following result
+DS8108-SR00007ZZWW
+Check below  KA for reference
+https://supportcommunity.zebra.com/s/article/Query-the-asset-informatio…
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Blake Clausnitzer
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            It is currently set to HID Keyboard.  It needs to be set otherwise in order for this function to work?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            That is correct to use wmi the scanner needs to be in snapi or IBM HH
+Could you help me to understand more about the solution you are trying to  achieve ? I might have some additional details that could maybe help
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Blake Clausnitzer
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Myself and other IT guys support 35+ warehouses across the US.  We use Nagios to help monitor and watch over the equipment on the warehouse floor, including end user desktops as they do affect production.  We just want to be sure that the scanners are configured correctly.  Also a plus would be the ability to remotely deploy configs on the fly.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There are two ways for this I can think about
+Option 1: set the scanners into snapi to keep them in management mode and enable HID pump feature within corescanner that would allow you to send the data as keystroke for apps that require data in HID  . 
+To do so , go to
+Browse to C:\Program Files\Zebra Technologies\Barcode Scanners\Common
+Copy the Config.XML file to make an original copy.
+Edit the Config.XML file and make the following changes  Config.xml
+Under HID_KB_PUMP_SETTINGS
+Change Local from 0 to  2
+Enable from 0 to 1
+Save the file and then restart corescanner service or Reboot your system
+Options 2 : keep scanner in HID and switch HOST to snapi via script to do management and then switch it back to HID once finished
+refer to following KA  https://supportcommunity.zebra.com/s/article/Changing-Scanner-Host-Mode…
+hope the above helps
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

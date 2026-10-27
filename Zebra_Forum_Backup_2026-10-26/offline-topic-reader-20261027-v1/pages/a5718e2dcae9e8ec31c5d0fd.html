@@ -1,0 +1,188 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>DataWedge UDI output on the Zebra TC52-HC</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>DataWedge UDI output on the Zebra TC52-HC</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/datawedge-udi-output-zebra-tc52-hc; original snapshot: threads/00872.html; SHA-256: 016fb5b19aab973126f36f90ad9c20680d34431936bf085ddd7640cc8e17e6da</small><pre id="topic">
+
+    
+        DataWedge UDI output on the Zebra TC52-HC
+
+
+        
+      
+                        
+                    
+            J
+          
+          John Doherty
+          4 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            439
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello all, 
+Please could someone help me understand how to correctly configure the output order of UDI barcodes?
+CONTEXT:
+We&#x27;re working with a customer who wants to capture multiple UDI barcodes in one scan using Orca Scan running on the Zebra TC52-HC (Android 8.1.0). We have configured the DataWedge (version 8.0.37) application with the following settings:
+BARCODE INPUT
+ * Enabled = true
+ * Hardware Trigger = true
+ * Configure NG SimulScan settings - Scanning Modes = UDI
+KEYSTROKE OUTPUT
+Enabled = true
+Action key character = none
+Inter character delay = 10ms
+Data formatting and ordering - Send tokens:
+ * Barcodes and tokens = enabled
+Data formatting and ordering - Token separator:
+ * None = enabled
+Data formatting and ordering - Token order:
+ * Product or catalog number = enabled
+ * Device identifier = enabled
+ * Lot number = enabled
+ * Expiration date = enabled
+ * Serial number = enabled
+Basic data formatting:
+ * Enabled = true
+ * Send data = true
+ * Send ENTER key = true
+If we scan two HIBC barcodes in one scan (primary on top of secondary):
+Primary = +E1813L925001K
+Secondary = +$$31610015111307K
+The DataWedge sends Secondary/Primary to the Orca Scan application +$$31610015111307K/+E1813L925001K
+Modifying the Data formatting and ordering, token order appears to have no impact.
+How do we configure the DataWedge to send the data Primary/Secondary? Or better still, a concatenated HIBC?
+Many thanks!
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Darryn Campbell
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Sorry if this is a silly question but I don&#x27;t think this is possible:
+* Configure NG SimulScan settings - Scanning Modes = UDI
+Under &quot;Configure NG SimulScan settings&quot; the options are &quot;MultiBarcode&quot; or &quot;Document Capture&quot;
+The UDI setting is under &quot;Barcode Input&quot;, &quot;Configure Scanning Settings&quot;, &quot;Scanning Modes&quot;, then you can select UDI.
+I checked the documentation in case this changed between DW versions, according to https://techdocs.zebra.com/datawedge/8-2/guide/input/barcode/#scanningm…
+Scanning Modes exists within both Scanner Configuration and NG SimulScan Configuration sections. The availability of Scanning Modes options is interdependent on the option selected within each section:
+
+If Single or UDI is selected as the Scanning Mode within Scanner Configuration, then Scanning Modes is disabled within NG SimulScan Configuration.
+If Document Capture or MultiBarcode is selected for Scanning Modes within NG SimulScan Configuration, then Scanning Modes is disabled within Scanner Configuration.
+
+Which means unfortunately that scanning and parsing multiple UDI barcodes with a single trigger pull is not supported.  Hope that helps?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

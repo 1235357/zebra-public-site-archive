@@ -1,0 +1,339 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Wavelink - Show a pick error on RS507</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Wavelink - Show a pick error on RS507</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/27456; original snapshot: threads/01726.html; SHA-256: b6ca6278cd82abfb9e406c1e3e8095448a25bc1600903046392d6faf51875b96</small><pre id="topic">
+
+    
+        Wavelink - Show a pick error on RS507
+
+
+        
+      
+                        
+                    
+            A
+          
+          Andrew Wood
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            34
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,   Does anyone know how to configure WT4090 Wavelink TE to show a picking error on the RS507.   At the moment all I can do is get a green LED illuminate to indicate a succesful decode but I need the 507 to display a red LED if the item picked is incorrect.   Thanks  Andy
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jack Burleson
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Continuing Larry Dykes train of thought ...   If you are doing VT emulation - Wavelink TE has as setting called &quot;VT Disable Scanner&quot; that can be configured with the Wavelink terminal configurator under:  Emulation &amp;gt; Emulation &amp;gt; VT and HP &amp;gt; Common &amp;gt; VT Disable Scanner &amp;gt; Always  The default value out of box is &quot;never&quot; which means the scanner is always enabled.   On a traditional MCD device with integrated scanner, this feature will allow the user to scan 1 bar code, and then the scanner is automatically disabled until the terminal receives an special escape sequence from the host.&amp;nbsp; Upon receiving the escape sequence the bar code scanner is again enabled for 1 scan.&amp;nbsp; We use this regularly with our customers to keep the user from getting ahead of the host, error messages, etc.&amp;nbsp; Following is the discription of the escape sequences related to this command from page 13 of the attached doc.&amp;nbsp;   
+Terminal Scanner 
+ESC % Pn S
+  &amp;nbsp;
+  &amp;nbsp;
+  &amp;nbsp;
+  &amp;nbsp;
+  &amp;nbsp;
+  &amp;nbsp;
+  &amp;nbsp;
+  &amp;nbsp;
+  &amp;nbsp;
+  &amp;nbsp;
+ESC % 6 ; 0 S
+ESC % 6 ; 1 S 
+Enable/disable the terminal’s scanner.&amp;nbsp; This can also be used to change the “DisableScanner” option in the terminal configuration parameters.
+  &amp;nbsp;
+Pn=0&amp;nbsp; Disable scanner
+Pn=1&amp;nbsp; Enable scanner
+Pn=2&amp;nbsp; Set DisableScanner option to NO
+Pn=3&amp;nbsp; Set DisableScanner option to ALWAYS
+Pn=4&amp;nbsp; Set DisableScanner option to 1-D
+Pn=5&amp;nbsp; Set DisableScanner option to 2-D
+  &amp;nbsp;
+Pn=6&amp;nbsp; Soft Trigger.&amp;nbsp; Disable soft trigger.
+Pn=6&amp;nbsp; Soft Trigger.&amp;nbsp; Enable soft trigger. 
+   I HAVE NOT tested this with the RS507 so I cannot tell you if it will work with that device or not.&amp;nbsp; It does work on MC9090&#x27;s, WT4090s (with integrated scanner), etc.&amp;nbsp;&amp;nbsp;Thus, it is worth a try!&amp;nbsp;&amp;nbsp;   Good Luck!
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Andrew Wood
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Sorry - I dont seem to have explained this very well.   How can I configure the Wavelink client to show when an incorrect item has been picked by the user. On the device (WT4090 or MC9090) I can play a wav file to indicate when the application has detected the user has done something wrong. My customer is using the RS507 connected to a WT4090 and would also like to be able to flash the red LED on the RS507 to alert the user that somthing needs attention. At the moment all they see is the green LED showing a good scan and as the WT4090 is mounted on the hip they sometimes dont notice the error condition.   Andy
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Andy,  &amp;nbsp;The RSM attributes of the RS507 include a paging feature which is disabled by default:  ATTR_PAGING_ENABLE R/W&amp;nbsp; 1 - Enabled 0 - Disabled  ATTR_PAGING_BEEP_SEQ R/W 0-26 15 Paging beep sequence  ATTR_PAGING_ACTIVATE W&amp;nbsp;&amp;nbsp;&amp;nbsp; 0 – Stop&amp;nbsp;&amp;nbsp; 1 – Start 
+&amp;nbsp;
+&amp;nbsp;
+&amp;nbsp;
+&amp;nbsp;The paging beep sequence could be set to a lower number e.g. 4 and provided the Wavelink TN client is modifed to support&amp;nbsp;this feature, you could page the RS507 to beep when a picking error is detected.&amp;nbsp;The ScanRSM sample in EMDK for C shows how to call the&amp;nbsp;basic RSM&amp;nbsp;API.  Best Regards, Ian Hatton
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mark Mann
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Andrew,   What symbologies are being scanned?&amp;nbsp; I&#x27;ve seen issues in the past with code 3 of 9 especially if poorly printed or damaged.&amp;nbsp; This symbology can be missed read by the scanner.&amp;nbsp; Check to see if the setting for code 3 of 9 is set for Redundancy scan.&amp;nbsp; The scanner will read the barcode twice to validate it has the same data.&amp;nbsp; If the data is the same then it will decode and send to the host.&amp;nbsp; This has helped me in the past and hope this is what your facing.   Cheers,   Mark
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

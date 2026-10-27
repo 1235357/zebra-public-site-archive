@@ -1,0 +1,222 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Image truncated with PrintImage due to media length</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Image truncated with PrintImage due to media length</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25691; original snapshot: threads/resume-00534.html; SHA-256: f112ef58c560bef6580caa519ad5fdacb3db73b7b69adfae407e47ed7fb9e53b</small><pre id="topic">
+
+    
+        Image truncated with PrintImage due to media length
+
+
+        
+      
+                        
+                    
+            S
+          
+          Stefano Ottaviani
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            60
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m trying to print a receipt obtained from another system, so the easiest way that I&#x27;ve found is to convert it to an image and print it (the receipt is quite complex, so it cannot be rebuilt as &quot;simple text&quot;).
+I&#x27;m printing it using the PrintImage function, on a Xamarin.iOS app, but I think the same issue apply also to other technologies.
+The printer is a ZQ320.
+The image&#x27;s height can be quite variable, due to the number of items that the receipt contains.
+When the image is not too high, it is printed correctly.
+When it&#x27;s more than a certain height, instead, it is not printed completely, a part is &quot;truncated&quot;.
+From the Zebra Printer Setup app I can see that in the media settings the &quot;current media type&quot; is &quot;receipt&quot; and the length parameter was, by default, 1.51 in.
+If I increase the length value, e.g. to 10 inch, then the whole image is printed.
+Actually the work around to increase the length in the media settings can&#x27;t be a final solution, because the length of the image is variable.
+I&#x27;ve tried to &quot;play&quot; with the PrintImage overloads, but I didn&#x27;t get any result.
+I tried also to change the &quot;media.feed_length&quot; setting using the SetSetting function, but it didn&#x27;t work as well.
+The only solution that, at the moment, worked, was to &quot;embed&quot; the image in a ZPL file and then use the ^LL parameter to specify a certain height (and I have yet to understand to which value I should set the height, I didn&#x27;t explore this option too deep yet).
+The question is: is there a better method to print these images, without recurring to the ZPL workaround?
+And another question is: I&#x27;ve seen that functions such as PrintImage and StoreImage, in the documentations, warn about some OutOfMemory exceptions that could be thrown with images e.g. bigger than 1024x768. In my case I cannot exclude to have images bigger than these limits. Should I use other ways to send the image to the printer?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Stefano Ottaviani
+          
+          
+            6 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks Steven, I solved my issues starting from your suggestions :)
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            6 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Stefano,
+When the media.type on the printer is set as journal (for receipt or variable length label), the zpl.label_length dictates length of the receipt. Since PDF of the receipt is converted to image, which is sent to the printer via PrintImage(), the zpl.label_length on the printer determines the length of the image to be printed. If you know the image length beforehand, for example, 800 dots (number of dots), then you can use Connection.Write() to send a dedicated ZPL below to configure&amp;nbsp;the zpl.label_length on the printer prior to sending the image via&amp;nbsp;PrintImage().
+^XA
+^LL800
+^XZAlternatively to use SGD.SET() to issue the following SGD command to set the length prior to sending the image.
+! U1 setvar &quot;zpl.label_length&quot; &quot;800&quot;
+In this way, you don&#x27;t need to *embed* the image into a ZPL.
+Another way is to enable the PDF direct on the ZQ320 printer, so you don&#x27;t need to convert the PDF to image. You simply send the PDF directly to the printer to print. Again, you still need to know the length beforehand and set the zpl.label_length on the printer prior to sending the PDF. There is an article about PDF Direct on Link-OS 6.3 - Printers Include Free PDF Direct with Link-OS 6.3.
+Hope this helps.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

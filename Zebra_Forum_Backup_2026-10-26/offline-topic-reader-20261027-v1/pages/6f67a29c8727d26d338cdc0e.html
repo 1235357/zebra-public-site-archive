@@ -1,0 +1,267 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Cannot get USB connected GX420d Status or Errors</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Cannot get USB connected GX420d Status or Errors</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/cannot-get-usb-connected-gx420d-status-or-errors; original snapshot: threads/00906.html; SHA-256: 23bab9fc36cafb4d22eda15285b5b92b344dac1634ad06f772572af9f4a55d2a</small><pre id="topic">
+
+    
+        Cannot get USB connected GX420d Status or Errors
+
+
+        
+      
+                        
+                    
+            M
+          
+          Matteo Devigili
+          4 years 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            37
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I have a .net 5.0 project that uses a USB connected  GX420d zebra printer to print tickets.
+I&#x27;m trying to access to the printer status/errors with no success.
+I&#x27;ve tried to use windows ManagementObjectSearcher to access the printer properties:
+                ManagementObjectSearcher wmiQuery = new ManagementObjectSearcher(&quot;root\\CIMV2&quot;);
+                wmiQuery.Query = new ObjectQuery(string.Format(&quot;SELECT * FROM Win32_Printer where Name = \&quot;{0}\&quot;&quot;, _printerName));
+The printer is found but all the properties i&#x27;m interested in (&quot;DetectedErrorState&quot;, &quot;PrinterState&quot; etc..) never change value.
+I&#x27;ve also tried to use code from the Developer Demo to create an USB connection but the libraries are designed for .net framework 4.7 and not .net 5.0. 
+            printerConnection = new DriverPrinterConnection(_printerName);
+            printerConnection.Open();
+when I try to open a connection I get an exeption that says that no printer with such name is installed.
+I would like any insight on how I could read the printer status or on what i&#x27;m doing wrong.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The best approach at this moment is to switch the .NET 5 project back to .NET Framework 4.7, so that you can use the Link-OS SDK for PC .NET. Otherwise, a lot of issues could come out as we have not done much research on the .NET 5 with regard to the USB connection to the printers.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Matteo Devigili
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Is Link-OS SDK planned to support .net 5?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            No, there is no plan right now. But we will bring it to the engineering team for consideration.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

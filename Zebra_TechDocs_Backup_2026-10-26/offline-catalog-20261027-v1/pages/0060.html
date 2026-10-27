@@ -1,0 +1,388 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Picture Proof of Delivery (PPOD) - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/ai-datacapture/latest/ppod</code><br>Observed final URL: <code>https://techdocs.zebra.com/ai-datacapture/latest/ppod/</code><br>Raw source: <code>raw/e76091572a10e44303e3a4fb.html</code><br>Raw SHA-256: <code>3966883f324a54bf272612b7bf7649bbd8010a1ea13fa0d872dbce945d49e157</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            AI Data Capture SDK
+                                            4.1
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Setup
+                            
+                        
+                        
+                            
+                                    Localizer
+                            
+                        
+                        
+                            
+                                    Product Recognition
+                            
+                        
+                        
+                            
+                                    Barcode Decoder
+                            
+                        
+                        
+                            
+                                    Text OCR
+                            
+                        
+                        
+                            
+                                    CameraX
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Picture Proof of Delivery (PPOD)
+                        
+                    OverviewNon-Guided vs. Guided PPODGuided PPODNon-Guided PPODWorkflowSample AppRelated Guides
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Picture Proof of Delivery (PPOD)
+                                    
+                                            AI Data Capture SDK
+                                            4.1
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+Picture Proof of Delivery (PPOD) is an on-device AI Blueprint that solves common challenges for delivery drivers. Under constant time pressure, drivers must capture clear, compliant images that show both the parcel and its surroundings, while simultaneously avoiding sensitive data like faces or license plates. This Blueprint simplifies the process, guiding the driver to get a compliant picture on the first attempt.
+
+The Blueprint operates in two distinct stages:
+
+
+Compliance Check: Verifies the image meets compliance criteria (e.g., parcel is within the image).
+
+Image Enhancement: Post-processes the captured image (e.g. blur text) to ensure privacy and data security.
+
+
+The specific options available for each stage are outlined below:
+
+
+    
+        
+        Stage
+        Available Options
+        
+    
+    
+        
+            Compliance Check
+            • Ensure parcel is present• Ensure surroundings are shown• Ensure image is NOT blurry• Ensure people are NOT in image
+        
+        
+            Image Enhancement
+            • Blur People in Image• Blur Text in image• Blur Barcodes in Image
+        
+    
+
+
+The Blueprint is ready to be integrated into an Android application through a simplified pipeline exposed in Zebra’s AI Suite SDK.
+
+
+
+Non-Guided vs. Guided PPOD
+
+The PPOD Blueprint offers two operational modes: a Non-Guided mode for post-capture analysis and a Guided mode for live, interactive feedback.
+
+
+
+Choosing the right approach depends on the application&#x27;s requirements for user interaction and workflow integration. The table below outlines the key differences.
+
+
+    
+        
+        Aspect
+        Non-Guided PPOD(Non-Interactive)
+        Guided PPOD (Live Feedback)
+        
+    
+    
+        
+            Interaction Model
+            Post-capture &amp; Non-interactive. Analysis happens after the image is taken.
+            Live &amp; Interactive. Provides real-time guidance before the image is taken.
+        
+        
+            Primary Use Case
+            Fast capture and non-disruptive batch processing of existing images.
+            Prioritizing first-time image quality and compliance through live guidance.
+        
+        
+            Core Technology
+            ImageAttributesDetector &amp; ImageTransformDetector on a static image.
+            EntityTrackerAnalyzer processing a live camera feed.
+        
+    
+
+
+
+
+
+
+Guided PPOD
+
+For more information on the live feedback approach, see Guided PPOD within the CameraX section.
+
+
+
+Non-Guided PPOD
+
+The Non-Guided Picture Proof of Delivery (PPOD) is a flexible method for processing images after they have been captured. Unlike the guided (live feedback) model, this workflow focuses on analyzing pre-existing or newly captured images without real-time user guidance.
+
+
+
+This method allows developers to embed an analysis and transformation pipeline into an existing application with minimal disruption to the established user workflow. The core process involves taking an image and passing it to one or more detectors to verify its compliance and redact sensitive information.
+
+Key Characteristics:
+
+
+Post-Capture Analysis: Operates on images already captured from any source (camera, gallery, etc.).
+
+No Live Feedback: Does not use a live camera preview to provide real-time guidance.
+
+Minimal Disruption: Easily integrates as a background step in an existing application workflow (e.g., after a driver captures all their delivery photos).
+
+Component-Based: Primarily uses ImageAttributesDetector for compliance checks and the ImageTransformDetector for privacy redaction on a static image.
+
+
+
+
+
+
+Workflow
+
+The Non-Guided PPOD workflow provides a flexible pipeline for processing static images after capture. The process begins by initializing the SDK and the required detectors (ImageAttributesDetector, ImageTransformDetector). Once the image is loaded, there are two distinct processing paths available:
+
+
+
+
+Analyze then Transform: First, analyze the image with ImageAttributesDetector, and then optionaally apply privacy redaction with ImageTransformDetector.
+
+Direct Transformation: Use ImageTransformDetector to directly apply privacy redaction without any prior analysis.
+
+
+
+
+Non-Guided PPOD Workflow 
+
+
+
+
+
+
+
+Sample App
+
+A sample application and source code are available to demonstrate both the Guided and Non-Guided Picture Proof of Delivery (PPOD) workflows.
+
+
+Zebra Showcase App: Download and install the Zebra Showcase App to see demonstrations of both the Guided and Non-Guided workflows.
+
+Source Code: The sample app source code demonstrates how to use the Image Attributes Detector and Image Transform Detector classes with their underlying AI models to build a PPOD solution.
+
+Licensing: The Zebra Showcase App provides a pre-licensed, ready to run demo app. To compile the sample app from source code, a Picture Proof of Delivery License (AI Blueprint, Annual) is required. The SKU for this annual license is ZEBRA-AI-BP-PPOD. See Licensing for procurement and deployment instructions.
+
+
+
+
+Related Guides
+
+
+About
+
+Setup
+
+Localizer
+
+
+
+Models: Barcode, Product &amp; Shelf
+
+
+Product Recognition - Model: Model
+
+
+
+Feature Extractor
+
+Feature Storage
+
+Recognizer
+
+
+Text OCR
+
+
+
+Model
+
+
+CameraX
+
+
+
+EntityTrackerAnalyzer
+
+Detectors
+
+EntityViewfinder
+
+
+Image Attributes Detector
+
+Image Transform Detector
+
+Custom Detector
+
+Entity
+
+Data Types
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

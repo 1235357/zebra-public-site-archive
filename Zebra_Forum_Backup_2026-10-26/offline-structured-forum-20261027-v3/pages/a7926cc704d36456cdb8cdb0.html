@@ -1,0 +1,749 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>How to perform RFID inventory in real time on Android</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/how-perform-rfid-inventory-real-time-android; snapshot threads/00601.html; SHA-256 7a34196fd9a0494939c3ce45c6fa8d32d8247c3558fdc83a57e8b13c77a54582. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">How to perform RFID inventory in real time on Android</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            G
+          </div>
+          <div class="forum-topic__author-name">Grégory Reiser</div>
+          <div class="forum-topic__timestamp">3 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            423
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            8
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi everyone, </p>
+
+<p>I would like to implement the android RFID SDK. I successful implement the RFD90 long range device but when I use the “Actions.Inventory.perform()” method, it works only one time on click.</p>
+
+<p>In fact, when I press the trigger, it read the tags available in the range of the device and after nothing is scanned until I release the trigger button and press again on it. After this it will work just one time again.</p>
+
+<p>I need to have the reading session active during all the time I have the trigger pressed. I know it’s possible because your sample app work like this but I don’t  know why, I’m not able to reproduce this behaviour on my app. (Maybe a missing configuration)</p>
+
+<p>I precise I disable the Batch_Mode :</p>
+
+<p>(Below my config set)</p>
+
+<p> </p>
+
+<h6><strong>reader.Events.setTagReadEvent(true); // application will collect tag using getReadTags API </strong></h6>
+
+<h6><strong>reader.Events.setAttachTagDataWithReadEvent(false); </strong></h6>
+
+<h6><strong>TriggerInfo triggerInfo = new TriggerInfo(); </strong></h6>
+
+<h6><strong>triggerInfo.StartTrigger.setTriggerType(START_TRIGGER_TYPE.START_TRIGGER_TYPE_IMMEDIATE); </strong></h6>
+
+<h6><strong>triggerInfo.StopTrigger.setTriggerType(STOP_TRIGGER_TYPE.STOP_TRIGGER_TYPE_IMMEDIATE); // set start and stop triggers </strong></h6>
+
+<h6><strong>reader.Config.setStartTrigger(triggerInfo.StartTrigger); </strong></h6>
+
+<h6><strong>reader.Config.setStopTrigger(triggerInfo.StopTrigger); // receive events from reader </strong></h6>
+
+<h6><strong>reader.Events.addEventsListener(eventHandler); // HH event </strong></h6>
+
+<h6><strong>reader.Events.setHandheldEvent(true); // tag event with tag data </strong></h6>
+
+<h6><strong>reader.Events.setTagReadEvent(true); </strong></h6>
+
+<h6><strong>reader.Events.setAttachTagDataWithReadEvent(false); // set trigger mode as rfid so scanner beam will not come </strong></h6>
+
+<h6><strong>reader.Config.setTriggerMode(ENUM_TRIGGER_MODE.RFID_MODE, true); // set start and stop triggers </strong></h6>
+
+<h6><strong>reader.Config.setStartTrigger(triggerInfo.StartTrigger); </strong></h6>
+
+<h6><strong>reader.Config.setStopTrigger(triggerInfo.StopTrigger); // power levels are index based so maximum power supported get the last one </strong></h6>
+
+<h6><strong>maxPower = reader.ReaderCapabilities.getTransmitPowerLevelValues().length - 1; // set antenna configurations </strong></h6>
+
+<h6><strong>Antennas.AntennaRfConfig config = reader.Config.Antennas.getAntennaRfConfig(1); </strong></h6>
+
+<h6><strong>config.setTransmitPowerIndex(maxPower); </strong></h6>
+
+<h6><strong>config.setrfModeTableIndex(0); </strong></h6>
+
+<h6><strong>config.setTari(0); </strong></h6>
+
+<h6><strong>reader.Config.Antennas.setAntennaRfConfig(1, config); // Set the singulation control </strong></h6>
+
+<h6><strong>Antennas.SingulationControl s1_singulationControl = reader.Config.Antennas.getSingulationControl(1); </strong></h6>
+
+<h6><strong>s1_singulationControl.setSession(SESSION.SESSION_S0); </strong></h6>
+
+<h6><strong>s1_singulationControl.setTagPopulation((short) 30); </strong></h6>
+
+<h6><strong>s1_singulationControl.Action.setInventoryState(INVENTORY_STATE.INVENTORY_STATE_A); </strong></h6>
+
+<h6><strong>s1_singulationControl.Action.setSLFlag(SL_FLAG.SL_ALL); </strong></h6>
+
+<h6><strong>reader.Config.Antennas.setSingulationControl(1, s1_singulationControl); </strong></h6>
+
+<h6><strong>reader.Config.setUniqueTagReport(false); </strong></h6>
+
+<h6><strong>reader.Config.setBatchMode(BATCH_MODE.DISABLE); </strong></h6>
+
+<h6><strong>reader.Actions.PreFilters.deleteAll();</strong></h6>
+
+<p> </p>
+
+<p>Can you help me ? It’s really important to be able to sell more REFID scanner to our client if it works.</p>
+
+<p>You can call me any time if it’s easier for you.</p>
+
+<p> </p>
+
+<p>Thank you for your time and your help.</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      8 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-51557" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>RFD90 - And using 123RFID Mobile app for Android - demonstrates the correct way to setup and configure and then Use the RFD90 for RFID Inventory.<br>
+<br>
+I would recommend using 123RFID Mobile app with the Balanced Performance profile setup. To mirror what you are attempting to setup above.<br>
+<br>
+Your code above does not reveal what is being done to the RFD90 - its just a code snippet that you are working with and max power is a giveaway that it likely is setting the RFD90 the 123RFID Mobile app Profile Defaults (Fastest read) which I would try to use the "Balanced Performance" profile Like I mention above.</p>
+
+<p>123RFID Mobile app also comes with Source Code.  And the Android RFID SDK for Android Studio also contains the SDKSample - ( Try to use the latest V2.0.2.114 of the SDK the older versions had trouble with RFD90 running up-to-date Firmware. The latest V114 should work with the RFD90 well.  (The sample also contains a button where you can adjust the power settings and singulation as well. </p>
+
+<p>Give that app a try, in addition to 123RFID Mobile - and see if there is something else causing issues. </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-51608" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              G
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Grégory Reiser</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thank you for your answer.</p>
+
+<p>I search on the RFID123 android sample code an tried to set the correct configuration, but I'm not able to maintain the inventory perform precess.</p>
+
+<p>In fact when I pressed on the trigger, I receive the "INVENTORY_START_EVENT" but 1 second after, I receive the "INVENTORY_STOP_EVENT" without release the trigger.</p>
+
+<p>It's like if the "Inventory.perform()" was just a one shot read.</p>
+
+<p>Do we have a way to maintain the reading during all the time I have the trigger pressed ? Do we need to manually loop on the "Inventory.perform()" while the trigger is pressed ? </p>
+
+<p>Thank you for your help.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-51609" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>There may be a temporary check you can perform: ( Make a change and then change it back )</p>
+
+<p>In the 123RFID Mobile app - take a look at the ( Settings --&gt; RFID menu --&gt; Advanced reader options menu --&gt; Start/Stop Triggers menu )</p>
+
+<p>Change Both of the Triggers from "Immeadiate" to "Handheld".  And leave the check marks and timeout setting to default.</p>
+
+<p>Click Back three times to return to the Settings Main Menu - then change over to the RFID interface.</p>
+
+<p>Press the On-screen button to "arm" the RFID Read process.  Press and Release the RFID trigger.  RFID Inventory should turn on / turn off.</p>
+
+<p>Go back to the ( Settings --&gt; RFID menu --&gt; Advanced reader options menu --&gt; Start/Stop Triggers menu )</p>
+
+<p>Change Both of the Triggers from "Handheld" to "Immeadiate".</p>
+
+<p>Click Back three times to return to the Settings Main Menu - then change over to the RFID interface.</p>
+
+<p>Pull the trigger and see if you are able to do perform the RFID Inventory on-demand.</p>
+
+<p>If this fails.  Goto ( Settings --&gt; General menu --&gt; Factory reset menu --&gt; "Reset to Factory Defaults" (radio button = "FactoryReset")</p>
+
+<p>Press the [ Reset ] Button. ( The RFD90 will reset )</p>
+
+<p>Re-Pair to the RFD90 and connect - 123RFID Mobile will ask you a regulatory question - set the correct region that the RFD90 will operating in. Click [ Next ] button. The Profile will then be asked. I would suggest changing to the "Balanced Performance" profile. Tap [Finish] button.</p>
+
+<p>Try the Inventory here and let this thread know how you fared.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-51610" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              G
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Grégory Reiser</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thank you so mush for your quick answer !</p>
+
+<p>I tested the trigger Start trigger switch and yes, on RFID123 app, it works because the "Trigger type" is set to Handheld and to to Immediate.</p>
+
+<p>The problem is, on my application, when I set to "Immediate", the inventory perform process only on the the pressed event but if I set to others ("handheld", "periodic"), the event "INEVNTORY_START_EVENT" not occurred and I have directly the event "INVENTORY_STOP_EVENT".</p>
+
+<p>I verified, the Inventory.perform() is called but it seems that nothing perform.</p>
+
+<p>Do you have an idea of what would be my problem ?</p>
+
+<p> </p>
+
+<p>Thank you for your time</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-51612" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Your code above, does not have any "reader.Config.getStartTrigger  /  reader.Config.getStopTrigger" calls to establish what is in effect.</p>
+
+<p>It also seems you are duplicating the ".setStartTrigger" calls twice which leads me to suggest - to comment out only what you need, and then test again.</p>
+
+<p>The SDKSample / 123RFID Mobile demo apps - leaves these settings - as-is - so if you are not changing them - is there other settings causing the problem?</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-51613" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              G
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Grégory Reiser</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thank you for your answer.</p>
+
+<p>Sorry, yes I updated my code since my first comment.</p>
+
+<p>After some updates, this is my actual code (where I have the issue): </p>
+
+<p>-----------------------------------------------------------------------------</p>
+
+<pre>// Antenna
+Antennas.AntennaRfConfig antennaRfConfig = reader.Config.Antennas.getAntennaRfConfig(1);
+antennaRfConfig.setTransmitPowerIndex(270);
+antennaRfConfig.setTari(0);
+antennaRfConfig.setrfModeTableIndex(0);
+reader.Config.Antennas.setAntennaRfConfig(1, antennaRfConfig);
+
+// Singulation
+Antennas.SingulationControl singulationControl;
+singulationControl = reader.Config.Antennas.getSingulationControl(1);
+singulationControl.setSession(SESSION.GetSession(1));
+singulationControl.Action.setInventoryState(INVENTORY_STATE.INVENTORY_STATE_A);
+reader.Config.Antennas.setSingulationControl(1, singulationControl);
+
+// DPO
+reader.Config.setDPOState(DYNAMIC_POWER_OPTIMIZATION.ENABLE);
+
+// Enable Events
+reader.Events.addEventsListener(eventHandler);
+reader.Events.setTagReadEvent(true);
+reader.Events.setBatteryEvent(true);
+reader.Events.setHandheldEvent(true);
+reader.Events.setInventoryStopEvent(true);
+reader.Events.setInventoryStartEvent(true);
+reader.Events.setTagReadEvent(true);
+reader.Events.setWPAEvent(true);
+reader.Events.setScanDataEvent(true);
+reader.Events.setAttachTagDataWithReadEvent(false);
+
+// Trigger
+StartTrigger startTrigger = reader.Config.getStartTrigger();
+startTrigger.setTriggerType(START_TRIGGER_TYPE.START_TRIGGER_TYPE_HANDHELD);
+//startTrigger.Periodic.setPeriod(100);
+//startTrigger.Handheld.setHandheldTriggerTimeout(10000);
+startTrigger.Handheld.setHandheldTriggerEvent(HANDHELD_TRIGGER_EVENT_TYPE.HANDHELD_TRIGGER_PRESSED);
+reader.Config.setStartTrigger(startTrigger);
+
+StopTrigger stopTrigger = reader.Config.getStopTrigger();
+stopTrigger.setTriggerType(STOP_TRIGGER_TYPE.STOP_TRIGGER_TYPE_IMMEDIATE);
+stopTrigger.Handheld.setHandheldTriggerEvent(HANDHELD_TRIGGER_EVENT_TYPE.HANDHELD_TRIGGER_RELEASED);
+stopTrigger.Handheld.setHandheldTriggerTimeout(10000);
+reader.Config.setStopTrigger(stopTrigger);
+
+reader.Config.setTriggerMode(ENUM_TRIGGER_MODE.RFID_MODE, false);
+
+// Behaviour
+reader.Config.setUniqueTagReport(false);
+reader.Config.getDeviceStatus(true, true, true); 
+</pre>
+
+<p>-----------------------------------------------------------------------------</p>
+
+<p> </p>
+
+<p>I hope it's more clear for you.</p>
+
+<p> </p>
+
+<p>Thanks for you help</p>
+
+<p> </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-51639" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              G
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Grégory Reiser</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi everyone,</p>
+
+<p>After some investigations, i better understand the issue. It's not caused by the trigger type but by something else.</p>
+
+<p>In fact, after compared the behaviour with the RFID123 android app, I don't have the same things event with the trigger type "immediate".</p>
+
+<p>The problem is, when I start the Inventory.perfom, something stop it directly. I received the "INVENTORY_STOP_EVENT" direct after the start event.</p>
+
+<p>If someone has an idea of why... I'm really blocked.</p>
+
+<p> </p>
+
+<p>Thank you so mush for your time</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div></div>  
+
+
+
+<article id="comment-51670" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Can you check the Tag reporting  ( Settings --&gt; RFID --&gt; Advanced Reader options --&gt; Tag Reporting)<br>
+Please try the following:</p>
+
+<p>BT Batchmode = Disable.</p>
+
+<p>USB Batchmode = Disable.</p>
+
+<p>As well - go into the "Power Management" menu setting - and uncheck the "Dynamic Power" check mark.</p>
+
+<p>Try RFID scanning with that config on 123RFID Mobile app.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/how-perform-rfid-inventory-real-time-android%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/how-perform-rfid-inventory-real-time-android%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

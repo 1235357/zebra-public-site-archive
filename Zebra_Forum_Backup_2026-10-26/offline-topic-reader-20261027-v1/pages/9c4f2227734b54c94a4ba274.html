@@ -1,0 +1,153 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Problem with wrap text in ZPL field blocks printing labels</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Problem with wrap text in ZPL field blocks printing labels</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/problem-wrap-text-zpl-field-blocks-printing-labels; original snapshot: threads/00353.html; SHA-256: 6bf478ec97052d1d94cf4679cbd17004d8c478d542d2a97a36248316f110152c</small><pre id="topic">
+
+    
+        Problem with wrap text in ZPL field blocks printing labels
+
+
+        
+      
+                        
+                    
+            F
+          
+          Filippo Rovaris
+          11 months 3 weeks ago
+        
+        
+      
+        
+            
+                  
+            
+            552
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello, I have a problem with text wrap in field blocks created with ZPL command ^FB. The block is made up of 17 lines, left justified. Each line has the escape sequence \&amp; to go to a new line when needed, and everithings work fine when line are shorter than the label. The problem comes when a line is longer and automatically wrap to a new line: if the has some spaces between words (see example line 5 in the image attached) it works fine, the subsequent line start in a new line, when there are no spaces (see example line 8) it automatically wrap with an added &quot;-&quot; but the next line start on the same line, not on a new line, the &quot;\&amp;&quot; is ignored.Someone have a solution?  
+              
+
+                    
+          
+      
+              
+ label.jpg
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Amar Byrisetty
+          
+          
+            10 months 4 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            To make the \&amp; work as a carriage return and new line feed in the ^FD statement, you would need to have a preceding ^FB statement to define a box, so that the printer knows where the next line should start. Without the ^FB, everything in the ^FD will be in one line. In ZPL there is no command to breakup the text you want to write based on its length. You have to break it into 2 or 3 variables as per the length and then you can write it using that 2 or more ^FD commands.
+See the examples of multi lines in a text block in the ^FB section in the ZPL User Guide. You can use this link for preview of output from your ZPL code https://labelary.com/viewer.html
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

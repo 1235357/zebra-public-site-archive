@@ -1,0 +1,1226 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Color Camera SDK for Linux - SDK - Zebra Technologies</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/dcs/scanners/camera-sdk-linux/sdk/</code><br>Observed final URL: <code>https://techdocs.zebra.com/dcs/scanners/camera-sdk-linux/sdk/</code><br>Raw source: <code>raw/3503f072d4717a1cb9a5031a.html</code><br>Raw SHA-256: <code>09637bc3c409593daf6813e91f64c691d952e168ed5e67d622dc2fa58e9578f2</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+        
+            
+                
+                    
+                        
+                            Toggle navigation
+                            
+                            
+                            
+                        
+                        
+                            
+                         
+                    
+                    
+                        
+                            TechDocs
+                            
+                                Barcode Scanner Tools
+                            
+                            Color Camera SDK for Linux
+                        
+                    
+                    
+                        
+                            
+                                About
+                            
+                            
+                                Getting Started
+                            
+                            
+                                SDK
+                            
+                            
+                                Bounding Box Detection
+                            
+                            
+                                Monochrome Library
+                            
+                            
+                                
+                                    
+                                
+                            
+                        
+                    
+                
+            
+        
+        
+            
+                
+                    
+                        
+                            
+                                
+                                    
+                                        Color Camera SDK for Linux
+                                    
+                                Camera SDK APIsAsset Tracking APIsCamera Processing UnitBrightnessContrastSaturationSharpnessGammaWhite BalanceBacklightGainAbsolute Exposure TimeAbsolute Exposure TimeVideo ModeIllumination ModeFirmware UpdateImage EventsContinuous Image EventProduce Image EventDecode Image EventSnapshot Image EventDecode Session Status Change Image EventSet DefaultsSet DefaultsLoad ConfigurationRetrieve  ConfigurationWrite to FlashImage Convertor LibraryRed illumination detection APIGet Frame API                    
+                                
+                                
+                                
+                                
+                                            
+                            
+                                
+                                    
+                                        
+                                            
+                                                
+                                                    Color Camera SDK for Linux
+                                                
+                                            
+                                                            
+                                    
+                                
+                                
+                                    
+                                        
+                                            
+                                            
+                                                
+                                                    Camera SDK APIs
+                                                    
+                                                    zebra camera multi-client API is not thread-safe and it is not safe to use from different threads even with locking.
+
+                                                    The include files shown in the code snippet given below need to be included in the ‘.cpp’ file which will be used for calling the APIs.
+
+                                                    
+
+#include &quot;device_manager.h&quot;
+#include &quot;zebra_camera_manager_client.h&quot;
+#include &quot;zebra_camera_client.h&quot;
+
+
+
+                                                    To call most of the API s in the SDK, an object of type ‘ZebraCameraClient’ is needed. The way in which this is accomplished is explained with the following code snippets. ‘ZebraCameraClient’ object used beyond this point of the guide is assumed to have undergone the initialization steps described in this section.
+
+                                                    Firstly, an object of the class ‘DeviceManager’ is created.
+
+                                                    
+
+DeviceManager mgr;
+
+
+
+                                                    With a call to the method ‘EnumerateDevices()’, the list ‘devinfolist’ gets filled with the connected camera devices.
+
+                                                    
+
+std::vector&lt;DeviceInfo&gt;  devinfolist = mgr.EnumerateDevices();
+
+
+
+                                                    Then an object of ‘ZebraCameraManagerClient’ is created by calling the ‘CreateZebraCameraManagerClient()’ method.
+
+                                                    
+
+std::unique_ptr&lt;zebra::camera_sdk::ZebraCameraManagerClient&gt; cammgr = zebra::camera_sdk::CreateZebraCameraManagerClient();
+
+
+
+                                                    The above created object along with the ‘devinfolist’ list can be used to create an object of type ‘ZebraCameraClient’’.
+
+                                                    
+
+std::shared_ptr&lt;zebra::camera_sdk::ZebraCameraClient&gt; camera = cammgr-&gt;CreateZebraCamera(devinfolist[0]);
+
+
+
+                                                    
+
+                                                    Asset Tracking APIs
+
+                                                    Once an object of ‘ZebraCameraClient’ is created, user is able to retrieve camera asset information such as the serial number, model number, date of manufacture, date of first program, first service date, firmware version, and hardware version of an MP7 device.
+
+                                                    
+
+std::shared_ptr&lt;zebra::camera_sdk::ZebraCameraClient&gt; camera
+
+
+
+                                                    
+                                                        Figure 1 Asset Information
+                                                    
+
+                                                    Value retrieval is best explained by the code snippets provided below.
+
+                                                    
+
+std::string serial_number = camera-&gt;GetSerialNumber();      // serial number
+std::string model_number = camera-&gt;GetModelNumber();        // model number
+std::string date_of_manuf = camera-&gt;GetDateOfManufacture(); // date of manufacture
+std::string date_of_prog = camera-&gt;GetDateOfFirstProgram(); // date of first program
+std::string date_of_ser = camera-&gt;GetFirstServiceDate();    // first server date
+std::string firmware_ver = camera-&gt;GetFirmwareVersion();    // firmware version
+std::string hardware_ver = camera-&gt;GetHardwareVersion();    // hardware version
+
+
+
+                                                    
+
+                                                    Camera Processing Unit
+
+                                                    Properties and the corresponding property values of Camera specification such as Brightness, Contrast, Saturation, Sharpness , Gamma, White Balance and Backlight can be obtained by the user with the code snippets and the explainations provided below.
+
+                                                    
+                                                        Figure 2 Camera Processing Unit
+                                                    
+
+                                                    Brightness
+
+                                                    Camera brightness of the MP7 along with various properties of brightness can be obtained with an object of type &#x27;ZebraCameraClient&#x27;.
+
+                                                    
+
+std::shared_ptr&lt;zebra::camera_sdk::ZebraCameraClient&gt; camera
+
+
+
+                                                    The ways to retrieve said properties are provided below as code snippets.
+
+                                                    
+
+// Returns the current value set for Brightness.
+int16_t brightness = camera-&gt;Brightness.Value();
+
+// Returns the minimum value possible for Brightness.
+int16_t brightness = camera-&gt;Brightness.Minimum();
+
+// Returns the maximum value possible for Brightness.
+int16_t brightness = camera-&gt;Brightness.Maximum();
+
+// Returns the resolution value of Brightness.
+int16_t brightness = camera-&gt;Brightness.Resolution();	
+
+// Returns the default value set for Brightness.
+int16_t brightness = camera-&gt;Brightness.Default();
+
+
+
+                                                    Contrast
+
+                                                    In order to retrieve different properties associated with Contrast, first an object of type ‘ZebraCameraClient’ is created.
+
+                                                    
+
+std::shared_ptr&lt;zebra::camera_sdk::ZebraCameraClient&gt; camera
+
+
+
+                                                    Value retrieval for the properties affiliated with Contrast is explained with the code snippets provided below.
+
+                                                    
+
+//Returns the current value of Contrast.
+int16_t contrast = camera-&gt;Contrast.Value();	
+
+//Returns the minimum possible value that can be given for Contrast.
+int16_t contrast = camera-&gt;Contrast.Minimum();
+
+//Returns the maximum possible value that can be given for Contrast.
+int16_t contrast = camera-&gt;Contrast.Maximum();
+
+//Returns the resolution of Contrast.
+int16_t contrast = camera-&gt;Contrast.Resolution();
+
+//Returns the default value of Contrast.
+int16_t contrast = camera-&gt;Contrast.Default();
+
+
+
+                                                    Saturation
+
+                                                    Properties affiliated with Saturation can be obtained with an object of type &#x27;ZebraCameraClient&#x27;.
+
+                                                    
+
+std::shared_ptr&lt;zebra::camera_sdk::ZebraCameraClient&gt; camera
+
+
+
+                                                    Property value retrieval is described using the code snippets given below.
+
+                                                    
+
+// Returns the current value of Saturation.
+int16_t saturation = camera-&gt;Saturation.Value();	
+
+// Returns the minimum possible value that can be given for Saturation.
+int16_t saturation = camera-&gt;Saturation.Minimum();
+
+// Returns the maximum possible value that can be given for Saturation.
+int16_t saturation = camera-&gt;Saturation.Maximum();
+
+// Returns the resolution value of Saturation.
+int16_t saturation = camera-&gt;Saturation.Resolution();
+	
+// Returns the default value of Saturation.
+int16_t saturation = camera-&gt;Saturation.Default();
+
+
+
+                                                    Sharpness
+
+                                                    After creating an object of type ‘ZebraCameraClient’, properties of Sharpness can be obtained.
+
+                                                    
+
+std::shared_ptr&lt;zebra::camera_sdk::ZebraCameraClient&gt; camera
+
+
+
+                                                    
+
+// Returns the current value set for Sharpness.
+int16_t sharpness = camera-&gt;Sharpness.Value();
+
+// Returns the minimum possible value that can be provided for Sharpness.
+int16_t sharpness = camera-&gt;Sharpness.Minimum();
+
+// Returns the maximum possible value that can be provided for Sharpness.
+int16_t sharpness = camera-&gt;Sharpness.Maximum();
+
+// Returns the resolution value of Sharpness.
+int16_t sharpness = camera-&gt;Sharpness.Resolution();
+
+// Returns the default value of Sharpness
+int16_t sharpness = camera-&gt;Sharpness.Default();
+
+
+
+                                                    Gamma
+
+                                                    Provided below are code snippets for obtaining properties associated with Gamma with the help of an object of type ‘ZebraCameraClient’.
+
+                                                    
+
+std::shared_ptr&lt;zebra::camera_sdk::ZebraCameraClient&gt; camera
+
+
+
+
+// Returns the current value set for Gamma.
+int16_t gamma = camera-&gt;Gamma.Value();
+
+// Returns the minimum possible value that can be given for Gamma.
+int16_t gamma = camera-&gt;Gamma.Minimum();	
+
+// Returns the maximum possible value that can be given for Gamma.
+int16_t gamma = camera-&gt;Gamma.Maximum();
+
+// Returns the resolution value of Gamma.
+int16_t gamma = camera-&gt;Gamma.Resolution();
+
+// Returns the default value of Gamma.
+int16_t gamma = camera-&gt;Gamma.Default();
+
+
+
+                                                    White Balance
+
+                                                    As the first step, an object of type ‘ZebraCameraClient’ is created.
+
+                                                    
+
+std::shared_ptr&lt;zebra::camera_sdk::ZebraCameraClient&gt; camera
+
+
+
+                                                    Then the values are retrieved with the help of the created pointer as shown below.
+
+                                                    
+
+// Returns the current value of White Balance Component.
+zebra::camera_sdk::WhiteBalance wbc = camera-&gt;WhiteBalanceComponent.Value();
+	
+// Returns the minimum possible value that can be given for White Balance Component.
+zebra::camera_sdk::WhiteBalance wbc = camera-&gt;WhiteBalanceComponent.Minimum();
+	
+// Returns the maximum possible value that can be given for White Balance Component.
+zebra::camera_sdk::WhiteBalance wbc = camera-&gt;WhiteBalanceComponent.Maximum();
+	
+// Returns the resolution value of White Balance Component.
+zebra::camera_sdk::WhiteBalance wbc = camera-&gt;WhiteBalanceComponent.Resolution();
+	
+// Returns the default value of White Balance Component.
+zebra::camera_sdk::WhiteBalance wbc = camera-&gt;WhiteBalanceComponent.Default();
+
+
+
+                                                    Backlight
+
+                                                    Once an object of type ‘ZebraCameraClient’ is created, retrieval of property values of Backlight is shown in below code snippets.
+
+                                                    
+
+std::shared_ptr&lt;zebra::camera_sdk::ZebraCameraClient&gt; camera
+
+
+
+                                                    
+
+// Returns the value set for Backlight Compensation.
+int16_t blc = camera-&gt;BacklightCompensation.Value();
+
+// Returns the minimum possible value for Backlight Compensation.
+int16_t blc = camera-&gt;BacklightCompensation.Minimum();	
+
+// Returns the maximum possible value for Backlight Compensation.
+int16_t blc = camera-&gt;BacklightCompensation.Maximum();
+
+// Returns the resolution value for Backlight Compensation.
+int16_t blc = camera-&gt;BacklightCompensation.Resolution();
+
+// Returns the default value set for Backlight Compensation.
+int16_t blc = camera-&gt;BacklightCompensation.Default();
+
+
+
+                                                    Gain
+
+                                                    With an object of type ‘ZebraCameraClient’, properties affiliated with Gain can be obtained as follows.
+
+                                                    
+
+std::shared_ptr&lt;zebra::camera_sdk::ZebraCameraClient&gt; camera
+
+
+
+                                                    
+
+// Returns the current value set for Gain.
+int16_t gain = camera-&gt;Gain.Value();
+
+// Returns the minimum possible value that can be given for Gain.
+int16_t gain = camera-&gt;Gain.Minimum();
+
+// Returns the maximum possible value that can be used for Gain.
+int16_t gain = camera-&gt;Gain.Maximum();
+
+// Returns the resolution value of Gain.
+int16_t gain = camera-&gt;Gain.Resolution();
+
+// Returns the default value set for Gain.
+int16_t gain = camera-&gt;Gain.Default();
+
+
+
+                                                         
+
+                                                        Absolute Exposure Time
+
+                                                        As described in the sections above, an object of type ‘ZebraCameraClient’ is created as the first step.
+
+                                                        
+
+std::shared_ptr&lt;zebra::camera_sdk::ZebraCameraClient&gt; camera
+
+
+	
+                                                        Properties associated with Absolute Exposure Time, such as the current, minimum, maximum and default resolution can be obtained with the above created object as shown by the code snippets given below.
+
+                                                        
+
+uint32_t aet = camera-&gt;AbsoluteExposureTime.Value();
+uint32_t aet = camera-&gt;AbsoluteExposureTime.Minimum();
+uint32_t aet = camera-&gt;AbsoluteExposureTime.Maximum();
+uint32_t aet = camera-&gt;AbsoluteExposureTime.Resolution();
+uint32_t aet = camera-&gt;AbsoluteExposureTime.Default();
+
+
+	
+                                                        In order to check if Absolute Exposure time is Auto supported, the below code line can be used.
+
+                                                        
+
+bool auto_supported = camera-&gt;AbsoluteExposureTime.IsAutoSupported();
+
+
+	
+                                                        The below code line is used to check if Absolute Exposure Time is auto enabled or not.
+
+                                                        
+
+bool auto_enabled = camera-&gt;AbsoluteExposureTime.IsAutoEnabled();
+
+
+	
+                                                        The way in which the Absolute Exposure Time is set to Auto is explained below.
+
+                                                        
+
+camera-&gt;AbsoluteExposureTime.AutoEnable(true); 
+
+
+
+                                                    The way in which the Auto property is removed from Absolute Exposure Time is explained below.
+
+                                                    
+
+camera-&gt;AbsoluteExposureTime.AutoEnable(false); 
+
+
+
+                                                     
+
+                                                    Absolute Exposure Time
+
+                                                    Video Mode
+
+                                                    Value set for the Video mode can be retrieved with an object of type ‘ZebraCameraClient’. 
+
+                                                    
+
+std::shared_ptr&lt;zebra::camera_sdk::ZebraCameraClient&gt; camera
+
+
+
+                                                    The current and default value retrieval for Video Mode is described by the following code lines.
+
+                                                    
+
+zebra::camera_sdk::VideoMode vm = camera-&gt;VideoModeSetting.Value();	
+zebra::camera_sdk::VideoMode vm = camera-&gt;VideoModeSetting.Default();
+
+
+
+
+                                                    Illumination Mode
+
+                                                    First, an object of ‘ZebraCameraClient’ has to be created.
+
+                                                    
+
+std::shared_ptr&lt;zebra::camera_sdk::ZebraCameraClient&gt; camera
+
+
+
+                                                    Using the created object, value set for the Illumination mode can be obtained as follows.
+
+                                                    
+
+zebra::camera_sdk::IlluminationMode illum = camera-&gt;IlluminationModeSetting.Value();
+
+
+	
+                                                    The default value set for the illumination mode can be retrieved as shown below.
+
+                                                    
+
+zebra::camera_sdk::IlluminationMode illum = camera-&gt;IlluminationModeSetting.Default();
+
+
+
+                                                    
+
+                                                    Firmware Update
+
+                                                    Described below is the way in which the firmware update can be done using the SDK. An object of ‘ZebraCameraManagerClient’ and an object of ‘ZebraCameraClient’ need to be created. The path of the firmware file has to be given in the form of a string. The way in which these objects are initialized is described in the ‘Camera SDK API’ section.
+
+                                                    
+                                                        Figure 3 Firmware Update
+                                                    
+
+                                                    
+
+std::unique_ptr&lt;zebra::camera_sdk::ZebraCameraManagerClient&gt;&amp; mgr
+std::shared_ptr&lt;zebra::camera_sdk::ZebraCameraClient&gt; camera
+std::string filepath
+
+
+
+                                                    In order to capture events, an object of the ‘FirmwareDownloadEventObserver’ is created.
+
+                                                    
+
+class FirmwareDownloadEventObserver: public zebra::camera_sdk::FirmwareDownloadEventListener
+{
+    public:
+        void EventReceived(zebra::camera_sdk::FirmwareDownloadEventsArgs event) override
+        {
+            printf(&quot;%s: opcode=%x, record=%d\n&quot;, __func__, (int)event.GetOperationCode(), event.GetCurrentRecord());
+        }
+};
+
+
+
+                                                    Functions such as update the UI can be done, once a firmware update event is triggered and notified by the above method. With the below given code line, registering for the firmware download event is accomplished.
+
+                                                    
+
+FirmwareDownloadEventObserver firmwareObs;
+mgr-&gt;AddFirmwareDownloadEventListener(firmwareObs);
+
+
+
+                                                    Once the pointer ‘camera’ and the firmware file location are provided, downloading of the firmware file gets completed and progress events will be received from the above Event Observer method.
+
+                                                    
+
+mgr-&gt;DownloadFirmware(camera, filepath);
+
+
+
+                                                    Installation of the firmware is achieved as follows.
+
+                                                    
+
+mgr-&gt;InstallFirmware(camera);
+
+
+
+                                                    Finally, the firmware event listener can be removed using the below given code line.
+
+                                                    
+
+mgr-&gt;RemoveFirmwareDownloadEventListener(firmwareObs);
+
+
+
+                                                    
+
+                                                    Image Events
+
+                                                    
+                                                        Figure 4 Image Events
+                                                    
+
+                                                    Continuous Image Event
+
+                                                    A continuous image event is occurred whenever a continuous video stream is displayed in the UI. With the method given in the code snippet below, user can be notified of the event occurrence. Registering and un-registering for the Continuous Image Event can be done by checking and unchecking the checkbox provided in the sample application.
+
+                                                    
+
+class ContinuousImageEventObserver: public ContinuousImageEventListener {
+    public:ata md) 
+    {
+        printf(&quot;ContinuousImageEventObserver: width=%d, height=%d, image_number=%d\n&quot;, ev.image.width, ev.image.height, md.image_number);
+    }
+};
+
+
+
+                                                    Firstly, an object of ‘ContinuousImageEventObserver’ class is created. Registering and unregistering for the event can be done with the newly created object.
+
+                                                    
+
+ContinuousImageEventObserver continuousObs;
+
+
+
+                                                    Registering for Continuous Image Events.
+
+                                                    
+
+camera-&gt;AddContinuousImageEventListener(continuousObs);
+
+
+
+                                                    Unregistering from Continuous Image Events.
+
+                                                    
+
+camera-&gt;RemoveContinuousImageEventListener(continuousObs);
+
+
+
+                                                    Produce Image Event
+
+                                                    When MP7 reads a stable weight after the registration, this event will be captured by the method given below. User may have logs printed in order to be notified of the event capture.
+
+                                                    
+
+class ProduceImageEventObserver: public ProduceImageEventListener 
+{
+    public:
+        void ImageReceived(ImageEventData ev, ImageEventMetaData md) 
+        {
+            (void)md;
+            printf(&quot;ProduceImageEventObserver: width=%d, height=%d\n&quot;, ev.image.width, ev.image.height);
+        }
+};
+
+
+
+                                                    Once an object of the type ‘ProduceImageEventObserver’ is created, registering and unregistering for the said event can be performed as shown in the code snippets given below.
+
+                                                    
+
+ProduceImageEventObserver produceObs;
+
+
+
+                                                    Registering for Produce Image events.
+
+                                                    
+
+camera-&gt;AddProduceImageEventListener(produceObs);
+
+
+	
+                                                    Unregistering from Produce Image events.
+
+                                                    
+
+camera-&gt;RemoveProduceImageEventListener(produceObs);
+
+
+
+                                                    Decode Image Event
+
+                                                    Registration and Un-registration for the ‘Decode’ image event is same as that for the above described events. When a barcode is read by the MP7 scanner, decode image and the decode data can be captured as an event as shown in the code snippet below.
+
+                                                    
+
+class DecodeImageEventObserver: public DecodeImageEventListener 
+{
+    public:
+        void ImageReceived(ImageEventData ev, ImageEventMetaData md) 
+        {
+            printf(&quot;DecodeImageEventObserver: width=%d, height=%d, decoded=%s\n&quot;, ev.image.width, ev.image.height, md.decode_data.c_str());
+            string filename = string(&quot;Decode-&quot;) + md.decode_data + string(&quot;.jpg&quot;);
+        }
+};
+
+
+
+                                                        With an object of type ‘DecodeImageEventObserver’ decode event registration and un-registration can be done as shown in the code snippets below.
+
+                                                        
+
+DecodeImageEventObserver decodeObs;
+
+
+                                           
+                                                        Registering for Decode Image events.
+
+                                                        
+
+camera-&gt;AddDecodeImageEventListener(decodeObs);
+
+
+
+                                                        Unregistering from Decode Image events.
+
+                                                        
+
+camera-&gt;RemoveDecodeImageEventListener(decodeObs);
+
+
+
+                                                        Snapshot Image Event
+
+                                                        A snapshot can be captured by the button present in the MP7 as well using the Camera SDK sample application. Once a snapshot is captured, ‘Snapshot’ image event will be notified of the occurrence of the event. If the user wishes to, captured snapshot can be saved using the ‘Save’ button present in the UI.
+
+                                                        The method that captures the snapshot image event is provided below. Event occurrence can be verified with logs if the user wishes to be notified.
+
+                                                        
+
+class SnapshotImageEventObserver: public SnapshotImageEventListener 
+{
+    public:
+        void ImageReceived(ImageEventData ev, ImageEventMetaData md) 
+        {
+            (void)md;
+            printf(&quot;SnapshotImageEventObserver: width=%d, height=%d\n&quot;, ev.image.width, ev.image.height);
+        }
+};
+
+
+
+                                                        Registering for Snapshot Image events.
+
+                                                        
+
+SnapshotImageEventObserver snapshotObs;
+camera-&gt;AddSnapshotImageEventListener(snapshotObs);
+
+
+	
+                                                        Unregistering from Snapshot Image events.
+
+                                                        
+
+camera-&gt;RemoveSnapshotImageEventListener(snapshotObs);
+
+
+
+                                                        Decode Session Status Change Image Event
+
+                                                        This event gets triggered whenever an object enters and exits the field of view of the scanner.Once the event is captured, the user may check the status of the event using the method given below.
+
+                                                        
+
+class DecodeSessionStatusChangeEventObserver: public DecodeSessionStatusChangeEventListener
+{
+    public:	
+        void DecodeSessionStatusChanged(DecodeSessionStatus status) override;
+};
+
+
+
+                                                        Registering and unregistering for the said event can be done with an object of type ‘DecodeSessionStatusChangeEventObserver’
+
+                                                        
+
+DecodeSessionStatusChangeEventObserver decode_session_status_change_listener_;
+
+
+
+                                                        Registering for Decode Session Status Change event.
+
+                                                        
+
+camera-&gt;AddDecodeSessionStatusChangeEventListener(decode_session_status_change_listener_);
+
+
+
+                                                        Unregistering from Decode Session Status Change event.
+
+                                                        
+
+camera-&gt;RemoveDecodeSessionStatusChangeEventListener(decode_session_status_change_listener_);
+
+
+
+                                                        
+
+                                                        Set Defaults
+
+                                                        
+                                                            Figure 5 Set Defaults
+                                                        
+
+                                                        With the following code snippet, reverting the current camera property values such as Brightness, Contrast etc. to the respective default values can be accomplished.
+
+                                                        
+
+camera-&gt;SetDefaults();
+
+
+
+                                                        
+
+                                                        Set Defaults
+
+                                                        A device reboot can be done with the code line provided below. The creation and the initialization of the ‘cammgr’ object is provided in the ‘Camera SDK API’ section.
+
+                                                        
+
+cammgr -&gt;Reboot(camera);
+
+
+
+                                                        
+
+                                                        Load Configuration
+
+                                                        Provided below is a sample settings XML that can be loaded in to the MP7 camera.
+
+                                                        
+
+&lt;cameraconfig&gt;
+    &lt;metadata&gt;
+        &lt;modelnumber&gt;XXXXXXXXXXXXXXXXXX&lt;/modelnumber&gt;
+        &lt;serialnumber&gt;XXXXXXXXXXXXXXXX&lt;/serialnumber&gt;
+        &lt;firmware&gt;CAAERS00-001-N21&lt;/firmware&gt;
+        &lt;hardwareversion&gt;1&lt;/hardwareversion&gt;
+    &lt;/metadata&gt;
+    &lt;attrib_list&gt;
+        &lt;attribute&gt;
+            &lt;id&gt;8194&lt;/id&gt;
+            &lt;name&gt;Brightness&lt;/name&gt;
+            &lt;value&gt;8&lt;/value&gt;
+        &lt;/attribute&gt;
+        &lt;attribute&gt;
+            &lt;id&gt;8195&lt;/id&gt;
+            &lt;name&gt;Constrast&lt;/name&gt;
+            &lt;value&gt;10&lt;/value&gt;
+        &lt;/attribute&gt;
+        &lt;attribute&gt;
+            &lt;id&gt;8199&lt;/id&gt;
+            &lt;name&gt;Saturation&lt;/name&gt;
+            &lt;value&gt;8&lt;/value&gt;
+        &lt;/attribute&gt;
+        &lt;attribute&gt;
+            &lt;id&gt;8200&lt;/id&gt;
+            &lt;name&gt;Sharpness&lt;/name&gt;
+            &lt;value&gt;4&lt;/value&gt;
+        &lt;/attribute&gt;
+        &lt;attribute&gt;
+            &lt;id&gt;8201&lt;/id&gt;
+            &lt;name&gt;Gamma&lt;/name&gt;
+            &lt;value&gt;25&lt;/value&gt;
+        &lt;/attribute&gt;
+        &lt;attribute&gt;
+            &lt;id&gt;8204&lt;/id&gt;
+            &lt;name&gt;White alance&lt;/name&gt;
+            &lt;value&gt;
+                &lt;red&gt;3469&lt;/red&gt;
+                &lt;blue&gt;11735&lt;/blue&gt;
+            &lt;/value&gt;
+        &lt;/attribute&gt;
+        &lt;attribute&gt;
+            &lt;id&gt;8193&lt;/id&gt;
+            &lt;name&gt;Backlight&lt;/name&gt;
+            &lt;value&gt;10&lt;/value&gt;
+        &lt;/attribute&gt;
+        &lt;attribute&gt;
+            &lt;id&gt;8196&lt;/id&gt;
+            &lt;name&gt;Gain&lt;/name&gt;
+            &lt;value&gt;3&lt;/value&gt;
+        &lt;/attribute&gt;
+        &lt;attribute&gt;
+            &lt;id&gt;2052&lt;/id&gt;
+            &lt;name&gt;Absolute Exposure Time&lt;/name&gt;
+            &lt;value&gt;-10&lt;/value&gt;
+        &lt;/attribute&gt;
+        &lt;attribute&gt;
+            &lt;id&gt;32769&lt;/id&gt;
+            &lt;name&gt;Video Mode&lt;/name&gt;
+            &lt;value&gt;2&lt;/value&gt;
+        &lt;/attribute&gt;
+        &lt;attribute&gt;
+            &lt;id&gt;32770&lt;/id&gt;
+            &lt;name&gt;Illumination Mode&lt;/name&gt;
+            &lt;value&gt;0&lt;/value&gt;
+        &lt;/attribute&gt;
+    &lt;/attrib_list&gt;
+&lt;/cameraconfig&gt;
+
+
+
+                                                        Loading the set configuration with an object of type ‘ZebraCameraManagerClient’ can be achieved with the help of the following code lines.
+
+                                                        
+
+std::unique_ptr camera_manager_client_;
+auto camera = GetCamera();
+
+if (camera)
+{
+    std::string camera_configuration = std::string(TextCtrlConfiguration-&gt;GetValue());
+    if (camera_configuration.compare(&quot;&quot;) != 0 )
+    {
+        try
+        {
+            camera_manager_client_-&gt;LoadConfiguration(camera, camera_configuration);
+        }
+        catch (std::exception&amp; e)
+        {
+            wxString msg;
+            msg.Printf(wxT(&quot;%s&quot;), e.what());
+            wxMessageBox(msg, _(&quot;Load configuration into color camera&quot;), wxICON_ERROR);
+        }
+    }
+    else
+    {
+        wxString msg;
+        msg.Printf(wxT(&quot;%s&quot;), &quot;load configuration into color camera failed: Empty configuration provided&quot;);
+        wxMessageBox(msg, _(&quot;Load configuration&quot;), wxICON_ERROR);
+    }
+}
+
+
+
+                                                        
+
+                                                        Retrieve  Configuration
+
+                                                        Configuration retrieval is accomplished with the help of an object of the type ‘ZebraCameraManagerClient’ as shown in the code snippet given below. 
+
+                                                        
+
+std::unique_ptr camera_manager_client_;
+auto camera = GetCamera();
+if (camera)
+{
+    std::string camera_config;
+
+    try
+    {
+        camera_config = camera_manager_client_-&gt;RetrieveConfiguration(camera);
+        TextCtrlConfiguration-&gt;SetValue(camera_config);
+    }
+    catch (std::exception&amp; e)
+    {
+        wxString msg;
+        msg.Printf(wxT(&quot;%s&quot;), e.what());
+        wxMessageBox(msg, _(&quot;Retrieve configuration&quot;), wxICON_ERROR);
+    }
+}
+
+
+
+                                                        
+
+                                                        Write to Flash
+
+                                                        Writing the camera properties to the Camera memory is achieved with the code line given below.
+
+                                                        
+
+camera-&gt;WriteToFlash();
+
+
+
+                                                        
+
+                                                        Image Convertor Library
+
+                                                        Developers may make use of the ‘image converter’ library in order to convert the ‘YUY2/ UYVY’ images in to ‘rgb’ format. First, ‘image_converter.h’ file should be included.
+
+                                                        Then the ‘ColorConverter’ method is used for converting the images in to ‘rgb’ format. The way in which this image conversion takes place upon receival of continuous images is described in the code snippet given below. Similarly, this operation can be done for other image events such as Produce, Decode and Snapshot.
+
+                                                        
+
+#include &quot;image_converter.h&quot;
+
+void ContinuousImageObserver::ImageReceived(ImageEventData image, ImageEventMetaData md)
+{
+    (void)md;
+    zebra::image::ColorConverter converter;
+
+    switch (image.format)
+    {
+        case ImageFormat::YUY2:
+            converter = zebra::image::ColorConverter::YUY2_TO_RGB;
+            break;
+        case ImageFormat::UYVY:
+            converter = zebra::image::ColorConverter::UYVY_TO_RGB;
+            break;
+        default:
+            return;
+    }
+
+    wxLogMessage(&quot;%s: wxh: %d x %d&quot;, __func__, image.image.width, image.image.height);
+
+    zebra::camera_sdk::Image rgb = zebra::image::ConvertColor(converter, image.image);
+
+    frame_-&gt;image_buffer_.CopyToBuffer(rgb.Data(), rgb.Length());
+}
+
+
+
+                                                        Image saving can also be done using the library mentioned above. Based on the user selection, the methods. &#x27;SaveAsJpeg&#x27; and &#x27;SaveAsBmp&#x27; can be made use of, to save the desired image in the computer.
+
+                                                        
+
+void ZebraCameraDemoFrame::SaveImage(ImageBuffer&amp; image, std::string str_event_type)
+{
+    if (!save_image_directory_path_.empty() &amp;&amp; CheckBoxSaveImages-&gt;GetValue())
+    {
+        std::time_t t = std::time(nullptr);
+        char mbstr[128];
+        std::strftime(mbstr, sizeof(mbstr), &quot;%c&quot;, std::localtime(&amp;t));
+        
+        std::string filepath = save_image_directory_path_ + std::string(&quot;/&quot;) + GetFileName(str_event_type);
+        switch (image_file_format_)
+        {
+        case ImageFileFormat::JPG:
+            image.SaveAsJpeg(filepath + std::string(&quot;.jpg&quot;));
+            break;
+        case ImageFileFormat::BMP:
+            image.SaveAsBmp(filepath + std::string(&quot;.bmp&quot;));
+            break;
+        default:
+            image.SaveAsJpeg(filepath + std::string(&quot;.jpg&quot;));
+            break;
+        }
+    }
+}
+
+
+
+                                                    Red illumination detection API
+
+                                                    The API is introduced to allow the user to monitor the frames for the presence of a red hue that is occasionally observed on the left and right sides of the image due to the red LED emission of the scanner.
+
+
+bool isRedIlluminationPresent(int width, int height, uint8_t* data); 
+
+
+
+                                                    Given below is a sample code snippet that can be used to identify the presence of red illumination in a frame.
+
+                                                    The header file &#x27;red_illumination_presence.h&#x27; is required to be included in the beginning. When the image information of a received frame is made available, the width, height and the image data need to be passed in to the &#x27;isRedIlluminationPresent&#x27; API to analyze the presence of red spots.
+
+                                                    The width, height and the pixel data of an image can be retrieved from the &#x27;ImageEventData&#x27; once any image event is triggered. Namely Continuous, Decode, Snapshot and Produce.
+
+
+#include &quot;/usr/include/zebra-camera/imaging_library/red_illumination_presence.h&quot; 
+
+red_illumination_presence frame; 
+bool redness_presence= frame.isRedIlluminationPresent(image.width, image.height,const_cast&lt;uint8_t*&gt;(image.data)); 
+
+Returns true in the event of red illumination presence.
+Returns false in the event of red illumination absence. 
+
+
+
+                                                    Based on the presence and the absence of the red hue, the bool value is returned to the user. 
+
+                                                    Get Frame API
+
+                                                    With the &#x27;GetFrame&#x27; API, the user is given the capability to call for frames stored in the buffer by passing an integer as a parameter. The option to retrieve the next frame, in the event the user is offered a frame with red illumination present is given with the &#x27;GetFrame&#x27; API. 
+
+
+ImageEventData GetFrame(int image_id); 
+
+
+
+                                                    The information such as the width, height, stride, size and raw pixel data can be retrieved with the returned &#x27;ImageEventData&#x27; value of the API. 
+
+                                                    A code snippet detailing how the registration for the image event &#x27;Produce&#x27; in the single client mode is provided below. 
+
+
+zebra::DeviceManager device_manager;
+ZebraCameraManager camera_manager; 
+
+auto info = device_manager.EnumerateDevices(); 
+
+if (info.size()) 
+{ 
+    auto camera = camera_manager.CreateZebraCamera(info[0]);  
+    ProduceImageEventObserver continuousObs;
+    camera-&gt;AddProduceImageEventListener(continuousObs); 
+    
+    sleep(20);  
+
+    //ImageEventData and ImageMetaData of the received produce images can be found in the ProduceImageEventListener
+}    
+
+
+
+                                                    The registration for the image event &#x27;Produce&#x27; in multi-client mode is provided below.
+
+
+DeviceManager mgr; 
+
+auto devinfolist = mgr.EnumerateDevices(); 
+cout &lt;&lt; &quot;# cams = &quot; &lt;&lt; devinfolist.size() &lt;&lt; endl; 
+
+if (0 == devinfolist.size()) 
+{ 
+    exit(0); 
+} 
+
+std::unique_ptr cammgr = zebra::camera_sdk::CreateZebraCameraManagerClient(); 
+std::shared_ptr camera = cammgr-&gt;CreateZebraCamera(devinfolist[0]); 
+
+ProduceImageEventObserver camobj; 
+
+camera-&gt;AddProduceImageEventListener(camobj);  
+
+
+
+                                                    Obtaining the frame number of a received Produce image is achieved as shown below. With the knowledge of the frame number, the range of values that can be passed to the &#x27;GetFrame&#x27; API can be determined.
+
+
+
+
+class ProduceImageEventObserver: public ProduceImageEventListener
+{ 
+    public: 
+        void ImageReceived(ImageEventData ev, ImageEventMetaData md) 
+        { 
+            printf(&quot;ProduceImageEventObserver: width=%d, height=%d, image_number=%d\n&quot;, ev.image.width, ev.image.height, md.image_number); 
+
+            int frame_no = md.image_number; 
+            
+            // Obtain the image number of the received image to get an idea an idea of which frame to call using &#x27;GetFrame&#x27; API
+        } 
+
+}; 
+
+// Ex:  
+// ImageEventData img = camera-&gt;GetFrame(frame_no + 1);  
+// ImageEventData img = camera-&gt;GetFrame(frame_no + 2);  
+// ImageEventData img = camera-&gt;GetFrame(frame_no + 5);  
+
+
+
+                                                    The way in which the Produce images are received in the multi-client mode is presented below.
+
+
+
+
+class ProduceImageEventObserver: public zebra::camera_sdk::ProduceImageEventListener
+{ 
+    public:
+        void ImageReceived(zebra::camera_sdk::ImageEventData ev, zebra::camera_sdk::ImageEventMetaData md)
+        {
+            printf(&quot;ProduceImageEventObserver: width=%d, height=%d, image_number=%d, size=%d \n&quot;, ev.image.width, ev.image.height, md.image_number, ev.image.size);
+            
+            last_received_frame = md.image_number;
+        }
+}; 
+
+
+
+                                                    
+                                                    
+                                                
+                                            
+                                        
+                                    
+                                
+                            
+                        
+                    
+                
+                
+            
+			    
+				    
+					    
+						    X
+					    
+					    
+						    
+					    
+			        
+		        
+            
+        
+        
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corporation, registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2025 Zebra Technologies Corporation and/or its affiliates. All rights reserved. Terms &amp; Conditions
+                    
+                    
+                        
+                            
+                            
+                            
+                            
+                            
+                        
+                    
+                
+            
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+           
+        
+        
+         
+                 
+    
+Back to Top</pre></body></html>

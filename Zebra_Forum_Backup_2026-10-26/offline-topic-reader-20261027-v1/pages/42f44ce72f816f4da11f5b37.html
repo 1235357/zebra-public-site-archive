@@ -1,0 +1,265 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>ES400 - no SD unload on suspend-resume</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>ES400 - no SD unload on suspend-resume</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/27163; original snapshot: threads/01682.html; SHA-256: 85c49fde40ce2d73f60009b7c84a65786170ea74117217eacc15d02ec3bb15c8</small><pre id="topic">
+
+    
+        ES400 - no SD unload on suspend-resume
+
+
+        
+      
+                        
+                    
+            A
+          
+          Andrew Wood
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            22
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Guys,   Im trying to implement a no unload of the SD card during SuspendResume and an using the reg keys advised in CQ29005.  Can anyone tell me what this &quot;wav1&quot; value is doing - and how to change it to the recommended ( -)  as it seems to want a numeric value.  
+; prevent wavedev and sd driver from enterring D2 state when in backlightoff state
+ [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\State\BacklightOff]
+                &quot;wav1:&quot;=-
+                &quot;shc1:&quot;=-
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mark Mann
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Andrew,  Below is the entire Registry Key entry that&#x27;s worked for me.  ; prevent wavedev and sd driver from enterring D2 state when in backlightoff state [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\State\BacklightOff] &amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;wav1:&quot;=- &amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;shc1:&quot;=-
+; turn on SD to D0 on all state [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\State\Resuming] &amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;shc1:&quot;=dword:0
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\State\UserIdle] &amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;shc1:&quot;=dword:0
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\State\Suspend] &amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;shc1:&quot;=dword:0   Cheers,   Mark
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            ... below registry key should work.   [HKEY_LOCAL_MACHINE\Drivers\BuiltIn\SDHC_Generic]  &quot;NoRemoveOnResume&quot;=dword:00000001
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mark Mann
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Andrew,  I&#x27;ve used the following Registry Key to supress the SD card from unmount and mounting when you suspend the MC65.&amp;nbsp; This should work as well for the ES400.  ; prevent wavedev and sd driver from enterring D2 state when in backlightoff state [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\State\BacklightOff] &amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;wav1:&quot;=- &amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;shc1:&quot;=-
+; turn on SD to D0 on all state [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\State\Resuming] &amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;shc1:&quot;=dword:0
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\State\UserIdle] &amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;shc1:&quot;=dword:0
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\State\Suspend] &amp;nbsp;&amp;nbsp;&amp;nbsp; &quot;shc1:&quot;=dword:0  Cheers,  Mark
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

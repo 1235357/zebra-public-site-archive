@@ -1,0 +1,285 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>[BUG REPORT, C# SKD v2.16.2905] Managed heap corruption caused by Zebra.Sdk.Comm.Usb.Direct.Internal.UsbDataStream.BeginRead</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>[BUG REPORT, C# SKD v2.16.2905] Managed heap corruption caused by Zebra.Sdk.Comm.Usb.Direct.Internal.UsbDataStream.BeginRead</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/bug-report-c-skd-v2162905-managed-heap-corruption-caused-zebrasdkcommusbdirectinternalusbdatastreambeginread; original snapshot: threads/00298.html; SHA-256: b923ac48eaf646c6d0c1a6662f6479f9b9caca43ab1550dae04d94acc5250e59</small><pre id="topic">
+
+    
+        [BUG REPORT, C# SKD v2.16.2905] Managed heap corruption caused by Zebra.Sdk.Comm.Usb.Direct.Internal.UsbDataStream.BeginRead
+
+
+        
+      
+                        
+                    
+            M
+          
+          Mijail Todorovich
+          2 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            338
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi.I&#x27;ve been chasing a nasty heap corruption bug for a while and I think I finally found the culprit in Zebra.Sdk.Comm.Usb.Direct.Internal.UsbDataStream.BeginRead.Using WinDbg&#x27;s !verifyheap command I found that the heap corruption was always caused by a string similar to this one overwritting something:{&quot;device.host_status&quot;:&quot;030,0,1,0642,003,0,0,0,000,0,0,0\r\n001,0,0,0,1,2,6,0,00000001,1,000\r\n0000,0&quot;}Which is the output of the following SGD command:{}{&quot;device.host_status&quot;:null}This points to the Printer.GetCurrentStatus method.Using dotPeek I looked at the decompiled source code of the SDK (version 2.16.2905), tracing the code for GetCurrentStatus until I arrived at Zebra.Sdk.Comm.Usb.Direct.Internal.UsbDataStream.BeginRead where I found something fishy.Here&#x27;s the decompiled source code for BeginRead:public override unsafe IAsyncResult BeginRead(
+     byte[] buffer,
+     int offset,
+     int count,
+     AsyncCallback callback,
+     object state)
+   {
+     NativeMethods.SetLastError(0U);
+     GCHandle gcHandle = GCHandle.Alloc((object) buffer, GCHandleType.Pinned);
+     UsbAsyncResult ar = new UsbAsyncResult(state, callback, true);
+     Overlapped overlapped1 = new Overlapped(0, 0, ar.AsyncWaitHandle.SafeWaitHandle.DangerousGetHandle(), (IAsyncResult) ar);
+     try
+     {
+       byte[] userData = new byte[count];
+       NativeOverlapped* overlapped2 = overlapped1.Pack(this.m_IOCompletionCallback, (object) userData);
+       byte* buffer1 = (byte*) ((ulong) gcHandle.AddrOfPinnedObject().ToInt64() + (ulong) offset);
+       if (gcHandle.IsAllocated)
+         gcHandle.Free();
+       if (NativeMethods.ReadFile(this.m_hFile, buffer1, (uint) count, out uint _, overlapped2))
+       {
+         ar.m_bCompletedSynchronously = true;
+         return (IAsyncResult) ar;
+       }
+       int lastWin32Error = Marshal.GetLastWin32Error();
+       if (lastWin32Error == 997)
+         return (IAsyncResult) ar;
+       throw new IOException(&quot;Unable to initialize read. Error code: &quot; + lastWin32Error.ToString());
+     }
+     finally
+     {
+       if (gcHandle.IsAllocated)
+         gcHandle.Free();
+     }
+   }I think buffer is being moved by the GC after the assignment of the pointer buffer1 and before ReadFile finishes.This could be avoided if buffer was passed to overlapped1.Pack instead of userData.From the documentation for Overlapped.Pack:Remarks[...]The buffer or buffers specified in userData must be the same as those passed to the unmanaged operating system function that performs the asynchronous I/O.Note:The runtime pins the buffer or buffers specified in userData for the duration of the I/O operation. If the application domain is unloaded, the runtime keeps the memory pinned until the I/O operation completes.  I patched that change into SdkApi.Desktop.Usb.dll using dnSpy and ran a 48 hour stress test and the issue has not reappeared (before, it crashed after about 4 to 8 hours). It could be luck, though. I&#x27;ll continue the stress test as long as I can and report back.I can provide a few memory dumps if necessary.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mijail Todorovich
+          
+          
+            2 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            After 6 days of continuous stress test with the patched DLL, the issue has still not reappeared.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            This is an interesting finding. Thanks for reporting and sharing solution. How do you conduct the stress test? Do you just keep calling the getCurrentStatus() at a fixed interval?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mijail Todorovich
+          
+          
+            2 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I conducted the stress test using a program I&#x27;m developing. It&#x27;s not a minimal reproducible example by any means, but it&#x27;s not that complex either.It&#x27;s a WPF app which basically boils down to calling getCurrentStatus and printing a label every time a NumberBox is increased. To keep the UI responsive while avoiding two threads from talking to the printer at the same time, there&#x27;s a queue implemented with a TPL DataFlow which processes the print jobs one at a time on ThreadPool threads. For the test, I added a timer which increases the NumberBox every two seconds.I ran the test using a paused ZD421. To avoid filling the printer&#x27;s buffer, I send ~JA every 5 prints (using the queue).To try and catch the error as close as possible to the corruption, I set the following flags using GFlags: Enable heap tail checking, Enable heap free checking, Enable heap parameter checking, Enable heap validation on call, Enable page heap, Enable heap tagging, Enable application verifier. I think the important parts for reproducing are calling getCurrentStatus in a background thread while on the main thread having enough allocations and deallocations to trigger heap compaction. Also, accessing objects in the heap so corruption is eventually noticed (alternatively, setting the environment varible COMPLUS_HeapVerify=1 and enabling the gcUnmanagedToManaged MDA to verify the heap every time a thread transitions from unmanaged to managed code, though I couldn&#x27;t get that to work).
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,200 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Problem printing labels on my Zebra ZD420</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Problem printing labels on my Zebra ZD420</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25961; original snapshot: threads/resume-00346.html; SHA-256: 64afeeeffd0dfc957338cb31491a1a2ba36d6eea3040051469cbb521cbf2e2cf</small><pre id="topic">
+
+    
+        Problem printing labels on my Zebra ZD420
+
+
+        
+      
+                        
+                    
+            S
+          
+          Sinan Redzheb
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            137
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+I have developed a test application for printing labels.
+Sometimes it prints like a charm, sometimes it doesn&#x27;t print anything and
+ just throws exceptions like &quot;Malformed Multipart Form Data&quot; and &quot;Malformed status response - unable to determine printer status&quot;.
+Can you please help me with these errors?
+I am using the latest Zebra.SDK nuget package (2.15.2634), Firmware version is V84.20.22Z.
+Here is my sample code:
+ZPL Format :
+ZPL_String = &quot;^XA&quot; +
+                      &quot;^DFE:FORMAT2.ZPL&quot; +
+                      &quot;^FS&quot; +
+                      &quot;^FT26,243^A0N,56,55^FH\\^FN12\&quot;First Name\&quot;^FS&quot; +
+                      &quot;^FT26,296^A0N,56,55^FH\\^FN11\&quot;Last Name\&quot;^FS&quot; +
+                      &quot;^FT258,73^A0N,39,38^FH\\^FDVisitor^FS&quot; +
+                      &quot;^FO100,100^XG^FN13,1,1^FS&quot; +
+                      &quot;^FO5,17^GB601,379,8^FS&quot; +
+                      &quot;^XZ&quot;;
+Variables for printing:
+ Dictionary variables = new Dictionary
+                    {
+                        {12,&quot;Sinan&quot; },
+                        {11,&quot;Redzheb&quot; },
+                        {13,&quot;Something&quot; }
+                    };
+ public void Print(Dictionary variables)
+        {
+            Connection conn = new UsbConnection(_printer.Address); // DiscoveredUsbPrinter
+            try
+            {
+                conn.Open();
+                ZebraPrinter _genericPrinter = ZebraPrinterFactory.GetInstance(PrinterLanguage.ZPL, conn);
+                ZebraPrinterLinkOs _linkOsPrinter = ZebraPrinterFactory.CreateLinkOsPrinter(_genericPrinter, PrinterLanguage.ZPL);
+                PrinterStatus printerStatus = _genericPrinter.GetCurrentStatus();
+                if (CanPrint(printerStatus) == false)  return;
+                if (_linkOsPrinter != null)
+                {
+                    //I have already successfully stored format on the printer
+                    _linkOsPrinter.PrintStoredFormatWithVarGraphics(&quot;E:FORMAT2.ZPL&quot;, variables);
+                }
+            }
+            catch (ConnectionException ex)
+            {
+                ErrorLog = &quot;***** ERROR &quot; + ex.Message.ToString() + Environment.NewLine;
+            }
+            catch (ZebraPrinterLanguageUnknownException ex)
+            {
+                ErrorLog = &quot;***** ERROR &quot; + ex.Message.ToString() + Environment.NewLine;
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            For ZPL, each line of ZPL should be ended with carriage return and new line, i.e. &quot;\r\n&quot;. I&#x27;d suggest to add &quot;\r\n&quot; to the end of each ZPL line. What is this line? The ^FN13 should not be used as parameter to ^XG. If you want to print the stored graphics, you can put the name of the image file directly after ^XG.&amp;nbsp;
+&quot;^FO100,100^XG^FN13,1,1^FS&quot; +&amp;nbsp;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

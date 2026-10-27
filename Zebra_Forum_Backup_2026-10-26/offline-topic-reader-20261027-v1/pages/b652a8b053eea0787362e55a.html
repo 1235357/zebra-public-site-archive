@@ -1,0 +1,259 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Scalable text size to fit inputted font onto label</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Scalable text size to fit inputted font onto label</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/scalable-text-size-fit-inputted-font-label; original snapshot: threads/00953.html; SHA-256: 9905e4f6df80b3ae6dd605f95b067646e821efb8590d47c7fb51ec65ca9870e7</small><pre id="topic">
+
+    
+        Scalable text size to fit inputted font onto label
+
+
+        
+      
+                        
+                    
+            V
+          
+          Vince Quach
+          4 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            4194
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Not sure if this is possible, but I&#x27;m writing a light Windows application in C# to generate labels based on what the user types in. It&#x27;s meant to circumvent having to use ZDesigner to get the positioning and measurements in place every time the user wants to create a simple text label. I generated the ZPL for the template with a $(text) field in place of the content and whatever the user types replaces it. 
+The only issue I&#x27;m having is accounting for various user inputs of different string sizes. Is there a ZPL command to do this with? Font doesn&#x27;t matter so if a specific font is required then that&#x27;s okay too. The edge cases wouldn&#x27;t be ridiculous where they type absurdly long text, but to account for differences in strings like &quot;Sample 184 FAM CPG 11/20/21&quot; vs &quot;Samples 220-280 Yakima Yellow 11/20/21&quot; where the former is slightly shorter than the latter, and hopefully you can get the idea of how the text can vary without being too unrelated. I know the ^FB command exists but it doesn&#x27;t seem to scale the text size itself.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The ^FB doesn&#x27;t scale the size. Instead, it wraps around the text into multi-lines within the box to accommodate the variable length of string. In ZPL, there is no auto scale. The font and the size are prespecified by the ^A command. You can change the font by issuing a new ^A command with new font and size. The best bet to accommodate the variable length of string is the ^FB.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              W
+            
+          
+                
+          
+            Ward Christensen
+          
+          
+            4 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I had the same need - but just to calculate how long a string was.
+  I chose the font 0, scalable, and did my testing at a character size of 50.
+  I created a file of all characters, digits, and symbols, one per line strung out.
+  I printed, then edited the lines to include the number of each specific character necessary to have the same printed line length
+  From that, I created a table of character widths, and then I could PROGRAM to use that table with arbitrary input to determine the width of a string.
+  More calculations can be done then based upon these values to accommodate different ^A0 font sizes, such as lowering the font size to fit within a certain label width.
+  While what I&#x27;m giving is NOT a &quot;solution&quot;, it is the _DATA TABLE_ that you need to write your own.
+Sample of what I used - THIS WAS FOR DEVELOPMENT OF THE TABLE, NOT SOMETHING YOU HAVE TO DO:
+^FO50,120^FDAAAAAAAAAAAAAAA^FS
+^FO50,150^FDBBBBBBBBBBBBBBB^FS
+^FO50,180^FDCCCCCCCCCCCCCCCC^FS
+^FO50,210^FDDDDDDDDDDDDDDD^FS
+^FO50,240^FDEEEEEEEEEEEEEEEEE^FS
+^FO50,270^FDFFFFFFFFFFFFFFFFF^FS
+^FO50,300^FDGGGGGGGGGGGGGGG^FS
+^FO50,330^FDHHHHHHHHHHHHHH^FS
+^FO50,360^FDIIIIIIIIIIIIIIIIIIIIIIIIIIIIII^FS
+  As you can obviously see and expect, &quot;I&quot; is a very narrow character, so it took 30 I&#x27;s to make a line that printed the same width as 15 G&#x27;s.
+  So in very rough and unlikely correct code you&#x27;d want to write a
+zpl_string_length(char *msg);
+subroutine which does this - well in my own programming language, the editor KEDIT
+msg_wid = 0
+do i = 1 to length(msg)
+    msg_wid = msg_wid + lookup_char_width(msg[i]);
+end
+return msg_wid
+That didn&#x27;t account for the FONT SIZE, only for the relative character widths.   But it gives a number you can &quot;fiddle with&quot; to be the width you need, perhaps in &#x27;mm&#x27;. The A0 font of A0hh[,ww] where ww defaults to hh if not specified, would be your &quot;scale factor&quot; for &quot;width depending upon font size&quot;. 
+Here is the vital data, relative character widths of the ^A0 font
+&#x27; &#x27;=117 &#x27;!&#x27;=113 &#x27;&quot;&#x27;=183 &#x27;#&#x27;=183 &#x27;$&#x27;=183 &#x27;%&#x27;=366 &#x27;&amp;amp;&#x27;=235 &#x27;&#x27;&quot;=113 &#x27;(&#x27;=113 &#x27;)&#x27;=113 &#x27;*&#x27;=183 &#x27;+&#x27;=330
+&#x27;,&#x27;=110 &#x27;-&#x27;=366 &#x27;.&#x27;=113 &#x27;/&#x27;=113 &#x27;0&#x27;=183 &#x27;1&#x27;=183 &#x27;2&#x27;=183 &#x27;3&#x27;=183 &#x27;4&#x27;=183 &#x27;5&#x27;=183 &#x27;6&#x27;=183 &#x27;7&#x27;=183
+&#x27;8&#x27;=183 &#x27;9&#x27;=183 &#x27;:&#x27;=117 &#x27;;&#x27;=117 &#x27;&amp;lt;&#x27;=366 &#x27;=&#x27;=366 &#x27;&amp;gt;&#x27;=366 &#x27;?&#x27;=165 &#x27;@&#x27;=330 &#x27;A&#x27;=220 &#x27;B&#x27;=220 &#x27;C&#x27;=206
+&#x27;D&#x27;=235 &#x27;E&#x27;=194 &#x27;F&#x27;=194 &#x27;G&#x27;=220 &#x27;H&#x27;=235 &#x27;I&#x27;=110 &#x27;J&#x27;=173 &#x27;K&#x27;=220 &#x27;L&#x27;=183 &#x27;M&#x27;=300 &#x27;N&#x27;=235 &#x27;O&#x27;=220
+&#x27;P&#x27;=220 &#x27;Q&#x27;=220 &#x27;R&#x27;=220 &#x27;S&#x27;=206 &#x27;T&#x27;=183 &#x27;U&#x27;=235 &#x27;V&#x27;=206 &#x27;W&#x27;=300 &#x27;X&#x27;=206 &#x27;Y&#x27;=206 &#x27;Z&#x27;=194 &#x27;[&#x27;=113
+&#x27;\&#x27;=192 &#x27;]&#x27;=113 &#x27;^&#x27;=192 &#x27;_&#x27;=194 &#x27;`&#x27;=113 &#x27;a&#x27;=173 &#x27;b&#x27;=194 &#x27;c&#x27;=173 &#x27;d&#x27;=194 &#x27;e&#x27;=183 &#x27;f&#x27;=106 &#x27;g&#x27;=194
+&#x27;h&#x27;=194 &#x27;i&#x27;=100 &#x27;j&#x27;=100 &#x27;k&#x27;=173 &#x27;l&#x27;=100 &#x27;m&#x27;=300 &#x27;n&#x27;=194 &#x27;o&#x27;=183 &#x27;p&#x27;=194 &#x27;q&#x27;=194 &#x27;r&#x27;=126 &#x27;s&#x27;=165
+&#x27;t&#x27;=106 &#x27;u&#x27;=194 &#x27;v&#x27;=173 &#x27;w&#x27;=253 &#x27;x&#x27;=173 &#x27;y&#x27;=173 &#x27;z&#x27;=150 &#x27;{&#x27;=194 &#x27;|&#x27;=194 &#x27;}&#x27;=194 &#x27;~&#x27;=192
+If you want these formatted as an array initializer, if I&#x27;m remembering right, it would be 95 elements initialized to
+[117,113,183,183,183,366,235,113,113,113,183,330,110,366,113,113,183,183,183,183,183,183,183,183,183,183,117,117,366,366,366,165,330,220,220,206,235,194,194,220,235,110,173,220,183,300,235,220,220,220,220,206,183,235,206,300,206,206,194,113,192,113,192,194,113,173,194,173,194,183,106,194,194,100,100,173,100,300,194,183,194,194,126,165,106,194,173,253,173,173,150,194,194,194,192]
+**** NOTE **** When I printed my list of strings (AAAAA..) neither &#x27;^&#x27;, &#x27;\&#x27;, nor &#x27;~&#x27;, printed, as they all have special interpretations.  I COULD have swapped my escape chars for &#x27;^&#x27; and &#x27;~&#x27;, so I could find their width, but since they&#x27;re hard to print, I just don&#x27;t print them.
+  I found the average char width to be 192, so set those to 192.  NO OTHER CHARACTERS are 192 wide, so if you want a combination &quot;zpl_string_length&quot; and error detect, you could return a 0 (=error) if any 192 wide characters exist in the passed string. 
+Then there&#x27;s the calculation you&#x27;ll have to figure out - I can&#x27;t remember how I came up with these numbers, but try this:
+font_width = label_width *389 /zpl_string_length()
+I don&#x27;t recall how I came up with 389, but it worked for me.
+I only did font size 50, so &quot;somewhere there&quot; you&#x27;d have to multiply by some factor * font_width.
+____________
+  If you have any need for dense printing VERTICALLY, i.e. lines as close as they can be, the method would be to scan a string to see if it has any descenders, requiring the next line to start at a lower point than if it had no descenders.
+  I&#x27;d found there to be two descending distances in font ^A0
+  So you&#x27;d code something like this:
+Small_descenders = &#x27;(),/;[\]Q{|}&#x27;
+Small_descenders_fudge = 1.1
+Full_descenders  = &#x27;gjpqy&#x27;
+Full_descenders_fudge = 1.2
+descender_fudge = 0
+then scan the string for Small_descenders, and set the fudge to 1.1 if you find any,
+THEN scan the string for Full_descenders, and set the fudge to 1.2 if you find any.
+  THEN you save the extra fudge to adjust the NEXT LINE&#x27;s vertical starting point distance from the previous line, fudged by 1.1 or 1.2 times the &quot;tight&quot; spacing you may be computing. 
+I hope my &quot;hacking&quot; can help you.
+Ward Christensen, inventor of &quot;Xmodem&quot; and inventor/programmer of the world&#x27;s first BBS (Bulletin Board System)
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

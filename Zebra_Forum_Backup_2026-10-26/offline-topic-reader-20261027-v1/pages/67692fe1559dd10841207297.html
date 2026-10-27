@@ -1,0 +1,201 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>competitive pilot with CISCO</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>competitive pilot with CISCO</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/27709; original snapshot: threads/01782.html; SHA-256: c326cc044a9ad59e5557d400510ef0841f80d4c154d492ff6c1ce21b6998567e</small><pre id="topic">
+
+    
+        competitive pilot with CISCO
+
+
+        
+      
+                        
+                    
+            A
+          
+          Afshin Mansoorieh
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            12
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  we have been running a Proof Of Concept pilot at a large retailer at which we are the incumbent and cisco is the competition. the architecture is APs at remote locations and cloud controllers at the data-center.  cisco is using their AP3502 APs and the 5508 controllers.   they seem to have come across an issue where if they disconnect the WAN link and loose connectivity to their controller, our PPT8846 units will no longer roam and since other devices such as MC55 or smart phones still work under this condition, they are blaming it on the device.   BTW, our gear (AP6532 + RFS6000) has no such problem and I believe CISCO APs may not be handling the TKIP-PSK credentials correctly after they loose connection to their controller.   before doing any investigation at customer premises i would like to be prepared with as much information that is available to us, so If anyone has come across this before and have more insight that they could share, it would be greatly appreciated.   thanks,  afshin 
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Afshin Mansoorieh
+          
+          
+            12 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I wanted to post a resolution to this case ofr anyone who might be interested.   testing at customer&#x27;s LAB:  I set up our gear at the customer site to duplicate the scenario and showed them that when our APs lose connectivity to the controller, there is no impact on roaming. &amp;nbsp;  we also ran through the test on CISCO gear. &amp;nbsp;on cisco APs,&amp;nbsp;the LED-color on the AP indicates that it has something associated to it.  we noticed that when the controller is present, the 8836 device roams from one AP to the next and as it does, the APs change LED color. &amp;nbsp;but when the controller is NOT present, as the 8846 roams to new APs and it leaves an association trail. &amp;nbsp;all the previous APs still think that they have the unit associated to it. &amp;nbsp;we could tell this by the LED indicator. &amp;nbsp;At this point the device is registered with two or more APs and of course the traffic will not flow through to the wired side correctly.  &amp;nbsp;  In a recent conversation with the customer I was told that CISCO took some 8846 devices to their lab, did some testing and they came up with a new firmware that fixed their issue. &amp;nbsp;   please note that this issue was only reported on 8846 devices. &amp;nbsp;the customer also has MC5590s and they did not exhibit any similar behavior during the test (both using same ESS_ID and PSK).    thanks,  afshin
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Christopher Sather
+          
+          
+            12 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Afshin, not sure how PSK credentials show up in a trace, but with WPA2 and PMKI keys, I was able to show that our device was properly including the PMKI key as part of the re-association request.&amp;nbsp; Then they turned on controller logging and you could also see the PMKI key was being sent.   So, I wireless trace of that device, combine with the controller logging should show whats going on.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

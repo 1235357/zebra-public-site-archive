@@ -1,0 +1,219 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>ZC350, linkos and ethernet connections</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/zc350-linkos-and-ethernet-connections; snapshot threads/00916.html; SHA-256 2015b2b8066f00ddfb4cbd26ddd9dcb9613d663c0abb0c1a0b6767ac54158210. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">ZC350, linkos and ethernet connections</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            S
+          </div>
+          <div class="forum-topic__author-name">Stephen Troup</div>
+          <div class="forum-topic__timestamp">4 years 9 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            114
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            2
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hey, I've been trying to get my encode over ethernet software to work with the ZC350 printer.</p>
+<p>I've got the Silex usb over ethernet to work but I'm having issues with keeping a stable connection with the printer. Over a usb connection I can encode and print multiple cards with no issues but when switching to Ethernet connections I'm getting errors and timeouts usually with an exception of "Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host" coming from the linkos sdk code.</p>
+<p>I'm building the connection like this where connection is "TCP:xxx.xxx.xxx.xxx"<br>
+                this.ZebraPrinterConnection = Zebra.Sdk.Comm.ConnectionBuilder.Build(connector);<br>
+                this.ZebraPrinterConnection.Open();<br>
+                this.ZebraCardPrinter = Zebra.Sdk.Card.Printer.ZebraCardPrinterFactory.GetInstance(this.ZebraPrinterConnection);<br>
+                this.ZebraCardPrinterZmotif = Zebra.Sdk.Card.Printer.ZebraCardPrinterFactory.GetZmotifPrinter(this.ZebraPrinterConnection);</p>
+<p>but after printing a few cards, mostly as few as two, it starts to throwing exceptions even when trying to get the current status of the printer. If I wait a few minutes the issue goes away but comes back after printing. </p>
+<p>I'm compiling my projects in .Net 4.8 and the printer is the ZC350 on firmware v201.01.15 that was released on the 1 Dec 2021. Normally I'd be using the printer via usb but in one project I have to use the ethernet interface. The driver is v1.10.0.0</p>
+<p>Any ideas?</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      2 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-49954" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Stephen Troup</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 9 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Well I've answered my own question. After testing the same code on a ZXP 7 (it works perfectly and prints card after card) I'd say the ZC350 network stack has issues where it doesn't close connections on the printer end and eventually crashes the stack and then the printer, I've had it lock up so badly even the power button doesn't work.</p>
+<p>The only reliable way I've got of continuously printing to the ZC350 is after printing a single card I use the ResetNetwork call of the Zebra.Sdk.Card.Printer.ZebraPrinterZmotif object, this resets the network stack of the printer and for any further printing I have to rebuild the connection.</p>
+<p>The same code works perfectly when using a direct usb connection without having to reset anything, hence my belief it's the network stack. With the previous firmware it was even worse.</p>
+<p>One undocumented feature I found during all of this is that the Linkos card sdk requires SNMP to be turned ON otherwise it will never build a connection to the printer as it queries the interface to determine the printer type, seeing as it's an option on the printer to turn it off but with a bit of reflection I found a way to circumvent the requirement.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-49956" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>James Swinton-Bland</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 9 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Stephen,</p>
+<p>Thanks for coming back to us with your own solution - I'm sure this will help other developers in future. As for your comment regarding the undocumented feature - I've passed this onto our documentation team to take a look at.</p>
+<p>Thanks again!</p>
+<p> </p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/zc350-linkos-and-ethernet-connections%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/zc350-linkos-and-ethernet-connections%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

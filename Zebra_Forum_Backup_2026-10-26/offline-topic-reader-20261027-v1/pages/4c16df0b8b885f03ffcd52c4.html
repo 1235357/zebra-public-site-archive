@@ -1,0 +1,156 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Missing Data using QR code in stored formats</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Missing Data using QR code in stored formats</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/missing-data-using-qr-code-stored-formats; original snapshot: threads/00114.html; SHA-256: f3c4912df36520f8126f36d31247619474947820f7c8886c65b6b1c64532f191</small><pre id="topic">
+
+    
+        Missing Data using QR code in stored formats 
+
+
+        
+      
+                        
+                    
+            E
+          
+          Eduardo Romero
+          1 year 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            124
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi all, I&#x27;m using the Zebra Designer for Developers to store a template to a ZD421 printer and recalling the format from a .NET VB application. The label has a barcode which depends on a variable sent from my app. If I use DataMatrix the string is complete in the label, but if I use a QR code it will always skip the 3 first characters from the string. Example: Data Matrix:                     MFR01408AA;15;US00212900;20241129;10;20251129;41844QR Code (skips MFR):      01408AA;15;US00212900;20241129;10;20251129;41844Appreciate if someone has a hint or advice for why this happens. Best, Eduardo 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            1 year 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            This is a commonly asked question. The pass the variable value of QR code in a ZPL template, we need to add the first three characters, normally called QR code switches in ZPL, to the variable value and pass them as a whole to the template to print.
+For example, if you have the QR code in the ZPL template, which requires to have a variable value passed in as ^FN5, as shown below.
+### Stored format
+...
+^FT322,740^BQN,2,8
+^FH\^FN5&quot;qrcode1&quot;^FS
+...then you need to pass the whole string (including the switches, i.e., the characters of &quot;LA,&quot;) as shown below.
+### Recall formate
+...
+^CI27^FN5^FH\^FDLA,&gt;80119312464121305171910011012^FS
+... 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

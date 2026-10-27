@@ -1,0 +1,152 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Connecting a ZT411 to a Tomcat Print Server</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/connecting-zt411-tomcat-print-server; snapshot threads/00215.html; SHA-256 be8bb05f63d17cd1c4f060e2c3dab7dbdf302532dd9b851a9e19a81f4009298a. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Connecting a ZT411 to a Tomcat Print Server</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            M
+          </div>
+          <div class="forum-topic__author-name">Michael Shields</div>
+          <div class="forum-topic__timestamp">2 years 2 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            165
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>We have a Web app which retrieves labels from our shipping partners and we are trying to connect it to our Zebra ZT411 so that we can print directly from the application in the cloud to our printer from the browser. We have been able to connect the printer to Zebra's demo server here (http://weblink.westeurope.cloudapp.azure.com/) but are having some trouble getting the self signed secure certificates to work. </p><p>In particular I am looking for help to send the Multi Part Form commands that are described in this Printer Administration guide starting on page 61. <span data-original-href="https://www.zebra.com/content/dam/support-dam/en/documentation/unrestricted/guide/software/printsecure-administration-guide-en.pdf">https://www.zebra.com/content/dam/support-dam/en/documentation/unrestricted/guide/software/printsecure-administration-guide-en.pdf</span></p><p>I have attempted to send the code to retrieve the CSR (page 63 of the above guide) from the Z drive which should at least return a 404 error if it does not exist but I get no response. Is ZPL the correct format to send this code to the printer or is there another way? Below is the code I attempted to send in a zpl file.</p><p>{}--BOUNDARY</p><p>Content-Disposition: form-data; name="files";</p><p>filename="Z:CSR_WEBLINK1_CERT.CSR"; action="retrieve"</p><p>Content-Type: application/octet-stream</p><p>Content-Transfer-Encoding: binary</p><p> </p><p>--BOUNDARY</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-52906" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 2 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>The above MPF command to retrieve the CSR has syntax issues. Please use the following MPF command. The &lt;CR&gt;&lt;LF&gt; represent a carriage return and a linefeed respectively at the end of each line.</p>
+<pre><code class="language-java">{}--BOUNDARY&lt;CR&gt;&lt;LF&gt;
+Content-Disposition: form-data; name="files"; filename="Z:CSR_WEBLINK1_CERT.CSR"; action="retrieve"&lt;CR&gt;&lt;LF&gt;
+Content-Type: application/octet-stream&lt;CR&gt;&lt;LF&gt;
+Content-Transfer-Encoding: binary&lt;CR&gt;&lt;LF&gt;
+--BOUNDARY--&lt;CR&gt;&lt;LF&gt;</code></pre></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/connecting-zt411-tomcat-print-server%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/connecting-zt411-tomcat-print-server%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

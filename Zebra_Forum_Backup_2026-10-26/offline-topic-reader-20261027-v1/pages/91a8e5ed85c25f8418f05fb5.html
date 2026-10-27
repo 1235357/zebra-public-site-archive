@@ -1,0 +1,258 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Photon radio and EAP-FAST</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Photon radio and EAP-FAST</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/26231; original snapshot: threads/01541.html; SHA-256: 208e184fc1171c10fba08fb3a0252fdf4e011563b453f22a49479a798f5b527b</small><pre id="topic">
+
+    
+        Photon radio and EAP-FAST
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            23
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We have a large retail customer using MC9090s with EAP-FAST/MSChap v2/AES and ACS (No certs) strictly username and password. Their devices are a couple of years old with MAC addresses of 00:15:70:XX:XX:XX. They have no issues connecting and authenticating to their network. They have since bought new MC9090s that have MAC addresses of 00:23:68:XX:XX:XX. We have verified on their Cisco wireless controller that there are no access control filters. ALL of the newer devices cannot get through the authentication process. In the wireless logs from the device it shows:     Using profile xxxxxxx  Setting SSID: xxxxx  Disconnected  Associated  Credentials required      Then 35 seconds later:  Authentication Timeout   It keeps going through this loop.   The OSs&#x27;, Fusion version and WCS_Profiles/Options are identical to a working device. We had to load the customer standard OS and Fusion build on the new devices.   OS: BSP 39 (OEM 1.39.0001)  Fusion: 2.55.0.0.018R-WM-Photon   We had a Cisco engineer do some debugging at the controller and he stated that thedevice that was attempting to connect showed an EAP response of 0 versus a connected device that showed response data. That&#x27;s according to him. Should get the debug files soon. He states that this means the device isn&#x27;t meeting the 802.1X profile. We&#x27;ve checked, rechecked and reconfigured the device to no avail.   My questions are:   Has anyone seen this issue before?  Is the Photon radio in the MC9090 the same now as then? And if it&#x27;s different, has it been certified with EAP-FAST?  Does the MAC address of the device play into the creation of the AES/CCMP key? If so, could it be that we are creating a different key string with the new MAC?  And we haven&#x27;t yet checked the ACS server for any kind of access filtering but is that possible?   Any help would be greatly appreciated.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Herbert De Jong
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Explore&amp;nbsp;PMB 1678
+&amp;nbsp;
+PMB1678: Motorola EMS Mobile Computing is transitioning to a new Organizational Unique Identifier (OUI) – MAC address pool - 00:23:68, from the previous pool of 00:15:70. This is necessary because the previous pool of MAC addresses will be exhausted within the next few months. Motorola Mobile Computing products will transition to the new OUI between April and September 2009. 
+  Bottomline is you need to be on Fusion 2.55.1.0.016R&amp;nbsp; to get the supplicant working OK with new MAC adress range devices.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I recall that there was a resolution for this issue and there were two different Fusion 2.55.1.0.016R releases that had the exact same release version names but only one worked. The one that is posted on Support did not work bcause it was supported only for BSP43 (even though it stated BSP 39 also).&amp;nbsp; We have loaded the version from Support and it still doesn&#x27;t work. Through laptop issues and reformatting I have lost the version that worked. Does anyone recall where to get the version that will work with BSP 39?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Disregard the last posting. I believe I found it in Hot Fixes.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

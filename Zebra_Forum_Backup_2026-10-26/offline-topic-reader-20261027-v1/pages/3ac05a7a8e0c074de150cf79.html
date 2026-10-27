@@ -1,0 +1,227 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Unable to connect USB string in Zebra barcode printer</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Unable to connect USB string in Zebra barcode printer</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/unable-connect-usb-string-zebra-barcode-printer; original snapshot: threads/00685.html; SHA-256: f345343836196cca4c78b121a392c8776900829aca42959547793aa68b1f6dae</small><pre id="topic">
+
+    
+        Unable to connect USB string in Zebra barcode printer
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          3 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            73
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Dear Zebra Team,
+I had found my USB string by using the following code
+  public static void Main(string[] args) {
+        try {
+            foreach (DiscoveredPrinterDriver printer in UsbDiscoverer.GetZebraDriverPrinters()) {
+                Console.WriteLine(printer);
+            }
+            foreach (DiscoveredUsbPrinter usbPrinter in UsbDiscoverer.GetZebraUsbPrinters(new ZebraPrinterFilter())) {
+                Console.WriteLine(usbPrinter);
+            }
+        } catch (ConnectionException e) {
+            Console.WriteLine($&quot;Error discovering local printers: {e.Message}&quot;);
+        }
+        Console.WriteLine(&quot;Done discovering local printers.&quot;);
+    }
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+My USB String is &quot;\\?\usb#vid_0a5f&amp;amp;pid_0174#99j210604359#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}&quot;
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    private void SendZplOverUSB()
+        {
+            Connection thePrinterConn = new UsbConnection(@&quot;\\?\usb#vid_0a5f&amp;amp;pid_0174#99j210604359#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}&quot;);
+            try
+            {
+                Console.WriteLine(&quot;Finding Zebra printer...!!!&quot;);
+                Console.ReadLine();
+                ZebraPrinter printer = ZebraPrinterFactory.GetInstance(thePrinterConn);
+                PrinterStatus printerStatus = printer.GetCurrentStatus();
+                if (printerStatus.isReadyToPrint)
+                {
+                    Console.WriteLine(&quot;Ready To Print&quot;);
+                    Console.ReadLine();
+                }
+                else if (printerStatus.isPaused)
+                {
+                    Console.WriteLine(&quot;Cannot Print because the printer is paused.&quot;);
+                    Console.ReadLine();
+                }
+                else if (printerStatus.isHeadOpen)
+                {
+                    Console.WriteLine(&quot;Cannot Print because the printer head is open.&quot;);
+                    Console.ReadLine();
+                }
+                else if (printerStatus.isPaperOut)
+                {
+                    Console.WriteLine(&quot;Cannot Print because the paper is out.&quot;);
+                    Console.ReadLine();
+                }
+                else
+                {
+                    Console.WriteLine(&quot;Cannot Print.&quot;);
+                    Console.ReadLine();
+                }
+                Console.WriteLine(&quot;USB Connection Open...!!!&quot;);
+                Console.ReadLine();
+                // Open the connection - physical connection is established here.
+                thePrinterConn.Open();
+                // This example prints &quot;This is a ZPL test.&quot; near the top of the label.
+                string zplData = @&quot;^XA
+                            ^ILR:SAMPLE.GRF^FS
+                            ^XZ&quot;;
+                // Send the data to printer as a byte array.
+                thePrinterConn.Write(Encoding.UTF8.GetBytes(zplData));
+                Console.WriteLine(&quot;Write ZPL data to printer&quot;);
+                Console.ReadLine();
+            }
+            catch (ConnectionException e)
+            {
+                // Handle communications error here.
+                Console.WriteLine(e.ToString());
+                Console.ReadLine();
+            }
+            finally
+            {
+                // Close the connection to release resources.
+                thePrinterConn.Close();
+            }
+        }
+Still the above code throws &quot;Connection is not open&quot;
+Kindly support me what wrong with this..
+Thanks in advance
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Escape the back slashes in the USB name string when passing it to the UsbConnection(), i.e., with the following code.
+Connection thePrinterConn = new UsbConnection(@&quot;\\\\?\\usb#vid_0a5f&amp;pid_0174#99j210604359#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}&quot;); 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

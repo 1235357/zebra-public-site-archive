@@ -1,0 +1,159 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Unable to print QR barcodes from a web application using Prowser Print and the JS API</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Unable to print QR barcodes from a web application using Prowser Print and the JS API</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/unable-print-qr-barcodes-web-application-using-prowser-print-and-js-api; original snapshot: threads/00271.html; SHA-256: 19e6db9f42e3574f0119367f4d357b59e38540304517d094f9776e6e776632f0</small><pre id="topic">
+
+    
+        Unable to print QR barcodes from a web application using Prowser Print and the JS API
+
+
+        
+      
+                        
+                    
+            G
+          
+          Gerardo Rubio
+          2 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            203
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I have a Zebra ZQ220 PLUS printer, a web application and an android device. Using browserprint and the JS API available, I am able to print text, barcodes (even some 2D barcodes like maxicode) and shapes, but for some reason it cannot print QR codes. So I instaled the Zebrat Printer Setup Utilities software, and using the &quot;Printer Direct Communication&quot; (or something like that) it turns out my printer can print QR codes. So I have been trying to understand why I can print from the software giving it certain instructions, but if I pass the exact same CPCL code to the printer from my web application, it simply blocks. This only happens with QR codes, with the rest of the functionalities it works as it is suposed to. This is the CPCL that I am passing to the printer, from Zebrat Printer Setup Utilities and from my web application:! 0 200 200 210 1
+TEXT 4 0 30 40 Hello World
+PRINT
+This is always printed, either I pass it via Zebrat Printer Setup Utilities or the web application.! 0 200 200 500 1
+B QR 10 100 M 2 U 10
+MA,QR code ABC123
+ENDQR
+T 4 0 10 400 QR code ABC123
+PRINT
+This is only printed if is passed from Zebrat Printer Setup Utilities, but the printer blocks if it comes from the web application. I am making sure that the sintax is correct, and always ending the files with an endline.I just don&#x27;t know what else can I try. Is there some configuration differences in the printing format betwen the two methods?
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            ZQ220 Plus should print the QR code. How is the CPCL script of the QR code sent to the printer with the Browser Print? Have you tried to save the CPCL script into a file and send the file via the Browser Print API sendFile()?
+function sendFile(fileUrl){
+    url = window.location.href.substring(0, window.location.href.lastIndexOf(&quot;/&quot;));
+    url = url + &quot;/&quot; + fileUrl;
+    selected_device.sendFile(url, undefined, errorCallback)
+}
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

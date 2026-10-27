@@ -1,0 +1,239 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Swift Xcode TcpPrinterConnection Remains open</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Swift Xcode TcpPrinterConnection Remains open</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/swift-xcode-tcpprinterconnection-remains-open; original snapshot: threads/00530.html; SHA-256: b137bbec9f61888526b7e059369a1034d69076a49f3f83323feb4fdb966d15e9</small><pre id="topic">
+
+    
+        Swift Xcode TcpPrinterConnection Remains open
+
+
+        
+      
+                        
+                    
+            W
+          
+          William Mays
+          3 years 3 months ago
+        
+        
+      
+        
+            
+                  
+            
+            150
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I have successfully implemented the Link OS iOS SDK into my Xcode project.
+
+I created a bridging header for the .h files, and I am able to print successfully to our Zebra Printers
+
+I am having an issue where extra tags are being printed. Explained:
+
+
+	Connection is open with IP and port
+	ZPL data is sent to printer, and tag prints successfully 
+	Connection is closed
+
+
+About 20% of the time, when the app is opened again to the main page, the zebra printer will open the tcp connection and print the same tag again. I am stumped and have no idea what is causing this. Any help is appreciated. I added a time stamp to print on the labels, when the extra tag is printed it&#x27;s using the time stamp form the original tag printed. 
+
+I have already tried the following but the issue is still happening:
+
+
+	Set the TcpPrinterConnection object to nil after closing
+	Wrapped the function in an autoreleasepool
+
+
+Code:
+
+autoreleasepool {
+    var connection = TcpPrinterConnection.init(address: printerIP, andWithPort: 6101)
+    
+    if connection!.open() == true {
+        do {
+            try tool!.sendCommand(writeDate)
+            connection!.close()
+        } catch {
+            connection!.close()
+            print(error.localizedDescription)
+        }
+    }
+}
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Make sure the TCP connection open and its subsequent printing are done in a background thread. Secondly, tie the printing function with a UI event, such as a button press, etc. From what you described, it looks like the printing function is inadvertently launched when the UI is reopen. You should be able to trace the call flow in the debugger.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              W
+            
+          
+                
+          
+            William Mays
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+             I added the following code when the connection is opened and tag printed and I am getting the same issue. The function is only called when a button is pressed, so that is why I am confused on how it&#x27;s being called. 
+
+I am not able to trace the call flow as this only occurs 20% of the time, I have left my phone connected via Xcode and can&#x27;t replicate it. 
+
+DispatchQueue.global(qos: .userInitiated).async {
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

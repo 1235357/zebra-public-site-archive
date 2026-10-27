@@ -1,0 +1,400 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Xamarin Link-os iOS, Doesn&#x27;t work without data connectivity. ZQ510</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Xamarin Link-os iOS, Doesn&#x27;t work without data connectivity. ZQ510</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25579; original snapshot: threads/resume-00502.html; SHA-256: e234bc4f57ac4c44d5fcf7fb0b2ece66af94373ce8ef04c15ca172e84c83282a</small><pre id="topic">
+
+    
+        Xamarin Link-os iOS, Doesn&#x27;t work without data connectivity. ZQ510
+
+
+        
+      
+                        
+                    
+            V
+          
+          Vladimir Araque
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            58
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Regards,
+I have been working on an app using Xamarin with Link-os plugin and ZQ510 printer. The idea of ​​the app is that it can work in remote places where there is no internet connectivity.
+The debug printing process always works. The iPhone can print without any problem with the Wi-Fi off and the data access off.
+When the iPhone is disconnected from the PC and has some kind of data access, it is capable of printing. You can even remove the SIM card and connect it to a Wi-Fi without internet access and it will be able to print.
+The problem occurs in conditions where there is no Wi-Fi and the operator does not provide data coverage.
+I have done many tests between them discovering all the bluetooth printers connected to the device and on the other hand hard coding connections to the printer and in all cases the common factor to fail is always the absence of a connection to a network or to another device. That is, when trying to reproduce the fault conditions in debug mode, the iPhone prints.
+It makes me think that it is something related to the SDK itself. But I am not sure.
+//**********************************************************
+using BGTix.Interfaces;
+using LinkOS.Plugin;
+using LinkOS.Plugin.Abstractions;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Text;
+using System.Threading.Tasks;
+using Xamarin.Forms;
+namespace BGTix.Clases
+{
+    public class PrinteLinkOs
+    {
+        public enum ConnectionType
+        {
+            Bluetooth,
+            USB,
+            Network
+        }
+        ObservableCollection printerList;
+        string ticket;
+        public PrinteLinkOs()
+        {
+            printerList = new ObservableCollection();
+        }
+        public void PrintAll()
+        {
+            foreach (IDiscoveredPrinter IDP in printerList)
+            {
+                new Task(new Action(() =&gt;
+                {
+                    PrintLineMode(IDP);
+                })).Start();
+            }
+        }
+        public void PrintAllOff()
+        {
+            IConnection connection = null;
+            connection = ConnectionBuilder.Current.Build(&quot;BT:XXRAJ183403613&quot;);
+            connection.Open();
+            IZebraPrinter printer = ZebraPrinterFactory.Current.GetInstance(connection);
+            if ((!CheckPrinterLanguage(connection)) || (!PreCheckPrinterStatus(printer)))
+            {
+                ResetPage();
+                return;
+            }
+            SendZplReceipt(connection);
+        }
+        private void PrintLineMode(IDiscoveredPrinter IDP)
+        {
+            IConnection connection = null;
+            try
+            {
+                connection = IDP.Connection;
+                connection.Open();
+                IZebraPrinter printer = ZebraPrinterFactory.Current.GetInstance(connection);
+                if ((!CheckPrinterLanguage(connection)) || (!PreCheckPrinterStatus(printer)))
+                {
+                    ResetPage();
+                    return;
+                }
+                SendZplReceipt(connection);
+            }
+            catch (Exception ex)
+            {
+                // Connection Exceptions and issues are caught here
+                //ShowErrorAlert(ex.Message);
+            }
+            finally
+            {
+                if ((connection != null) &amp;&amp; (connection.IsConnected))
+                    connection.Close();
+                ResetPage();
+            }
+        }
+        private void ResetPage()
+        {
+            Device.BeginInvokeOnMainThread(() =&gt; {
+                //printBtn.IsEnabled = true;
+            });
+        }
+        protected bool PreCheckPrinterStatus(IZebraPrinter printer)
+        {
+            // Check the printer status
+            IPrinterStatus status = printer.CurrentStatus;
+            if (!status.IsReadyToPrint)
+            {
+                //ShowErrorAlert(&quot;Unable to print. Printer is &quot; + status.Status);
+                return false;
+            }
+            return true;
+        }
+        protected bool CheckPrinterLanguage(IConnection connection)
+        {
+            if (!connection.IsConnected)
+                connection.Open();
+            //  Check the current printer language
+            byte[] response = connection.SendAndWaitForResponse(GetBytes(&quot;! U1 getvar \&quot;device.languages\&quot;\r\n&quot;), 500, 100);
+            string language = Encoding.UTF8.GetString(response, 0, response.Length);
+            if (language.Contains(&quot;line_print&quot;))
+            {
+                //ShowAlert(&quot;Switching printer to ZPL Control Language.&quot;, &quot;Notification&quot;);
+            }
+            // printer is already in zpl mode
+            else if (language.Contains(&quot;zpl&quot;))
+            {
+                return true;
+            }
+            //  Set the printer command languege
+            connection.Write(GetBytes(&quot;! U1 setvar \&quot;device.languages\&quot; \&quot;zpl\&quot;\r\n&quot;));
+            response = connection.SendAndWaitForResponse(GetBytes(&quot;! U1 getvar \&quot;device.languages\&quot;\r\n&quot;), 500, 100);
+            language = Encoding.UTF8.GetString(response, 0, response.Length);
+            if (!language.Contains(&quot;zpl&quot;))
+            {
+                //ShowErrorAlert(&quot;Printer language not set. Not a ZPL printer.&quot;);
+                return false;
+            }
+            return true;
+        }
+        private void SendZplReceipt(IConnection printerConnection)
+        {
+            printerConnection.Write(GetBytes(ticket));
+        }
+        protected static byte[] GetBytes(string str)
+        {
+            byte[] bytes = new byte[str.Length];
+            bytes = Encoding.UTF8.GetBytes(str);
+            return bytes;
+        }
+        private Dictionary CreateListOfItems()
+        {
+            string[] names = { &quot;Microwave Oven&quot;, &quot;Sneakers (Size 7)&quot;, &quot;XL T-Shirt&quot;, &quot;Socks (3-pack)&quot;, &quot;Blender&quot;, &quot;DVD Movie&quot; };
+            string[] prices = { &quot;79.99&quot;, &quot;69.99&quot;, &quot;39.99&quot;, &quot;12.99&quot;, &quot;34.99&quot;, &quot;16.99&quot; };
+            Dictionary retVal = new Dictionary();
+            for (int ix = 0; ix  names.Length; ix++)
+            {
+                retVal.Add(names[ix], prices[ix]);
+            }
+            return retVal;
+        }
+        /////
+        ///// Start discovery on all ports. USB, then Bluetooth, then Network.
+        /////
+        public void StartPrinterDiscovery(string tkr)
+        {
+            ticket = tkr;
+            new Task(new Action(() =&gt; {
+                if (printerList != null &amp;&amp; printerList.Count &gt; 0)
+                {
+                    printerList.Clear();
+                }
+                StartDiscovery(ConnectionType.Bluetooth);
+            })).Start();
+        }
+        private void StartDiscovery(ConnectionType connectionType)
+        {
+            UpdateStatus($&quot;Discovering {connectionType.ToString()} printers...&quot;);
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($&quot;Starting {connectionType.ToString()} discovery...&quot;);
+                switch (connectionType)
+                {
+                    case ConnectionType.Bluetooth:
+                        DependencyService.Get().FindBluetoothPrinters(new DiscoveryHandlerImplementation(this, ConnectionType.Bluetooth));
+                        break;
+                    case ConnectionType.Network:
+                        NetworkDiscoverer.Current.LocalBroadcast(new DiscoveryHandlerImplementation(this, ConnectionType.Network));
+                        break;
+                    case ConnectionType.USB:
+                        DependencyService.Get().FindUsbPrinters(new DiscoveryHandlerImplementation(this, ConnectionType.USB));
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                if (e is NotImplementedException &amp;&amp; connectionType == ConnectionType.USB)
+                {
+                    StartDiscovery(ConnectionType.Bluetooth);
+                }
+                else
+                {
+                    string errorMessage = $&quot;Error discovering {nameof(connectionType)} printers: {e.Message}&quot;;
+                }
+            }
+        }
+        private void UpdateStatus(string message)
+        {
+            Device.BeginInvokeOnMainThread(() =&gt; {
+                //statusLbl.Text = message;
+            });
+        }
+        private class DiscoveryHandlerImplementation : IDiscoveryHandler
+        {
+            private PrinteLinkOs Paja;
+            private ConnectionType connectionType;
+            public DiscoveryHandlerImplementation(PrinteLinkOs paja, ConnectionType connectionType)
+            {
+                this.Paja = paja;
+                this.connectionType = connectionType;
+            }
+            public void DiscoveryError(string message)
+            {
+                if (connectionType == ConnectionType.USB)
+                {
+                    //selectPrinterPage.StartDiscovery(ConnectionType.Bluetooth);
+                }
+                else if (connectionType == ConnectionType.Bluetooth)
+                {
+                    //selectPrinterPage.StartDiscovery(ConnectionType.Network);
+                }
+                //else selectPrinterPage.UpdateStatus(&quot;Discovery finished&quot;);
+            }
+            public void DiscoveryFinished()
+            {
+                if (connectionType == ConnectionType.USB)
+                {
+                    Paja.StartDiscovery(ConnectionType.Bluetooth);
+                }
+                else if (connectionType == ConnectionType.Bluetooth)
+                {
+                    Paja.StartDiscovery(ConnectionType.Network);
+                }
+                else
+                {
+                    Paja.UpdateStatus(&quot;Discovery finished&quot;);
+                    if (Paja.printerList.Count &gt; 0)
+                    {
+                        Paja.PrintAll();
+                    }
+                    else
+                    {
+                        Paja.PrintAllOff();
+                    }
+                }
+            }
+            public void FoundPrinter(IDiscoveredPrinter discoveredPrinter)
+            {
+                Paja.printerList.Add(discoveredPrinter);
+            }
+        }
+    } //End class
+}
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            6 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Vladimir,
+The Link-OS Xamarin SDK provides API for application to use. The SDK itself doesn&#x27;t create dependency on external connectivity. If your iOS application relies on data coverage in order for the app to work, then the data coverage is required. If your iOS application only needs Bluetooth to connect with the printer to print, then the data coverage is not required, provided the application already has the data to print.
+The SDK provides API for WiFi &amp;amp; network connectivity. If your application doesn&#x27;t use WiFi or network connectivity, the SDK won&#x27;t bother to check on WiFi or network connection.
+I&#x27;m a bit confused with what&amp;nbsp;you said that the data coverage is required&amp;nbsp;for the Xamarine SDK to work.&amp;nbsp;
+Rgds.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

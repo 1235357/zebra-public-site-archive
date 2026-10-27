@@ -1,0 +1,200 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>ZD420t issue with printing over android API</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/forum/25501; snapshot threads/resume-00496.html; SHA-256 33c1387bbd02c0d56bd241003e5efa4dd712386d597c3b52a1545eba8e40d22f. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">ZD420t issue with printing over android API</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            S
+          </div>
+          <div class="forum-topic__author-name">System Admin</div>
+          <div class="forum-topic__timestamp">5 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            47
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello All,<br>
+I have Zebra ZD420t and I've developed simple app for printing. I've developed below code using Android API and samples from Zebra repo:<br>
+public class ZebraPrinterHandler extends Handler {<br>
+    private Connection printerConnection;<br>
+	public ZebraPrinterHandler(String macAddress){<br>
+        printerConnection = new BluetoothConnectionInsecure(macAddress);<br>
+    }<br>
+	private void tryToPrintLabel(Message msg) {<br>
+			try {<br>
+				String zplData = message.getZplData();<br>
+				printerConnection.open();<br>
+				//below code same label twice on purpose- it is not a mistake ;)<br>
+				printerConnection.write(zplData.getBytes());<br>
+				SystemClock.sleep(2000);<br>
+				printerConnection.write(zplData.getBytes());<br>
+				SystemClock.sleep(2000);<br>
+				//perform important stuff only if label is printed correctly<br>
+			} catch (ConnectionException e) {<br>
+				//do some stuff<br>
+			}<br>
+				//do other stuff<br>
+			}<br>
+		}<br>
+}<br>
+In general it works perfectly. Labels are printed as desired and sometimes, when there are connection issues, exception is thrown and I can perform appropriate code to handle it.<br>
+If no exception is thrown, I assume label was printed correctly and line "//perform important stuff only if label is printed correctly" is executed.<br>
+Unfortunately, in very rare cases (once every few hundreds labels) situation happens, that no label is printed and no exception is thrown. This is serious issue for me because code in line "//perform important stuff ..." shouldn't be executed in case no label was printed- this create system inconsistency.<br>
+I was trying to find a way in API, how to receive confirmation that label was printed successfully (other than lack of exception) but I don't see any option for that.<br>
+Can you please advice on programmatic way to confirm the label was printed other than observing that no exception was thrown- this doesn't work correctly.<br>
+Regards<br>
+Andrzej</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-46978" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            6 years 2 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Reformatted your code snippet as below for better readability.</p>
+<p>public class ZebraPrinterHandler extends Handler {<br>
+    private Connection printerConnection;</p>
+<p>	public ZebraPrinterHandler(String macAddress){<br>
+        printerConnection = new BluetoothConnectionInsecure(macAddress);<br>
+    }</p>
+<p>	private void tryToPrintLabel(Message msg) {<br>
+			try {<br>
+				String zplData = message.getZplData();</p>
+<p>				printerConnection.open();<br>
+				//below code same label twice on purpose- it is not a mistake ;)<br>
+				printerConnection.write(zplData.getBytes());<br>
+				SystemClock.sleep(2000);<br>
+				printerConnection.write(zplData.getBytes());<br>
+				SystemClock.sleep(2000);</p>
+<p>				//perform important stuff only if label is printed correctly</p>
+<p>			} catch (ConnectionException e) {<br>
+				//do some stuff<br>
+			}<br>
+				//do other stuff<br>
+	}<br>
+}There are a few things missing in your code snippets. Before sending each&amp;nbsp;print job to the printer, we should check the connection status and the printer status (printerConnection.isConnected(), getCurrentStatus()) to ensure that the printer is ready before we send anything to the printer. After the printing is done, the connection should be closed (printerConnection.close()) to ensure we return the resource so we can have a clean start next time. Adding 2,000 ms delay is not ideal. I'd suggest to check the printer status (getCurrentStatu()). Only when the printer is in ready state, we send the next print job.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/forum/25501%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/forum/25501%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

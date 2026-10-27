@@ -1,0 +1,156 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Retrieve serial number in zebra device</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Retrieve serial number in zebra device</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/retrieve-serial-number-zebra-device-0; original snapshot: threads/00134.html; SHA-256: ead0b389f4b98a6c75e2452822cd53a525b4b0f00befe1a9f36123e449f0cc6c</small><pre id="topic">
+
+    
+        Retrieve serial number in zebra device
+
+
+        
+      
+                        
+                    
+            D
+          
+          David Orduña
+          1 year 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            622
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi!. We are trying to retrieve the serial number of a Zebra device (TC52x) from a MAUI application. We are stuck, after reading the documentation available and trying many different approaches. There are several ways to achieve this, but for our needs we have to use the AccessMgr one, which lets us setup the profile from inside the app itself. We have implemented a very simple app following the documentation and looking at the samples in your github, but unfortunately we couldn&#x27;t make it work. We share the code of our simple app attached, to help you understand our problema. The app only have the required configuration in the AndroidManifest.xml, and the implementation of the code in the MainActivity, as you have in some samples. In your repos, there are some sample which retrieves the serial number, but these seem to be configured with StageNow. Other samples are using the AccessMgr, but not for querying the content provider to get the serial number. We have made a mix of all these samples, working with the AccessMgr and querying the content provider, but it seems that there is something wrong, because when we call to the content provider, it returns an empty cursor. Looking at the logcat, we can see some logs related to these issue:- Access Manager Status = false- Unauthorized user returning empty cursor As you could see in our code, we generate the profile dynamically. To do this we have to extract the signing certificate from the app (done following some steps in your docs). This step is working wrong too, because we can see some other logs related with this, where give us info about the “CallerSignature”. The log more relevant about this could be this one (we have omitted out cert):- &lt;wap-provisioningdoc&gt;&lt;characteristic-error type=&quot;AccessMgr&quot; version=&quot;10.4&quot; desc=&quot;missing&quot;&gt;&lt;parm name=&quot;ServiceAccessAction&quot; value=&quot;6&quot;/&gt;&lt;parm name=&quot;ServiceIdentifier&quot; value=&quot;content://oem_info/oem.zebra.secure/build_serial&quot;/&gt;&lt;parm name=&quot;CallerPackageName&quot; value=&quot;com.companyname.uniqueidzebra&quot;/&gt;&lt;parm-error name=&quot;CallerSignature&quot; value=&quot;[OMITTED]&quot; desc=&quot;Caller is not allowed:Package Name and Signature not matching&quot;/&gt;&lt;/characteristic-error&gt;&lt;/wap-provisioningdoc&gt;I have highlighted the error description. We have tried to create the profile directly from the EMDK extension for Visual Studio, setting the package name manually and importing the crt file but does not work either. Furthermore, I have compared the “CallerSignature” generated from our code and the one that the visual studio extension put in the profile file and are not equal at all. Could anybody help us, please? Thanks in advance.Regards. P.S: I’ve seen that this way of retrieving the serial number is useful till Android 13. From then on, how should we do this? Because I have not seen information about this in your docs. In a near future, we will have to get the serial numbers from A13+ devices…
+              
+
+                    
+          
+      
+              
+ UniqueIdZebra_0.zip
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              N
+            
+          
+                
+          
+            Nicola De Zolt
+          
+          
+            1 year 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi David, please refer to this sample code https://github.com/ZebraDevs/OEMInfo-MAUI-Sample 
+OEMInfo is your one stop shop for all non resettable identifiers from A8+.
+To get your app&#x27;s signature and use it with Stagenow, refer to https://github.com/NDZL/-blog-WSC-DEV-UG/wiki/BLOG-TEXT#extracting-an-app-signature 
+To manage Access Manager and App&#x27;s signature at runtime, see my code here https://github.com/NDZL/Z-GRAVITY-SERVICE/blob/master/app/src/main/java/com/zebra/sensorsdata/OEMInfoManager.java 
+{ N.DZL }
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

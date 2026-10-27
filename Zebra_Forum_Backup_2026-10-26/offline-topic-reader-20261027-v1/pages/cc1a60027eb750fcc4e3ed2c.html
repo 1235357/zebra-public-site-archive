@@ -1,0 +1,481 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Intent not being sent</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Intent not being sent</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/intent-not-being-sent; original snapshot: threads/00538.html; SHA-256: e8f3f88128050673cac759fc63af023b8e14f17de396a50f108e8c6c2197d5be</small><pre id="topic">
+
+    
+        Intent not being sent
+
+
+        
+      
+                        
+                    
+            D
+          
+          Dave Hon
+          3 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            598
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m trying to send barcode data using dataWedge on a WS50. I&#x27;m working on an app in Kotlin.
+
+My receiver is registered, but the intent isn&#x27;t being delivered. The logCat I placed in the receiver have never been triggered, even after I scan a barcode. Below are some code snippets and screenshots of my profile. The profile is loading because I am able to change device settings (screen brightness, for example.)
+
+ 
+
+Barcode Receiver
+
+class BarcodeReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        Log.d(&quot;BarcodeReceiver&quot;, &quot;onReceive triggered&quot;)
+        val action = intent.action
+        if (action != null &amp;&amp; action == &quot;com.example.zonepick.SCAN&quot;) {
+            val extras = intent.extras
+            if (extras != null &amp;&amp; extras.containsKey(&quot;com.symbol.datawedge.data_string&quot;)) {
+                val barcodeData = extras.getString(&quot;com.symbol.datawedge.data_string&quot;)
+                Log.d(&quot;BarcodeReceiver&quot;, barcodeData.toString())
+            }
+        }
+    }
+}
+
+Android Manifest
+ 
+
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;manifest xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;&gt;
+    &lt;queries&gt;
+        &lt;package android:name=&quot;com.symbol.emdk.emdkservice&quot; /&gt;
+    &lt;/queries&gt;
+    &lt;uses-permission android:name=&quot;com.symbol.emdk.permission.EMDK&quot; /&gt;
+    &lt;uses-permission android:name=&quot;android.permission.BLUETOOTH&quot; /&gt;
+    &lt;uses-permission android:name=&quot;android.permission.BLUETOOTH_ADMIN&quot; /&gt;
+    &lt;uses-permission android:name=&quot;android.permission.BLUETOOTH_SCAN&quot; android:usesPermissionFlags=&quot;neverForLocation&quot; tools:targetApi=&quot;s&quot; /&gt;
+    &lt;uses-permission android:name=&quot;android.permission.BLUETOOTH_ADVERTISE&quot; /&gt;
+    &lt;uses-permission android:name=&quot;android.permission.BLUETOOTH_CONNECT&quot; /&gt;
+    &lt;uses-permission android:name=&quot;android.permission.ACCESS_FINE_LOCATION&quot; tools:ignore=&quot;CoarseFineLocation&quot; /&gt;
+    &lt;uses-permission android:name=&quot;android.permission.ACCESS_COARSE_LOCATION&quot; /&gt;
+    &lt;uses-permission android:name=&quot;android.permission.ACCESS_BACKGROUND_LOCATION&quot; /&gt;
+    &lt;uses-permission android:name=&quot;android.permission.INTERNET&quot;/&gt;
+    &lt;uses-feature android:name=&quot;android.hardware.type.watch&quot;/&gt;
+    &lt;application
+        android:launchMode=&quot;singleTop&quot;
+        android:name=&quot;.ZonePickApplication&quot;
+        android:usesCleartextTraffic=&quot;true&quot;
+        android:allowBackup=&quot;true&quot;
+        android:dataExtractionRules=&quot;@xml/data_extraction_rules&quot;
+        android:fullBackupContent=&quot;@xml/backup_rules&quot;
+        android:icon=&quot;@mipmap/ic_launcher&quot;
+        android:label=&quot;@string/app_name&quot;
+        android:roundIcon=&quot;@mipmap/ic_launcher_round&quot;
+        android:supportsRtl=&quot;true&quot;
+        android:theme=&quot;@style/Theme.ZonePick&quot;
+        tools:targetApi=&quot;31&quot;&gt;
+        &lt;uses-library android:name=&quot;com.symbol.emdk&quot;/&gt;
+        &lt;activity
+            android:name=&quot;.MainActivity&quot;
+            android:exported=&quot;true&quot;
+            android:theme=&quot;@style/Theme.ZonePick&quot;
+            android:screenOrientation=&quot;portrait&quot; &gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&quot;android.intent.action.MAIN&quot; /&gt;
+
+                &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot; /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+        &lt;receiver
+            android:name=&quot;.BarcodeReceiver&quot;
+            android:enabled=&quot;true&quot;
+            android:exported=&quot;true&quot;&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name=&quot;com.example.zonepick.SCAN&quot; /&gt;
+                &lt;category android:name=&quot;android.intent.category.DEFAULT&quot; /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/receiver&gt;
+
+    &lt;/application&gt;
+
+&lt;/manifest&gt;
+
+Registering the receiver (This is in a composable loaded in the MainActivity
+ 
+
+    DisposableEffect(Unit) {
+
+        val barcodeReceiver = BarcodeReceiver()
+
+        val intentFilter = IntentFilter(&quot;com.example.zonepick.SCAN&quot;)
+        Log.d(&quot;Home&quot;, &quot;Registering receiver&quot;)
+        context.registerReceiver(barcodeReceiver, intentFilter)
+
+        onDispose {
+            context.unregisterReceiver(barcodeReceiver)
+            Log.d(&quot;Home&quot;, &quot;Unregistering receiver&quot;)
+        }
+    }
+
+The Profile:
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              K
+            
+          
+                
+          
+            Kyle Falconer
+          
+          
+            2 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I&#x27;m having the same issue with trying to get the WS50 to output barcode data. The same application and broadcast receiver is working on the TC52, but not the WS50. The scan button works, and I have a camera preview showing up, which beeps when a barcode is seen, but no data is ever sent.Dave, what application are you using to view the profile in those last 4 screenshots? I&#x27;ve been trying to verify that my profile is correct, but the WS50 doesn&#x27;t allow me to see the profile details within the DataWedge app, and the StageNow application on Windows doesn&#x27;t  seem to be able to open the exported datawedge.db file (it&#x27;s only able to open .zip and .xml). When I create the profile, I get &quot;SUCCESS&quot;, so I assume everything is fine. Command:      com.symbol.datawedge.api.SET_CONFIG
+ Result:       SUCCESS
+ Result Info:  PROFILE_NAME: ProfileDemo
+ CID:          SET_INTENT_OUTPUT This is how I&#x27;m building my profile Bundle:class DataWedgeProfileBuilder @Inject constructor(
+    @ActivityContext context: Context,
+    private val signatureProvider: SignatureProvider
+){
+    
+    private val profileIntentAction = context.resources.getString(R.string.activity_intent_filter_action)
+
+    fun buildProfileBundle() : Bundle {
+
+        val profileBundle = createProfile()
+
+        val bundlePluginConfig = mutableListOf&lt;Bundle&gt;()
+        bundlePluginConfig.add(configureScannerPlugin())
+        bundlePluginConfig.add(configureIntentPlugin())
+
+
+        profileBundle.putParcelableArray(&quot;PLUGIN_CONFIG&quot;, bundlePluginConfig.toTypedArray())
+        return profileBundle
+    }
+
+    private fun createProfile(profileName:String = &quot;ProfileDemo&quot;) : Bundle {
+        val bMain = Bundle()
+        bMain.putString(&quot;PROFILE_NAME&quot;, profileName)
+        bMain.putString(&quot;PROFILE_ENABLED&quot;, &quot;true&quot;)
+        bMain.putString(&quot;CONFIG_MODE&quot;, &quot;CREATE_IF_NOT_EXIST&quot;)
+        return bMain
+    }
+
+    private fun configureScannerPlugin() :Bundle {
+        val barcodePluginBundle = Bundle()
+        barcodePluginBundle.putString(&quot;PLUGIN_NAME&quot;, &quot;BARCODE&quot;)
+        barcodePluginBundle.putString(&quot;RESET_CONFIG&quot;, &quot;true&quot;)
+
+        val barcodeParamsBundle = Bundle()
+        barcodeParamsBundle.putString(&quot;decoder_code39&quot;, &quot;true&quot;)
+        barcodeParamsBundle.putString(&quot;decoder_upca&quot;, &quot;true&quot;)
+        barcodeParamsBundle.putString(&quot;scanner_selection&quot;, &quot;auto&quot;)
+        barcodeParamsBundle.putString(&quot;scanner_input_enabled&quot;, &quot;true&quot;)
+        barcodeParamsBundle.putStringArray(&quot;scanner_trigger_resource&quot;, arrayOf(&quot;LEFT&quot;, &quot;RIGHT&quot;))
+        barcodeParamsBundle.putString(&quot;picklist&quot;, &quot;1&quot;);
+        barcodePluginBundle.putParcelableArrayList(&quot;PARAM_LIST&quot;, arrayListOf(barcodeParamsBundle))
+        return barcodePluginBundle
+    }
+
+
+    private fun configureIntentPlugin() : Bundle {
+        val bConfigIntent = Bundle()
+        bConfigIntent.putString(&quot;PLUGIN_NAME&quot;, &quot;INTENT&quot;)
+        bConfigIntent.putString(&quot;RESET_CONFIG&quot;, &quot;true&quot;)
+
+        val intentParams = Bundle()
+        intentParams.putString(&quot;intent_output_enabled&quot;, &quot;true&quot;)
+        intentParams.putString(&quot;intent_action&quot;, profileIntentAction)
+        intentParams.putString(&quot;intent_category&quot;, &quot;android.intent.category.DEFAULT&quot;)
+        intentParams.putInt(&quot;intent_delivery&quot;, 2)
+
+        val component0 = Bundle()
+        signatureProvider.getSignatures().firstOrNull()?.let { sig -&gt;
+            component0.putString(&quot;PACKAGE_NAME&quot;, sig.packageName)
+            component0.putStringArray(&quot;ACTIVITY_LIST&quot;, listOf(&quot;*&quot;).toTypedArray());
+            component0.putString(&quot;SIGNATURE&quot;, sig.sigSha1)
+        }
+        intentParams.putParcelableArray(&quot;intent_component_info&quot;, listOf(component0).toTypedArray())
+        bConfigIntent.putBundle(&quot;PARAM_LIST&quot;, intentParams)
+
+        return bConfigIntent
+    }
+}
+ And I&#x27;m creating the Intent in another class:        val bMain = profileBuilder.buildProfileBundle()
+
+        val iSetConfig = Intent()
+        iSetConfig.action = &quot;com.symbol.datawedge.api.ACTION&quot;
+        iSetConfig.putExtra(&quot;com.symbol.datawedge.api.SET_CONFIG&quot;, bMain)
+        iSetConfig.putExtra(&quot;SEND_RESULT&quot;, &quot;LAST_RESULT&quot;)
+        iSetConfig.putExtra(&quot;COMMAND_IDENTIFIER&quot;, &quot;SET_INTENT_OUTPUT&quot;) 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            2 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            A Quick Question:Have you referred to the TechDoc Datawedge article regarding the WS50?https://techdocs.zebra.com/datawedge/13-0/guide/programmers-guides/ws50/There is also a Demo that goes with that for the WS50 (Truck Loading Demo) here:https://techdocs.zebra.com/ws50/guide/demo/truck-loading/I would expect that with the cut down version of Android that the WS50 operates with - that EMDK may not function as expected.( EDMK has been suggested to developers to migrate to Datawedge.)
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              K
+            
+          
+                
+          
+            Kyle Falconer
+          
+          
+            2 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for the response Sean. The truck loading demo does work for me on the WS50, but the code provided does not include the profile creation step.How can I compare my configuration with dwprofile_truckloadingdemo.db or validate that my configuration is setting the required values correctly? I noticed that I can open dwprofile_truckloadingdemo.db in an SQLite viewer, but that&#x27;s really cumbersome.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            2 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Kyle.As much as SQLite viewer allows you to see the data, Try to use Datawedge to view the config instead if you have a Zebra Android device (Like a TC52 or an MC33.)You can import the &quot;truckloading_demo&quot; profile onto these platforms and use Datawedge to look at the config.Similarly - when you make a change to your profile &quot;programmatically&quot; - you can check on this with Datawedge.*(A good example of this is using DataCapture1 on a Zebra Android Device - uncheck all 4 barcode decoders, set the setting, and quit the app, go into Datawedge app, and open the &quot;DWDatacapture1&quot; profile and look at the scanner settings - and the &quot;Decoders&quot; menu and see the 4 types that are now disabled. )*
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

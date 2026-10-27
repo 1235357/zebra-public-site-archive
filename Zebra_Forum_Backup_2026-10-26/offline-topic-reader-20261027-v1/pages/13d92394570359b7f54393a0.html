@@ -1,0 +1,180 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Using the Zebra RFID API SDK with RFD8500</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Using the Zebra RFID API SDK with RFD8500</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25979; original snapshot: threads/resume-00350.html; SHA-256: c1d27ce4d145298b2c73b87536ac2b2d5f36a1a338ea78c94f21d54b232e035e</small><pre id="topic">
+
+    
+        Using the Zebra RFID API SDK with RFD8500
+
+
+        
+      
+                        
+                    
+            D
+          
+          Dave Westerman
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            72
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m trying to look at some of the information in the different config objects for a Zebra RFD8500 using the RFID API 3 SDK (2.0.1.34). But the data I&#x27;m trying to log has me puzzled.
+Here&#x27;s a snippet of my code (the `debugLog()` log method just does an `ObjectMapper.writeValueAsString(object)` call to show the object as JSON):
+```
+Readers readers = new Readers();
+debugLog(METHOD_NAME, &quot;readers&quot;, readers);       // NOTE 1
+try {
+    ArrayList readerDevices = readers.GetAvailableRFIDReaderList();   // NOTE 2
+    for (ReaderDevice readerDevice : readerDevices) {
+        debugLog(METHOD_NAME, &quot;readerDevice&quot;, readerDevice);
+        RFIDReader rfidReader = readerDevice.getRFIDReader();
+        debugLog(METHOD_NAME, &quot;rfidReader&quot;, rfidReader);
+        Config config = rfidReader.Config;       // NOTE 3
+        debugLog(METHOD_NAME, &quot;config&quot;, config);
+        Antennas antennas = config.Antennas;     // NOTE 4
+```
+ NOTE 1: `readers` is always displayed as a `null`.
+ NOTE 2: However, this line never gets an NPE, it works, and I can see the `readerDevice` and `rfidFReader` in the log!
+ NOTE 3: `config` is always null.
+ NOTE 4: This line usually throws an NPE. However, I&#x27;ve seen it work on occasion, even though `config` is always null!
+ Here is my log:
+ ```
+D/Rfd8500Module: .showRfd8500Info(): readers = null
+D/Rfd8500Module: .showRfd8500Info(): readerDevice = {&quot;address&quot;:&quot;60:77:71:BA:C5:62&quot;,&quot;name&quot;:&quot;RFD850020281520100269&quot;,&quot;password&quot;:null,&quot;rfidreader&quot;:{&quot;Actions&quot;:null,&quot;Config&quot;:null,&quot;Events&quot;:null,&quot;ReaderCapabilities&quot;:null,&quot;SecureConnectionInfo&quot;:null,&quot;hostName&quot;:&quot;RFD850020281520100269&quot;,&quot;password&quot;:null,&quot;port&quot;:0,&quot;timeout&quot;:0,&quot;capabilitiesReceived&quot;:true,&quot;connected&quot;:false}}
+D/Rfd8500Module: .showRfd8500Info(): rfidReader = {&quot;Actions&quot;:null,&quot;Config&quot;:null,&quot;Events&quot;:null,&quot;ReaderCapabilities&quot;:null,&quot;SecureConnectionInfo&quot;:null,&quot;hostName&quot;:&quot;RFD850020281520100269&quot;,&quot;password&quot;:null,&quot;port&quot;:0,&quot;timeout&quot;:0,&quot;capabilitiesReceived&quot;:true,&quot;connected&quot;:false}
+D/Rfd8500Module: .showRfd8500Info(): config = null
+E/Rfd8500Module: .showRfd8500Info(): exception encountered - Attempt to read from field &#x27;com.zebra.rfid.api3.Antennas com.zebra.rfid.api3.Config.Antennas&#x27; on a null object reference
+ ```
+Is all this stuff async? Is there something I need to do to make sure I&#x27;ve got the data before I continue to the next step?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            5 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Dave,
+I would recommend trying the quick-start sample in our RFID Developers Guide - you can find the sample on Page 53: https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/barcode-sca...
+From a quick glance, to answer your notes:
+Note 1 &amp; 2: Perhaps ObjectMapper.writeValueAsString(object) can&#x27;t convert the Reader object to JSON, and so returns null?
+Note 3: You need to connect to the reader before performing any configuration
+Note 4: Again, I would question if ObjectMapper API is causing a red-herring here.
+As you will see in our Developer Guide the GetAvailableRFIDReaderList() API and subsequent calls are Async, so this will need to be performed on a background thread. 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

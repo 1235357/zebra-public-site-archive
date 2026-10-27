@@ -1,0 +1,369 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to find key code value for HW yellow left and right button in TC27 PDA</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to find key code value for HW yellow left and right button in TC27 PDA</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/how-find-key-code-value-hw-yellow-left-and-right-button-tc27-pda; original snapshot: threads/00101.html; SHA-256: caf1d8ac39ccd83f0dcb4fb504975c3ee82c1b22902ae97d44e877af802e90c5</small><pre id="topic">
+
+    
+        How to find key code value for HW yellow left and right button in TC27 PDA
+
+
+        
+      
+                        
+                    
+            C
+          
+          chetan patel
+          1 year 10 months ago
+        
+        
+      
+        
+            
+                  
+            
+            488
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  HelloI am cordova developer.i tryed to get key code value for Hardware yellow button left and right using &quot;keydown&quot; event but always return  key: &quot;Unidentified&quot; and keyCode: 0&quot;keydown&quot; even&gt; Responsecan you please give me suggestion for how to get key code value for both button in javascript side?Thank you 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              I
+            
+          
+                
+          
+            Ian Hatton
+          
+          
+            1 year 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The yellow buttons are defined as triggers so they can&#x27;t be detected as keys in standard Javascript. However, if you use Zebra Enterprise Browser then you can detect triggers using the EB.KeyCapture.captureTrigger() method as detailed here : https://techdocs.zebra.com/enterprise-browser/5-0/tutorial/keycapture/
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              N
+            
+          
+                
+          
+            Nicola De Zolt
+          
+          
+            1 year 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Because the yellow keys will only work with a Zebra device, you could capture the onKeyUp/Down in the Android plugin, such as here in this sample project https://github.com/NDZL/ionic-cap-echo/blob/main/android/src/main/java/com/ndzl/cap/echo/EchoPluginPlugin.java 
+When the key code is captured, pass it back to the common UI code as I did here  with notifyListeners  https://github.com/NDZL/ionic-cap-echo/blob/b00a7f102a9dd1874edc020a0097bacee6c7d808/android/src/main/java/com/ndzl/cap/echo/EchoPluginPlugin.java#L73 
+Finally, in the js/ts code, receive the value in a locally defined listener such as this one
+https://github.com/NDZL/ionic-cap-use-datawedge-echoplugin/blob/c421ff32dbb3acd6229137c474e27abeb9320ece/src/app/tab1/tab1.page.ts#L24
+Please recall that the yellow buttons are mapped to trigger the barcode scanner, so if you just need to scan, refer to DATAWEDGE https://techdocs.zebra.com/datawedge/13-0/guide/about/, which relies on Intents to deliver data and be configured.
+ 
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            chetan patel
+          
+          
+            1 year 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello,i checked in android Logcat view during press HW button (Left, Right and Scan buttons)i found that 136, 137 and 138 code getting when press button.can you please suggest how to &quot;HardKeyDownEvent&quot; event handle in cordova application  using javascript or plugin?Thank you
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              N
+            
+          
+                
+          
+            Nicola De Zolt
+          
+          
+            1 year 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Patel, in my previous answer above, I showed you a way to achieve what you requested. 
+Did you try it? Can you share the challenges/results you faced?
+Thanks 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            chetan patel
+          
+          
+            1 year 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Nicolayes, i checked but not return keycode value in app sidei need to only keycode value when button press, because i using cordova plugin for scanner, not using DATAWEDGElike,. after return key code value, i will decide this key to start RFID or 2D scanner (both are working with cordova plugin)can i directly, find keycode value in app after press Hardware button?Thank youChetan Patel 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

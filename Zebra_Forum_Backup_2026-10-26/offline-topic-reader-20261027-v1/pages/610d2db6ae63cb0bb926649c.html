@@ -1,0 +1,284 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Xamarin Bluetooth prining very slow</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Xamarin Bluetooth prining very slow</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/xamarin-bluetooth-prining-very-slow; original snapshot: threads/00963.html; SHA-256: a9f02baaf4251d855caf0056a1ee052be8f576e74253145a69db947399521891</small><pre id="topic">
+
+    
+        Xamarin Bluetooth prining very slow 
+
+
+        
+      
+                        
+                    
+            C
+          
+          Clark Brown
+          4 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            154
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Following several example of code posted here to print to bluetooth printer.   VS 2019,    LinkOS_Xamarin_SDK 1.20
+Install app on  Zebra  TC 51, paired with ZQ511  
+When printing sending ZPL to printer, is taking about 10 to 15 seconds to print ,  the line ConnectionBuilder.Current.Build(&quot;BT:&quot; + address)  is taking about 6+ seconds 
+I crated a test print function below , how can i get the     IConnection thePrinterConn = ConnectionBuilder.Current.Build(&quot;BT:&quot; + address);  to execute faster ?
+private void Print_Clicked(object sender, EventArgs e)
+        {
+            var watch = new System.Diagnostics.Stopwatch();
+            watch.Start();
+            string address = Preferences.Get(&quot;printer_key&quot;, &quot;default_value&quot;);   //   1 ms
+            IConnection thePrinterConn = ConnectionBuilder.Current.Build(&quot;BT:&quot; + address); // 6219 ms
+            //  var thePrinterConn = ConnectionBuilder.Current.Build(&quot;BT:&quot; + address); // 6219 ms
+            // tested withiut &quot;BT:&quot;  -
+            //var thePrinterConn = ConnectionBuilder.Current.Build(address); // 17164 ms 17.164 sec
+            watch.Stop();
+            warningLabel.IsVisible = true;
+            warningLabel.Text = $&quot;Execution connectbuild Time: {watch.ElapsedMilliseconds} ms&quot;;
+            //open connection
+            thePrinterConn.Open(); // 1216 ms - 1.2 sec
+            string zpl = &quot;^XA^FO45,25^BY1^BCN,127,N,N,,N,A^FD1234567890^FS^FT29,173^CI0^A0N,20,27^FDTest5678901Test^F^PQ1^XZ&quot;;
+            // Send the data to printer as a byte array.
+            thePrinterConn.Write(System.Text.Encoding.ASCII.GetBytes(zpl)); // 494 ms  .5 sec
+            // Close 
+            thePrinterConn.Close(); // 920 ms  1 sec
+            /// total  17272
+        }
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            If you want to establish a Bluetooth connection faster, then don&#x27;t use the ConnectionBuilder class. Because the ConnectionBuilder.Current.Build() will actually open and then close the Bluetooth connection before it returns the connection object to the caller. This roundtrip takes time, especially it takes 5 seconds to close the Bluetooth connection.
+Instead, you can use the BluetoothConnection class to create a Bluetooth connection object by passing in the Bluetooth MAC address to BluetoothConnection(), then followed by calling the Open() on this Bluetooth connection object. This way, you by-pass the unneeded close function, which cuts the time by at least 5 seconds.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Clark Brown
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            using BluetoothConnection was faster but still to print is taking about 7 seconds, where before total was about 13 seconds.
+I am getting closer with BluetoothAdapter, it is prininting within 2 seconds.  Only issue now, is it only prints first time, won&#x27;t print after.
+Working on determining the casue now.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There are a few properties (TimeToWaitBeforeClose, TimeToWaitForMoreData, etc.) in the BluetoothConnection class, which you can adjust the timeout values for your needs, so to reduce the overall time it takes for Open -&gt; Print -&gt; Close. I think the default value for TimeToWaitBeforeClose is set to 5,000ms (i.e. 5 seconds). Depending on the length of ZPL script, you may be able to reduce the value, so that you can short the total time overall.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

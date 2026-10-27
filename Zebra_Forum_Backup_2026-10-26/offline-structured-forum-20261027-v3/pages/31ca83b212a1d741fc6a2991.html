@@ -1,0 +1,361 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Send Zebra Certificate through socket using ZPL command</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/send-zebra-certificate-through-socket-using-zpl-command; snapshot threads/00612.html; SHA-256 bf93dad09df797cb7dad95c46c17d1d6bbe5e7dd6d8fc97c03aad9a5a9a81e24. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Send Zebra Certificate through socket using ZPL command</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            P
+          </div>
+          <div class="forum-topic__author-name">Pedro Zapata</div>
+          <div class="forum-topic__timestamp">3 years 7 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            518
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            3
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi everyone, </p>
+
+<p>I'm trying to send a certificate file .NRD using a Python Socket and ZPL commands. At this moment the printer (ZT411) receives the file but it's not working. This certificate is used for weblink, i'm trying to send it to multiple devices to the same time. I think that my ZPL command is wrong or i skipped a step. Can anyone help me to understand if i need someting else?</p>
+
+<p>This is my code:</p>
+
+<pre><code class="language-python">import socket
+import os
+from _thread import *
+from flask import Flask, request
+import re
+import zebra
+
+
+def zebra (cert_test, hosts):
+    port = 9100
+    for host in hosts:
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.settimeout(1)
+            result = s.connect_ex((host, port))
+            print(result)
+            if result == 0:
+                s.send(str.encode(cert_test))
+                print (s.recv(1024)) #ACK
+                return ("  [*] Port " + str(port) + " open!" + host)
+                
+            else: return("[+] CLOSE HOST " + host + ":" + str(port))
+        except:
+            pass
+
+hosts = ['10.XX.XX.XX']
+
+#I'm sending the certificate in binary format Example: "2D2D2D2D2D424" 
+cert_test = cert_test = "^XA~DYE:WEBLINK1_CA,A,NRD,2182,,A,&lt;My Cert in Binary&gt;^XZ"
+
+
+zebra (cert_test,hosts)</code></pre>
+
+<p> </p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      3 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-51513" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              P
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Pedro Zapata</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p> </p>
+
+<p>Hi everyone, </p>
+
+<p>Now i'm using another method, sending the whole file over a tcp socket with a .zpl file. But the result it's the same, the printer don't read the certificate. Can anyone help me?</p>
+
+<p> </p>
+
+<pre><code class="language-python">import socket
+import tqdm
+import os
+
+
+separator = "&lt;SEPARATOR&gt;"
+buffer_size = 4096
+
+
+host = "10.27.XX.XX"
+
+
+port = 9100
+
+filename = "prueba.zpl"
+
+filesize = os.path.getsize(filename)
+
+s = socket.socket()
+
+print (f"[+] Conectando a la impresora {host}:{port}")
+s.connect((host, port))
+print ("[+] Conectado.")
+
+s.send(f"{filename}{separator}{filesize}".encode())
+#s.send(str.encode(filename))
+
+progress = tqdm.tqdm(range(filesize), f"Sending {filename}", unit="B", unit_scale=True, unit_divisor=1024)
+
+with open(filename, "rb") as f:
+    while True:
+        # read the bytes from the file
+        bytes_read = f.read(buffer_size)
+        if not bytes_read:
+            # file transmitting is done
+            break
+        # we use sendall to assure transimission in 
+        # busy networks
+        s.sendall(bytes_read)
+        # update the progress bar
+        progress.update(len(bytes_read))
+# close the socket
+s.close()</code></pre>
+
+<pre><code class="language-bash">! CISDFCRC16
+BA0B
+privkey.nrd
+0000037B
+E3AF
+-----BEGIN RSA PRIVATE KEY-----
+MIICXgIBAAKBgQDQXu/E9YuGlScfWQepZa8Qe/1mJRpmk8oPhPVvam/4M5/WaWQp
+3/p1f8J17/hDH8fFq5Dnx3/tHaU7A4SKO8GeghX5hnp/mt4tuQEvsXkCrcgS1puz
+z5dbO7ThhuzxYClnr7uiXPvSRXawgwDTPas+0q/6gHeUSXtA0EofuIyv7wIDAQAB
+AoGBAJPnf3wn6wT5pE59DJIyakRiLmkt1wKOzvObJfgS7i2Yv1EbeAy9PnPe3vKG
+Bovm6A+oi2/qTSTLUTiFc7QHXJPVxLmRiHMbf1Q8j+VJkGTpWt8EY/Px+HSM2HAP
+jqd+Im0IiE9RQPsxWQH9UaauF6nl5gIfMF74BIPsVzFXLFfxAkEA6zSrCKCycE/P
+14cjZibnLiWxdL3U3I9eWuhmIS37RB6UJF</code></pre>
+
+<p>prueba.zpl file</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-51514" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>The printer needs a reset in order to read the cert file. Can you try to FTP the cert to the printer's E: drive to see if the printer reads the cert file? If the printer still doesn't read the cert file after the FTP, it might be the cert file is not valid.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-51515" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              P
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Pedro Zapata</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thanks Steven i will try with other Cert. </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div></div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/send-zebra-certificate-through-socket-using-zpl-command%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/send-zebra-certificate-through-socket-using-zpl-command%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

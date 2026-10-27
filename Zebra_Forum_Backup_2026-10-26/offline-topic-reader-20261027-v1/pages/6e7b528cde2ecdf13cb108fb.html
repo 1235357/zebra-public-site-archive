@@ -1,0 +1,267 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Converting raw data to human legible string</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Converting raw data to human legible string</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/converting-raw-data-human-legible-string; original snapshot: threads/00708.html; SHA-256: b49812b1084976c5eb966da87479ff09fab3ec7abcdf283eb8377bfad36fb704</small><pre id="topic">
+
+    
+        Converting raw data to human legible string
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          3 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            494
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Zebra newbie here. I got the Linux SDK going with an MS4717 scanner, and working to adapt the console-app sample code to 1) enable the scanner, 2) capture a barcode (various flavors, e.g. UPC-A, GS1 Databar…) and then 3) disable the scanner until it&#x27;s needed again.
+Using OnBarcodeEvent, scanner output arrives as rawdata including a datalabel, and datatype. According to the SDK developer&#x27;s guide , the latter (datatype) indicates the barcode type and that it correlates to a SNAPI or IBM Hand-held communication protocol.
+I can’t figure out or find a reference on where, and/or how, to apply the communication protocol in order to process the raw data and produce the human legible value contained in the barcode.
+Looks like OnBinaryEvent might have that transformation within, and could be another option, but I&#x27;ve not come across an example on how to use it in the sample code.
+Bottom line, how do I convert raw data into a human legible string and/or is there a better way I ought to consider?
+Thanks for the help. Hard to believe how much time I&#x27;ve spent on this already... 
+Luis
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Luis ,
+Data type is basically barcode type .
+Check full table starting from page 40 in following manual
+https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/software/s…
+Data label is your decoded barcode content in hex format  which you can convert into ascii .
+Best regards
+Riad
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              L
+            
+          
+                
+          
+            Luis Melendez
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Got it. Somehow had not come across anything that explains the data label is the decoded barcode in hex. Good to know. Thanks, Riad.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Corneliu Zabolotnic
+          
+          
+            1 year 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            &lt;datatype&gt;11&lt;/datatype&gt;&lt;datalabel&gt;0x35 0x39 0x30 0x33 0x39 0x30 0x30 0x39 0x36 0x34 0x30 0x35 0x30&lt;/datalabel&gt;&lt;rawdata&gt;0x12 0x10 0x03 0x00 0x05 0x09 0x00 0x03 0x09 0x00 0x00 0x09 0x06 0x04 0x00 0x05 0x00 0x16&lt;/rawdata&gt;&lt;datatype&gt;3&lt;/datatype&gt;&lt;datalabel&gt;0x53 0x58 0x55 0x41 0x48 0x32 0x30 0x30 0x30 0x31&lt;/datalabel&gt;&lt;rawdata&gt;0x11 0x10 0x03 0x00 0x53 0x58 0x55 0x41 0x48 0x32 0x30 0x30 0x30 0x31 0x00 0x18 0x0B&lt;/rawdata&gt; This is 2 simple exemples of different types of codes, one code128 and other ean13. How can I know from the raw data which bytes correspond to the data type? Because from the 5th byte is the barcode data, but in some datatypes, you have to convert as simple decimal but in code128 you have to convert to ascii. How can we know wich bytes represent the datatypes?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

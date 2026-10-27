@@ -1,0 +1,732 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Unable to connect to the Zebra ZD621R printer through Zebra Android SDK</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Unable to connect to the Zebra ZD621R printer through Zebra Android SDK</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/unable-connect-zebra-zd621r-printer-through-zebra-android-sdk; original snapshot: threads/00911.html; SHA-256: 56f01ff2ca3cd77a92ea1863864ad7049d9e99e0254612fcf7225276eaaa9dff</small><pre id="topic">
+
+    
+        Unable to connect to the Zebra ZD621R printer through Zebra Android SDK
+
+
+        
+      
+                        
+                    
+            S
+          
+          Senthil Subramanian
+          4 years 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            1289
+          
+                
+                  
+            
+            11
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+I am using zebra printer with the following specifications:
+Model: Zebra-ZD621R
+Link-OS version: 6.3
+Firmware: V93.21.07Z
+Android Mobile SDK information:
+Using version 2.15.1 downloaded from https://www.zebra.com/ap/en/support-downloads/printer-software/link-os-….
+Issue:
+Through this SDK we are able to connect to ZD500R without any issues. But when trying to connect ZD621R it is throwing ConnectionException. Same exception is throwing when I tried with the sample app downloaded from https://github.com/ZebraDevs/LinkOS-Android-Samples/tree/ConnectivityDe… . Following is the exception thrown from Zebra SDK,
+com.zebra.sdk.comm.ConnectionException: Could not connect to device: read failed, socket might closed or timeout, read ret: -1
+at com.zebra.sdk.comm.ConnectionA.throwAsConnectionException(Unknown Source:42)
+at com.zebra.sdk.comm.ConnectionA.open(Unknown Source:37)
+at com.zebra.sdk.comm.BluetoothConnection.open(Unknown Source:3)
+But the same printer is getting connected through Zebra Printer Setup Utility app. We are not sure which part is missing when we are using SDK and how it is working in Setup Utility app. Please help us resolve this issue.
+Thanks and Regards,
+Arunvishal S
+
+              
+
+                    
+          
+      
+              
+ Printer utility screenshot.jpg
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      11 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Looks like you tried to connect to the ZD621R through Bluetooth. Is that right? Can you make sure that the ZD621R has the Bluetooth Classic? By default, the ZD621R model has only the Bluetooth Low Energy as the standard configuration. The Link-OS SDK for Android only works with the Bluetooth Classic. The Link-OS SDK for Android BTLE will work with the Bluetooth Low Energy. The Printer Setup Utility app works with both Classic and Low Energy. Pay attention on the Bluetooth icon on the Printer Setup app. If the icon has a small text of &quot;LE&quot; in it, it indicates the connect to the printer is on the Bluetooth Low Energy.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Senthil Subramanian
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi, thanks for your input. I couldn&#x27;t find any option in the printer UI for changing the bluetooth settings from bluetooth low energy to bluetooth classic. Is there any way how we can do it in the printer UI? However i tried to change the value via SGD command - bluetooth.le.controller_mode. By default this command returned value as &quot;le&quot;. I tried to change the value like below:
+SGD.SET(&quot;bluetooth.le.controller_mode&quot;,  &quot;both&quot;, printerConnection);
+SGD.SET(&quot;bluetooth.le.controller_mode&quot;,  &quot;classic&quot;, printerConnection);
+I tried both commands given above separately, but it looks like the value is not changing in the printer settings and the value is always stick to &quot;le&quot;.
+I tried the same in Printer setup utility app and even there i got only one option i.e., &quot;le&quot;. Please look into the attached screenshot.
+Is there any other way how we can proceed with this?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            If the value is always le, it means that this particular ZD621R is only equipped with LE and it doesn&#x27;t have the Bluetooth Classic. You can only use LE to communicate with this ZD620R. You needs to switch to the Link-OS SDK for Android BTLE, which can be found in the SDK installation folder, e.g. C:\Program Files\Zebra Technologies\link_os_sdk\android_btle.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Senthil Subramanian
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Will most Zebra printers have LE? The reason I am asking is, if I switch to the ZSDK_ANDROID_BTLE.jar then will the app be able to handle most zebra printers? Also, do I need to use both the ZSDK_ANDROID_API.jar and the ZSDK_ANDROID_BTLE.jar in the app?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            This is really a question about what the printer models your app is intended to work with. The connectivity methods equipped on a printer model is based on the intended use cases for the particular models. Most of the Zebra mobile printer models have the Bluetooth Classic and BLE. For desktop printers, such as the ZD621R, have only BLE only (for configuration purpose) by default. The Bluetooth Classic is a special order for the desktop printers. If your Android app needs to work with both BT Classic and BLE, then you need both of the JAR files as you mentioned. The Zebra Printer Setup Utility app uses both BT Classic and BLE. When it discovers a BLE printer, there is a small &quot;LE&quot; on the Bluetooth icon.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Senthil Subramanian
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Can you please explain what it means by &quot;BLE only (for configuration purpose)&quot;?
+Does this mean we cannot use BLE for printing labels?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            BLE has a low data rate comparing with Bluetooth Classic, therefore, BLE is not recommended for printing labels that have a large amount of data, such as logos and graphics on the label, or for upgrading the printer&#x27;s firmware, etc. The intended use of BLE is for configuring the printer, which only involve a very small amount of data to transmit, such as these SGD commands. If the throughput is not a concern and the labels do not involve a large amount of data, surely you can use BLE to print.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Senthil Subramanian
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Now it seems like the only solution to resolve this issue is to connect to the printer via the wifi for printing and configurations rather than Bluetooth.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Alternative, you can use the Printer Setup Utility app to configure the ZD621R&#x27;s Wi-Fi over BLE. Once the printer is connected on Wi-Fi, the printing can be done on a regular TCP connection.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Senthil Subramanian
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Ok Thank you.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Senthil Subramanian
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            By using the library ZSDK_ANDROID_BTLE.jar, now I am able to connect my printer. Thanks for your help.
+I have two more queries. 
+1) We are not using discovery mechanism yet, we will pair our printer to the mobile device through bluetooth and by using the BluetoothDevice object we will initiate the connection mechanism. When we are querying for the list of paired devices we will get all the devices paired from the mobile device and to find out which is the printer device we will have the following logic using BluetoothClass:
+For getting the bluetooth class : BluetoothClass bluetoothClass = device.getBluetoothClass();
+And the condition is,
+                    if((bluetoothClass.getMajorDeviceClass() == BluetoothClass.Device.Major.IMAGING) &amp;amp;&amp;amp; (bluetoothClass.hasService(BluetoothClass.Service.RENDER))){
+       // Then it is a printer
+}
+The above condition is failing for the ZD621R printer which i am using because getMajorDeviceClass() method is returning value as 7936 ( which is UNCATEGORIZED) and bluetoothClass.hasService(BluetoothClass.Service.RENDER) returns value as false. The same condition will work for all the previous models of zebra printers including ZD500R. Will there be any particular reason why this printer&#x27;s bluetooth class is defined as UNCATEGORIZED and it doesn&#x27;t have the service value as rendering? And is there any other way how we can identify the zebra printers via BluetoothDevice object?
+2) By using BluetoothDevice object, is it possible for me to know whether i need to establish classic or BLE connection?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

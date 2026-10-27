@@ -1,0 +1,290 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Disable PTT Express via SOTI</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Disable PTT Express via SOTI</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/30529; original snapshot: threads/02159.html; SHA-256: d14e5f922536868e976d777db22e9c47119dcd504830cc29c03fe8d75f1ee2a0</small><pre id="topic">
+
+    
+        Disable PTT Express via SOTI
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            329
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I have a customer that does not want to use PTT Express.  Even though they don&#x27;t have PTT enabled, the PTT Express icon still appears in red in the system tray (see screen shot below).  They customer doesn&#x27;t want end users playing around with the application so hey would like to completely disable the icon from appearing. 
+ 
+ 
+You can disable the icon via the GUI on the device by following these steps:
+Go into Settings, then Apps
+Select All to display the list of all applications on the device
+Scroll down and select PTT Express
+Click on the Disable button 
+ 
+ 
+The following procedure will disable the PTT Express icon via SOTI:
+ 
+NOTE:  This procedure has been verified on the MC40 Jellybean build 051415
+ 
+1.  Retrieve the /enterprise/device/settings/ptt/ptt_settings.xml file off the device.  You may need to go into File Browser on the device and copy this file to a location where it can be retrieved (i.e. /sdcard)
+2.  Edit the xml file to include the following additional lines:
+true
+Disable PTT client. If set to true PTT service will not be started and application is completely disabled.
+3.  Create a SOTI package to deploy the modified xml file.  IMPORTANT:  SOTI will need to deploy the file to a temporary location and then copy it to /enterprise/device/settings/ptt/.  The package should do the following:
+Install ptt_settings.xml file in a temporary location (i.e. /sdcard)
+Execute a Post Install Script to copy the xml file into the /enterprise/device/settings/ptt/ folder.  The command line in the SOTI posti.cmd file would be &quot;copy /sdcard/ptt_settings.xml /enterprise/device/settings/ptt/ptt_settings.xml&quot;.  See the screen shot below on how the package should be configured.
+ 
+ 
+If you would like to re-enable PTT Express via SOTI, do the following:
+ 
+1.  Retrieve the /enterprise/device/settings/ptt/ptt_settings.xml file off the device.  You may need to go into File Browser on the device and copy this file to a location where it can be retrieved (i.e. /sdcard)
+2.  Edit the xml file to modify the following lines:
+false
+Disable PTT client. If set to true PTT service will not be started and application is completely disabled.
+3.  Create a SOTI package to deploy the modified xml file.  IMPORTANT:  SOTI will need to deploy the file to a temporary location and then copy it to /enterprise/device/settings/ptt/.  The package should do the following:
+     1.  Install ptt_settings.xml file in a temporary location (i.e. /sdcard)
+     2.  Execute a Post Install Script to copy the xml file into the /enterprise/device/settings/ptt/ folder.  The device will then need to be rebooted so the XML file will be read again to enable the PTT Express application.  The command lines in the SOTI posti.cmd file would be:
+             copy /sdcard/ptt_settings.xml /enterprise/device/settings/ptt/ptt_settings.xml
+               reset
+     See the screen shot below on how the package should be configured.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            John Thurmes
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Document I created to disable KK version MC40 along with Ken&#x27;s notes on performing the same on JB.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            John Thurmes
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I think it would be helpful to also provide the ability to remove the Icon from the task tray, disabling the service still shows it in the upper left.&amp;nbsp; Unchecking the show notification manually is currently the only means to completely remove.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks Ken.
+This is very helpfull information. We should share more of it.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

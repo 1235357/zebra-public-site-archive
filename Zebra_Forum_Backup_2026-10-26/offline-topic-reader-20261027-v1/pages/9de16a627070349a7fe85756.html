@@ -1,0 +1,322 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Permission denied to write in printer zebra printing</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Permission denied to write in printer zebra printing</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/permission-denied-write-printer-zebra-printing; original snapshot: threads/00468.html; SHA-256: 11561ae78825e5ba1aceba2138b3adb66c06271ac9a8d6aba8b0182c3dd2cc5d</small><pre id="topic">
+
+    
+        Permission denied to write in printer zebra printing
+
+
+        
+      
+                        
+                    
+            M
+          
+          Mickaël Arabian
+          3 years ago
+        
+        
+      
+        
+            
+                  
+            
+            343
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+
+I would like to integrate a Zebra ZD411 printer into my React Native Android application.
+
+ 
+
+I am developing on macOS, but the application runs on an Android device.
+
+I am using the Android SDK correctly, but when I try to send a print command to the printer, here is the error.&quot;
+
+ 
+
+
+bt_upio : upio_set : open(/proc/bluetooth/sleep/btwrite) for write failed: Permission denied (13)
+
+
+ 
+
+The following permissions are in my AndroidManifest:&quot;.
+
+&lt;uses-permission android:name=&quot;android.permission.READ_EXTERNAL_STORAGE&quot;/&gt;
+&lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot;/&gt;
+&lt;uses-permission android:name=&quot;android.permission.BLUETOOTH&quot;/&gt;
+&lt;uses-permission android:name=&quot;android.permission.BLUETOOTH_ADMIN&quot;/&gt;
+&lt;uses-permission android:name=&quot;android.permission.ACCESS_FINE_LOCATION&quot;/&gt;
+
+When I try to start a print with the mobile application &#x27;Printer Setup,&#x27; it works.
+
+ 
+
+However, printing was working on another Zebra model with the same sdk. (Unfortunately, I no longer have the number of the old model).
+
+ 
+
+Thank you
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Starting from Android 6.0 (API level 23), an app must request the user to approve the ACCESS_FINE_LOCATION permission explicitly. See this article for more details - Link-OS SDK for Android | Permissions and Bluetooth API
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mickaël Arabian
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you for the response. I did the explicit request about permissions, but the issue persists.
+
+The printer model that didn&#x27;t have this problem is the ZD510. Is there any difference between both ?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Assuming you are trying to write to the Bluetooth Classic connection. Does your ZD411 printer have Bluetooth Classic or is Bluetooth Classic on the ZD411 enabled? You can use the Bluetooth SGD (or use the Zebra Setup Utility app) to check the ZD411&#x27;s Bluetooth configuration. Make sure the bluetooth.le.controller_mode is set as either both or classic. If the Choices only has the le option for the bluetooth.le.controller_mode, it means the ZD411 you have only has Bluetooth Low Energy and does not have Bluetooth Classic.
+### Bluetooth SDG
+! U1 getvar &quot;bluetooth&quot;
+
+
+### Response example of the Bluetooth SGD
+Received:1042 bytes 
+bluetooth.
+bluetooth.discoverable : on , Choices: on,off
+bluetooth.friendly_name : XXZJJ174600934 
+bluetooth.version : 6.2 
+bluetooth.date : 01/01/2020 
+bluetooth.local_name : XXZJJ174600934 
+bluetooth.address : AC:3F:A4:CD:C5:15 
+bluetooth.bluetooth_pin : * 
+bluetooth.short_address : AC3FA4CDC515 
+bluetooth.radio_version : 5.2 
+bluetooth.enable : on , Choices: on,off
+bluetooth.connected : no 
+bluetooth.minimum_security_mode : 1 , Choices: 1,2,3,4
+bluetooth.connected_security_mode : nc 
+bluetooth.bonding : on , Choices: on,off
+bluetooth.clear_bonding_cache
+bluetooth.enable_reconnect : iOS_only , Choices: off,iOS_only
+bluetooth.le.
+bluetooth.le.controller_mode : both , Choices: both,classic,le
+bluetooth.le.power_class : 2 , Choices: 1-2
+bluetooth.json_config_channel_enable : on , Choices: on,off
+bluetooth.page_scan_window : 60 , Choices: 15,60
+bluetooth.power_class : 2 , Choices: 1-2
+bluetooth.disconnect_idle_link : yes , Choices: yes,no
+bluetooth.sniff_mode_enable : enabled , Choices: enabled,disabled 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

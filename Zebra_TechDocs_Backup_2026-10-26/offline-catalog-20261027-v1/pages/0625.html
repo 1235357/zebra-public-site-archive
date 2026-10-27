@@ -1,0 +1,381 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Switch to Profile - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/switchtoprofile</code><br>Observed final URL: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/switchtoprofile/</code><br>Raw source: <code>raw/24e5f76314e8f7498ce2b036.html</code><br>Raw SHA-256: <code>2850e49d4fc42bbc227b495a04f9f797db8eb77c7b899da63599ae33896ea6bf</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs Home
+                        
+                                            DataWedge
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Get Started
+                            
+                        
+                        
+                            
+                                    Profiles
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Feature Matrix
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            US - English
+                          
+                          
+                                 CN - 普通话
+                                 JP - 日本語
+                          
+                                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Switch to Profile
+                        
+                    SWITCH_TO_PROFILEProfiles RecapUsage ScenarioNotesFunction PrototypeParametersResult CodesExample Code
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Switch to Profile
+                                    
+                                            DataWedge
+                                            15.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        SWITCH_TO_PROFILE
+
+Used to switch an application&#x27;s association to a specified Profile. An app cannot be associated to more than one Profile, and the specified Profile must not already be associated with another app. Zebra recommends registering for profile switch notifications to identify when the profile switch is complete. This API will not function if the specified Profile does not exist or is already associated with an application.
+
+ CAUTION: Switching to a disabled Profile is not allowed if the GET_IGNORE_DISABLED_PROFILES API returns &quot;true.&quot;
+
+Profiles Recap
+
+DataWedge operates using Profiles and Plug-ins. A Profile contains information about how DataWedge interacts with a specific application and includes:
+
+
+Associated application
+
+Input plug-in configurations
+
+Process plug-in configurations
+
+Output plug-in configurations
+
+
+DataWedge includes a default Profile, Profile0, automatically created the first time DataWedge runs. Profiles allow each application to have a tailored DataWedge configuration. For example, each user application can have a Profile that outputs scanned data in the required format when that application is active in the foreground. DataWedge can be configured to process the same captured data differently based on the requirements of each application.
+
+Note: A single Profile can be associated with one or more activities or apps, but an activity can only be associated with one Profile. DataWedge enforces a one-to-one relationship between Profiles and activities; a Profile can only be associated with a single activity. When a Profile is created, it is not associated with any application and will not activate until it is associated to an app. This allows the creation of multiple unassociated Profiles. This API function is used to activate such Profiles.
+
+Usage Scenario
+
+Consider an application with two activities: ActivityA, which requires scanning EAN13 barcodes, and ActivityB, which requires MSR card data. ProfileA is configured for EAN13 barcodes and is unassociated. ProfileB is configured for MSR input and is also left unassociated. When ActivityA launches, it uses SWITCH_TO_PROFILE to activate ProfileA. Similarly, when ActivityB launches it uses SWITCH_TO_PROFILE to activate ProfileB.
+
+When another activity or app becomes active in the foreground, DataWedge automatically switches to the appropriate Profile, either default or associated. When ActivityA (or ActivityB) returns to the foreground, it will use SWITCH_TO_PROFILE to return the Profile to ProfileA (or ProfileB), respectively.
+
+For example, if ProfileA is unassociated and ProfileB is associated with activity B, using SWITCH_TO_PROFILE to switch to ProfileA will keep it active while activity A is in the foreground. When activity B becomes active in the foreground, DataWedge automatically switches to ProfileB. When activity A resumes, the app must use SWITCH_TO_PROFILE in the onResume method to switch back to ProfileA.
+
+Notes
+
+
+Since DataWedge automatically switches Profile when an activity is paused, Zebra recommends calling this API from the onResume method of the activity.
+
+After switching to a Profile, an unassociated Profile remains unassigned and can be used by other apps/activities later.
+
+For backward compatibility, DataWedge’s automatic Profile switching unaffected by the these API commands, which is the reason why the commands work only with unassociated Profiles and apps.
+
+DataWedge&#x27;s automatic Profile switching functions as follows, every second:
+
+
+
+Sets newProfileId to the Profile ID associated with the current foreground activity.
+
+If no associated Profile is found, sets newProfileId to the Profile ID associated with the current foreground app.
+
+If no associated Profile is still found, sets newProfileId to the current default Profile (which MAY NOT be Profile0).
+
+Compares newProfileId with currentProfileId. If they differ:
+
+Deactivates the current Profile
+
+Activates the new Profile (newProfileId)
+
+Sets currentProfileId to newProfileId
+
+
+
+Function Prototype
+
+Intent i = new Intent();
+i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+i.putExtra(&quot;com.symbol.datawedge.api.SWITCH_TO_PROFILE&quot;, &quot;&lt;profile name&gt;&quot;);
+
+Parameters
+
+ACTION [String]: &quot;com.symbol.datawedge.api.ACTION&quot;
+
+EXTRA_DATA [String]: &quot;com.symbol.datawedge.api.SWITCH_TO_PROFILE&quot;
+
+&lt;profile name&gt;: The Profile name (a case-sensitive string) to set as the active Profile.
+
+Result Codes
+
+DataWedge returns the following error codes if the app includes the intent extras SEND_RESULT and COMMAND_IDENTIFIER to enable the app to get results using the DataWedge result intent mechanism. See Example, below.
+
+
+PROFILE_HAS_APP_ASSOCIATION - FAILURE
+
+PROFILE_NOT_FOUND - FAILURE
+
+PROFILE_ALREADY_SET - FAILURE
+
+PROFILE_NAME_EMPTY - FAILURE
+
+DATAWEDGE_DISABLED - FAILURE
+
+
+Also see the Result Codes guide for more information.
+
+Example Code
+
+// define action and data strings
+String switchToProfile = &quot;com.symbol.datawedge.api.ACTION&quot;;
+String extraData = &quot;com.symbol.datawedge.api.SWITCH_TO_PROFILE&quot;;
+
+public void onResume() {
+        super.onResume();
+
+        // create the intent
+        Intent i = new Intent();
+
+        // set the action to perform
+        i.setAction(switchToProfile);
+
+        // add additional info
+        i.putExtra(extraData, &quot;myProfile&quot;);
+
+        // send the intent to DataWedge
+        this.sendBroadcast(i);
+}
+
+Generate and receive result codes
+
+Command and configuration intent parameters determine whether to send result codes (disabled by default). When using SEND_RESULT, the COMMAND_IDENTIFIER is used to match the result code with the originating intent. Sample usage of these parameters is shown below.
+
+Note: Modify this generic code to match the API being used.
+
+// send the intent
+    Intent i = new Intent();
+    i.setAction(ACTION);
+    i.putExtra(&quot;com.symbol.datawedge.api.CREATE_PROFILE&quot;, &quot;Profile1&quot;);
+
+// request and identify the result code
+    i.putExtra(&quot;SEND_RESULT&quot;,&quot;true&quot;);
+    i.putExtra(&quot;COMMAND_IDENTIFIER&quot;,&quot;123456789&quot;);
+    this.sendBroadcast(i);
+
+// register to receive the result
+    public void onReceive(Context context, Intent intent){
+
+        String command = intent.getStringExtra(&quot;COMMAND&quot;);
+        String commandidentifier = intent.getStringExtra(&quot;COMMAND_IDENTIFIER&quot;);
+        String result = intent.getStringExtra(&quot;RESULT&quot;);
+
+        Bundle bundle = new Bundle();
+        String resultInfo = &quot;&quot;;
+        if(intent.hasExtra(&quot;RESULT_INFO&quot;)){
+            bundle = intent.getBundleExtra(&quot;RESULT_INFO&quot;);
+            Set&lt;String&gt; keys = bundle.keySet();
+            for (String key: keys) {
+                resultInfo += key + &quot;: &quot;+bundle.getString(key) + &quot;\n&quot;;
+            }
+        }
+
+        String text = &quot;Command: &quot;+command+&quot;\n&quot; +
+                      &quot;Result: &quot; +result+&quot;\n&quot; +
+                      &quot;Result Info: &quot; +resultInfo + &quot;\n&quot; +
+                      &quot;CID:&quot;+commandidentifier;
+
+        Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+
+    };
+
+
+
+SEE ALSO:
+
+Zebra Support Central | Integrator Guides, Product Manuals, Software Downloads and Support
+
+LaunchPad | Zebra Developer Community
+
+Intent | Android Developers
+
+Intents and Intent Filters | Android Developers
+
+Android Intents | Tutorial
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2024 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+      
+
+
+
+Back to Top</pre></body></html>

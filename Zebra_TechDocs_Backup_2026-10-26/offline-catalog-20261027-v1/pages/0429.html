@@ -1,0 +1,581 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Content Provider Model - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/flux/api</code><br>Observed final URL: <code>https://techdocs.zebra.com/flux/api/</code><br>Raw source: <code>raw/dfad88c6902bf5475e1f2389.html</code><br>Raw SHA-256: <code>9da74e1a13b309381b8ca9c405248ec8c460a6810a721f72809d8757aee99da8</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            Android Platform Transition
+                                            1.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About Transition
+                            
+                        
+                        
+                            
+                                    About MX
+                            
+                        
+                        
+                            
+                                    MX Feature Matrix
+                            
+                        
+                        
+                            
+                                    Setup
+                            
+                        
+                        
+                            
+                                    Query Device
+                            
+                        
+                        
+                            
+                                    Delegate Access
+                            
+                        
+                        
+                            
+                                    Architecture
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Content Provider Model
+                        
+                    OverviewConsuming DataContent URIsAuthorization MechanismSample CodeAcquire Bluetooth MACAcquire Serial NumberAcquire IMEIAcquire OS update infoCallbacksLimitationsAlso See
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Content Provider Model
+                                    
+                                            Android Platform Transition
+                                            1.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        
+
+Overview
+
+Zebra is implementing the Android Content Provider (ACP) model, a Google-sanctioned framework for data sharing, as the mechanism for data persistence and data sharing among apps installed on Zebra devices. This model consists of a set of publicly available APIs through which apps can publish data for consumption programmatically by other apps or by the originating app itself. 
+
+ACP defines Data Consumers as apps seeking to retrieve information from apps sharing data–called Data Providers–on the device on which they are running. Examples of Zebra publisher apps include StageNow and OEMconfig, as well as Power Manager and other built-in configuration service provider (CSP) modules, which interface directly with Zebra&#x27;s device-API layer. 
+
+
+Source: https://developer.android.com/guide/topics/providers/content-provider-basics.html
+Click image to enlarge; ESC to exit. 
+
+
+Information for consumption is made available through Data Provider apps. Both app types–Consumers and Providers–use the Zebra Data Provider Interfaces (ZDPIs) to consume data and/or to publish data for consumption. 
+
+
+
+Consuming Data
+
+The process of retrieving data is the same as that of querying an Android content provider. Android employs content URIs to identify certain data available from a provider. 
+
+However, before an app can retrieve data, it must first receive permission to do so. This step must be performed only once for each app, but is required before the app can attempt any read operation. 
+
+To acquire read permission:
+
+Add the following statement to the app&#x27;s AndroidManifest.xml file:
+
+    &lt;uses-permission android:name=”com.zebra.provider.READ”&gt;
+
+Content URIs
+
+Each content URI includes the authority of the content provider represented as a symbolic name along with the package name of a Content Provider or path to a table containing its content. When calling a client method to access a content provider or table, the content URI is passed as an argument.
+
+URIs are broken into four (4) parts as&lt;scheme:&gt;//&lt;Authority&gt;/&lt;Provider name&gt;/&lt;API&gt;
+
+For example, the URI content://oem_info/oem.zebra.secure/build_serial can be broken down as follows: 
+
+
+content: is the scheme, which tells Android that the URI points to a content provider.  
+
+oem_info is the authority name of the content provider.
+
+oem.zebra.secure is the content provider name unique within a given authority. Usually a package name.
+
+build_serial is the API name unique within a given package name.
+
+
+
+
+Authorization Mechanism
+
+The ZDPI uses Zebra Access Manager to grant or deny apps authorization to access data published by the framework. The Zebra-owned system components and application types listed below are authorized by default. 
+
+Pre-Authorized Apps
+
+
+Zebra built-in system apps (e.g. OEMConfig, StageNow, MX components (CSPs))
+
+Apps signed with the Zebra Common Key
+
+Dual-key apps if one of the keys is the Zebra Common Key
+
+Plug-in CSPs (installed after shipment from factory and authorized by key generated by Zebra certificate authority)
+
+
+Authorization Required
+
+
+Customer-developed apps and services
+
+Third-party apps
+
+Any app NOT developed by Zebra
+
+
+When provisioning one or more of the app types listed above, authorization to access the ZDPI can be granted using StageNow and Access Manager, OEMconfig and the Service Access Configuration, or a company&#x27;s own Enterprise Mobile Management system. 
+
+
+Click image to enlarge; ESC to exit. 
+
+
+To grant access using Access Manager and StageNow:
+
+Configure the following actions based on the individual requirements. 
+
+
+Service Access Action: “Allow Caller to Call Service”
+
+Service Identifier: ZDPI URI to access (see Data Consumption guide)
+
+Caller Package Name: Package Name of the third-party app
+
+Caller Signature: App certificate of the third-party app
+
+
+Also See
+
+How to generate a caller signature | Zebra engineering article on the &quot;package signature&quot; 
+
+
+
+Sample Code
+
+Modify the code samples below to suit individual needs. 
+
+Acquire Bluetooth MAC
+
+
+  IMPORTANT: The Bluetooth radio must be enabled on the device to retrieve the Bluetooth MAC address using OEMinfo.
+
+
+
+Get the AUTHORITY, PROVIDER and API using the following command:
+
+String BT_MAC = &quot;content://oem_info/oem.zebra.secure/bt_mac&quot;;
+
+Get the data (in this case the device&#x27;s Bluetooth MAC address) by parsing the string using Android cursor query methods implemented in the following Java code:
+
+
+// Prepare the URI
+public void getData() {
+    final Uri myUri = Uri.parse(BT_MAC);
+    new UpdateAsync().execute(myUri.toString());
+}
+
+// Always query for data in Async task or background thread
+class UpdateAsync extends AsyncTask&lt;String,Void,Cursor&gt; {
+    private String myUri;
+
+@Override
+protected Cursor doInBackground(String... args) {
+    myUri = args[0];
+
+// Query the content provider
+ContentResolver cr = getContentResolver();
+Cursor cursor = cr.query(Uri.parse(myUri),
+                null, null, null, null);
+
+// Read the cursor
+cursor.moveToFirst();
+String bluetoothMAC = cursor.getString(0);
+Log.i(TAG, &quot;The Bluetooth MAC is : ” + bluetoothMAC);            
+return cursor;
+}
+
+
+}
+
+
+Skip to the Callback section to see sample code for setting an app to be notified of changes to OEMinfo data. This Zebra-recommended practice can be helpful for monitoring non-static URIs.
+
+
+
+Acquire Serial Number
+
+
+Get the AUTHORITY, PROVIDER and API using the following command:
+
+String SERIAL_URI = &quot;content://oem_info/oem.zebra.secure/build_serial&quot;;
+
+Get the data (in this case the device serial number) by parsing the string using Android cursor query methods implemented in the following Java code:
+
+
+// Prepare the URI
+public void getData() {
+    final Uri myUri = Uri.parse(SERIAL_URI);
+    new UpdateAsync().execute(myUri.toString());
+}
+
+// Always query for data in Async task or background thread
+class UpdateAsync extends AsyncTask&lt;String,Void,Cursor&gt; {
+    private String myUri;
+
+@Override
+protected Cursor doInBackground(String... args) {
+    myUri = args[0];
+
+// Query the content provider
+ContentResolver cr = getContentResolver();
+Cursor cursor = cr.query(Uri.parse(myUri),
+                null, null, null, null);
+
+// Read the cursor
+cursor.moveToFirst();
+String serialNumber = cursor.getString(0);
+Log.i(TAG, &quot;Device Serial Number is : ” + serialNumber);            
+return cursor;
+}
+
+
+}
+
+
+Skip to the Callback section to see sample code for setting an app to be notified of changes to OEMinfo data. This Zebra-recommended practice can be helpful for monitoring non-static URIs.
+
+
+
+Acquire IMEI
+
+
+Get the AUTHORITY, PROVIDER and API using the following command:
+
+String IMEI_URI = “content://oem_info/wan/imei”;
+
+Get the data (in this case the device IMEI number) by parsing the string using Android cursor query methods implemented in the following Java code:
+
+
+// Prepare the URI
+public void getData() {
+    final Uri myUri = Uri.parse(IMEI_URI);
+    new UpdateAsync().execute(myUri.toString());
+}
+
+// Always query for data in Async task or background thread
+class UpdateAsync extends AsyncTask&lt;String,Void,Cursor&gt; {
+    private String myUri;
+
+@Override
+protected Cursor doInBackground(String... args) {
+    myUri = args[0];
+
+// Query the content provider
+ContentResolver cr = getContentResolver();
+Cursor cursor = cr.query(Uri.parse(myUri),
+            null, null, null, null);
+
+// Read the cursor
+cursor.moveToFirst();
+String imeiNumber = cursor.getString(0);
+Log.i(TAG, &quot;Device IMEI is : ” + imeiNumber);            
+return cursor;
+}
+
+
+}
+
+
+
+
+Acquire OS update info
+
+
+Get the AUTHORITY, PROVIDER and API using the following Java code:
+
+
+// OS UPDATE URI
+String OSU_URI = “content://oem_info/oem.zebra.osupdate”;
+
+// APIs
+String OSU_STATUS = “status”; 
+// Returns SUCCESS, IN_PROGRESS, FAIL, WAITING_FOR_REBOOT, etc.
+
+String OSU_DETAIL = “detail”;
+// Text representation of the status contains detailed reason
+
+String OSU_TS = “ts”;
+// Returns an Epoch time stamp indicating when the intent is received
+
+Get the data (in this case the device OS update info) by parsing the string using Android cursor query methods implemented in the following Java code:
+
+        
+        // Prepare the URI
+        public void getData() {
+            final Uri myUri = Uri.parse(OSU_URI);
+            new UpdateAsync().execute(myUri.toString());
+        }
+
+    // Always query for data in Async task or background thread
+        class UpdateAsync extends AsyncTask&amp;lt;String,Void,Cursor&amp;gt; {
+        private String myUri;
+
+    @Override
+    protected Cursor doInBackground(String... args) {
+        myUri = args[0];
+
+        // Query the content provider
+        ContentResolver cr = getContentResolver();
+        Cursor cursor = cr.query(Uri.parse(myUri),
+                        null, null, null, null);
+
+        // Read the cursor
+        While (cursor.moveToNext()) {
+        String status = cursor.getString(
+        cursor.getColumnIndex(OSU_STATUS));
+
+        String detail = cursor.getString(
+        cursor.getColumnIndex(OSU_DETAIL));
+
+        String time = cursor.getString(
+        cursor.getColumnIndex(OSU_TS));
+
+        Log.i(TAG, &quot;STATUS : &quot; + status + “, DETAIL : ” + detail
+            + “, TIME : ” + time);
+
+    }
+    return cursor;
+}
+
+
+}
+
+
+
+
+Callbacks
+
+Use the following Java code to register an app to be notified when URI data changes. Apps also can receive callbacks for changes to the content using the standard Android content observer methods, but Zebra recommends always registering callbacks for semi-static URI values.
+
+    // Prepare the URI
+    Uri myUri = Uri.Parse(MY_URI_STRING);
+
+    // Register with content observer
+    ContentResolver cr = getContentResolver();
+    cr.registerContentObserver(myUri, true, 
+        new ContentObserver(new Handler(getMainLooper())) {
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+
+            // Content has changed
+            Log.d(TAG, &quot;content has changed, uri = &quot; + uri);
+
+            // Reading the data is like above example
+            getData();
+        }
+    });
+
+
+
+Limitations
+
+Data acquired through the OEMinfo content provider is subject to the rules and limitations listed below. 
+
+
+With the exception of OS Update events, OEMinfo does NOT read system properties that can change at runtime.
+
+OEMinfo reads system properties only after being signaled by the BOOT_COMPLETE event.
+
+
+
+After receiving BOOT_COMPLETE, OEMinfo queries selected system properties and refreshes the content provider. This generally takes a few seconds, but a delay of about one minute is typical before results of an OS Update are published to the ZDPI.
+
+If an app queries OEMinfo too soon after reboot, some URIs might return &quot;stale&quot; data, posing a potential issue for non-static values. 
+
+
+OEMinfo requires extra time populate the content provider database when device data is wiped after an Enterprise Reset, Factory Reset or other erasure event.
+
+
+
+Zebra recommends registering apps with a content observer on the URI to receive a callback whenever new data is available to avoid issues relating to stale or missing data due to re-population delays.
+
+
+OEMinfo is “System UID” and platform-signed, and is therefore subject to platform permissions and SELinux restrictions across Android versions and devices.
+
+
+
+The same set of system properties might not be readable on all devices.
+
+System properties might become restricted, removed or added after an OS update.
+
+
+
+
+
+Also See
+
+Android Developer Docs
+
+
+Android Content Provider Basics | An Introduction
+
+Creating a content provider | Why and how to share an app&#x27;s data
+
+Android Cursor docs | How to interface with a result data set
+
+Content Observer | Get a callback when data changes
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2025 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

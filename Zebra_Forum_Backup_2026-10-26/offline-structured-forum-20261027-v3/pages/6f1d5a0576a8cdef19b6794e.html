@@ -1,0 +1,146 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra FX7500/9600 Write Error Codes</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/zebra-fx75009600-write-error-codes; snapshot threads/00241.html; SHA-256 65825bd9f9b577a5ede6acbb618f78dd0f9ca8b0c7f66b7b2974f78f809590f2. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Zebra FX7500/9600 Write Error Codes</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            T
+          </div>
+          <div class="forum-topic__author-name">Trooper Murphy</div>
+          <div class="forum-topic__timestamp">2 years 3 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            562
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello,</p><p>I have two FX7500 readers and one FX9600 reader, with firmware versions 2.7.19 (FX7500), 3.21.21 (FX7500), and 3.9.17 (FX9600). When using Zebra's Windows Java SDK for Fixed Readers, I encounter different error messages when writing to tags. Specifically, with the FX7500 on firmware 2.7.19, I receive "C1G2WriteOpSpecResult failed: Tag Memory Locked" when writing to the EPC memory bank if it's locked. However, on the FX7500 and FX9600 with newer firmware, the error message is "C1G2WriteOpSpecResult failed: The Tag does not support error-specific codes."</p><p>My use case requires specific error codes when writing to tags. I understand that downgrading the FX9600 might be an option, but for the FX7500 with firmware version 3.21.21 Zebra states that readers with firmware above 3.21.x cannot downgrade below that point. Is there a way to retrieve error-specific codes using Zebra's SDK, or is there a method to downgrade the newer firmware?</p><p>Here is a code snippet for writing to tags. The line e2.getVendorMessage() prints the error code:</p><p><br><span>checkPermalockingButton</span>.addActionListener(<span>new </span>ActionListener() {<br>    <span>@Override</span><br><span>    public void actionPerformed</span>(ActionEvent e) {<br>        <span>// Set the transmit power index to maximum</span><br><span>        antennaConfig</span>.setTransmitPowerIndex((<span>short</span>) <span>200</span>);<br><br>        String columnName = <span>"PermaLock"</span>;<br>        <span>// Check if the column exists</span><br><span>        int </span>columnIndex = <span>tableModel</span>.findColumn(columnName);<br><br>        <span>// If columnIndex is -1, the column doesn't exist, so add it</span><br><span>        if </span>(columnIndex == -<span>1</span>) {<br>            <span>tableModel</span>.addColumn(columnName);<br>        }<br><br>        <span>// Assuming you have an array or list of EPCs in your tableModel</span><br><span>        int </span>rowCount = <span>tableModel</span>.getRowCount();<br><br>        <span>for </span>(<span>int </span>i = <span>0</span>; i &lt; rowCount; i++) {<br>            String currlockStatus = (String) <span>tableModel</span>.getValueAt(i, <span>2</span>);<br>            <span>if </span>(currlockStatus == <span>null</span>) {<br>                currlockStatus = <span>"null"</span>;<br>            }<br>            <span>if </span>(!currlockStatus.equals(<span>"Locked"</span>) &amp;&amp; !currlockStatus.equals(<span>"Not Locked"</span>)) {<br>                String epc = (String) <span>tableModel</span>.getValueAt(i, <span>0</span>);<br>                System.<em>out</em>.println(<span>"EPC: " </span>+ epc);<br><br>                <span>try </span>{<br>                    <span>// Write user memory bank data</span><br><br><span>                    tagEPC </span>= epc;<br><br>                    TagAccess tagAccess = <span>new </span>TagAccess();<br><br>                    TagAccess.WriteAccessParams writeAccessParams = tagAccess.<span>new </span>WriteAccessParams();<br><br>                    String writeDataString = <span>tagEPC</span>.substring(<span>8</span>,<span>12</span>);<br><br>                    <span>// Convert the hexadecimal string to a byte array</span><br><span>                    byte</span>[] writeData = <em>hexStringToByteArray</em>(writeDataString);<br><br>                    writeAccessParams.setAccessPassword(<span>0x00</span>);<br><br>                    writeAccessParams.setWriteDataLength(writeData.<span>length</span>);<br><br>                    writeAccessParams.setMemoryBank(MEMORY_BANK.<em>MEMORY_BANK_EPC</em>);<br><br>                    writeAccessParams.setByteOffset(<span>8</span>);<br><br>                    writeAccessParams.setWriteData(writeData);<br><br>                    <span>// antenna Info is null – performs on all antenna</span><br><br><span>                    </span>System.<em>out</em>.println(Arrays.<em>toString</em>(writeData));<br>                    System.<em>out</em>.println(<span>tagEPC</span>);<br>                    System.<em>out</em>.println(Arrays.<em>toString</em>(<span>tagEPC</span>.getBytes()));<br>                    System.<em>out</em>.println(writeAccessParams.getAccessPassword());<br><br>                    <span>// antenna Info is null – performs on all antenna</span><br><br><span>                    reader</span>.<span>Actions</span>.<span>TagAccess</span>.writeWait(<span>tagEPC</span>, writeAccessParams, <span>null</span>);<br><br>                    <span>allTagsAreLocked </span>= <span>false</span>;<br>                    <span>tableModel</span>.setValueAt(<span>"Not Locked"</span>, i, <span>2</span>);<br><br>                } <span>catch </span>(InvalidUsageException e2) {<br>                    <span>//e2.printStackTrace();</span><br><span>                    </span>System.<em>out</em>.println(e2.getInfo());<br>                    <span>allTagsAreLocked </span>= <span>false</span>;<br>                    <span>tableModel</span>.setValueAt(<span>"Error IN"</span>, i, <span>2</span>);<br>                } <span>catch </span>(OperationFailureException e2) {<br>                    <span>//e2.printStackTrace();</span><br><span>                    if </span>(!(e2.getVendorMessage().contains(<span>"Tag Memory Locked"</span>))) {<br>                        TagAccess tagAccess2 = <span>new </span>TagAccess();<br><br>                        TagAccess.WriteAccessParams writeAccessParams2 = tagAccess2.<span>new </span>WriteAccessParams();<br><br>                        String writeDataString2 = <span>tagEPC</span>.substring(<span>8</span>,<span>12</span>);<br><br>                        <span>// Convert the hexadecimal string to a byte array</span><br><span>                        byte</span>[] writeData2 = <em>hexStringToByteArray</em>(writeDataString2);<br><br>                        writeAccessParams2.setAccessPassword(<span>0x00</span>);<br><br>                        writeAccessParams2.setWriteDataLength(writeData2.<span>length</span>);<br><br>                        writeAccessParams2.setMemoryBank(MEMORY_BANK.<em>MEMORY_BANK_EPC</em>);<br><br>                        writeAccessParams2.setByteOffset(<span>8</span>);<br><br>                        writeAccessParams2.setWriteData(writeData2);<br><br>                        <span>try </span>{<br>                            <span>reader</span>.<span>Actions</span>.<span>TagAccess</span>.writeWait(<span>tagEPC</span>, writeAccessParams2, <span>null</span>);<br><br>                            <span>allTagsAreLocked </span>= <span>false</span>;<br>                            <span>tableModel</span>.setValueAt(<span>"Not Locked"</span>, i, <span>2</span>);<br>                        } <span>catch </span>(InvalidUsageException ex) {<br>                            <span>//e2.printStackTrace();</span><br><span>                            </span>System.<em>out</em>.println(ex.getInfo());<br>                            <span>allTagsAreLocked </span>= <span>false</span>;<br>                            <span>tableModel</span>.setValueAt(<span>"Error IN"</span>, i, <span>2</span>);<br>                        } <span>catch </span>(OperationFailureException ex) {<br>                            <span>if </span>(!(e2.getVendorMessage().contains(<span>"Tag Memory Locked"</span>))) {<br>                                <span>allTagsAreLocked </span>= <span>false</span>;<br>                                <span>tableModel</span>.setValueAt(<span>"Error OP"</span>, i, <span>2</span>);<br>                            } <span>else </span>{<br>                                <span>tableModel</span>.setValueAt(<span>"Locked"</span>, i, <span>2</span>);<br>                            }<br>                        }<br>                    } <span>else </span>{<br>                        <span>tableModel</span>.setValueAt(<span>"Locked"</span>, i, <span>2</span>);<br>                    }<br><br>                    System.<em>out</em>.println(e2.getResults());<br>                    System.<em>out</em>.println(e2.getStatusDescription());<br>                    System.<em>out</em>.println(e2.getTimeStamp());<br>                    System.<em>out</em>.println(e2.getVendorMessage());<br>                    System.<em>out</em>.println(e2.getLocalizedMessage());<br>                }<br>            }<br>        }<br>    }<br>});</p><p> </p><p>Thanks,</p><p>Trooper</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-52876" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              C
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Caleb Brown</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 3 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Same issue here. I have the most recent firmware but im still getting the same result as you.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/zebra-fx75009600-write-error-codes%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/zebra-fx75009600-write-error-codes%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

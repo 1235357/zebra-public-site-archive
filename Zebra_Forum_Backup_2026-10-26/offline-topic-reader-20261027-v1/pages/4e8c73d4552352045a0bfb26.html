@@ -1,0 +1,386 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Weblink Websocket</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Weblink Websocket</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/weblink-websocket; original snapshot: threads/00782.html; SHA-256: c1c3d49d022bad4e52fb92be79380ae31d12d73541b7e7418af53b78967d30ce</small><pre id="topic">
+
+    
+        Weblink Websocket
+
+
+        
+      
+                        
+                    
+            W
+          
+          Werner Stucky
+          4 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            2080
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi Guys, I&#x27;m new to Zebra printers.
+I&#x27;m finding the documentation really bad with many broken links.
+Goal : I&#x27;m trying to setup a printer to use Weblink / Websocket to my own server.
+Can someone help me with the link on page : https://developer.zebra.com/printer-setup
+There is a link there for a file at : https://developer.zebra.com/file/379
+This file shows a 404 not found
+Please help
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              W
+            
+          
+                
+          
+            Werner Stucky
+          
+          
+            4 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Also the following link further down on the same page is broken : https://www.zebra.com/content/dam/zebra/manuals/printers/common/program…
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Please follow this document for setting up your own webservices - Link-OS SDK for WebServices. There are a few more links about how to configure and use the weblink on the printer.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              W
+            
+          
+                
+          
+            Werner Stucky
+          
+          
+            4 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you, I have found that document earlier but it doesn&#x27;t help.
+Actions so far :
+- I sent in my certificate for signing
+- I was told I could do self-signing which is better (I agree)
+Next Steps and what I&#x27;m unclear about :
+- I can do self-signing
+- 1. HOW do I load the certificate into the printer
+- 2. HOW do I set the printer to point to my server
+Regards
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            1. Yes, you can get the self-signing certificates from the other certificate authority. Then you would need to install the cert files from the chosen certification authority on your own server and on the printer as well. So that the authentication can be established.
+2. Please refer to the Best Practices - Certificates section of  PrintSecure Printer Administration Guide - Zebra Technologies for the instructions on how to install the cert files on the printer. You would need to refer to the documentation of your chosen webserver about where to install the cert files on the server.
+3. Once you have the server setup, you would have a URL that the printer can point to. To configure the weblink on the printer to point to the specific websocket URL, please use the following JSON command to send the URL to the printer to configure the weblink.ip.conn1.location. The JSON string can be sent to the printer as a file by using the Printer Setup Utility for Windows, Android or iOS
+{}{
+&quot;weblink.logging.max_entries&quot;:&quot;500&quot;,
+&quot;weblink.ip.conn1.location&quot;:&quot;Your webservices URL the printer should point to&quot;,
+&quot;device.reset&quot;:&quot;1&quot;
+} 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              K
+            
+          
+                
+          
+            Kevin Wu
+          
+          
+            3 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I referred to your document to deploy the certificate to the printer. After sending the command(Zebra Setup Utilities, Open Communication With printer) to printer, no response received from printer, and the file deployment also failed. Is the command I sent wrong? What should I do?
+
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,1976 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Text OCR - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/ai-datacapture/4-1/textocr/</code><br>Observed final URL: <code>https://techdocs.zebra.com/ai-datacapture/4-1/textocr/</code><br>Raw source: <code>raw/6099a2de263fd1ff1a306948.html</code><br>Raw SHA-256: <code>80f9c243e2dd22f1873dacd9f5c8559e7438bc9090f2a691ba57fc1f8a0044f4</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            AI Data Capture SDK
+                                            4.1
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Setup
+                            
+                        
+                        
+                            
+                                    Localizer
+                            
+                        
+                        
+                            
+                                    Product Recognition
+                            
+                        
+                        
+                            
+                                    Barcode Decoder
+                            
+                        
+                        
+                            
+                                    Text OCR
+                            
+                        
+                        
+                            
+                                    CameraX
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Text OCR
+                        
+                    OverviewAI ModelCapabilitiesSupported CharactersInput/OutputConfigurationModel Input SizeResolutionDeveloper GuideStep 1: InitializationStep 2: Capture ImageStep 3: Recognize TextBest PracticesMethodsTextOCR (Settings settings)setOCRPicklist(boolean enabled)detect (Bitmap srcImg, Executor executor)detectWords (Bitmap srcImg, Executor executor)detectParagraphs (Bitmap srcImg, Executor executor)getTextOCR (Settings settings, Executor executor)process (ImageData imageData, Executor executor)process(ImageData imageData)dispose()TextOCR.SettingsConstructorsText DetectionDetection ParametersDetection ProcessFiltering ParametersSample CodeText RecognitionRecognition ParametersRecognition: Special CasesSample CodeTilingText GroupingGrouper SettingsTroubleshooting GuideQuick Tips for DetectionQuick Tips for RecognitionQuick Tips for GroupingQuick Tips for Tiling (Special Cases)Sample AppsRelated Guides
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Text OCR
+                                    
+                                            AI Data Capture SDK
+                                            4.1
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+The TextOCR class leverages Optical Character Recognition (OCR) to detect, recognize, and group text from images. The Text OCR process consists of three stages:
+
+
+Text Detection - Identifies and filters text boxes within the image.
+
+Text Recognition - Reads and extracts text content from each identified text box.
+
+Text Grouping - Organizes recognized words into lines or paragraphs.
+
+
+This guide begins with initial instructions for basic setup of OCR. Subsequent sections offer a comprehensive list of OCR settings that can be fine-tuned for specific needs:
+
+
+Inferencer Options
+
+Detection Parameters
+
+Recognition Parameters
+
+
+
+Tiling Settings
+
+
+Grouper Settings
+
+
+For non-standard use cases, particularly for Grouper Settings, developers are encouraged to experiment with and adjust these parameters to optimize performance.
+
+Additionally, the process() method of the TextOCR class can be utilized to detect and recognize text within images. This interface enables developers to build CameraX analyzers that integrate with other detectors.
+
+
+
+AI Model
+
+The text-ocr-recognizer model is designed for text recognition tasks. For more information and to download the model, refer to Text OCR Model.
+
+
+
+Capabilities
+
+Supported Characters
+
+TextOCR recognizes a range of characters, including:
+
+    *0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\&quot;#$%&amp;&#x27;()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~*
+
+By default, it supports a maximum word length of approximately 15 characters, though this limit may decrease with the use of uncommon fonts. Enabling tiling removes this restriction.
+
+Input/Output
+
+Input Parameters: The default model input size is 640x640 pixels, but this can be adjusted during runtime initialization.
+
+Output Parameters: The output consists of a list of text detections, each accompanied by a list of complex bounding boxes that define the location and content of the detected text.
+
+
+
+Configuration
+
+Before starting with TextOCR, configure key settings such as model input size, resolution, and inference type. Changes to these settings will require reinitializing the models. Information on configuring these settings are provided in the sections that follow.
+
+Model Input Size
+
+The Model Input Size defines the resolution at which the AI processes images. Before analysis, images are resized to this dimension. Adjusting this size balances speed and accuracy.
+
+Key Considerations:
+
+
+Start with the default resolution 640x640 for optimal processing.
+
+If the results are not sufficiently accurate for small text, increasing the resolution can improve precision.
+
+
+  
+  
+    
+      Input Size
+      Best For
+      Use Case
+      Consideration
+    
+  
+  
+    
+      Smaller (e.g., 640x640)
+      Speed: Faster processing
+      Large or close text
+      Reduced accuracy for small text
+    
+    
+      Larger (e.g., 1600x1600)
+      Accuracy: Better for details
+      Fine print, distant, or dense text
+      Slower processing, higher memory usage
+    
+    
+      Custom (Multiples of 32, e.g., 800x800)
+      Balancing speed and accuracy
+      Low-contrast or medium-sized text
+      Requires experimentation to find the optimal setting
+    
+  
+
+
+
+
+Resolution
+
+Camera resolution refers to the number of pixels the device’s camera sensor can capture (e.g., 1MP = 1280x720, 8MP = 3840x2160). It determines the quality of the source image before any resizing occurs for AI processing.
+
+Higher camera resolution provides a more detailed and higher-quality original image, which can significantly enhance the AI model&#x27;s ability to detect and recognize small, faint, or distant text. However, this increased detail comes at the cost of greater processing power and memory usage.
+
+Key Considerations:
+
+
+Impact of Camera Resolution - Higher resolutions enhance input image detail, aiding in recognizing small, low-contrast, or distant text. However, images are downscaled to the model&#x27;s input size for processing, so the benefits of high-resolution cameras diminish with low model input sizes.
+
+General Guidance - Aim for a minimum text height of 16 pixels in the input image, adjusting for font size and camera distance from the target.
+
+
+  
+  
+    
+      Resolution
+      Best For
+      Use Case
+      Consideration
+    
+  
+  
+    
+      1MP (1280x720)
+      Speed, power efficiency
+      Large/simple text
+      May miss fine details
+    
+    
+      2MP (1920x1080)
+      General use
+      Stylized or moderately detailed text
+      Balanced performance
+    
+    
+      4MP (2688x1512)
+      Detailed scans
+      Contracts, forms, dense text
+      Higher memory and battery use
+    
+    
+      8MP (3840x2160)
+      Maximum detail
+      Archival purposes
+      Large files, diminishing returns for low input sizes
+    
+  
+
+
+
+
+Relationship Between Model Input Size and Camera Resolution:
+
+  
+  
+    
+      Resolution
+      Low Input Size (e.g., 640x640)
+      High Input Size (e.g., 1600x1600)
+    
+  
+  
+    
+      Low Resolution (e.g., 1MP / 1280x720)
+      
+        Speed: Fastest
+        Accuracy: Lowest
+        Use Case: Large, clear text close to the camera
+        Note: Small/fine details may be lost
+      
+      
+        Not Recommended: Wasted computation with little accuracy gain
+      
+    
+    
+      High Resolution (e.g., 8MP / 3840x2160)
+      
+        Speed: Fast
+        Accuracy: Moderate
+        Use Case: Large/medium text, quick scans
+        Note: High-resolution source is downsampled for AI, so small text may still be missed
+      
+      
+        Speed: Slowest
+        Accuracy: Highest
+        Use Case: Detailed, small, dense, or distant text
+        Note: High memory and battery usage; may stress low-end devices
+      
+    
+  
+
+
+
+
+
+
+
+
+Developer Guide
+
+This guide outlines the process for using TextOCR to detect and recognize text within images, from initialization to outputting the identified text.
+
+Step 1: Initialization
+
+Follow these steps to set up and initialize a TextOCR object:
+
+
+Import the TextOCR class: Use com.zebra.ai.vision.detector.TextOCR.
+
+Initialize the SDK: Use your application&#x27;s context object and invoke init() from the AIVisionSDK class.
+
+Configure OCR Settings: Create a TextOCR.Settings object.
+
+Optional: Set model input dimensions: If needed, customize the model input dimensions (height and width). These should be multiples of 32 (e.g., 640). For guidance, see Model Input Size.
+
+settings.detectionInferencerOptions.defaultDims.width = [your value];
+settings.detectionInferencerOptions.defaultDims.height = [your value];
+
+
+Smaller Input Sizes - Reduce processing time and increase speed, but may decrease accuracy. Ideal for larger or closer text.
+
+Larger Input Sizes - Improve accuracy for smaller or more distant text, but increase inference time. An input size that is too large may cause out-of-memory errors and potentially cause an application crash at run-time.
+
+Optional: Configure the additional OCR settings to optimize detection and recognition:
+
+
+Inferencer Options
+
+Detection Parameters
+
+Recognition Parameters
+
+
+
+Grouper Settings
+
+
+
+Tiling Settings
+
+Initialize the OCR object - Declare a TextOCR object. Use CompletableFuture to initialize it asynchronously with an Executor for concurrent processing.
+
+Callback Handling - Use thenAccept() to assign the initialized TextOCR object to the textocr variable, enabling it for text detection tasks like barcodes and products in images.
+
+
+Sample Code
+
+Initialization sample code:
+
+    import com.zebra.ai.vision.detector.TextOCR;
+
+    // Initialize the SDK
+    AIVisionSDK.getInstance(Context).init(); // Context refers to application context object.
+
+    //Initialize TextOCR settings object
+    String mavenModelName = &quot;text-ocr-recognizer&quot;;
+    TextOCR.Settings  settings = new TextOCR.Settings(mavenModelName);
+
+    // Optional: Override the default model input size
+    settings.detectionInferencerOptions.defaultDims.width = 1280;
+    settings.detectionInferencerOptions.defaultDims.height = 1280;
+
+    // Optional – Set runtime processor order to load the model
+    Integer[] rpo = new Integer[3];
+    rpo[0] = InferencerOptions.DSP;
+    rpo[1] = InferencerOptions.CPU;
+    rpo[2] = InferencerOptions.GPU;
+    settings.detectionInferencerOptions.runtimeProcessorOrder = rpo;
+    settings.recognitionInferencerOptions.runtimeProcessorOrder = rpo;
+
+    // Initialize OCR object
+    TextOCR textocr = null;
+
+    // Initialize textocr
+    // settings = TextOCR.Settings object created above
+    // Executor = An executor thread for returning results
+    CompletableFuture&lt;TextOCR&gt; futureObject = TextOCR.getTextOCR(settings, executor);
+
+    // Use the futureObject to implement the thenAccept() callback of CompletableFuture
+    futureObject.thenAccept (OCRInstance -&gt; {
+        // Use the Textocr object returned here for detecting barcodes/shelves/products
+        textocr = OCRInstance;
+    }).exceptionally(e -&gt;{
+        if (e instanceof AIVisionSDKException) {
+            Log.e(TAG, &quot;[AIVisionSDKException] TextOCR object creation failed: &quot; + e.getMessage());
+        }
+        return null;
+    });
+
+Step 2: Capture Image
+
+Capture the image and ensure the image is in the form of a Bitmap. For CameraX-based applications, developers may build their own custom ImagerAnalyzers to feed a sequence of frames to the TextOCR interface. For more information, refer to CameraX.
+
+Step 3: Recognize Text
+
+There are two methods to recognize text within an image:
+
+
+process() API Method: Suitable for applications requiring both text localization and recognition in a single operation. This method is particularly well-suited for integration with frameworks like CameraX to enable a streamlined workflow where image analysis and text detection occur simultaneously. Typical Use Cases:
+
+
+
+Integration with CameraX - Used for application that utilize CameraX for image analysis. The process() method can serve as a detector for CameraX analyzers, enabling real-time text detection directly from camera feeds.
+
+ImageData Objects - Accepts ImageData objects from various sources, including CameraX, Camera2 APIs, or local storage, offering flexibility in handling input images.
+
+Organized Text Output - In addition to detecting text, the process() method organizes the recognized text into paragraphs, lines, and words, returning detailed ParagraphEntity objects.
+
+Localization and Recognition - Ideal for scenarios where detecting and recognizing text paragraphs in one step is required, simplifying the process and improving efficiency.
+
+
+detect() API Method: Suitable for applications that require straightfoward text detection without detailed structural information or for those working directly with bitmap images. This method offers a simpler interface for retrieving processed results asynchronously. Typical Use Cases:
+
+
+
+Bitmap Images- For applications that primarily handle bitmap images, the detect() method enables direct input of bitmap data for text detection.
+
+Basic Detection Requirements - Suitable for scenarios where generic text, words, or paragraphs required to be detected without additional structural details.
+
+Asynchronous Processing - Supports asynchronous detection operations using executors, making it well-suited for applications that perform background processing.
+
+
+
+Choose one of these methods to recognize text within an image.
+
+&gt; Method 1: Using Process() API
+
+The process() method in the TextOCR class enables applications to pass an ImageData object and perform both text localization and recognition in a single operation, based on the provided settings. This interface is designed to function as a &quot;detector&quot; for CameraX analyzers and can be used alongside other detectors, such as the BarcodeDecoder.
+
+Note:
+Applications can use the process() API even if they are not implementing the CameraX ImageAnalyzer interface. ImageData objects from other sources, such as Camera2 APIs or local storage, can also be passed to the process() API. In such cases, skip steps a and b below.
+
+Steps to Use the process() Method:
+
+
+Implement ImageAnalysis.Analyzer - Develop a custom CameraX analyzer by implementing the ImageAnalysis.Analyzer interface.
+
+Override analyze() - CameraX continuously feeds frames to the analyzers that are bound to it. Override the analyze() method to define the specific functionalities required for your application.
+
+Prepare Inputs - The process() method requires an ImageData object. Use the helper methods provided by ImageData to convert source image types (e.g., ImageProxy, Android.media.image, or Bitmap) into the required format.
+
+Localize and Decode Paragraphs - Use the process() method to detect and decode paragraphs. The method outputs a ParagraphEntity object.
+
+Handle Results - Once the CompletableFuture completes, process the decoded paragraph. From the ParagraphEntity object, extract LineEntity lines using the getLineEntities() method. Similarly, extract words from the LineEntity object using the getWordEntities() method.
+
+Dispose of the Decoder - After decoding is complete and the TextOCR instance is no longer needed, dispose of the instance to release resources.
+
+
+Sample Code:
+
+    List&lt;ParagraphEntity&gt; resultList = textocr.process(ImageData.fromImageProxy(image)).get();
+    for (ParagraphEntity entity: resultList) {
+
+        // Access detection confidence
+        float confidence = entity.getAccuracy();
+
+        // Access bounding box
+        Rect boundingBox = entity. getBoundingBox();
+
+        // Iterate over list of paragraph entity
+        for (ParagraphEntity entity : list) {
+            // Access lines from paragraph entity
+            Line[] lines = entity.getTextParagraph().lines;
+
+            // Iterate over list of lines
+            for (Line line : lines) {
+                // Access words from lines entity
+                for (Word word : line.words) {
+                    //Access the Bounding Box of the Word
+                    ComplexBBox bbox = word.bbox;
+
+                    //Access the text of the Word
+                    DecodedText[] decodedTexts = word.decodes;
+
+                    // Get the decoded text with highest accuracy at first index
+                    String decodedValue = word.decodes[0].content;
+                }
+            }
+        }
+    }
+
+&gt; Method 2: Using detect() API
+
+Use of detect() API allows a bitmap image to be passed and the processed results to be retrieved asynchronously as ComplexBoundingBox objects. This can then be parsed in the desired format – as generic text, words or paragraphs.
+
+
+Generic Text - Outputs text in complex bounding boxes.
+
+Sample code:
+
+Bitmap image = ... // Your bitmap image here
+
+// Initialize executor
+Executor executor = Executors.newFixedThreadPool(1);
+
+// Input parameters include a bitmap image and an executor thread object for performing detections
+CompletableFuture&lt;OCRResult[]&gt; futureResult = textocr.detect(bitmap,executor);
+
+futureResult.thenAccept (ocrResults -&gt; {
+    // Process the returned output that contains complex bounding boxes and text within
+
+if (e instanceof AIVisionSDKException) {
+    Log.e(TAG, &quot;[AIVisionSDKException] Error in text detection: &quot; + e.getMessage());
+}
+return null;
+
+
+});
+
+// Once finished with the textOCR object, dispose of it to release resources and memory used during detection.
+textOCR.dispose();
+
+Words – Outputs an array of words. A word is a discrete unit of text identified within an image, typically separated by spaces or punctuation.
+
+Sample code:
+
+Bitmap image = ... // Your bitmap image here
+
+// Initialize executor
+Executor executor = Executors.newFixedThreadPool(1);
+
+// Input parameters include a bitmap image and an executor thread object for performing detections
+CompletableFuture&lt;Word[]&gt; futureWords = textocr.detectWords(bitmap,executor);
+
+futureWords.thenAccept (words -&gt; {
+    // Process the returned array of detected words
+
+if (e instanceof AIVisionSDKException) {
+        Log.e(TAG, &quot;[AIVisionSDKException] Error in text detection: &quot; + e.getMessage());
+}
+return null;
+
+
+});
+
+// Once finished with the textOCR object, dispose of it to release resources and memory used during detection
+textOCR.dispose();
+
+Paragraphs - Outputs a hierarchical structure of paragraphs using the grouping mechanism described in Grouper Settings. A paragraph is formed by grouping words that appear on the same line, and these lines are then organized into paragraphs. The process is parameterized, with relevant parameters detailed in the Grouper Settings.
+
+Sample code:
+
+Bitmap image = ... // Your bitmap image here
+
+// Initialize executor
+
+Executor executor = Executors.newFixedThreadPool(1);
+
+// Input parameters include a bitmap image and an executor thread object for performing detection
+CompletableFuture&lt;Paragraph[]&gt; futureTextParagraph = textOCR.detectParagraphs(bitmap,executor);
+
+futureTextParagraph.thenAccept (paragraphs -&gt; {
+    // Process the returned array of detected paragraphs.
+
+if (e instanceof AIVisionSDKException) {
+        Log.e(TAG, &quot;[AIVisionSDKException] Error in text detection: &quot; + e.getMessage());
+}
+return null;
+
+
+});
+
+// Once finished with the textOCR object, dispose of it to release resources and memory used during detection
+textOCR.dispose();
+
+
+
+
+Best Practices
+
+This section provides recommendations to improve recognition accuracy across a variety of use cases, from special characters and long words to handwritten text and numeric data. Strategic adjustments to input size, tiling, ROI, and other OCR settings can significantly enhance performance while balancing processing time and application requirements.
+
+
+Improving Recognition Accuracy of Special Characters (e.g., &#x27;$&#x27;) - Enable tiling and use higher resolutions to provide the model with more detailed input for processing.
+
+Recognizing Isolated Characters in Confined Spaces - Increase the model input size and enable tiling for reliable detection of isolated characters, such as those within square boxes.
+
+Handling Long Words and Numbers - Use larger input sizes and enable tiling to ensure complete detection of lengthy text strings (e.g., 20 to 45 characters) and improve recognition accuracy. Although enabling tiling may increase processing time, its benefits are: - Enhances detection of numbers, such as images of analog meters by helping to align and cover text within the display more accurately. - Reduces noise and improves accuracy if the OCR feature outputs junk data, especially in images with cluttered or overlapping text elements. - Enhances the mode&#x27;s ability to handle text beyond typical recognition limits.
+Balancing higher resolutions and larger input sizes with processing time is crucial to meet application needs without unnecessary delays. Increased accuracy often requires longer processing, so finding the right balance is essential.
+
+Improving Text Detection on Cylindrical Objects (e.g., Coca-Cola tin bottle)- Use the Region of Interest (ROI) technique to focus on specific areas of uneven surfaces, enhancing accuracy. If values are not accurate when reading from a distance (e.g., 3 feet or more), increase the input size for better precision, ensuring the model captures finer details necessary for accurate recognition at greater distances. If special characters and alphabets are not consistently appearing, adjust the minimum box size and box threshold to improve the detection of isolated characters and reduce ambiguity.
+
+Improving Accuracy for Consecutive Handwritten Characters - Modify the unclip ratio to ensure accurate alignment and representation of character sequences. For incorrect numeric values decoded in OCR (e.g., tires), review and fine-tune OCR settings for numeric data accuracy.
+
+
+
+
+Methods
+
+TextOCR (Settings settings)
+
+    TextOCR.TextOCR(Settings settings) throws IOException
+
+Description: Initializes the OCR with the specified settings, allowing subsequent text detection and analysis on image inputs. It checks for the necessary model file and verifies the integrity of the archive. If issues are detected, appropriate exceptions are thrown.
+
+Parameters:
+
+
+settings TextOCR.Settings - An instance of the Settings class containing configuration options for the OCR engine.
+
+
+Return Value: CompletableFuture&lt;TextOCR&gt;
+
+Exceptions:
+
+
+IOException - Thrown if the archive is corrupted.
+
+
+
+
+setOCRPicklist(boolean enabled)
+
+    void setOCRPicklist(boolean enabled)
+
+Description: Controls OCR Picklist Mode. Enabling this option ensures only the specific word whose bouding box contains the exact center of the current frame is screen is captured and temporarily stabilized acrosss frames, ignoring surrounding text. Disabling this returns raw, unstabilized results for all detected words.
+
+Parameters:
+
+
+true - Enables OCR picklist mode. Stabilizes and returns only the word at the frame&#x27;s exact center.
+
+false - Disable OCR picklist mode. Returns raw, unstabilized results for every word.
+
+
+Sample Code:
+
+    textOCRSettings.picklistConfig.setOCRPicklist(true);
+
+
+
+detect (Bitmap srcImg, Executor executor)
+
+    CompletableFuture&lt;OCRResult[]&gt; detect (Bitmap srcImg, Executor executor) throws InvalidInputException, AIVisionSDKException
+
+Description: Performs Optical Character Recognition (OCR) on the provided Bitmap image, using the specified executor for asynchronous execution.
+
+Parameters:
+
+
+srcImg (Bitmap srcImg) - The Bitmap image to perform OCR on.
+
+executor - Manages asynchronous task execution.
+
+
+Return Value: A CompletableFuture that resolves to an array of OCRResult, each containing complex bounding boxes and recognized text.
+
+Exceptions:
+
+
+InvalidInputException - Thrown if the Bitmap is null.
+
+AIVisionSDKException - Thrown if error in detection or image queue is full.
+
+
+
+
+detectWords (Bitmap srcImg, Executor executor)
+
+    CompletableFuture&lt;Word[]&gt; TextOCR.detectWords (Bitmap srcImg, Executor executor) throws InvalidInputException, AIVisionSDKException
+
+Description: Detects individual words in the provided Bitmap image using the specified executor for asynchronous execution.
+
+Parameters:
+
+
+srcImg (Bitmap srcImg) - The image to analyze for word detection.
+
+Executor - Manages asynchronous task execution.
+
+
+Return Value: A CompletableFuture that resolves to an array of Word objects, each containing complex bounding boxes and possible text decodes.
+
+Exceptions:
+
+
+InvalidInputException - Thrown if the Bitmap is null.
+
+AIVisionSDKException - Thrown if there is an error in detection or the image queue is full.
+
+
+
+
+detectParagraphs (Bitmap srcImg, Executor executor)
+
+    CompletableFuture&lt;TextParagraph[]&gt; detectParagraphs(Bitmap srcImg, Executor executor) throws InvalidInputException, AIVisionSDKException
+
+Description: Detects paragraphs in the provided Bitmap image using the specified executor for asynchronous execution.
+
+Parameters:
+
+
+srcImg (Bitmap srcImg) - The image to analyze for paragraph detection.
+
+executor - Manages asynchronous task execution.
+
+
+Return Value: A CompletableFuture that resolves to an array of TextParagraph objects, representing detected paragraphs.
+
+Exceptions:
+
+
+InvalidInputException - Thrown if the Bitmap is null.
+
+AIVisionSDKException - Thrown if the AI Data Capture SDK is not initialized.
+
+
+
+
+getTextOCR (Settings settings, Executor executor)
+
+    CompletableFuture&lt;TextOCR&gt; getTextOCR(Settings settings, Executor executor) throws InvalidInputException, AIVisionSDKSNPEException, AIVisionSDKException, AIVisionSDKModelException, AIVisionSDKLicenseException
+
+Description: Asynchronously initializes and retrieves a TextOCR instance using the specified settings and executor.
+
+Parameters:
+
+
+Settings - An instance of TextOCR.Settings containing configuration options for the OCR engine.
+
+executor - Manages asynchronous task execution.
+
+
+Return Value: A CompletableFuture that resolves to an initialized TextOCR instance.
+
+Exceptions:
+
+
+InvalidInputException - Thrown if the settings are invalid or null.
+
+AIVisionSDKSNPEException - Thrown if SNPE fails to initialize.
+
+AIVisionSDKException - Thrown if the AI Vision SDK is not initialized.
+
+AIVisionSDKModelException - Thrown if the current SDK version is below the minimum required version. To resolve this, update the SDK to a newer or the latest version.
+
+AIVisionSDKLicenseException - Thrown if there are licensing issues related to the text-ocr-recognizer model.
+
+
+
+
+process (ImageData imageData, Executor executor)
+
+    CompletableFuture&lt;List&lt;ParagraphEntity&gt;&gt; process(ImageData imageData, Executor executor) throws AIVisionSDKException
+
+Processes an image to detect text paragraphs, organizing the detected text into words, lines, and paragraphs. This method executes asynchronously and returns a CompletableFuture that can be used to retrieve the results once they are available.
+
+Parameters:
+
+
+imageData - The image data to be processed for text detection.
+
+executor - Results are returned in this executor.
+
+
+Return Value:
+
+
+CompletableFuturet&lt;List&lt;ParagraphEntity&gt;&gt; - A future that completes with a list of ParagraphEntity objects representing the detected text.
+
+
+Exceptions:
+
+
+AIVisionSDKException - Thrown if the image queue size limit of 5 is exceeded.
+
+
+
+
+process(ImageData imageData)
+
+    CompletableFuture&lt;List&lt;ParagraphEntity&gt;&gt; process(ImageData imageData) throws InvalidInputException, AIVisionSDKException
+
+Processes an image to detect text paragraphs and organizes text into words, lines, and paragraphs.
+
+Parameters:
+
+
+imageData - The image data to be processed.
+
+
+Return Value:
+Returns a CompletableFuture&lt;List&lt;ParagraphEntity&gt;&gt; containing the detected text.
+
+Exceptions:
+
+
+InvalidInputException - Thrown if imageData is null.
+
+AIVisionSDKException - Thrown if the image queue size limit of 5 is exceeded.
+
+
+
+
+dispose()
+
+    void dispose()
+
+Description: Releases all internal resources used by the TextOCR object. This function must be called manually to free up resources.
+
+
+
+TextOCR.Settings
+
+The Settings class is a nested class within the TextOCR class, which leverages Optical Character Recognition (OCR) to detect, recognize, and group text from images. The flexibility of its parameters allows developers to fine-tune performance for diverse use cases, including document scanning, real-time recognition, and automated data entry.
+
+
+
+Constructors
+
+Settings(String mavenModelName)
+
+    TextOCR.Settings textOCRSettings = new TextOCR.Settings(mavenModelName) throws InvalidInputException,AIVisionSDKException;
+
+Description: Constructor for the Settings object with model name.
+
+Parameters:
+
+
+mavenModelName - The name of the model specified in the Maven repository.
+
+
+Exceptions:
+
+
+InvalidInputException - Thrown if the mavenModelName is invalid.
+
+AIVisionSDKException - Thrown if an error occurs while reading the specified model or the AI Data Capture SDK is not initialized.
+
+
+Settings(File ModelFile)
+
+    TextOCR.Settings textOCRSettings = new TextOCR.Settings(modelFile) throws InvalidInputException,AIVisionSDKException;
+
+Description: Constructs a new Settings object with File object passed.
+
+Parameters:
+
+
+ModelFile - The file object that contains the Text OCR model.
+
+
+Exceptions:
+
+
+InvalidInputException - Thrown if the modelFile is invalid.
+
+AIVisionSDKException - Thrown if an error occurs while reading the specified model or the AI Data Capture SDK is not initialized.
+
+
+
+
+Text Detection
+
+The Detection phase processes the input image to create complex bounding boxes, or text boxes. Each text box is represented by a list of points forming a rotated rectangle, which may not be perfectly aligned with the screen’s edges. There may be more than four points if the rectangle is clipped at the edges of the screen. Adjusting Detection Parameters allows for improved accuracy, catering to specific use cases like document scanning, real-time text recognition, or automated data entry.
+
+Typical scenarios for adjusting Detection Parameters:
+
+
+Document Scanning: Digitize documents by extracting text for storage and retrieval.
+
+Real-Time Text Recognition: Integrate into applications requiring immediate text recognition from images or video streams.
+
+Automated Data Entry:  Simplify workflows by pulling text from forms, invoices, or other structured documents.
+
+
+
+
+Detection Parameters
+
+To refine detection accuracy, adjust the Detection Parameters.
+
+
+
+detectionInferencerOptions
+
+    InferencerOptions TextOCR.Settings.detectionInferencerOptions = new InferencerOptions()
+
+Description: Allows developers to specify a different input shape for the detection stage inferencer.
+
+
+
+recognitionInferencerOptions
+
+    InferencerOptions TextOCR.Settings.recognitionInferencerOptions = new InferencerOptions()
+
+Description: Typically remains unchanged as the input size is fixed for the recognition model. If needed, Recognition results can be adjusted using parameters in the Recognition Parameters section.
+Note: These options should not be changed by the developer.
+
+
+
+Detection Process
+
+The detection process operates in two main stages:
+
+
+Heatmap Threshold (Pixel-Level Filtering) - Filters pixels based on their likelihood of being part of text. A heatmap is generated where each pixel is assigned a score indicating the likelihood of it being part of a text character. The Heatmap Threshold filters out pixels with low scores, retaining only the most probable candidates for further processing.
+
+Box Threshold (Box-Level Filtering) - Groups filtered the pixels into bounding boxes and removes low-confidence detections. After pixel filtering, the system identifies groups of pixels and draws bounding boxes around them. Each box is assigned a confidence score, and the Box Threshold filters out boxes with low confidence, retaining only those likely to contain text.
+
+
+Once potential text boxes are identified, additional filtering can be applied to refine results. This includes adjusting box size, area, and orientation to eliminate noise or unwanted detections and optimizing the detection for accurate text recognition. These refinements are acheived using Filtering Parameters.
+
+
+
+heatmapThreshold
+
+    Float TextOCR.Settings.heatmapThreshold
+
+Description: Sets a cutoff to identify potential areas likely to contain text, converting them into text boxes. (Internally, the detector model creates a grayscale image, or heatmap, that represents text confidence.)
+
+Tuning effect:
+
+
+Increase Threshold - Reduces areas identified as text and reduces noise. Useful for high-contrast clear text such as scanned documents.
+
+Decrease Threshold - Expands areas identified as text. Useful for faint, curved, or blurred text with low contrast.
+
+
+Default: 0.5f
+
+Valid range: [0.0f, 1.0f]
+
+
+
+boxThreshold
+
+    Float TextOCR.Settings.boxThreshold
+
+Description: Sets the minimum confidence score required for a text box to be included in the OCR output. After pixel filtering, the system identifies pixel groups and draws bounding boxes around them, assigning each box a confidence score. The Box Threshold is then applied to filter out boxes with low confidence, retaining only those likely to contain text, thereby improving detection accuracy.
+
+
+
+Tuning effect:
+
+
+Increase Threshold: Excludes less-confident text boxes (reduces false positives), useful when too many boxes are detected.
+
+Decrease Threshold: Includes more text boxes (catches weak detections), which might be necessary when important text is being missed.
+
+
+Default: 0.85f
+
+Valid range: [0, 1.0]
+
+
+
+Filtering Parameters
+
+minBoxArea
+
+    Integer TextOCR.Settings.minBoxArea
+
+Description: Filters out text boxes if their total area (width × height) is too small, filtering &quot;tiny&quot; boxes. This helps remove unimportant boxes from the OCR output.
+
+Tuning effect:
+
+
+Increase Parameter: Filters out boxes with small areas and eliminate dust, dots, or tiny artifacts.
+
+Decrease Parameter: Helps to detect smaller text.
+
+
+Default: 10
+
+Valid range: [0, max(int)]
+
+
+
+minBoxSize
+
+    Integer TextOCR.Settings.minBoxSize
+
+Description: Filters out text boxes that are too narrow (&quot;skinny&quot;) or too short that likely do not contain real text.
+
+Tuning effect:
+
+
+Increase Parameter: Filters out very narrow boxes and helps ignore divider lines, underscores, or non-text lines
+
+Decrease Parameter: Helps to detect smaller text.
+
+
+Default: 1
+
+Valid range: [0, max(int)]
+
+
+
+minRatioForRotation
+
+    Float TextOCR.Settings.minRatioForRotation
+
+Description: Rotates vertically (high height, low width) oriented boxes so they become horizontal. 
+Note: Words are generally wider than they are tall, so their ratio should exceed the default value. Therefore, avoid changing this parameter for words, since word complex bounding boxes should be horizontally oriented before recognition.
+
+Tuning effect: Setting this parameter to 0 disables rotation. Otherwise, rotate boxes with a height-to-width ratio exceeding this value 90 degrees counterclockwise before recognition.
+
+Default: 1.5f
+
+Valid range: [0.0f, inf] (where ‘inf’ denotes infinity)
+
+
+
+unclipRatio
+
+    float TextOCR.Settings.unclipRatio
+
+Description: Expands or &quot;stretches&quot; detected boxes outward to include full characters and some background. Expands box size before recognition to improve results. Tight-fitting boxes might benefit from some extra background for better decoding.
+
+Tuning effect: Increasing this parameter enlarges text boxes, potentially improving recognition.
+
+
+Increase Parameter: For curved, rotated, or incomplete detections
+
+Decrease Parameter: To avoid overlapping with neighboring text regions or noisy regions
+
+
+Default: 0.6f
+
+
+
+
+
+Sample Code
+
+This sample code demonstrates how to adjust detection parameter settings:
+
+
+Configure Settings: Initialize a TextOCR.Settings object and customize parameters such as heatmapThreshold and boxThreshold to improve detection accuracy based on your specific needs.
+
+Asynchronous Initialization: Use an Executor to initialize the TextOCR instance asynchronously, allowing for efficient resource management and responsiveness.
+
+Load Bitmap Image: Prepare the image for OCR by converting it to a Bitmap object.
+
+Perform OCR: Use the detect method to analyze the image and retrieve an array of OCRResult objects with complex bounding boxes and recognized text.
+
+Process OCR Results: Handle the results by iterating over the OCRResult array, outputting the recognized text or using it for further processing.
+
+Dispose Resources: After completing OCR operations, call dispose() to release resources and prevent memory leaks.
+
+import com.zebra.ai.vision.TextOCR;
+import com.zebra.ai.vision.TextOCR.Settings;
+import android.graphics.Bitmap;
+
+// Initialize settings with a custom heatmap threshold
+String mavenModelName = &quot;text-ocr-recognizer&quot;;
+TextOCR.Settings textOCRSettings settings = new TextOCR.Settings (mavenModelName);
+settings.heatmapThreshold = 0.3f; // Lower threshold for low-contrast text
+settings.boxThreshold = 0.9f; // Higher threshold for more confident text boxes
+settings.minBoxSize = 10; // Set minimum box size to 10 pixels
+settings.minBoxArea = 50; // Set minimum box area to 50 pixels
+settings.unclipRatio = 2.0f; // Enlarge text boxes by 100%
+settings.minRatioForRotation = 2.0f; // Rotate boxes with height-to-width ratio exceeding 2.0
+
+// Optional – set runtime processor order, by default {DSP, CPU, GPU} is used
+Integer[] rpo = new Integer[3];
+rpo[0] = InferencerOptions.DSP;
+rpo[1] = InferencerOptions.CPU;
+rpo[2] = InferencerOptions.GPU;
+settings.detectionInferencerOptions.runtimeProcessorOrder = rpo;
+settings.recognitionInferencerOptions.runtimeProcessorOrder = rpo;
+
+// Initialize executor
+Executor executor = Executors.newFixedThreadPool(1);
+
+CompletableFuture&lt;TextOCR&gt; futureObject = TextOCR. getTextOCR(settings, executor);
+
+// Use the futureObject to implement thenAccept() callback of CompletableFuture
+futureObject.thenAccept (OCRInstance -&gt; {
+    // Use the Textocr object returned here for the detection of barcodes/shelves/products
+    textocr = OCRInstance;
+});
+
+// Load your Bitmap image
+Bitmap image = ...; // Your input image
+
+// Perform OCR
+CompletableFuture&lt;Result[]&gt; futureResult = textocr.detect(bitmap,executor);
+futureResult.thenAccept (ocrResults -&gt; {
+    // Process the returned output that contains complex bounding boxes and text in it
+});
+
+// Dispose resources
+// Once use of the textOCR object is done, dispose it to release the resources and memory used for detection
+textOCR.dispose();
+
+
+Text Recognition
+
+The Recognition stage analyzes the text within each complex bounding box, or text box, produced during the Detection Stage to identify the text content. Each text box results in a list of potential text decodes.
+
+After text boxes are detected, the next step is to extract and accurately read the text within each bounding box. Frontline AI Enabler uses the &quot;Total&quot; decoder to convert character predictions into meaningful words, even in cases where the model is uncertain about specific characters.
+
+The &quot;Total&quot; decoder employs a systematic filtering process to refine character predictions, focusing on balancing accuracy and efficiency while assembling words. Adjusting the Decoder Parameters TopK Ignore Cutoff, Total Prob Threshold, and Max Word Combinations, act as filters to refine predictions and determine the final output.
+
+Step-by-Step Process:
+
+
+Generate a Ranked List of Predictions for Each Character: For every character slot (e.g., a space in a word), the system creates a list of possible characters, ranked by confidence scores.
+
+
+
+To explain how the parameters work together, consider the following example predictions to apply for this process: &#x27;S&#x27; at 40%, &#x27;s&#x27; at 30%, &#x27;5&#x27; at 15%, &#x27;B&#x27; at 5%, &#x27;8&#x27; at 2%
+
+
+Apply Two Filters to Refine Predictions:
+
+
+
+First Filter - TopK Ignore Cutoff (The Gatekeeper): Limits how many of the highest-confidence character predictions are considered for each character slot.
+
+
+
+Example: If the cutoff is 4, only the top 4 predictions (&#x27;S&#x27;, &#x27;s&#x27;, &#x27;5&#x27;, &#x27;B&#x27;) are kept. Predictions below the cutoff (like &#x27;8&#x27;) are discarded.
+
+
+Second Filter - Total Prob Threshold (The Quality Check): Ensures the cumulative confidence of the retained predictions meets a defined minimum threshold (e.g., 90%).
+
+
+
+Example: Using the top predictions (&#x27;S&#x27;, &#x27;s&#x27;, &#x27;5&#x27;, &#x27;B&#x27;), their combined confidence is: 0.40 + 0.30 + 0.15 + 0.05 = 0.90.
+
+If the combined score is below the threshold (e.g., 85%), the system gives up on this character slot and outputs a placeholder like &quot;&quot;.
+
+If the score meets or exceeds the threshold, the decoder narrows down predictions further (e.g., keeping only &#x27;S&#x27; and &#x27;s&#x27; if a stricter threshold like 0.50 is used).
+
+
+
+Word Assembly: Once character predictions pass the filters, they are sent to the next stage: assembling them into valid words. This limits the number of full-word combinations generated from the remaining character predictions after filtering.
+
+
+
+Example: After filtering, 20 valid word combinations remain. If Max Word Combinations is set to 5, only the top 5 most confident word results are returned. The remaining 15 combinations are ignored, even if they are valid.
+
+
+
+
+
+Recognition Parameters
+
+This section provides the Recognition Parameters to help refine the recognition process.
+
+
+
+decodingTopkIgnoreCutoff
+
+    Integer TextOCR.Settings.decodingTopkIgnoreCutoff
+
+Description: The maximum number of highest-confidence character predictions the &quot;Total&quot; decoder considers for each character position, impacting the accuracy and completeness of text recognition. If additional characters are needed to meet the Total Prob Threshold, the model outputs a replacement character (e.g., &quot;�&quot;). This parameter is applicable for the following scenarios:
+
+
+Complex Text Recognition - Increase this parameter for documents with complex or ambiguous text where capturing all character variations is crucial.
+
+Improving Character Accuracy - Use this setting in scenarios where critical text components are consistently missing, ensuring thorough character analysis.
+
+Adaptive Text Processing - Adjust dynamically based on the complexity and quality of input text to optimize OCR performance.
+
+
+Tuning effect: Generally, keep this at the default value. If the expected character does not appear in the OCR output, increasing this value allows for more less confident decodes.
+
+Default: 4
+
+Valid range: [1, max(int)]
+
+
+
+decodingTotalProbThreshold
+
+    Float TextOCR.Settings.decodingTotalProbThreshold
+
+Description: Sets the minimum cumulative confidence score that character decodes must achieve to be accepted. This setting is crucial in the total decoding strategy of the OCR recognition process, as it balances accuracy and coverage in text recognition. If the threshold is not reached, no high-confidence decode exists, resulting in a placeholder character (�) appearing in the output.
+
+Relevant scenarios:
+
+
+Improving Decode Coverage - Lower the threshold when critical text characters are missing, to capture a wider range of more potential decodes.
+
+Analyzing Complex Documents - Apply this setting for documents with ambiguous or low-quality text to ensure more comprehensive character recognition.
+
+Adaptive Recognition - Adjust dynamically based on the quality and complexity of input documents to optimize OCR performance for specific needs.
+
+
+Tuning effect: If many characters are not decoded, evidenced by multiple � characters, decreasing this value may improve results. Increase this parameter for more flexible but potentially noisier results. Decrease this parameter for more trustworthy, reliable outputs.
+
+Default: 0.9f
+
+Valid range: [0.0f, 1.0f]
+
+
+
+decodingMaxWordCombinations
+
+    Integer TextOCR.Settings.decodingMaxWordCombinations
+
+Description: Restricts the number of valid word outputs generated from possible character combinations for each detection. This helps avoid overwhelming results, particularly for ambiguous inputs, by limiting the model’s consideration of all potential character combinations across all positions in the word. It is applicable for the following scenarios:
+
+
+Detailed Text Analysis - Increase this parameter for applications that require a thorough analysis of text.
+
+Data Extraction - Adjust this parameter to optimize the extraction of comprehensive data from documents with complex or ambiguous text.
+
+
+Tuning effect: Increasing this number returns more decodes, but potentially with lower confidence. Decreasing this parameter results to faster processing and fewer alternatives.
+
+Default: 10
+
+Valid range: [1, max(int)]
+
+
+
+Recognition: Special Cases
+
+These features are intended only for special scenarios and are usually not needed for most OCR tasks.
+
+
+
+flip
+
+    boolean TextOCR.Settings.flip
+
+Description: Runs recognition in multiple orientations to boost accuracy on rotated or flipped text. If set to true, performs recognition twice - once in the regular orientation and once rotated by 180 degrees. Enable only if text orientation varies, as it increases processing time.
+
+Tiling
+
+Tiling helps OCR handle very long, thin lines of text (like serial numbers, document titles, or part numbers) by splitting them into smaller, manageable pieces (&quot;tiles&quot;) for better recognition. This is useful when a word box exceeds the recognition limit (15 characters). Tiling adds processing time and should only be used as needed.
+
+
+
+Sample Code
+
+Sample code demonstrating use of recognition parameters:
+
+
+Initialize Settings: Configure the OCR settings, including additional parameters such as heatmapThreshold and tiling.
+
+Create TextOCR Instance: Use an executor to initialize the TextOCR instance asynchronously with the configured settings.
+
+Load Bitmap Image: Prepare the bitmap image that you want to analyze using OCR.
+
+Perform OCR: Invoke the detect method on the TextOCR instance to analyze the bitmap image, managing the asynchronous processing with the executor.
+
+Process OCR Results: Handle the results, which include complex bounding boxes and recognized text.
+
+Dispose Resources: After completing OCR operations, call the dispose method on the TextOCR instance to release resources and prevent memory leaks.
+
+import com.zebra.ai.vision.TextOCR;
+import com.zebra.ai.vision.TextOCR.Settings;
+import android.graphics.Bitmap;
+
+// Initialize settings
+String mavenModelName = &quot;text-ocr-recognizer&quot;;
+TextOCR.Settings textOCRSettings = new TextOCR.Settings (mavenModelName);
+textOCRSettings.heatmapThreshold = 0.5f;
+textOCRSettings.decodingTotalProbThreshold = 0.9f;
+textOCRSettings.tiling.enable = true;
+
+// Optional : set runtime processing order, by default DSP will be used
+Integer[] rpo = new Integer[]{InferencerOptions.DSP};
+textOCRSettings.detectionInferencerOptions.runtimeProcessorOrder = rpo;
+textOCRSettings.recognitionInferencerOptions.runtimeProcessorOrder = rpo;
+
+// Instantiate TextOCR with the configured settings
+// settings = TextOCR.Settings object created above
+// Executor = An executor thread for processing API calls and returning results
+
+// Initialize executor
+Executor executor = Executors.newFixedThreadPool(1);
+
+CompletableFuture&lt;TextOCR&gt; futureObject = TextOCR.getTextOCR(textOCRSettings, executor);
+
+// Use the futureObject to implement thenAccept() callback of CompletableFuture.
+futureObject.thenAccept (OCRInstance -&gt; {
+    // Use the textocr object returned here detecting barcodes, shelves, or products
+    textocr = OCRInstance;
+});
+
+// Load your Bitmap image
+Bitmap image = ...;
+
+// Perform OCR
+CompletableFuture&lt;Result[]&gt; futureResult = textocr.detect(bitmap,executor);
+futureResult.thenAccept (Result -&gt; {
+    // Process the returned output that contains complex bounding boxes and recognized text
+});
+
+// Dispose resources
+// Once done using the textOCR object, dispose it to release resources and memory used for detection.
+textOCR.dispose();
+
+
+
+
+Tiling
+
+The OCR Recognition stage limits Word boxes to 15 characters. To achieve good results with “Words” containing more than 15 characters, such as ID numbers or VINs, enable Tiling. Tiling splits text boxes generated at the localization stage into overlapping crops, performs recognition on each, and uses a correlation-based merging algorithm to prepare a unified decode. Tiling increases processing time, so use it only when needed. Not all “Words” will be tiled; only those meeting threshold criteria specified by the developer will be tiled.
+
+
+
+This diagram illustrates the process of tiling for OCR recognition of long text regions. At the top, the original image contains a lengthy alphanumeric string (&#x27;L59378610001&#x27;) that exceeds the character limit of the recognizer. To address this, the text region is divided into two overlapping tiles: Tile 1 and Tile 2. Each tile is processed independently by the recognizer, generating partial outputs (&#x27;L5937861&#x27; and &#x27;8610001&#x27;). These individual results are then combined using a correlation-based algorithm, resulting in the final unified decode: &#x27;L59378610001&#x27;.
+
+
+
+Tiling Settings
+
+The TilerSettings class is a configuration component within the TextRecognizer.Settings framework of the AI Data Capture SDK. It provides parameters to fine-tune the behavior of the tiling feature, which is used during the text detection and recognition process. These settings primarily control how boxes are merged and processed based on their aspect ratios and correlation thresholds.
+
+ Caution: Tiling adds processing time and should only be used as needed.
+
+Configure TilerSettings in the following scenarios:
+
+
+Large Document Processing: Enable tiling to process large documents efficiently, especially when sections require individual handling due to size limitations.
+
+Complex Layout Handling: Adjust tiling settings for documents with complex layouts to improve the accuracy of text recognition.
+
+Performance Tuning: Fine-tune parameters to achieve an optimal balance between processing speed and accuracy, based on specific application requirements.
+
+
+
+
+
+
+enable
+
+    Boolean TextOCR.Settings.TilerSettings.enable
+
+Description: Enables or disables the tiling feature. When true, TextOCR performs tiling operations on detected text regions, splitting boxes that meet aspect ratio criteria into multiple tiles, recognizing text, and merging results using a correlation method.
+
+Default: false
+
+
+
+aspectRatioLowerThr
+
+    Float TextOCR.Settings.TilerSettings.aspectRatioLowerThr
+
+Description: A float attribute that raises the threshold for tiling boxes with smaller aspect ratios. Defines the lower limit - only boxes wider than this value get tiled (controls which boxes are considered &quot;elongated&quot;), since they likely contain long text strings. Tune this parameter together with aspectRatioUpperThr.
+
+Tuning effect: Decreasing this threshold results in more rectangular-shaped (low-aspect ratio) boxes being tiled. If the desired text box is not tiled, decreasing this parameter may help. Increase this threshold to tile only very long boxes.
+
+Default: 10.0f
+
+Valid range: [1.0f, inf]
+
+Return Value: Float value representing the lower threshold for aspect ratios.
+
+
+
+aspectRatioUpperThr
+
+    float TextOCR.Settings.TilerSettings.aspectRatioUpperThr
+
+Description: Defines the upper limit – only boxes up to this width/height ratio get tiled (prevents superlong, odd boxes being tiled). Filters boxes with very high aspect ratios, may rarely occur and be false positives from the text detector model. Tune this parameter together with aspectRatioLowerThr. A similar effect can be achieved with the minBoxSize parameter.
+
+Tuning effect: Increasing this parameter allows tiling of more long and narrow boxes. Decreasing this parameter avoids tiling extremely stretched or odd-shaped boxes.
+
+Default: 40.0f
+
+Valid range: [1.0f, inf]
+
+Return Value: Float value representing the upper threshold for aspect ratios.
+
+
+
+topkMergedPredictions
+
+Integer TextOCR.Settings.TilerSettings.topkMergedPredictions
+
+Description: Limits the number of decodes returned based on confidence scores. This affects how many merged combinations are returned during the tiling stage.
+
+Tuning effect: Increasing this parameter increases the number of possible results to review. Decreasing this parameter results to fewer, faster results.
+
+Default: 5
+
+Valid range: [1, max(int)]
+
+Return Value: Integer representing the top merged predictions to return.
+
+
+
+Advanced Tiling Parameters
+
+These advanced tiling parameters are only intended to be utilized in edge cases that are difficult to solve. Zebra recommends not to change these parameters unless necessary.
+
+
+
+topCorrelationThr
+
+    Float TextOCR.Settings.TilerSettings.topCorrelationThr
+
+Description: Sets the threshold for correlation to consider merging boxes. Increasing this value decreases the number of merge points considered.
+
+Tuning effect: Increasing this value restricts the internal merging mechanism to use only points with a correlation score higher than this value. Setting it to 0 removes the limit. If incorrect tiling occurs, increasing this parameter may help.
+
+Default: 0.0f
+
+Valid range: [0.0f, 1.0f]
+
+Return Value: Float value representing the correlation threshold value.
+
+
+
+mergePointsCutoff
+
+    Integer TextOCR.Settings.TilerSettings.mergePointsCutoff
+
+Description: Determines the cutoff for the number of merge points. If the number exceeds this value, merging is not performed. This internal parameter limits the number of possible combinations used for tile merging.
+
+Tuning effect: Increasing this value results in more combinations being used, increasing processing time but potentially generating more accurate results.
+
+Default: 5
+
+Valid range: [1, max(int)]
+
+Return Value: Integer representing the maximum number of merge points allowed.
+
+
+
+splitMarginFactor
+
+    Float TextOCR.Settings.TilerSettings.splitMarginFactor
+
+Description: Reduces the probability of characters appearing at the end due to splitting.
+
+Default: 0.1f
+
+Valid range: [0.0f, 1.0f]
+
+Return Value: Float value representing the factor applied to margin splitting.
+
+
+
+Sample Code
+
+The TilerSettings object is part of the TextOCR.Settings configuration. Access and modify TilerSettings through the TextOCR.Settings object.
+
+This sample code demonstrates how to configure TilerSettings and process the image for text detection and recognition:
+
+
+Initialize Settings: Begin by creating a TextOCR.Settings instance.
+
+Configure TilerSettings: Access the TilerSettings within the TextOCR.Settings instance and set custom values for tiling parameters to control how the image is divided and processed.
+
+Instantiate TextOCR: Use the configured settings to create a TextOCR instance. This object will handle the text detection and recognition processes.
+
+Load Bitmap Image: Prepare the image for OCR by converting it to a Bitmap object.
+
+Perform Detection: Use the detect method to analyze the image and retrieve an array of OCRResult objects containing the detected text.
+
+Print Results: Iterate over the OCRResult array to output the recognized text to the console.
+
+Dispose Resources: Free up system resources by calling the dispose method on the TextOCR object after usage.
+
+import com.zebra.aivision.TextOCR;
+import com.zebra.aivision.TextOCR.Settings;
+import com.zebra.aivision.TextOCR.Settings.TilerSettings;
+import android.graphics.Bitmap;
+
+// Initialize settings with custom tiling options
+TextOCR.Settings.TilerSettings tilerSettings = new TextOCR.Settings.TilerSettings();
+tilerSettings.tiling.enable = true;
+tilerSettings.tiling.aspectRatioLowerThr = 8.0f;
+tilerSettings.tiling.aspectRatioUpperThr = 35.0f;
+tilerSettings.tiling.mergePointsCutoff = 10;
+
+// Initialize executor
+Executor executor = Executors.newFixedThreadPool(1);
+
+// Input params: bitmap image (to perform detection) and an executor thread object (in which the detection happens and the results are returned)
+CompletableFuture&lt;OCRResult[]&gt; futureResult = textocr.detect(bitmap,executor);
+
+futureResult.thenAccept (ocrResults -&gt; {
+    //Process the returned output that contains complex bounding boxes and text in it.
+});
+
+// Dispose resources
+// Once done using the textOCR object, dispose it to release resources and memory used for detection.
+textOCR.dispose()
+
+
+
+
+Text Grouping
+
+After Words are identified and decoded from the Text Recognition stage, the Text Grouping stage organizes them into lines or paragraphs. This process is carried out in 2 steps:
+
+
+Words detected by OCR are grouped into Lines.
+
+The Lines are further grouped into Paragraphs.
+
+
+In the graphic representation below, Words, Lines and Paragraphs are represented by blue, green and fuchsia borders, respectively.
+
+
+
+
+
+Grouper Settings
+
+The GrouperSettings class provides parameters for customizing the behavior of the OCR text grouping algorithm. It offers control over how text elements are spatially organized based on their geometric properties. By adjusting these settings, developers can fine-tune how text boxes are grouped into lines, paragraphs, or other structures based on their spatial relationships.
+
+
+
+widthDistanceRatio
+
+    Float TextOCR.Settings.GrouperSettings.widthDistanceRatio
+
+Description: Determines the threshold for joining Words into Lines. Adjusting this parameter allows control over acceptable spacing between Words in a Line. Words spaced beyond this threshold are treated as separate Lines. The default value of 1.5f indicates that the acceptable space between Words should not exceed 50% of their average width. Increasing this value to 2.0f allows for a maximum acceptable space of 100% of the average Word width.
+
+For example, if the average Word width is 90 pixels, widthDistanceRatio of 2.0 allows words with centers up to 180 pixels apart to be grouped into the same Line.
+
+Tuning effect: Increasing this parameter causes horizontally spaced Words to join into a Line. Set this value higher if Words are spaced further apart and should be joined into a Line, such as in artistic layouts.
+
+Default: 1.5f
+
+Valid range: [0.0f, inf]
+
+
+
+
+
+heightDistanceRatio
+
+    Float TextOCR.Settings.GrouperSettings.heightDistanceRatio
+
+Description: Affects the grouping of Words into Lines, particularly in scenarios where text undergoes a sudden change in font size but should still be grouped together. Although the algorithm has no knowledge of the actual font size, it uses the height of the complex bounding box to approximate it. The default value of 2.0f indicates that Words will be grouped together even if their font size differs by up to twice the height.
+
+For example, setting this parameter to 4.0 allows words with height differences up to 4 times to be grouped into the same Line.
+
+Tuning effect: Increasing this parameter allows words of varying heights to join into a single Line. Raise this value higher when there is significant variation in text sizes within the same line, such as in documents with mixed fonts. Decrease this parameter if strange font-size jumps are creating messy lines.
+
+Default: 2.0f
+
+Valid range: [1.0f, inf]
+
+
+
+
+
+centerDistanceRatio
+
+Float TextOCR.Settings.GrouperSettings.centerDistanceRatio
+
+Description: Affects the joining of Words into Lines, particularly in scenarios where lines of text are not perfectly straight, such as in curved lines of text. The threshold value should be adjusted empirically, as it mathematically represents the relationship between the positions of two consecutive Words.
+
+For example, if the average Word height is 20 pixels, setting centerDistanceRatio to 1.0 allows Words with centers up to 20 pixels apart vertically to be grouped into the same Line.
+
+Tuning effect: Increasing this parameter allows Words that are not vertically aligned to be joined into the same Line. Decrease this value if only straight lines should be grouped.
+
+Default: 0.6f
+
+
+
+
+
+paragraphHeightDistance
+
+    Float TextOCR.Settings.GrouperSettings.paragraphHeightDistance
+
+Description: Determines the difference in vertical spacing between the center of two Lines to determine if they should be grouped into a Paragraph. It is particularly useful when the Lines of text have unusually large &quot;leading&quot;, which refers to the distance between consecutive Lines in a Paragraph. The default value of 1.0f indicates that the Lines can be grouped into a paragraph if their centers are spaced apart by 100% of their average height.
+
+For example, if the average Line height is 30 pixels, setting this parameter to 2 allows Lines with centers up to 60 pixels apart to be grouped into a Paragraph.
+
+Tuning effect: Increasing this parameter allows Lines that are spaced farther apart vertically to be joined into a Paragraph. Consider raising this value higher for documents with widely spaced Lines. Decrease this value if too many lines are getting grouped.
+
+Default: 1.0f
+
+Valid range: [0.0f, inf]
+
+
+
+
+
+paragraphHeightRatioThreshold
+
+    Float TextOCR.Settings.GrouperSettings.paragraphHeightRatioThreshold
+
+Description: Determines if there is a significant height difference between two rows, expressed as a ratio of the heights of two adjacent Lines, to decide whether they should be joined into a Paragraph. This can be useful in scenarios when Lines of varying font sizes should be joined into a single Paragraph. Although the algorithm has no knowledge of actual font sizes, it uses the height of the complex bounding box as an approximation. The default value of 1.0/3.0f (approximately 0.33) indicates that if consecutive Lines differ in height by a facotr of up to 3, they will still be grouped together into a single Paragraph.
+
+For example, if the average Line height is 50 pixels, setting this parameter to 0.2 allows Lines with heights ranging from approximately 10 pixels to 250 pixels to be grouped into the same Paragraph.
+
+Tuning effect: Decreasing this parameter allows Lines with larger height differences to be joined into a Paragraph, which can be useful for documents with diverse fonts. Increase this parameter to only group similar-sized lines.
+
+Default: 0.33f
+
+Valid range: [0.0f, 1.0f]
+
+
+
+
+
+Sample Code
+
+To utilize the OCR capabilities of the TextOCR library, follow these steps to configure settings, prepare your image, and perform text detection:
+
+
+Configure Settings: Initialize a TextOCR.Settings object and customize the GrouperSettings parameters for text grouping.
+
+Asynchronous Initialization: Use an Executor to initialize the TextOCR instance asynchronously, allowing for efficient resource management and responsiveness.
+
+Load Bitmap Image: Prepare the image for OCR by converting it to a Bitmap object.
+
+Perform OCR: Use the detect method to analyze the image, retrieving an array of OCRResult objects with complex bounding boxes and recognized text.
+
+Process OCR Results: Handle the results by iterating over the OCRResult array, outputting the recognized text or using it for further processing.
+
+Dispose Resources: After completing OCR operations, call dispose() to release resources and prevent memory leaks.
+
+import com.zebra.ai.vision.TextOCR;
+
+// Initialize TextOCR settings
+String mavenModelName = &quot;text-ocr-recognizer&quot;;
+textOCRSettings = TextOCR.Settings(mavenModelName)
+
+// Access the GrouperSettings and set custom values for grouping parameters
+textOCRSettings.grouping.widthDistanceRatio = 1.5f;
+textOCRSettings.grouping.heightDistanceRatio = 2.0f;
+textOCRSettings.grouping.centerDistanceRatio = 0.6f;
+textOCRSettings.grouping.paragraphHeightDistance = 1.0f;
+textOCRSettings.grouping.paragraphHeightRatioThreshold = 0.33f;
+
+// Initialize executor
+Executor executor = Executors.newFixedThreadPool(1);
+
+// Input params include the bitmap image (to perform detection on) and an executor thread object (in which the detection happens)
+CompletableFuture&lt;OCRResult[]&gt; futureResult = textocr.detect(bitmap,executor);
+
+futureResult.thenAccept (ocrResults -&gt; {
+    // Process the returned output that contains complex bounding boxes and text within it
+});
+
+// Dispose resources
+// Once done using the textOCR object, dispose it to release resources and memory used for detection.
+textOCR.dispose();
+
+
+
+
+Troubleshooting Guide
+
+Note:
+
+
+↑ indicates an increase in the value or parameter
+
+↓ indicates a decrease in the value or parameter
+
+
+Quick Tips for Detection
+
+If the following issues are encountered, try these adjustments:
+
+
+  
+    
+      Issue
+      Suggested Adjustment
+    
+  
+  
+    
+      Missing faint/small text
+      ↓ Heatmap and Box Threshold or ↓ Min Box Size/Area
+    
+    
+      Too much junk/noise
+      ↑ Heatmap and Box Threshold or ↑ Min Box Size/Area
+    
+    
+      Boxes are too tight, cutting off letters
+      ↑ Unclip Ratio
+    
+    
+      Boxes overlap too much
+      ↓ Unclip Ratio
+    
+    
+      Weird rotations on lines or rules
+      ↑ Min Ratio for Rotation
+    
+    
+      Elongated or tall font styles
+      ↑ Min Ratio for Rotation
+    
+    
+      Need to detect tilted/angled/curved text
+      ↓ Min Ratio for Rotation and ↑ Unclip Ratio
+    
+  
+
+
+Quick Tips for Recognition
+
+If the following issues are encountered, try these adjustments:
+
+
+  
+    
+      Issue
+      Suggested Adjustment
+    
+  
+  
+    
+      Too many mistakes or incorrect guesses
+      ↑ Total Probability Threshold
+    
+    
+      Missing letters or &quot;�&quot; characters in output
+      ↓ Total Probability Threshold and ↑ TopK Ignore Cutoff
+    
+    
+      Unclear or handwritten text
+      ↑ TopK Ignore Cutoff and ↓ Total Probability Threshold
+    
+    
+      Too many uncertain or incorrect decodes
+      ↑ Total Probability Threshold
+    
+    
+      Missing faint or ambiguous characters
+      ↓ Total Probability Threshold and ↑ Max Word Combinations
+    
+    
+      Need alternatives for post-processing
+      ↑ Max Word Combinations
+    
+  
+
+
+Quick Tips for Grouping
+
+If the following issues are encountered, try these adjustments:
+
+
+  
+    
+      Issue
+      Suggested Adjustment
+    
+  
+  
+    
+      Words that should be on one line are not
+      ↑ Width Distance Ratio
+    
+    
+      Lines with different font sizes are not grouping
+      ↑ Height Distance Ratio or ↓ Paragraph Height Ratio Threshold
+    
+    
+      Curved or wavy text splits into separate groups
+      ↑ Center Distance Ratio
+    
+    
+      Lines in a paragraph are not grouping
+      ↑ Paragraph Height Distance
+    
+    
+      Lines of different heights are not grouping
+      ↓ Paragraph Height Ratio Threshold
+    
+  
+
+
+Quick Tips for Tiling (Special Cases)
+
+If the following issues are encountered, try these adjustments:
+
+
+  
+    
+      Issue
+      Suggested Adjustment
+    
+  
+  
+    
+      Long, narrow text is not read correctly
+      Enable tiling
+    
+    
+      Errors appear at the edges of tiles
+      Adjust Split Margin Factor (usually leave at default)
+    
+    
+      Tiling merges boxes that should not be merged
+      ↑ Top Correlation Threshold
+    
+    
+      Results are slow and perfect accuracy is not needed
+      ↓ Merge Points Cutoff and ↓ TopK Merged Predictions
+    
+    
+      Results on very long text lines are inaccurate
+      ↑ Merge Points Cutoff and ↑ Aspect Ratio Upper Threshold
+    
+  
+
+
+
+
+Sample Apps
+
+Refer to the following resources:
+
+
+Start building your first product and shelf recognizer application with the QuickStart Sample application source.
+
+Consult the Java/Kotlin snippets, which demonstrate the SDK&#x27;s capabilities and can be easily integrated into your applications.
+
+Access advanced use case and technology-based demos through the Showcase Application, including he AI DataCapture demo, which outlines how users can enroll and recognize products in real-time.
+
+
+
+For instructions on accessing these demo apps, refer to the installation guide
+
+Access source code for these demos in the ZebraDevs github repo, including the AI Data Capture Demo source, to easily build these capabilities into your application.
+
+
+
+
+
+Related Guides
+
+
+About
+
+Setup
+
+Localizer
+
+
+
+Models: Barcode, Product &amp; Shelf
+
+
+Product Recognition - Model: Model
+
+
+
+Feature Extractor
+
+Feature Storage
+
+Recognizer
+
+
+Barcode Decoder
+
+CameraX
+
+
+
+EntityTrackerAnalyzer
+
+Detectors
+
+EntityViewfinder
+
+
+Image Attributes Detector
+
+Image Transform Detector
+
+Custom Detector
+
+Entity
+
+Data Types
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

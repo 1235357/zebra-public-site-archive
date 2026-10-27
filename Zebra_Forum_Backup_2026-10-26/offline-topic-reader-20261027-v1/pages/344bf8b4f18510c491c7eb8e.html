@@ -1,0 +1,431 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Windows CE5 - Disable Input Autocomplete</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Windows CE5 - Disable Input Autocomplete</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/25096; original snapshot: threads/01409.html; SHA-256: 3a4e7f428f8fc6d6850ba276c60d2cbde193ed4f19ca25f0e3db4f14aab18033</small><pre id="topic">
+
+    
+        Windows CE5 - Disable Input Autocomplete
+
+
+        
+      
+                        
+                    
+            C
+          
+          Charles Malm
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            42
+          
+                
+                  
+            
+            6
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I have a customer that wishes to disable AutoComplete for IE on his MC9090 CE device. 
+  I was not able to locate a setting similar to the WM applet on the CE device either. Is this a reg key only setting-- If so, what is it? 
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      6 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Charles Malm
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks George, I&#x27;ll have my customer test this as I was unable to repro
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Charles Malm
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The webpage is attempting to guess as he types, he has screenshots of this. I have been trying to reproduce / get steps from him to reproduce but given the below I now suspect that his app may be creating the autocomplete list through ajax on his website. 
+  &amp;nbsp;   
+ &amp;nbsp;&amp;nbsp;&amp;nbsp;  http://msdn.microsoft.com/en-us/library/aa452009.aspx 
+ &amp;nbsp; 
+ Desktop Internet Explorer functionalities that are not supported in IE for Windows CE   
+The following list shows desktop Internet Explorer functionalities that are not supported in IE for Windows CE.
+..
+Intelliform features such as autocomplete and save password
+   Unless we changed this for our build of IE, I don&#x27;t think theres anything else I can do for him.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Charles Malm
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Looks like I jumped the gun on that one... 
+  From the same page:  
+ IESAMPLE also implements the AutoComplete functionality that completes entries on Web pages by displaying a list of previous matching entries     
+ So how can this be disabled?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            George Dellaratta
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            IESample in CE5 is based on IE6.&amp;nbsp; IE6 supports this registry key to disable autocomplete.&amp;nbsp; I don&#x27;t have the means to test whether or not this functionality from Big Windows IE6 made it into CE5 IESample.
+[HKEY_CURRENT_USER \Software \Microsoft \Windows \CurrentVersion \Explorer\AutoComplete]
+AutoSuggest = &quot;No&quot;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Charles Malm
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Clarification: The customer is getting the auto complete&amp;nbsp;behavior&amp;nbsp;when using a login form for their website.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            George Dellaratta
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Can you reproduce this?   Do you mean that the username is pre-populated or does it attempt to guess as the username is populated?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,558 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>DataWedge control when fast Pause/Resume with the power button,</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/datawedge-control-when-fast-pauseresume-power-button; snapshot threads/00637.html; SHA-256 7941eebd1dc2ec4a0df57c5b9257de62a50648d8707408d5a3dab81b0ab1ca31. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">DataWedge control when fast Pause/Resume with the power button,</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            H
+          </div>
+          <div class="forum-topic__author-name">Hiro Matt</div>
+          <div class="forum-topic__timestamp">3 years 7 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            150
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            6
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                          <span class="forum-solved">//Solved</span>
+        </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>(Questions about developing an application for TC20* terminals (*Japan only))<br>
+I am using DataWedge 11.0 to control a built-in scanner.<br>
+I would like to know <strong>how to control DataWedge for fast Pause/Resume with the power button.</strong></p>
+
+<p><strong>[What we would like to do]</strong><br>
+I want to enable/disable scanning for each input field in the application, <br>
+so I am using "com.symbol.datawedge.api.SWITCH_SCANNER_PARAMS" + ("barcode_trigger_mode" , "1 "or "0") Intent.</p>
+
+<p><strong>[Problem]</strong><br>
+Pause/Resume by power button is not working properly.</p>
+
+<p>(1).If the trigger key is disabled in the input field and Pause/Resume is performed,<br>
+    the trigger key is forced to be enabled.<br>
+(2).I'm trying to solve the problem of (1),<br>
+    I used Intent ("com.symbol.datawedge.api.SCANNER_INPUT_PLUGIN", "SUSPEND_PLUGIN") when the OnPause() Function,<br>
+    and I used Intent ("com.symbol.datawedge.api.SCANNER_INPUT_PLUGIN", "SUSPEND_PLUGIN") when OnResume() Function.<br>
+   So, I got the desired behavior.<br>
+(3).However, even if the desired operation is performed under (2), <strong>if I do a fast Pause/Resume with the power button, the trigger key is forced to be enabled.</strong></p>
+
+<p>Can you please tell me <strong>how to control DataWedge for fast pause/resume with the power button?</strong><br>
+ </p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+        <div class="forum-topic__accepted-solution">
+      <div class="forum-topic__accepted-solution-badge">
+        <span class="forum-topic__accepted-solution-label">✓ Accepted Solution</span>
+      </div>
+      <div class="forum-topic__accepted-solution-content">
+          
+
+
+
+<article id="comment-51407" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/daniel-neamtu">Daniel Neamtu</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 7 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Hiro,</p>
+<p>So, If I understand correctly you want to enable the scanner only for some or all input fields in a specific Activity/Fragment?</p>
+<p>You could easily do that by keeping the profile disabled by default and enable it only when the user switches the focus on the wanted EditText.</p>
+<p>As soon as the the EditText has the focus, just send the broadcast as described here to enable the scanner.</p>
+<p><span data-original-href="https://techdocs.zebra.com/datawedge/latest/guide/api/scannerinputplugin/">https://techdocs.zebra.com/datawedge/latest/guide/api/scannerinputplugi…</span></p>
+<p> </p>
+<p>And, once the EditText loses the focus, just do the opposite and switch off the scanner.</p>
+<p>I couldn't understand exactly what you're doing with the "PowerButton" can you elaborate more please...</p>
+<p>Maybe you wanted to say "ScanButton"?</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+      </div>
+    </div>
+  
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      6 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-51407" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/daniel-neamtu">Daniel Neamtu</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 7 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Hiro,</p>
+<p>So, If I understand correctly you want to enable the scanner only for some or all input fields in a specific Activity/Fragment?</p>
+<p>You could easily do that by keeping the profile disabled by default and enable it only when the user switches the focus on the wanted EditText.</p>
+<p>As soon as the the EditText has the focus, just send the broadcast as described here to enable the scanner.</p>
+<p><span data-original-href="https://techdocs.zebra.com/datawedge/latest/guide/api/scannerinputplugin/">https://techdocs.zebra.com/datawedge/latest/guide/api/scannerinputplugi…</span></p>
+<p> </p>
+<p>And, once the EditText loses the focus, just do the opposite and switch off the scanner.</p>
+<p>I couldn't understand exactly what you're doing with the "PowerButton" can you elaborate more please...</p>
+<p>Maybe you wanted to say "ScanButton"?</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-51416" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              H
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Hiro Matt</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 7 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Dear Daniel.<br>
+Thank you for your response.</p>
+
+<p>I referred to the URL you provided.<br>
+As a result, I was able to resolve the issue of enabling/disabling the scanner when the focus is moved in the application by RESUME_PLUGIN in enabling, SUSPEND_PLUGIN in disabling, and nothing is executed in the OnPause()/OnResume() function.</p>
+
+<p><br>
+<strong>An addendum about the "power button".</strong><br>
+I am referring to the application's response when the power button on the mobile computer is pressed, or when the Android home/task button is pressed.</p>
+
+<p>Even if the scanner is in Disable state, <strong>if the interval between OFF/ON by the power button is short (quick sleep/resume), the scanner will be forcibly enabled. </strong>If the interval between OFF/ON is long, there is no problem(still disable).</p>
+
+<p>This issue is also occurred for the interval between Android home/task button presses. <strong>In short interval, the scanner will be forcibly enabled. </strong>And in long interval, the scanner will be still disabled.<br>
+<br>
+For this reason I would like to know <strong>how to solve this in the OnResume()/OnSleep() function of my application.</strong></p>
+
+<p>best regards.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-51427" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/daniel-neamtu">Daniel Neamtu</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 7 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Hiro,</p>
+<p>Unfortunately there's always going to be a short delay while switching the status of the scanner but normally it should take very little.</p>
+<p>I'm wondering, are we talking here about seconds or something like less than 2 seconds? While performing the tests and transitioning between the lifecycle of the app.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-51437" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              H
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Hiro Matt</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 7 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Usually this occurs when I Sleep/Resume the terminal within 1 second.<br>
+If I wait more than 2 seconds before Sleep/Resume the terminal, it does not occur.</p>
+
+<p><strong>I tried to find a solution myself before I received the answer.</strong></p>
+
+<p>When I performed a Sleep/Resume on a field that was in SUSPEND_PLUGIN state, I used OnResume() to <strong>add a 1.5 second wait before performing the SUSPEND_PLUGIN again</strong>. Then SUSPEND_PLUGIN was executed correctly.</p>
+
+<p><br>
+But I am not sure if this is the correct way to handle this.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-51442" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/daniel-neamtu">Daniel Neamtu</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 7 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Hiro,</p>
+<p>If you're able to pause/resume the scanner now by checking the focus on the input fields, why complicating with the activity lifecycle states?</p>
+<p>You should not do that anymore if you're controlling the scanner by the focus of the input fields, it would just create conflicts. If your goal is to enable the scanner just for some input fields, then the scanner should be kept disabled by default.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-51443" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              H
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Hiro Matt</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 7 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Dear Daniel</p>
+
+<p>Thank you for your reply.<br>
+You are certainly right, "If your goal is to enable the scanner just for some input fields, then the scanner should be kept disabled by default."</p>
+
+<p>I am considering the activity lifecycle because<strong> I have ported an app I created on another model to Zebra</strong>.<br>
+In the other models,<strong> the scanner is controlled by a device-specific API, so I needed to control the enable/disable of the scanner according to the activity lifecycle.</strong></p>
+
+<p>DataWedge, on the other hand, automatically changes the scanner profile based on the activity lifecycle.This is the cause of our concern.</p>
+
+<p><br>
+I will try the disable by default method.<br>
+With the answers I received from you, I would like to make it my solution.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div></div></div></div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/datawedge-control-when-fast-pauseresume-power-button%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/datawedge-control-when-fast-pauseresume-power-button%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

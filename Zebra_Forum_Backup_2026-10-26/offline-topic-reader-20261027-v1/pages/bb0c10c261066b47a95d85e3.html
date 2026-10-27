@@ -1,0 +1,259 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Running an EXE from IE in WM 6.5</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Running an EXE from IE in WM 6.5</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/27180; original snapshot: threads/01693.html; SHA-256: c3367b134557b200fa262ca315ad4b867440eb2bdfa0e0cc102eebc1bc7cf6bd</small><pre id="topic">
+
+    
+        Running an EXE from IE in WM 6.5
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            22
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Has anyone figured out how to open and run an EXE when using IE in WM 6.5?  When we click on a link to an EXE file in IE, we get the prompt to download the file.  However, the option to &quot;Open file after download&quot; is grayed out, so we can&#x27;t select it.  On WM 6.1, we are able to open the EXE in IE.  Any idea if there is a REG key that will re-enable this in WM 6.5?   Thanks,  Ken
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Following on from my example setup.dll.&amp;nbsp; I have modified it so that it will read the registry for the application to run and any command line options.   You can also specify a warm boot as well.   You can set the registry values in the CAB -they are added before the application is run.
+[HKEY_LOCAL_MACHINE\Software\Motorola\SetupDll]
+Application – name of the application to run.&amp;nbsp; You must specify the full path and name
+Command Line&amp;nbsp; - The command line options to pass to application.&amp;nbsp; Optional
+Application Wait – Time in milliseconds to wait for application to exit. 0 indicates no wait
+Reboot – If 0 will not warm boot the terminal any other value to reboot.&amp;nbsp; If you are rebooting then you will need to wait for the application to exit before rebooting so the “Application Wait” should be specified.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks Allan.&amp;nbsp; When we create the CAB file, is there a specific name we need to use for the EXE so the CAB will auto run it?&amp;nbsp; Or do we need a special DLL in the CAB that will execute the EXE?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I had to do the same for another customer this week - execute a .exe from the CAB.   The CAB can have a custom setup.dll that has 4 predefined entry points for before/after install and uninstall.   I have attachted some sample code.   To run the .exe after installing its something like   // Install_Exit  codeINSTALL_EXIT Install_Exit( HWND hwndParent,  &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; LPCTSTR pszInstallDir,  &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; WORD cFailedDirs,  &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; WORD cFailedFiles,  &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; WORD cFailedRegKeys,  &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; WORD cFailedRegVals,  &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; WORD cFailedShortcuts )  {  //  //&amp;nbsp;&amp;nbsp;&amp;nbsp;Run the app  //  &amp;nbsp;&amp;nbsp; &amp;nbsp;const TCHAR *szApp = TEXT(&quot;\\Application\\GetDeviceInfo.exe&quot;) ;  &amp;nbsp;&amp;nbsp; &amp;nbsp;PROCESS_INFORMATION pi={0};  &amp;nbsp;&amp;nbsp;&amp;nbsp; CreateProcess( szApp, NULL, NULL,NULL, false, 0,NULL,NULL, NULL, &amp;amp;pi) ;  &amp;nbsp;&amp;nbsp; &amp;nbsp;if ( pi.hProcess != NULL )  &amp;nbsp;&amp;nbsp; &amp;nbsp;{  &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; WaitForSingleObject( pi.hProcess, 5000 );  &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; CloseHandle( pi.hProcess );  &amp;nbsp;&amp;nbsp; &amp;nbsp;}   &amp;nbsp;&amp;nbsp;&amp;nbsp; return codeINSTALL_EXIT_DONE;  }
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

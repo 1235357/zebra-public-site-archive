@@ -1,0 +1,237 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Label configuration by ZPL code</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Label configuration by ZPL code</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/label-configuration-zpl-code; original snapshot: threads/01035.html; SHA-256: a136287ff40f08a26bc6cd96307a14674cabf6f26de9e08335bf3243cb32c111</small><pre id="topic">
+
+    
+        Label configuration by ZPL code
+
+
+        
+      
+                        
+                    
+            M
+          
+          Mario Nepomuceno
+          5 years 3 months ago
+        
+        
+      
+        
+            
+                  
+            
+            5425
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  how to configure the label that contains the zebra design by ZPL code?
+
+              
+
+                    
+          
+      
+              
+ Screenshot_1.png
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Some of the settings on the Label Dimensions page are used to configure the printer, and the other settings are incorporated in the overall label formatting. The final ZPL output from the ZebraDesigner will reflect all settings as either printer configuration statements or as part of label formatting statements.
+If you really want to know the specific ZPL statements for these settings used to configure the printer, you need to refer to the ZPL User Guide. For example, the settings for the Width and Height, will be in the following ZPL statements respectively.
+### Width of 33mm (264 in dots of 203dpi printer)
+^PW264
+
+### Height of 21mm (168 in dots of 203dpi printer)
+^LL168 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              W
+            
+          
+                
+          
+            Ward Christensen
+          
+          
+            4 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I have some continuous paper, and this code sets it up for use even after a factory reset:
+^XA     ^FX       S E T U P   F O R   C O N T I N U O U S       ^FS
+~JSN    ^FX backfeed                                            ^FS
+^MNN    ^FX N =  continuous media                               ^FS
+^PW685  ^FX My normal 2.5&quot; labels COULD be up to 750            ^FS
+^MFN,N  ^FX MFN,N = no feed on power up or on close carriage    ^FS
+^LL600  ^FX just to have something - 2&quot;                         ^FS
+^JUS    ^FX Save settings across power off                      ^FS
+^XZ
+_______________________
+If I have some 2&quot; high x 4&quot; wide labels then I can run this to support them, after having run my continuous labels: 
+^XA
+~JSN    ^FX backfeed                                            ^FS
+^MNW    ^FX MNW W = Web (gap) sense discreet labels             ^FS
+^MFN,N  ^FX MFN,N = no feed on power up or on close carriage    ^FS
+^LL618  ^FX Actual label from auto-calibrate, 2&quot; + 18 dot gap?  ^FS
+^PW1200 ^FX Label width                                         ^FS
+^JUS    ^FX Save settings across power off                      ^FS
+^XZ
+_______________
+PROBLEM:  One time, i ran that, and it seemed to think the labels were 1200 long, not 600, but a factory reset THEN the above code made it work OK. 
+When I tried running the above 2 programs today - setup continuous, print some continuous labels, change to 2x4&quot; labels and run the setup for 2x4 labels, that worked also. 
+/Ward Christensen
+P.S. I wish &lt;code&gt; this should be fixed-pitch font&lt;/code&gt; worked in this discussion!!!
+If YOU got it working please tell me!  Thanks!
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,207 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>BLE Connection error - ZD621</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>BLE Connection error - ZD621</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/ble-connection-error-zd621; original snapshot: threads/00337.html; SHA-256: e7676df5ebb2de078d1d51b399e551d3d512018f6b856a34ac8587fe83561590</small><pre id="topic">
+
+    
+        BLE Connection error - ZD621
+
+
+        
+      
+                        
+                    
+            S
+          
+          Somia Antony
+          8 months 2 weeks ago
+        
+        
+      
+        
+            
+                  
+            
+            378
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We are encountering a critical issue when connecting to a Zebra ZD621D printer over Bluetooth Low Energy (BLE) using the Zebra Android SDK (ZSDK_ANDROID_BTLE.jar v2.16.5518) on certain Android 12 (API 31) devices, and we have reproduced the problem using the official Link‑OS Multiplatform SDK demo application. The SDK consistently fails with the error “Error writing to connection: Bluetooth LE Write timed out”, thrown when calling printer = ZebraPrinterFactory.getInstance(printerConnection);. Despite this failure, our extensive testing confirms that the BLE GATT layer is fully functional: BluetoothLeConnection.open() succeeds, service discovery completes with status 0, the MTU increases successfully to 247 bytes, isConnected() returns true, and no GATT errors or disconnections occur. Crucially, when we bypass the Zebra SDK and write directly using the native Android BluetoothGatt.writeCharacteristic() API on the same active GATT connection, the writes complete successfully and trigger the expected onCharacteristicWrite() callback. This clearly indicates that the BLE link is stable, the printer accepts writes, and the issue lies specifically within the Zebra SDK’s internal BLE write implementation. Has anyone experienced a similar issue or found a solution or workaround?
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Amar Byrisetty
+          
+          
+            8 months 2 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Somia Antony,
+Thank you for bringing this to our notice. I have passed this information to SDK team and will get back once i hear from them.
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Amar Byrisetty
+          
+          
+            7 months 1 week ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Somia Antony,
+As part of v2.16.5518 release we have integrated BLE functionality in Android SDK itself. We do not have separate jar for BLE. Please discard any old ZSDK_ANDROID_BTLE.jar and start using the latest ZSDK_ANDROID_API.jar for BLE APIs.
+Regards,
+Amar Byrisetty
+
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,225 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Issue with Zebra RFID Xamarin SDK on Android 14 (Target API Level 34) - SecurityException during Receiver Registration</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/issue-zebra-rfid-xamarin-sdk-android-14-target-api-level-34-securityexception-during-receiver-registration; snapshot threads/00200.html; SHA-256 d75e078088737331dd751be069a19c7701c88d21735b0bde11504750e4fed1bc. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Issue with Zebra RFID Xamarin SDK on Android 14 (Target API Level 34) - SecurityException during Receiver Registration</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            B
+          </div>
+          <div class="forum-topic__author-name">Bindiya Rathod</div>
+          <div class="forum-topic__timestamp">2 years 2 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            627
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            2
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Due to Google's requirement to target Android 14 (API level 34), I have updated the target version of my Xamarin. Forms project accordingly. However, when I run the project, I'm encountering the following error.</p><p>I also tested the latest Zebra sample (version 2.0.1.116, released in May 2023) to verify the issue, and it occurs there as well.</p><p>Could anyone provide guidance on this? Any feedback would be greatly appreciated.</p><p>Steps to Reproduce:</p><p>1. Download the latest project from the link below.<br>2. Change the target version in the manifest file to 34.<br>3. Run the project on a device running Android 14.</p><pre><code class="language-plaintext">at Java.Interop.JniEnvironment+InstanceMethods.CallNonvirtualVoidMethod (Java.Interop.JniObjectReference instance, Java.Interop.JniObjectReference type, Java.Interop.JniMethodInfo method, Java.Interop.JniArgumentValue* args) [0x00088] in /Users/runner/work/1/s/xamarin-android/external/Java.Interop/src/Java.Interop/obj/Release/JniEnvironment.g.cs:12324 
+ at Java.Interop.JniPeerMembers+JniInstanceMethods.FinishCreateInstance (System.String constructorSignature, Java.Interop.IJavaPeerable self, Java.Interop.JniArgumentValue* parameters) [0x0003e] in /Users/runner/work/1/s/xamarin-android/external/Java.Interop/src/Java.Interop/Java.Interop/JniPeerMembers.JniInstanceMethods.cs:174 
+ at Com.Zebra.Rfid.Api3.Readers..ctor (Android.Content.Context p0, Com.Zebra.Rfid.Api3.ENUM_TRANSPORT p1) [0x0009d] in &lt;78f6d5917680408aa117caf05e0d0f76&gt;:0 
+ at ZebraRFIDXamarinDemo.Models.ReaderModel.GetAvailableReaders () [0x0001d] in D:\ZebraRFIDXamarinDemo\ZebraRFIDXamarinDemo\ZebraRFIDXamarinDemo\Models\ReaderModel.cs:209 
+ --- End of managed Java.Lang.SecurityException stack trace ---
+java.lang.SecurityException: com.zebra.rfid.Xamarin.demo: One of RECEIVER_EXPORTED or RECEIVER_NOT_EXPORTED should be specified when a receiver isn't being registered exclusively for system broadcasts
+    at android.os.Parcel.createExceptionOrNull(Parcel.java:3057)
+    at android.os.Parcel.createException(Parcel.java:3041)
+    at android.os.Parcel.readException(Parcel.java:3024)
+    at android.os.Parcel.readException(Parcel.java:2966)
+    at android.app.IActivityManager$Stub$Proxy.registerReceiverWithFeature(IActivityManager.java:5684)
+    at android.app.ContextImpl.registerReceiverInternal(ContextImpl.java:1852)
+    at android.app.ContextImpl.registerReceiver(ContextImpl.java:1792)
+    at android.app.ContextImpl.registerReceiver(ContextImpl.java:1780)
+    at android.content.ContextWrapper.registerReceiver(ContextWrapper.java:755)
+    at com.zebra.rfid.api3.Readers.a(Unknown Source:26)
+    at com.zebra.rfid.api3.Readers.&lt;init&gt;(Unknown Source:20)
+Caused by: android.os.RemoteException: Remote stack trace:
+    at com.android.server.am.ActivityManagerService.registerReceiverWithFeature(ActivityManagerService.java:13927)
+    at android.app.IActivityManager$Stub.onTransact(IActivityManager.java:2570)
+    at com.android.server.am.ActivityManagerService.onTransact(ActivityManagerService.java:2720)
+    at android.os.Binder.execTransactInternal(Binder.java:1339)
+    at android.os.Binder.execTransact(Binder.java:1275)</code></pre><p><br>Link to Download:<br>https://www.zebra.com/ap/en/support-downloads/software/rfid-software/zebra-rfid-xamarin-sdk-and-demoapp-for-android.html?downloadId=b1b9ff56-7d9e-4f59-b973-5e4fa2598129#Ta-item-269f7fab75-tab</p><p>File Name:<br>Zebra_RFIDAPI3_XAMARIN_SDK_2.0.1.116.zip</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      2 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-53248" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              I
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Ian Hatton</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I think this is the issue discussed here: <span data-original-href="https://stackoverflow.com/questions/77235063/one-of-receiver-exported-or-receiver-not-exported-should-be-specified-when-a-rec">https://stackoverflow.com/questions/77235063/one-of-receiver-exported-or-receiver-not-exported-should-be-specified-when-a-rec</span></p>
+<p>Are you able to include the workaround suggested in the sample code and retest ?</p>
+<p>To allow the broadcast receiver to receive broadcasts from other apps, register the receiver using the following code:</p>
+<pre class="default s-code-block"><code class="language-plaintext hljs language-scss">context.registerReceiver(broadcastReceiver, intentFilter, RECEIVER_EXPORTED);</code></pre></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-53281" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Josef Štěpánek</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I have same problem in Java. But i canť test it without access to source code when brodcast is not declared via Android manifest but dynamically in source code. Or?</p><p>Is this how you handle it? <span data-original-href="https://developer.android.com/about/versions/14/behavior-changes-14#runtime-receivers-exported">https://developer.android.com/about/versions/14/behavior-changes-14#runtime-receivers-exported</span></p><p> </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/issue-zebra-rfid-xamarin-sdk-android-14-target-api-level-34-securityexception-during-receiver-registration%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/issue-zebra-rfid-xamarin-sdk-android-14-target-api-level-34-securityexception-during-receiver-registration%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

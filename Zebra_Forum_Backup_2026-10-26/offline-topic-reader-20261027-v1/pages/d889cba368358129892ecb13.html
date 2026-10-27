@@ -1,0 +1,319 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>get status ZT411 too long</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>get status ZT411 too long</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/get-status-zt411-too-long; original snapshot: threads/00695.html; SHA-256: e300786a69e09085badb14cf15c77aac9659990f116e0c333d0bf9ca9034c577</small><pre id="topic">
+
+    
+        get status ZT411 too long 
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          3 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            82
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Good morning, my situation is the following,
+I have been trying to reduce the response time when trying to acquire the status of the printer connected to USB, but it still stays at least 10s, I have used zebrafactory and DriverPrinterConnetion but it has not changed, running diagnostic mode I see that sdk sends a ZPL command like this _HS and checking the documentation the command is ~HS, is this a problem?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The legitimate ZPL command for getting the printer status is ~HS. It should not be the _HS. Are you using the getCurrentStatus() API to query for the printer status? It should not not take that long to get a status back. There might be something else going on that causes the delay.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Daniel D&amp;amp;i…
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            yes i am using getCurrentStatus() 
+            Connection connection = ConnectionBuilder.Build($&quot;USB:{usbDriverName}&quot;);
+            try
+            {
+                connection.Open();
+                ZebraPrinter printer = ZebraPrinterFactory.GetInstance(PrinterLanguage.ZPL,connection);
+                PrinterStatus printerStatus = printer.GetCurrentStatus();
+I was checking, but there is nothing that delays it, it is only a function, nor is it in another thread
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Use the USB_DIRECT connection instead. There seems an issue with the USB ZDesginer driver connection. Please try to avoid using the USB ZDesigner driver connection if the performance is a concern.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Daniel D&amp;amp;i…
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you, it&#x27;s much better now
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,261 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to print Chinese fonts to Zebra ZPL printer from python?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to print Chinese fonts to Zebra ZPL printer from python?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25563; original snapshot: threads/resume-00503.html; SHA-256: d525847ad788e15fb3989a1b05fd82d1fb296da24253832c5e0957d4a10f8e5b</small><pre id="topic">
+
+    
+        How to print Chinese fonts to Zebra ZPL printer from python?
+
+
+        
+      
+                        
+                    
+            Z
+          
+          ZOOU Qinn
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            356
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi everyone,
+I have a task of developing python script to print labels using the networked Zebra ZT410.
+So far, I can print Chinese Characters correctly using &quot;Zebra Setup Utilities&quot; with ZPL commands:
+^XA
+^CW1,E:SIMSUN.TTF
+^SEE:GB18030.DAT^CI26
+^FO200,10^A1N,36,20^FDHTM1汉字^FS
+^XZ
+Now, I edited python code according the simple code on URL https://www.zebra.com/us/en/support-downloads/knowledge-articles/ait/Net...
+# -*- coding: utf-8 -*-
+import socket
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect((&#x27;168.168.183.199&#x27;, 9100))
+zpl = &#x27;&#x27;&#x27;
+^XA
+^CW1,E:SIMSUN.TTF
+^SEE:GB18030.DAT^CI26
+^FO200,10^A1N,36,20^FDHTM1汉字^FS
+^XZ
+&#x27;&#x27;&#x27;
+s.send(zpl.encode())
+s.close()
+However, the Chinese characters on label is messy code as launching this script.Attached please found the photo of printed label for reference, the top one is printed by this python script, the bottom one is printed by &quot;Zebra Setup Utilities&quot;.
+Are there anyone can give me advice on how to fixing this python code?
+Meanwhile, the details of my printer is listed below:
+ZT410-300dpi,V75.20.21Z,12,4096KB
+- DIR R:*.*
+-   4171776 bytes free R: RAM
+- DIR E:*.*
+* E:GB18030.DAT     95760  P
+* E:SIMSUN.TTF  11519056  P    1
+* E:TT0003M_.TTF    169188  P
+-  55322112 bytes free E: ONBOARD FLASH
+- DIR B:*.*
+- DIR A:*.*
+- DIR Z:*.*
+* Z:0.TTF    125904  P    0
+* Z:A.FNT      6839  P    A
+* Z:ALERTCFG.NRD      5186  P
+* Z:AZTEC.BAR         0  P
+* Z:B.FNT      7746  P    B
+* Z:BLUEBCK.BMP    230454  P
+* Z:BLUEBCKDARK.BMP    230454  P
+* Z:BLUETOOTH.WML      7938  P
+* Z:BLUETOOTH420.BMP       400  P
+* Z:BLUETOOTH52.BMP       480  P
+* Z:BLUETOOTHCOLOR.WML      9373  P
+* Z:BLUETOOTH_ICON.BMP       128  P
+* Z:BLUETOOTH_NOT_AVAILABLE_ICON.BMP       128  P
+* Z:CODABAR.BAR         0  P
+* Z:CODABLK.BAR         0  P
+* Z:CODE11.BAR         0  P
+* Z:CODE128.BAR         0  P
+* Z:CODE39.BAR         0  P
+* Z:CODE49.BAR         0  P
+* Z:CODE93.BAR         0  P
+* Z:D.FNT     10648  P    CD
+* Z:DATA_BLANK_ICON.BMP       128  P
+* Z:DATA_ICON.BMP       128  P
+* Z:DISPLYQR.WML      2996  P
+* Z:DISPLYQRCOLOR.WML      3189  P
+* Z:DOWN_ARROW_COLOR.BMP       166  P
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            6 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            It&#x27;s an encoding issue. The Printer Setup Utility sends the Chinese characters in proper encoding, so the printer prints properly. You would have to make sure that the Chinese characters in your python scripts are GB18030 or Unicode encoded.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Melissa Tate
+          
+          
+            3 weeks 4 days ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I am also facing the same issue and I don&#x27;t know why.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

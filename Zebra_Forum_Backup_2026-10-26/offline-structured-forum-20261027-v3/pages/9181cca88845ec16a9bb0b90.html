@@ -1,0 +1,215 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra FX9600 RFID IOT Connector</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/zebra-fx9600-rfid-iot-connector; snapshot threads/00344.html; SHA-256 877d6692840cd6f0dc58fd42d3bc12d988bfc9434ef93a017e911cdb850f56b9. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Zebra FX9600 RFID IOT Connector</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            P
+          </div>
+          <div class="forum-topic__author-name">Piumal Nipun</div>
+          <div class="forum-topic__timestamp">8 months 4 weeks ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            285
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            2
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi everyone,</p><p>I’m working with a <strong>Zebra FX9600</strong> using <strong>RFID IoT Connector</strong> and MQTT, and I’m trying to continuously receive data for the <strong>same EPC from two different antennas</strong> at approximately <strong>10 readings per second per antenna</strong>.</p><p><strong>What I want to achieve:</strong></p><ul><li>Same tag should be reported by <strong>antenna 1 and antenna 2</strong></li><li>Around <strong>10 reports per second</strong> (≈100 ms interval)</li><li>Data should include <strong>RSSI and phase</strong></li></ul><p><strong>Current approach:</strong></p><ul><li>Using <strong>INVENTORY mode</strong></li><li>Two antennas enabled</li><li>Continuous reading (<code>DURATION = 0</code>)</li><li>Using <code>reportFilter</code> to control repeated reports</li></ul><p>Example (simplified) configuration:</p><p> </p><p><code><span>{
+  "type": "INVENTORY",
+  "antennas": [1, 2],
+  "interval": 100,
+  "transmitPower": 30,
+  "tagMetaData": ["RSSI", "PHASE", "ANTENNA_ID"],
+  "reportFilter": {
+    "type": "PER_ANTENNA",
+    "duration": 100
+  },
+  "antennaStopCondition": [
+    {
+      "type": "DURATION",
+      "value": 0
+    }
+  ] } </span></code></p><p><strong>Issue / question:</strong></p><ul><li>With certain configurations, the tag is reported by only <strong>one antenna</strong></li><li>I understand that:<ul><li><code>RADIO_WIDE</code> suppresses other antennas</li><li><code>PER_ANTENNA</code> with <code>duration = 0</code> can block reporting</li></ul></li><li>I want to confirm the <strong>recommended configuration</strong> to reliably get:<ul><li>~10 reports/sec</li><li>From <strong>both antennas</strong></li><li>For the <strong>same EPC</strong></li></ul></li></ul><p><strong>Questions:</strong></p><ol><li>Is <code>PER_ANTENNA</code> with a ~100 ms duration the correct approach for this?</li><li>Are there internal limits on antenna switching or report rate that affect this?</li><li>Is INVENTORY mode the best choice for continuous multi-antenna phase/RSSI data, or is there a better mode?</li></ol><p>Any guidance or confirmation would be appreciated.</p><p>Thanks</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      2 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-54297" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              P
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Piumal Nipun</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            8 months 4 weeks ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thank you.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-54298" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              A
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Alex Lavie</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            8 months 3 weeks ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I think you are mixing things and not getting the right result.</p><p>You can use Inventory with interval =0 seconds which means the reader will be reporting tags all the time. Select tagmetadata to contain ANTENNA so that you get all reads with the antenna info. </p><p>When you use the Inventory mode report filter is normally not effective and in latest version should not be available in the web interface.</p><p>Next best thing is to use Custom where you can specify antenna start and stop conditions and probably specify the dwell time per antenna.</p><p>here is an example:</p><p> </p><p>{<br> "type": "SIMPLE",<br> "modeSpecificSettings": {<br>   "interval": {<br>     "unit": "hours",<br>     "value": -63127613<br>   }<br> },<br> "environnement": <br> "antennas": [<br>   -50521876,<br>   51243269<br> ],<br> "filter": {<br>   "value": "[a-zA-Z0-9]{2,}",<br>   "match": "regex",<br>   "operation": "include"<br> },<br> "transmitPower": -70556978,<br> "linkProfile": 12340601,<br> "antennaStopCondition": {<br>   "type": "SINGLE_INVENTORY_LIMITED_DURATION",<br>   "value": -19319971.90736863<br> },<br> "query": {<br>   "tagPopulation": 61863464,<br>   "sel": "SL",<br>   "session": "S3",<br>   "target": "B"<br> },<br> "tagMetaData": [<br>   "XPC",<br>   "CHANNEL"<br> ],<br> "radioStartConditions": {<br>   "type": "GPI_WITH_RESTART",<br>   "gpis": [<br>     {<br>       "port": 1,<br>       "signal": "HIGH",<br>       "debounceTime": 0<br>     },<br>     {<br>       "port": 1,<br>       "signal": "HIGH",<br>       "debounceTime": 0<br>     }<br>   ]<br> },<br><strong> "radioStopConditions": {</strong><br>   "duration": -91418143,<br>   "antennaCycles": 35293144,<br>   "tagCount": 76942500,<br>   "durationAfterNoMoreUniqueTags": 86348421,<br>   "gpis": [<br>     {<br>       "port": 1,<br>       "signal": "HIGH",<br>       "debounceTime": 0<br>     },<br>     {<br>       "port": 1,<br>       "signal": "HIGH",<br>       "debounceTime": 0<br>     }<br>   ]<br> },<br> "reportFilter": {<br>   "duration": 15261567,<br>   "type": "RADIO_WIDE"<br> },<br> "rssiFilter": {<br>   "threshold": -22<br> }<br>}</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/zebra-fx9600-rfid-iot-connector%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/zebra-fx9600-rfid-iot-connector%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

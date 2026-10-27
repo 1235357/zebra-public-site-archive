@@ -1,0 +1,197 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Help with Browser Print API crashes in web app when printer connected / disconnected</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Help with Browser Print API crashes in web app when printer connected / disconnected</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/help-browser-print-api-crashes-web-app-when-printer-connected-disconnected; original snapshot: threads/00094.html; SHA-256: b0ec638a076532c95747b7312e80ff24d380a05e4d80e727528925947409c318</small><pre id="topic">
+
+    
+        Help with Browser Print API crashes in web app when printer connected / disconnected
+
+
+        
+      
+                        
+                    
+            R
+          
+          Robin Barnard
+          1 year 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            267
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi, I am a software developer working for a small company, and we offer an Oracle based product that has some Java applications and also web applications (created using Oracle Application Express if that is useful to know). We are converting our Java applications to web apps, and this involves printing labels to Zebra printers with continuous strips of labels and cutters (eg 420 and 421) rather than premade labels.Using the existing Java applications, our clients are able to unplug the printer, perform tasks that generate labels, and print out those labels when the printer is plugged back in.We are able to print from our web app from the cloud, but are not currently using the Windows printer queue. Instead, we store the labels requested for each user in the database, and can print them off by pressing a button. We have made database functions that produce the labels in ZPL, and pass the ZPL to the printer via Browser Print.We are a having some issues where the Browser Print API sometimes crashes, and I think it happens we connect the printer after the page is loaded but before pressing the print button. I have a couple of related questions that I would greatly appreciate help with. Each user will only connect to one printer, identified as their default printer. The print button is on our main screen that has the most traffic of any page.I don&#x27;t have any real experience with JavaScript, and have just adapted the example code provided by Zebra to suit our needs.Question 1) I have attempted to minimise calls to the the API by getting the default printer when the print button is pressed rather than on page load, since the print button will be used much less often than the page. However, I can only print successfully when the default printer is defined on page load. I tried adding the code to this post, but the preview was barely readable with dozens of nbsps.When I comment out the window.onload = setup and put BrowserPrint.getDefaultDevice in the printing code, the default printer is not defined.Here is my question: Is getDefaultDevice only ever going to work on load, or is there a way to move it?Question 2) This question is much shorter. The Zebra examples say that we should add code to check whether the API is running. I have not been able to do this, but suspect that I need to update the setup function somehow. I would appreciate any guidance you can give.Many thanks in advance,Robin EDIT The post looks nothing like the preview, so here is the relevent  header code:&lt;html&gt;&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;/&gt;&lt;head&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;&amp;URL_PRINTER_JS.&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;&amp;URL_ZEBRA_JS.&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot;&gt;var selected_device;var devices = [];function setup(){    //Get the default device from the application as a first step. Discovery takes longer to complete.    BrowserPrint.getDefaultDevice(&quot;printer&quot;, function(device)            {                        //Add device to list of devices and to html select element                selected_device = device;                devices.push(device);                                         }, function(error){                alert(error);            })}...window.onload = setup;&lt;/script&gt;&lt;/head&gt;&lt;/html&gt;Here is the printer ready check that is run when the print button is pressed.                var successP1 = function(statusP1) {                                               apex.items.P1_PRINTER_READY.setValue(&quot;Y&quot;);                                                  }                          var failureP1 = function(statusP1) {                                               apex.items.P1_PRINTER_READY.setValue(&quot;N&quot;);                                           }               var printerP1 = new Zebra.Printer(selected_device);                 var statusP1 = printerP1.getStatus(successP1,failureP1); I tried to comment this code twice  before realising it would be reviewed, so please ignore those comments!
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Robin Barnard
+          
+          
+            1 year 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            PSSeeing this posted, it looks nothing like the preview!  Here is my header code:&lt;html&gt;&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;/&gt;&lt;head&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;&amp;URL_PRINTER_JS.&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;&amp;URL_ZEBRA_JS.&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot;&gt;var selected_device;var devices = [];function setup(){    //Get the default device from the application as a first step. Discovery takes longer to complete.    BrowserPrint.getDefaultDevice(&quot;printer&quot;, function(device)            {                        //Add device to list of devices and to html select element                selected_device = device;                devices.push(device);                                         }, function(error){                alert(error);            })}Here is the code for testing whether the printer is ready when the print button is pressed.               var successP1 = function(statusP1) {                                               apex.items.P1_PRINTER_READY.setValue(&quot;Y&quot;);                                                  }                          var failureP1 = function(statusP1) {                                               apex.items.P1_PRINTER_READY.setValue(&quot;N&quot;);                                           }               var printerP1 = new Zebra.Printer(selected_device);                 var statusP1 = printerP1.getStatus(successP1,failureP1);   
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Robin Barnard
+          
+          
+            1 year 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            PS. The post looks nothing like the preview, so here is the relevent  header code:&lt;html&gt;&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;/&gt;&lt;head&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;&amp;URL_PRINTER_JS.&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;&amp;URL_ZEBRA_JS.&quot;&gt;&lt;/script&gt;&lt;script type=&quot;text/javascript&quot;&gt;var selected_device;var devices = [];function setup(){    //Get the default device from the application as a first step. Discovery takes longer to complete.    BrowserPrint.getDefaultDevice(&quot;printer&quot;, function(device)            {                        //Add device to list of devices and to html select element                selected_device = device;                devices.push(device);                                         }, function(error){                alert(error);            })}...window.onload = setup;&lt;/script&gt;&lt;/head&gt;&lt;/html&gt;Here is the printer ready check that is run when the print button is pressed.                var successP1 = function(statusP1) {                                               apex.items.P1_PRINTER_READY.setValue(&quot;Y&quot;);                                                  }                          var failureP1 = function(statusP1) {                                               apex.items.P1_PRINTER_READY.setValue(&quot;N&quot;);                                           }               var printerP1 = new Zebra.Printer(selected_device);                 var statusP1 = printerP1.getStatus(successP1,failureP1);  
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

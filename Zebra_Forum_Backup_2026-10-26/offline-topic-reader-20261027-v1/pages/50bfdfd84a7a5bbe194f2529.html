@@ -1,0 +1,520 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>SendFileToPrinter does not print</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>SendFileToPrinter does not print</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/sendfiletoprinter-does-not-print; original snapshot: threads/00507.html; SHA-256: 0acff3be54f2dffd311913419187a77f4ce1637bb917a72d939db0a31a4c6f2b</small><pre id="topic">
+
+    
+        SendFileToPrinter does not print
+
+
+        
+      
+                        
+                    
+            P
+          
+          P N
+          3 years 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            617
+          
+                
+                  
+            
+            7
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+
+I have a ZD421. I see my device in my account so it is correctly registered.
+I have tested the SendFileToPrinter endpoint from your testing service (https://developer.zebra.com/apis/sendfiletoprinter-model#/SendFileToPrinter/SendFiletoPrinter) using the “Production server and it returns me a SUCCESS response. 
+However, it does not print the file that I send.
+
+What is the issue here ?
+
+Regards
+
+ 
+
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      7 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Most likely is because that the realtime clock (RTC) on your printer is not current. The ZD421 does not have the battery. The RTC may got reset after power off. Please set the RTC to the current local time with the following commands. When the RTC is off, the TLS authentication will fail and will result in the printer&#x27;s Weblink connection fails. If you want to restore the RTC automatically after a power off, you can enable the NTP (Network Time Protocol) on the ZD421 with the following commands.
+### Set the RTC to local time
+### Change the values to your local date &amp; time
+{}{
+&quot;rtc.time&quot;: &quot;10:53:00&quot;,
+&quot;rtc.date&quot;: &quot;08-02-2023&quot;
+}
+
+### Enable the NTP to point to a NTP server
+{}{
+&quot;ip.ntp.enable&quot;: &quot;on&quot;,
+&quot;ip.ntp.servers&quot;: &quot;0.us.pool.ntp.org&quot;
+} 
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            P N
+          
+          
+            3 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I did the following commands but after a retry: Nothing happens again...
+
+I have waited that the SendFileToPrinter endpoint status was UP againg (because I saw that it was down for couple hours). 
+http://status.zebra.engineering/12174160
+
+Do I have to set the printer to the US timezone ?
+Do you have other ideas ?
+
+FYI: I send a PDF to the printer
+
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There was an outage this morning between 7AM and 8AM CDT. You can set the time on the printer to your local time. The printer should connect to the cloud successfully. If it still doesn&#x27;t print, then check the weblink log on the printer with the following command
+ 
+### Get the weblink log
+! U1 getvar &quot;weblink&quot;When you send a PDF file to the printer, make sure the PDF emulation is enabled on the printer. Please following this article to enable the PDF emulation - Announcement | Printers Include Free PDF Direct with Link-OS 6.3
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Charles Beard
+          
+          
+            3 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I think you can try verifying that the file you are sending is in a supported format for your ZD421 printer. The Zebra Programming Language (ZPL) is the native language used by most Zebra printers, so make sure your file is in that format.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            P N
+          
+          
+            3 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            
+I follow the Free PDF Direct with Link-OS 6.3 but it does not work after that.
+
+I have done:
+- Application is created and validated
+- My devise (ZD421) is correctly registered on Zebra
+- registered into SendFileToPrinter(FREE)
+- done the 2 zpl command for the time
+- done the PDF simulation
+
+What is missing ? It’s been one week that I have called the Savanna Support and I’m waiting that they called me back to find a solution...
+
+
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Not enough information here to assist. What was the symptom? Does the SendFileToPrinter API return 200? Does it print the ZPL label? Does the printer advance the media after the PDF file is sent? What&#x27;s the weblink log look like?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Raghu Rangaramu
+          
+          
+            1 year 12 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Was this resolved we have same issues 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

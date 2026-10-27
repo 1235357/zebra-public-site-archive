@@ -1,0 +1,275 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>DataWedge SET_CONFIG is broken</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>DataWedge SET_CONFIG is broken</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/datawedge-setconfig-broken; original snapshot: threads/00476.html; SHA-256: bac9c41e5bcfc7406b58dafcc2ab0e85eba709b5f43cb1e1b5638321c7e29868</small><pre id="topic">
+
+    
+        DataWedge SET_CONFIG is broken 
+
+
+        
+      
+                        
+                    
+            S
+          
+          Scott Cooper
+          3 years ago
+        
+        
+      
+        
+            
+                  
+            
+            162
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  The documentation for the SET_CONFIG intent specifically states &quot;Multiple PLUGIN_CONFIG bundles can be nested within the SET_CONFIG bundle&quot;, the examples even show this.
+
+From my testing and searching within this forum, this isn&#x27;t true. Each plugin has to be configured individually using separate broadcasts, grouping them into one intent means they all get ignored. I&#x27;ve tried using SEND_RESULT here to try and figure out what is going on but the response also seems to be broken as it doesn&#x27;t tell me whether it succeeded or failed, it&#x27;s literally just &quot;COMMAND -&gt; com.symbol.datawedge.api.SET_CONFIG&quot;
+
+From searching this forum it appears I&#x27;m not the first person to point this out, it would be good if someone could clarify whether the docs are wrong or this api is broken.
+
+Thanks
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Daniel Neamtu
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Scott,
+You can nest multiple bundles into one and then fire it up with one Broadcast.
+Could you please share what you were trying to do? 
+If the tree of how the bundles have been put together with all the parameters is not right meaning is not reflecting then DW will simply ignore the request.
+Daniel
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Scott Cooper
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Daniel, thanks for the reply. 
+
+I&#x27;ve attached an example of what the bundle in my intent looks like, the intent has an action of com.symbol.datawedge.api.ACTION 
+
+If I separate each plugin into a new intent everything works so that&#x27;s what I&#x27;m doing at the moment. Instead of silently ignoring the request, wouldn&#x27;t it be better to provide an error via the SEND_RESULT mechanism?
+
+Bundle[
+    {
+        com.symbol.datawedge.api.SET_CONFIG=Bundle[
+            {
+                CONFIG_MODE=CREATE_IF_NOT_EXIST,
+                PROFILE_NAME=App Name,
+                PLUGIN_CONFIG=[
+                    Bundle[
+                        {
+                            PLUGIN_NAME=BARCODE,
+                            RESET_CONFIG=true,
+                            PARAM_LIST=Bundle[
+                                {
+                                    configure_all_scanners=true,
+                                    scanner_input_enabled=true
+                                }
+                            ]
+                        }
+                    ],
+                    Bundle[
+                        {
+                            PLUGIN_NAME=INTENT,
+                            RESET_CONFIG=true,
+                            PARAM_LIST=Bundle[
+                                {
+                                    intent_delivery=2,
+                                    intent_action=com.app.name.datawedge.ACTION,
+                                    intent_output_enabled=true
+                                }
+                            ]
+                        }
+                    ],
+                    Bundle[
+                        {
+                            PLUGIN_NAME=KEYSTROKE,
+                            RESET_CONFIG=true,
+                            PARAM_LIST=Bundle[
+                                {
+                                    keystroke_output_enabled=false
+                                }
+                            ]
+                        }
+                    ]
+                ],
+                PROFILE_ENABLED=true,
+                APP_LIST=[
+                    Bundle[
+                        {
+                            PACKAGE_NAME=com.app.name.staging,
+                            ACTIVITY_LIST=[*]
+                        }
+                    ]
+                ]
+            }
+        ],
+        SEND_RESULT=COMPLETE_RESULT
+    }
+]
+
+
+ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

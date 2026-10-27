@@ -1,0 +1,181 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Scan listening issue</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Scan listening issue</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/scan-listening-issue; original snapshot: threads/00508.html; SHA-256: a57f66c20d5233e0de2bad048c380cb58838b77910b12a55739ed12995103068</small><pre id="topic">
+
+    
+        Scan listening issue
+
+
+        
+      
+                        
+                    
+            J
+          
+          Jason Kang
+          3 years 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            213
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi all,
+
+
+ I use Angular created one web application with PWA and install on my Zebra device.
+ I want to get barcode value from device scan on my app screen.
+ If I use &lt;input /&gt; component will get the scan value as normal.
+ But I&#x27;d like to get the value through event listening without &lt;input /&gt; component, it always failed.
+ I added event listener like this:
+
+
+	 this.destroyListener = this.eventManager.addGlobalEventListener(&#x27;window&#x27;, &#x27;keydown&#x27;, (e) =&gt; {
+	     nextCode = window.event ? e.keyCode : e.which;
+	     const codes = { &#x27;48&#x27;: 48, &#x27;49&#x27;: 48, &#x27;50&#x27;: 50, &#x27;51&#x27;: 51, &#x27;52&#x27;: 52, &#x27;53&#x27;: 53, &#x27;54&#x27;: 54, &#x27;55&#x27;: 55, &#x27;56&#x27;: 56, &#x27;57&#x27;: 57, &#x27;65&#x27;: &#x27;A&#x27;, &#x27;66&#x27;: &#x27;B&#x27;, &#x27;96&#x27;: 0, &#x27;97&#x27;: 1, &#x27;98&#x27;: 2, &#x27;99&#x27;: 3, &#x27;100&#x27;: 4, &#x27;101&#x27;: 5, &#x27;102&#x27;: 6, &#x27;103&#x27;: 7, &#x27;104&#x27;: 8, &#x27;105&#x27;: 9 };
+	     nextCode = codes[nextCode];
+	     nextTime = new Date().getTime();
+	     if (lastCode == null &amp;&amp; lastTime == null) {
+	        barcode = String.fromCharCode(nextCode);
+	     }
+	     else if (lastCode != null &amp;&amp; lastTime != null &amp;&amp; (nextTime - lastTime) &lt;= 30) {
+	         barcode += String.fromCharCode(nextCode);
+	    }
+	   else {
+	    barcode = &quot;&quot;;
+	    lastCode = &quot;&quot;;
+	    lastTime = null;
+	 }
+	lastCode = nextCode;
+	lastTime = nextTime;
+	});
+
+
+It can get the barcode value which has only one character, like &#x27;A&#x27; or &#x27;1&#x27;, but failed to long string, like &#x27;ABC&#x27; or &#x27;A1234&#x27;
+Maybe I missed some settings.
+
+Thanks in advance.
+
+ Jason
+       
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jason Kang
+          
+          
+            3 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Device:tc51
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,529 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Fatal Error when using ZebraNativeUsbAdapter_64.dll with Java</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Fatal Error when using ZebraNativeUsbAdapter_64.dll with Java</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/fatal-error-when-using-zebranativeusbadapter64dll-java; original snapshot: threads/00467.html; SHA-256: d43081bba26a33f2d13b2dd7704c053d0490258e1c8188cb7a157315334fa51b</small><pre id="topic">
+
+    
+        Fatal Error when using ZebraNativeUsbAdapter_64.dll with Java
+
+
+        
+      
+                        
+                    
+            S
+          
+          SDK NDD
+          3 years ago
+        
+        
+      
+        
+            
+                  
+            
+            459
+          
+                
+                  
+            
+            7
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+
+ 
+
+We are developing the monitoring of Zebra Card devices, more specifically the Zebra ZC300, using Java, so we are using the PC-Card-Java SDK.
+
+I implemented the code to search for local USB printers, following the topic below:
+&quot;Discover local printers&quot;: https://techdocs.zebra.com/link-os/2-14/pc_card/content/com/zebra/sdk/printer/discovery/usbdiscoverer
+
+But when running the code above, we are getting a Fatal Exception (see log attached) when using the latest Java Version, more specifically, Java 21 (OpenJDK Runtime Environment Corretto-21.0.0.35.1)
+
+We noticed that there is another topic discussing what it seens to be the same problem about 1 year and 8 months ago.
+
+So we tried with Java v1.8.0_161 and it&#x27;s works as normal.
+
+ 
+
+The problems is:
+
+We want to know if there were any new findings discovered regarding how to make this DLL work with newer Java versions, maybe there is a newer DLL with this problem fixed?
+
+We want to avoid using an old Java version because this creates a security problem for us, opening the door for security vulnerabilities, so our goal is to use Java 21 which is the current version and safe to use.
+
+
+Can you help us?
+
+ 
+
+Best regards.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      7 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for bringing up the issue with the SDK for the card printers. It&#x27;s on our to-do list for the next release of the SDK, which is in our pipeline. Both the card printer SDK and the label printer SDK use the exact same ZebraNativeUsbAdapter_64.dll. A fix in the ZebraNativeUsbAdapter_64.dll for the Java v1.8.0_261 and beyond will fix the issue for both the card printer SDK and the label printer SDK.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            SDK NDD
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Steven,
+
+When is the next release of the SDK scheduled to be released? because we have a deadline for the end of November to finish this version of the product, so we want to know if we can wait for the release of the fix or start looking for alternatives.
+
+ 
+
+Another question, looking at the documentation, it seems to exist two ways to search for local printers:
+
+Option 1
+
+     for (DiscoveredPrinterDriver printer : UsbDiscoverer.getZebraDriverPrinters()) {
+                 System.out.println(printer);
+     }
+
+Option 2
+
+     for (DiscoveredUsbPrinter printer : UsbDiscoverer.getZebraUsbPrinters(new ZebraCardPrinterFilter())) {
+                 System.out.println(printer);
+     }
+
+ 
+
+What is the difference between the two? By our tests, it looks like Option 1 doesn&#x27;t use the ZebraNativeUsbAdapter_64.dll.
+
+Maybe we could use only Option 1 for searching for local Card and Label Printers? and avoid the use of the DLL?
+
+ 
+
+Best regards.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The release date for the SDK update is not clear yet. It might be the first quarter next year.
+The option 1 is for getting the USB Driver printer, i.e., through the ZDesigner driver. For this option, you would need to have the ZDesigner driver installed. The driver can be downloaded from the printer&#x27;s support page.
+The option 2 is for getting the USB Direct Connected printers, i.e., without going through the ZDesigner driver. You do not need to install the ZDesigner driver when calling this API.
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            SDK NDD
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Steven, Is the Zebra ZC300 compatible with the ZDesigner driver? could we use option 1 to search for that device? Also, option 1 does not use ZebraNativeUsbAdapter_64.dll, right?Best regards.  
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The ZDesigner driver does not support the card printers, including the ZC300. We cannot use the UsbDiscoverer.getZebraDriverPrinters() API for the card printer. Instead, use the UsbDiscoverer.getZebraUsbPrinters() API, which uses the ZebraNativeUsbAdapter_64.dll, to discover the card printers over USB. 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            John Deer
+          
+          
+            2 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,I was running into the same issue and I&#x27;ve managed to patch the existing DLL so it works correctly under Java x64.Here are the patch details: https://github.com/7c5eea120b/zxp-native-usb-adapter-64bit-hack Please note that this is an unofficial community patch :)
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Merlijn van Ittersum
+          
+          
+            2 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Just commenting that we are running into the same issue trying to upgrade our application from java8 to 17. It crashes when accessing functions through the native library ZebraNativeUsbAdapter_64.dllAny estimate on when we can expect an official fix for this issue from Zebra?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

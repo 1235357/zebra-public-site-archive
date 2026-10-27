@@ -1,0 +1,379 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>DS2278: Different Transmission of &lt;TAB&gt; character?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>DS2278: Different Transmission of &lt;TAB&gt; character?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/ds2278-different-transmission-character; original snapshot: threads/00548.html; SHA-256: 013ddc323579610c3348a767dc38bedd943a6674cb0466bd675d12192b02992e</small><pre id="topic">
+
+    
+        DS2278: Different Transmission of &lt;TAB&gt; character?
+
+
+        
+      
+                        
+                    
+            M
+          
+          Michael R
+          3 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            454
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                          //Solved
+        
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;d like to generate a DMC code representing the input for two subsequent form fields in a browser, separated by a &lt;TAB&gt;.
+
+My DMC for testing is ABCD\t1234 and generated using this generator it looks as follows:
+
+
+
+Scanning this code with a DS2278 in USB HID keyboard emulating mode gives different results. The scanner is configured to add CRLF suffix:
+
+
+	Notepad++:
+
+
+       
+
+This is exactly what I expect.
+
+
+	Browser form:
+
+
+       
+
+There&#x27;s a &lt;TAB&gt;, but it&#x27;s differently handled than the &lt;TAB&gt; keyboard input, which sets the cursor to field &quot;Password&quot;.
+
+
+	Excel:
+
+
+       
+
+No &lt;TAB&gt;. Expectation: 1234 should be in cell B1, just like it would be when I entered ABCD&lt;TAB&gt;1234 using a &quot;real&quot; keyboard.
+However: When I configure the DS2278 so that it appends &lt;TAB&gt; as a general suffix, it works! The cursor jumps to B1 after putting ABCD1234 in A1.
+
+In 123Scan DataView I see in both cases that a &lt;TAB&gt; is transmitted. I wonder what&#x27;s the difference to a &lt;TAB&gt; in the DMC itself?
+I have tried to increase the keystroke delay, it didn&#x27;t help (actually I&#x27;m not sure if it worked at all).
+How can I make the scanner to handle the &lt;TAB&gt; like a &quot;normal&quot; keyboard input? 
+              
+
+                    
+          
+      
+              
+ Bild1.gif
+
+          
+  
+        
+      
+                    
+          
+
+
+
+        
+      
+        ✓ Accepted Solution
+      
+      
+          
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            looks like you need to enable function key mapping 
+check article  https://supportcommunity.zebra.com/s/article/Enter-and-Tab-keys-in-the-Scanned-Data-are-Not-Properly-Recognized-in-Some-Applications?language=en_US
+
+addtitionaly for more details you can check also the following which provide details on other USB / BT HID options that impact how data is sent to the host 
+https://supportcommunity.zebra.com/s/article/000026279?language=en_US
+
+Regards
+
+Riad
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+      
+    
+  
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            looks like you need to enable function key mapping 
+check article  https://supportcommunity.zebra.com/s/article/Enter-and-Tab-keys-in-the-Scanned-Data-are-Not-Properly-Recognized-in-Some-Applications?language=en_US
+
+addtitionaly for more details you can check also the following which provide details on other USB / BT HID options that impact how data is sent to the host 
+https://supportcommunity.zebra.com/s/article/000026279?language=en_US
+
+Regards
+
+Riad
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Michael R
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Riad.
+
+Thanks! This did the trick. I wonder why the intelligent chatbot didn&#x27;t show me the article you&#x27;ve linked... anyway, it works now. @Zebra: It&#x27;s great to have that flexibility, but maybe it would be a good idea to enable function key mapping by default? I guess most users expect to have &quot;normal&quot; keys instead of some strange control-key sequences (which, to be honest, I didn&#x27;t know before my DS2278 issue).
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Michael , in fact the barcode is encoding ascii decimal value 9 which per windows system translate to Ctrl + I and hence that&#x27;s what the scanner is sending by default . The function key mapping will translate Ctrl I to the extended TAB key . Same apply to extended keys like ESC or Enter .
+
+Regards 
+
+Riad
+
+ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,363 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Scanner Config for ITF(2 of 5) / Code-2of5 Interleaved in EMDK Library - Xamarin</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Scanner Config for ITF(2 of 5) / Code-2of5 Interleaved in EMDK Library - Xamarin</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/scanner-config-itf2-5-code-2of5-interleaved-emdk-library-xamarin; original snapshot: threads/resume-00331.html; SHA-256: 1dbd306dc98860ceca052ac7b77657fdfafa3a21128938ccf993362d61e70efc</small><pre id="topic">
+
+    
+        Scanner Config for ITF(2 of 5) / Code-2of5 Interleaved in EMDK Library - Xamarin 
+
+
+        
+      
+                        
+                    
+            R
+          
+          Rakesh R Nair
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            231
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I am trying to scan  ITF(2 of 5) / Code-2of5 Interleaved barcode using emdk for Xamarin but which not working in my application.
+I believe the issue is something related to my configuration. But not sure what went wrong in my code. Please find the source code I am using for your reference.
+# I am attaching the barcode which I am trying to scan for your reference.
+# Also Please find the Full sample app, That may help you to debug.
+Link to download the sample app.
+https://drive.google.com/open?id=1RFrSDa7n9Dct7TGF8IbAI7V-dXDM3kUO
+ public class EMDKWrapper : Java.Lang.Object, EMDKManager.IEMDKListener
+ {
+        #region Properties
+        EMDKManager _emdkManager;
+        BarcodeManager _barcodeManager;
+        Scanner _scanner;
+        Context pageContext;
+        #endregion
+        #region Delegates
+        public Action ScannedDataResponse;
+        #endregion
+        #region .ctor
+        public EMDKWrapper(Context context)
+        {
+            pageContext = context;
+        }
+        #endregion
+        #region Public Methods
+        public void InitializeScanner()
+        {
+            var results = EMDKManager.GetEMDKManager(pageContext, this);
+            if (results.StatusCode != EMDKResults.STATUS_CODE.Success)
+            {
+#if DEBUG
+                Toast.MakeText(pageContext, &quot;Error opening the EMDK Manager&quot;, ToastLength.Long).Show();
+#endif
+            }
+            else
+            {
+#if DEBUG
+                Toast.MakeText(pageContext, &quot;EMDK Manager is available&quot;, ToastLength.Long).Show();
+#endif
+            }
+        }
+        public void InitScanner()
+        {
+            if (_emdkManager != null)
+            {
+                if (_barcodeManager == null)
+                {
+                    try
+                    {
+                        //Get the feature object such as BarcodeManager object for accessing the feature.
+                        _barcodeManager = (BarcodeManager)_emdkManager.GetInstance(EMDKManager.FEATURE_TYPE.Barcode);
+                        _scanner = _barcodeManager.GetDevice(BarcodeManager.DeviceIdentifier.Default);
+                        if (_scanner != null)
+                        {
+                            //Attahch the Data Event handler to get the data callbacks.
+                            _scanner.Data += Scanner_Data;
+                            //Attach Scanner Status Event to get the status callbacks.
+                            _scanner.Status += Scanner_Status;
+                            _scanner.Enable();
+                            //EMDK: Configure the scanner settings
+                            var config = _scanner.GetConfig();
+                            config.SkipOnUnsupported = ScannerConfig.SkipOnUnSupported.None;
+                            config.ScanParams.DecodeLEDFeedback = true;
+                            config.ReaderParams.ReaderSpecific.ImagerSpecific.PicklistEx = ScannerConfig.PicklistEx.Software;
+                            config.DecoderParams.Code39.Enabled = true;
+                            config.DecoderParams.Code93.Enabled = true;
+                            config.DecoderParams.Code128.Enabled = true;
+                            config.DecoderParams.Ean8.Enabled = true;
+                            config.DecoderParams.Ean13.Enabled = true;
+                            config.DecoderParams.Pdf417.Enabled = true;
+                            config.DecoderParams.I2of5.Enabled = true;
+                            _scanner.SetConfig(config);
+                        }
+                    }
+                    catch (ScannerException e)
+                    {
+                        Console.WriteLine(@&quot;InitScanner :: ScannerException -&gt; {0}&quot;, e.Message);
+                        // ignored
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(@&quot;InitScanner :: Exception -&gt; {0}&quot;, ex.Message);
+                        // ignored
+                    }
+                }
+            }
+        }
+        public void DeinitScanner()
+        {
+            if (_emdkManager != null)
+            {
+                if (_scanner != null)
+                {
+                    try
+                    {
+                        _scanner.Data -= Scanner_Data;
+                        _scanner.Status -= Scanner_Status;
+                        _scanner.Disable();
+                    }
+                    catch (ScannerException e)
+                    {
+                        Console.WriteLine(@&quot;InitScanner :: ScannerException -&gt; {0}&quot;, e.Message);
+                        // ignored
+                    }
+                }
+                if (_barcodeManager != null)
+                {
+                    _emdkManager.Release(EMDKManager.FEATURE_TYPE.Barcode);
+                }
+                _barcodeManager = null;
+                _scanner = null;
+            }
+        }
+        ///
+        /// Method to toggle the Scanner
+        ///
+        ///
+        public void ToggleScanner(bool status)
+        {
+            try
+            {
+                if (status)
+                {
+                    if (null != _scanner &amp;&amp; !_scanner.IsEnabled)
+                    {
+                        _scanner.Enable();
+                    }
+                }
+                else
+                {
+                    if (null != _scanner &amp;&amp; _scanner.IsEnabled)
+                    {
+                        _scanner.Disable();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                //Ignore
+            }
+        }
+        #endregion
+        #region Events
+        void Scanner_Data(object sender, Scanner.DataEventArgs e)
+        {
+            var scanDataCollection = e.P0;
+            if ((scanDataCollection != null) &amp;&amp; scanDataCollection.Result == ScannerResults.Success)
+            {
+                var scanData = scanDataCollection.GetScanData();
+                var data = scanData[0];
+                ScannedDataResponse?.Invoke(data);
+            }
+        }
+        void Scanner_Status(object sender, Scanner.StatusEventArgs e)
+        {
+            //EMDK: The status will be returned on multiple cases. Check the state and take the action.
+            StatusData.ScannerStates state = e.P0.State;
+            if (state == StatusData.ScannerStates.Idle)
+            {
+                try
+                {
+                    if (_scanner.IsEnabled &amp;&amp; !_scanner.IsReadPending)
+                    {
+                        _scanner.Read();
+                    }
+                }
+                catch (ScannerException ex)
+                {
+                    Console.WriteLine(@&quot;InitScanner :: ScannerException -&gt; {0}&quot;, ex.Message);
+                    // ignored
+                }
+            }
+            if (state == StatusData.ScannerStates.Waiting)
+            {
+                Console.WriteLine(@&quot;InitScanner :: Status -&gt; {0}&quot;, StatusData.ScannerStates.Waiting);
+            }
+            if (state == StatusData.ScannerStates.Scanning)
+            {
+                Console.WriteLine(@&quot;InitScanner :: Status -&gt; {0}&quot;, StatusData.ScannerStates.Scanning);
+            }
+            if (state == StatusData.ScannerStates.Disabled)
+            {
+                Console.WriteLine(@&quot;InitScanner :: Status -&gt; {0}&quot;, StatusData.ScannerStates.Disabled);
+            }
+            if (state == StatusData.ScannerStates.Error)
+            {
+                Console.WriteLine(@&quot;InitScanner :: Status{0} -&gt; &quot;, StatusData.ScannerStates.Error);
+            }
+        }
+        #endregion
+        #region IEMDKListener
+        public void OnClosed()
+        {
+            if (_emdkManager != null)
+            {
+                _emdkManager.Release();
+                _emdkManager = null;
+            }
+        }
+        public void OnOpened(EMDKManager manager)
+        {
+            _emdkManager = manager;
+            InitScanner();
+        }
+        public new void Dispose()
+        {
+            // Dispose
+            //Clean up the emdkManager
+            if (_emdkManager == null) return;
+            //EMDK: Release the EMDK manager object
+            _emdkManager.Release();
+            _emdkManager = null;
+            _barcodeManager = null;
+            _scanner = null;
+        }
+        #endregion
+    }
+}
+I am using Zebra TC 56 &amp; 57 for testing
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Darryn Campbell
+          
+          
+            7 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi, it is not obvious from the EMDK for Xamarin sample (https://github.com/Zebra/samples-emdkforxamarin-3_0/blob/master/Barcode…) but if you take a look at the EMDK for Android sample (https://github.com/Zebra/samples-emdkforandroid-7_3/blob/master/Barcode…) you will see that the decoders are being set whilst the scanner is IDLE.&amp;nbsp; Please move your call to set the scanner config to just before your call to _scanner.read() and I2of5 should now be enabled
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

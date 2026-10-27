@@ -1,0 +1,260 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Service app DataWedges API</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Service app DataWedges API</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25972; original snapshot: supplement/threads/4cb93d4ac62390dc6676bbf4.html; SHA-256: a2422e5870b121767e09718eed0426fee53f18db76bf23a237a4a9090b6ad8b4</small><pre id="topic">
+
+    
+        Service app DataWedges API
+
+
+        
+      
+                        
+                    
+            F
+          
+          felix heitbrock
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            68
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi, i am using a Zebra TC26 scanner and want to create a background java service that can trigger scans and read barcodes.
+I have a app that has no activity and only one service (this service is a middleman between my app and the zebra scanner api). I implemented a BroadcastReceiver that seems to be working for action results such as the soft scan trigger result and the config result. Send a SOFT_SCAN_TRIGGER action will start scanning but i never receive a result with the barcode. Only the command results.
+When i run the same code in a seperate app with an activity it works and i reveive the scanned code. What do i need to do so i can receive the scanned code with this service that has no activity?
+Here is my code so far:
+    public class MyService extends Service {
+        private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String decodedSource = intent.getStringExtra(SOURCE);
+                String decodedData = intent.getStringExtra(DATA_STRING);
+                // ...
+            }
+        };
+        // ...
+        private void startListening() {
+            IntentFilter filter = new IntentFilter();
+            filter.addCategory(Intent.CATEGORY_DEFAULT);
+            filter.addAction(MY_ACTION);
+            registerReceiver(broadcastReceiver, filter);
+        }
+        public void triggerScan() {
+            Intent i = new Intent();
+            i.setAction(ACTION);
+            i.putExtra(SWITCH_PROFILE, MY_PROFILE);
+            i.putExtra(&quot;SEND_RESULT&quot;,&quot;true&quot;);
+            i.putExtra(SOFT_SCAN_TRIGGER, &quot;START_SCANNING&quot;);
+            this.sendBroadcast(i);
+        }
+        // ...
+        private void initConfiguration(){
+            Bundle bundleMain = new Bundle();
+            // profile name and state
+            bundleMain.putString(&quot;PROFILE_NAME&quot;, MY_PROFILE);
+            bundleMain.putString(&quot;PROFILE_ENABLED&quot;,&quot;true&quot;);
+            bundleMain.putString(&quot;CONFIG_MODE&quot;, &quot;UPDATE&quot;);
+            // Associate profile with this app
+            Bundle appConfig = new Bundle();
+            appConfig.putString(&quot;PACKAGE_NAME&quot;, getPackageName());
+            appConfig.putStringArray(&quot;ACTIVITY_LIST&quot;, new String[]{&quot;*&quot;});
+            bundleMain.putParcelableArray(&quot;APP_LIST&quot;, new Bundle[]{appConfig});
+            // Configure intent output for captured data to be sent to this app
+            Bundle bundleIntentOutConfig = new Bundle();
+            bundleIntentOutConfig.putString(&quot;PLUGIN_NAME&quot;, &quot;INTENT&quot;);
+            bundleIntentOutConfig.putString(&quot;RESET_CONFIG&quot;, &quot;false&quot;);
+            // Param list properties
+            Bundle bundleIntentParams = new Bundle();
+            bundleIntentParams.putString(&quot;intent_output_enabled&quot;, &quot;true&quot;);
+            bundleIntentParams.putString(&quot;intent_action&quot;, MY_ACTION);
+            bundleIntentParams.putString(&quot;intent_category&quot;, Intent.CATEGORY_DEFAULT);
+            bundleIntentParams.putString(&quot;intent_delivery&quot;, &quot;2&quot;);   //0 - activity, 1 - service, 2 - Broadcast
+            bundleIntentOutConfig.putBundle(&quot;PARAM_LIST&quot;, bundleIntentParams);
+            ArrayList bundlePluginConfig = new ArrayList();
+            bundlePluginConfig.add(bundleIntentOutConfig);
+            bundleMain.putParcelableArrayList(&quot;PLUGIN_CONFIG&quot;, bundlePluginConfig);
+            Intent bundleSetConfig = new Intent();
+            bundleSetConfig.setAction(ACTION);
+            bundleSetConfig.putExtra(SET_CONFIG, bundleMain);
+            bundleSetConfig.putExtra(&quot;SEND_RESULT&quot;, &quot;COMPLETE_RESULT&quot;); //Supported values: NONE, LAST_RESULT, COMPLETE_RESULT
+            bundleSetConfig.putExtra(&quot;COMMAND_IDENTIFIER&quot;, &quot;INTENT_API&quot;);
+        }
+    }
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Darryn Campbell
+          
+          
+            5 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi, you want to configure DataWedge to send a startService(), then you can listen for scans using your Android Service.&amp;nbsp; The sample app can do this to show the principle,&amp;nbsp;https://github.com/ZebraDevs/DataWedge-Android-Samples/blob/master/DataW... and&amp;nbsp;https://github.com/ZebraDevs/DataWedge-Android-Samples/blob/master/DataW...
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Deepmala Barkhane
+          
+          
+            5 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            testing comment
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

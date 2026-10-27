@@ -1,0 +1,923 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>User Guide - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/deviceguardian/latest/use/</code><br>Observed final URL: <code>https://techdocs.zebra.com/deviceguardian/latest/use/</code><br>Raw source: <code>raw/c3d09a8910b57c1be9f43c59.html</code><br>Raw SHA-256: <code>b7e382694f9bd84438f36f767de1bc684a37f2641165c7255438f4916cabbd2b</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            Device Guardian &amp; Access Management
+                                            2.8
+                        
+
+                    
+                
+                
+                    
+                        
+                            
+                                        About
+                            
+                        
+                        
+                            
+                                        Admin Guide
+                            
+                        
+                        
+                            
+                                        Install
+                            
+                        
+                        
+                            
+                                        Configuration
+                            
+                        
+                        
+                            
+                                        User Guide
+                            
+                        
+                        
+                            
+                                        Dashboard
+                            
+                        
+                        
+                            
+                                        APIs
+                            
+                        
+                        
+                            
+                                        FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            User Guide
+                        
+                    OverviewEnhanced Local Device Management with DGAMKioskSearchUsing Cradle LockDevice AccessSSO LoginRole-BasedProximity GuidelinesMark Device To FindLost Device NearbyFind DeviceThrough KioskPlay SoundSecondary BLEDo Not Disturb (DND) ModeMissing Device AlertPeripheral DevicesPair/Unpair Bluetooth ScannerPair WS101 DeviceFind PeripheralsVirtual TetheringDecommission DeviceAdd/Edit NoteNotification BehaviorAndroid Versions Prior to 14Android Versions 14 and HigherSee Also
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    User Guide
+                                    
+                                            Device Guardian &amp; Access Management
+                                            2.8
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        
+  All references to Device Guardian within this guide also apply to Device Guardian Access Management, unless explicitly stated otherwise.
+
+
+Overview
+
+Device Guardian (DG) and Device Guardian Access Management (DGAM) operate based on the user role of the logged-in user, ensuring tailored access and functionality for Administrators, Managers, and Users/Associates. Administrators have organization-wide control, Managers oversee assigned sites, and Users focus on retrieving and managing devices.
+
+Methods for locating devices:
+
+
+Primary Method - This standard feature, available on all devices, uses the integrated Bluetooth radio to emit BLE beacons when the device is enrolled with the server and marked as lost (provided it is not low in battery or powered off). It leverages access point location, a Bluetooth-based visual proximity indicator, and a sound alert feature for effective tracking. To find a device, the missing device must be marked for retrieval by the administrator or manager.
+
+Secondary Method - Available on select devices with a secondary Bluetooth Low Energy (BLE) battery option, this feature activates the secondary BLE beacon when the host device is in low battery or powered off. It allows tracking for a limited time, even when the battery is depleted.
+
+
+The “finding” device (the device performing the search) uses the visual proximity meter to determine how far the user is from the “missing” device (the device to be found). Once a device is found, it can be:
+
+
+Recommissioned - Returned to the active device pool.
+
+Decommissioned - Removed from the active device pool if no longer in use.
+
+
+Additional features for device tracking:
+
+
+Automation - Configure rules to automatically trigger workflows for finding lost devices.
+
+Notes - Administrators and managers can add notes (e.g. device screen damaged) to aid in tracking or noting problems with the device.
+
+
+Both the administrator dashboard and manager dashboard provide access to view devices, access points and sites, while enabling actions to track and manage devices.
+
+Note: Licenses are required for devices to operate and can be transferred between devices or removed as needed.
+
+Enhanced Local Device Management with DGAM
+
+Device Guardian Access Management (DGAM) extends the capabilities of Device Guardian (DG) by introducing advanced features for localized device monitoring and management. With DGAM, kiosks act as centralized hubs, enabling organizations to:
+
+
+Monitor Local Devices: Kiosks offer real-time visibility into devices within their range, allowing administrators and managers to track availability, usage, and operational status.
+
+Manage Locked Cradle Connections: Devices placed in locked cradles connected to kiosks are actively monitored to ensure they remain secure and charged for future use.
+
+Facilitate Swift Recovery of Missing Devices: DGAM utilizes the kiosk’s connection to a device to streamline the recovery process, helping to identify and locate missing devices based on their last known kiosk connection.
+
+
+These enhancements provide precise, localized device management, improving operational efficiency and accountability.
+
+
+
+Kiosk
+
+
+  This section applies to DGAM Only.
+
+
+In DGAM, kiosks play a central role in monitoring and managing device statuses. The kiosk categorizes its registered devices into three statuses:
+
+
+In Use - Devices retrieved from the cradle and logged in by users.
+
+Available - Devices returned to the powered cradle after use.
+
+Missing - Devices that are neither logged in by a user nor placed on charge, or where recovery efforts have been unsuccessful.
+
+
+Misplaced devices can be quickly located by identifying the current and previous users and initiating recovery through Device Guardian or by scanning a barcode directly at the kiosk.
+
+
+
+Search
+
+The kiosk dashboard includes a search bar, allowing users to perform searches across any value field under any column.
+
+
+
+As users type, the search results are dynamically filtered and displayed in real time, enabling fast navigation and easy access to relevant information.
+
+
+
+If no interaction occurs within 10 seconds while in the search field, the kiosk automatically returns to the home screen.
+
+
+
+Using Cradle Lock
+
+
+  This section applies to DGAM Only.
+
+
+The Cradle Lock feature in DGAM enhances security and promotes user accountability by requiring users to unlock devices through Identity Guardian before removing them from cradles equipped with a locking mechanism.
+
+Steps to unlock the device:
+
+
+While the device remains in the cradle, tap Scan to Unlock on the Identity Guardian lock screen.
+
+
+Enter the passcode when prompted, then tap Unlock.
+
+
+The &quot;Unlocking&quot; screen displays, showing a flashing pattern of alternating black and white squares at the top of the display (the black square turns white and white square turns black). This pattern signals the cradle to unlock the device, which takes approximately 7-10 seconds.
+
+
+
+    
+        
+           
+        
+    
+
+
+
+Once unlocked, the &quot;Unlocked&quot; screen appears, indicating that the device can be removed from the cradle. This screen remains visible for 4 seconds:
+
+
+
+If the device is removed within 4 seconds, the home screen appears, and the device is ready for use.
+
+If the device is not removed within 4 seconds, the cradle automatically locks, and the device logs out. The Identity Guardian lock screen reappears.
+
+
+
+
+
+
+Device Access
+
+SSO Login
+
+When the single sign-on (SSO) feature is activated and Identity Guardian is installed on a device, the sign-in procedure for users is determined by the authentication strategies set up by the administrator. These strategies can include single or multi-factor authentication methods like facial biometrics, barcode scanning or SSO. For more information, refer to the Identity Guardian documentation.
+
+
+
+Role-Based
+
+The user role dictates what appears on the device screen:
+
+
+Administrator
+
+Manager
+
+User/Associate
+
+
+See Device Dashboard for more information.
+
+
+
+Proximity Guidelines
+
+
+  This section applies to DGAM Only.
+
+
+This section provides the recommended proximity and behavior guidelines for kiosks and mobile devices within DGAM, ensuring optimal functionality and smooth operation.
+
+Kiosks:
+
+
+Zebra recommends to maintain a minimum distance of 6 meters between kiosks.
+
+
+Mobile Devices:
+
+
+Within Kiosk Range (Less then 3 meters) - The device logs out automatically when placed on charge.
+
+Intermediate Range (Between 3 and 6 meters) - The device may either log out or remain logged in while charging.
+
+Out-of-range from Kiosk (More than 6 meters) - The device remains logged in when charging.
+
+
+
+
+Mark Device To Find
+
+Before initiating a device search, the device must be marked To Be Found by an administrator or manager. This is performed in the web portal; see Mark Device for Finding in the Dashboard guide.
+
+
+
+Lost Device Nearby
+
+Lost Device Nearby is an optional feature (configured by the administrator) that proactively sends alert notifications to a device when a lost device is detected within close proximity. This allows the lost device to be found by nearby users in addition to any users that may be actively searching for the device. The nearby user that receives the alert notification can promptly initiate the finding process, expediting device recovery by allowing the lost device to be found more quickly with its vicinity immediately known. Alerts are sent as one or a combination of the following: audio, vibration, LED, and/or Android notification.
+
+When the notification message appears on the detecting device, it includes the device model and device name of the lost device. Tap on the notification to start the finding process. If there are multiple lost devices detected nearby, a notification is received from each lost device. If the detecting device is online (internet is available), the Device Guardian Device Details screen appears and the user can start the finding process by tapping the Start Finding button. The user proceeds to find the lost device with the proximity indicator and play sound features.
+
+
+
+Notifications of lost devices nearby
+
+Alert notifications are received even if the detecting device is offline, as seen in the notification message which displays &quot;offline&quot; status for the detecting device. In this case, tap on the notification to immediately start the finding process. The Device Guardian app appears for the user to find the lost device with the proximity indicator. The detecting device cannot mark the lost device as &quot;Found&quot; until the detecting device is back online. However, this can be done in the web portal by the manager or administrator.
+
+
+
+When Lost Device Nearby is enabled, the Mobile Device screen displays a Nearby tab, which filters missing devices that are marked &quot;To Be Found&quot; and are receiving Bluetooth beacons while within nearby proximity.
+
+
+
+Missing Devices Detected Nearby
+
+When the detecting device is offline (no internet connectivity), nearby devices can still be detected from the BLE beacons received. The nearby device is displayed as &quot;Unknown&quot; along with its beacon ID.
+
+The detecting device receives Lost Device Nearby notifications when all the following requirements are met:
+
+
+The device must be in the &quot;In Service&quot; state.
+
+The device must neither be charging nor in a low battery state (based on the Low battery threshold).
+
+
+Note: Lost Device Nearby notifications are cleared if Bluetooth beacons from the lost device are no longer detected for at least 5 minutes. This occurs when any one of the following conditions are met for the lost device:
+
+
+It is no longer located within close proximity of the detecting device.
+
+It has stopped emitting Bluetooth beacons.
+
+It is no longer in the Missing (To Be Found) state.
+
+
+
+
+Find Device
+
+To locate a device, initiate a search from the Missing device list visible on devices. End users (associates) can access this list upon starting the client app, while administrators or managers can view it via the dashboard. The &quot;finding device&quot; (the device performing the search), is used to determine the distance between the user and the “missing” device (device to be found).
+
+
+
+Search process:
+
+
+Initiate the device search: In the Missing tab screen, tap Find device for the selected device.
+
+
+Locate the access point (AP): The device state changes to Being Found and the BLE proximity meter appears, showing the access point the device is connected to. Move towards the AP to approach the general area of the missing device.
+
+Use the proximity meter: The proximity meter indicates the how far or how close you are to the missing device. The numerical value decreases towards &quot;0&quot; as you get closer. Proximity meter state changes include:
+
+
+Red circle with red numbers - The finding device is moving away from the missing device.
+
+Blue circle with black numbers - The finding device is stationary.
+
+Blue circle with green numbers - The finding device is moving closer to the missing device.
+
+Green circle with green numbers - The finding device is close enough to hear the audio alert (numerical value is 3.0 or below).
+
+Gray circle at bottom of meter - The finding device is out of range of the missing device.
+
+
+
+
+   
+ 
+               
+
+   
+
+               
+
+   
+
+
+
+
+        Moving further away from the missing device               Moving closer to the missing device                          Missing device is close by
+
+
+
+
+
+
+
+   
+ 
+               
+
+   
+
+
+
+
+              Finding device is stationary                                         Finding device is out of range
+
+
+Pinpoint location: To further narrow down the device’s location, tap Play Sound on the finding device and listen for the audio alert from the missing device. Walk towards the sound to locate the device.
+
+If the missing device is found, tap Found. Select one of the following based on the behavior encountered:
+
+
+The device is changed to the Found state if no automation rules are configured.
+
+If Automation rules are configured with option Automatically Mark Devices &quot;To Be Found&quot; enabled, a message appears prompting the user to take action based on the rule(s) selected and to check each checkbox after action is taken. It is important to execute ALL actions specified, otherwise the device will return back to the Missing (To Be Found) state after it is marked Found based on the automation process. After all action is taken and all checkboxes are checked, tap Confirm. The device state is changed to Found if automation option Automatically place device &quot;In Service&quot; when marked &quot;Found&quot; is disabled. If this option is enabled, the device state is changed to In Service.
+
+
+Sample screen of action to take after device is found
+
+If the device is found and the automation option Automatically Place Device &quot;In Service&quot; When Marked &quot;Found&quot; is disabled, manually recommission the device to place it back into the active device pool. Alternatively, decommission the device if it needs to be removed from the active device pool.
+
+
+Note: If the device is not located during the search, tap the back button to exit the session. This changes the device state from Being Found to To Be Found (Missing).
+
+Additional Notes:
+
+
+By default, the Pixie Dust tone is used when the audio alert is played on the device.
+
+Play Sound is useful if the proximity meter is unavailable (e.g. Bluetooth is disabled). Audio alerts can still be played during the search process even in Do Not Disturb (DND) mode, with some exceptions.
+
+Devices with secondary BLE can still be located if they lose battery power or are turned off.
+
+Administrators and managers can add notes to document device-specific issues, such as hardware damage or reasons for decommissioning.
+
+
+Behavior in different scenarios:
+
+
+If Bluetooth is turned off on a powered-on missing device and a user initiates locating that device, Device Guardian automatically turns on Bluetooth in the missing device to allow that device to be located using the proximity indicator. However, if the missing device is disconnected from the server, Bluetooth will not be turned on.
+
+If Bluetooth is turned off on the missing device while it is being found, that device cannot be located using the proximity indicator. However, if the device is powered off, it can still be located using secondary BLE (if supported).
+
+A device is in the Disconnected state when it does not communicate with the server for approximately 12 minutes. During this time, if a device search is performed on a missing device that has lost connection with the server, that device cannot be located using the proximity indicator and any attempt to Play Sound is ineffective since audio cannot be emitted from the disconnected device.
+
+If a finding device initiates a device search prior to the missing device becoming Disconnected, the missing device can be found using the proximity indicator.
+
+If Bluetooth is turned off on the finding device while it is locating the missing device, the missing device cannot be located using the proximity indicator on that finding device.
+
+If Android Location Services is turned off on the finding device, it cannot locate the missing device using the proximity indicator.
+
+
+
+
+Through Kiosk
+
+
+  This section applies to DGAM Only.
+
+
+To recover missing devices through a kiosk, use the finding device to scan the QR code of the missing device displayed on the kiosk.
+
+Steps to recover a device via kiosk:
+
+
+On the kiosk dashboard, tap Missing to view the relevant devices. Tap the menu icon under the Action column for the desired device and select Find device.
+
+
+The QR code is displayed.
+
+
+Open Device Guardian on the finding device. Tap the options menu at the top right and select Register to Kiosk. Although the device will not be registered to the kiosk in this instance, the scan beam activates. Scan the QR code.
+
+
+The proximity meter appears, guiding the user to the missing device. Follow step 3 onwards from the Find Device process to locate the device.
+
+
+
+
+
+Play Sound
+
+To find a device that is close by, play a sound on the lost or missing device through the Find Device process. Alternatively, managers and administrators can play sound from the web portal through the Actions menu from either the Mobile Devices dashboard or Device Details screen.
+
+Note: When playing the sound, by design the Pixie Dust tone is played on the device.
+
+To play sound through the Mobile Devices dashboard:
+
+
+Log into the web portal as a manager or administrator.
+
+Go to Dashboard &gt; Mobile Devices.
+
+Tick the checkbox to select the desired device(s) to play sound.
+
+From the Actions dropdown, select Play Sound.
+
+
+
+To play sound through the Device Details screen:
+
+
+Log into the web portal as a manager or administrator.
+
+Go to Dashboard &gt; Mobile Devices.
+
+Click on the row of the desired device to play sound.
+
+The Device Details screen appears. From the Actions dropdown, select Play Sound.
+
+
+
+
+
+Secondary BLE
+
+For devices with secondary BLE beaconing capability, Device Guardian can locate the device if it loses battery power or is powered off. The location of the device is detected by signals transmitted from the secondary BLE beacon. Attempts to locate the device must occur soon after the device loses power, prior to loss of power from the secondary BLE beacon. The secondary BLE radio of some devices is located in the battery. Such devices are subject to the behavior described in battery-based BLE behavior.
+
+When locating a device based on its secondary BLE beacon, the Play Sound feature is disabled during device search since it cannot function due to the loss of device power. The Secondary BLE state is viewed from the Device Details screen.
+
+Usage Notes:
+
+
+Secondary BLE differs from the built-in device primary BLE used for device tracking, which cannot operate once the device loses power.
+
+While finding a device, the values seen in the BLE proximity indicator may differ when finding a device that is powered on (primary BLE) versus a device that is powered off (secondary BLE), particularly if the Reference RSSI is not specified for the battery-based secondary BLE. This is due to varying location and orientation of the secondary BLE antenna. During the finding process, the user should rely on the trend reflected in the BLE proximity meter to navigate to the missing device.
+
+
+
+
+
+
+Do Not Disturb (DND) Mode
+
+DND mode is an Android feature that silences the device by muting sounds and disabling vibrations. Device Guardian can still play audio alerts when DND mode is activated on a lost device, with certain exceptions outlined below.
+
+Enable DND Mode
+
+DND mode can be enabled using one of the following methods:
+
+
+Hardware Buttons:
+
+
+
+Press the volume +/– key on the side of the device.
+
+Tap the Silent icon in the Zebra Volume Control UI to enable silent mode.
+
+
+
+Android Settings:
+
+
+
+Go to Android Settings &gt; Sound &gt; Zebra Volume Control.
+
+Tap the Silent icon in the Zebra Volume Control UI to activate silent mode.
+
+
+
+Android Quick Settings:
+
+
+
+Tap the Do Not Disturb icon to enable DND.
+
+Tap the drop-down menu for the Do Not Disturb icon and select one of the following options:
+
+Alarms only - Allows only alarms to sound.
+
+Priority only - Allows only priority notifications.
+
+Total silence - Silences all sounds and notifications.
+
+
+Setting Default Notification Sound - Go to Android Settings &gt; Sound &gt; Default notification sound and select Silent to mute notifications without enabling DND mode.
+
+
+Exceptions to Device Guardian Audio Alerts
+
+Device Guardian plays audio alerts when DND mode is enabled through the methods above, except in the following scenarios:
+
+
+Total Silence - If the device is set to Total silence via Quick Settings.
+
+Silent Notification Sound - If the Default notification sound is set to Silent through Android Settings.
+
+
+Recommendations to Ensure Full Functionality
+
+To maintain full functionality of Device Guardian, Zebra recommends restricting user access to prevent complete silencing of the device:
+
+
+Disable Quick Settings Access - Use an EMM or Zebra MX UI Manager to control the DND feature and restrict access to the DND UI in Quick Settings.
+
+Restrict Settings Access - Use an EMM or Zebra Enterprise Home Screen to limit access to Android Settings.
+
+
+These measures help ensure that Device Guardian can perform audio alerts effectively, even when DND mode is enabled.
+
+
+
+Missing Device Alert
+
+The Missing Device Alert feature automatically notifies all device users at a site when a device&#x27;s status is changed to &quot;To Be Found&quot; (Missing). To ensure alerts are relevant to devices in the field, a device only receives this alert if it is not currently charging.
+
+Enabled by default, this feature ensures each user at a site is aware that there is a missing device, facilitating swift action for its recovery. Unlike the Lost Nearby Notification option, this feature minimizes battery impact.
+
+The alert notification is persistent. It is generated when a device is marked &quot;To Be Found&quot; and only clears after every missing device is marked as &quot;Found&quot; or &quot;In Service.&quot; Tapping the notification provides direct access to the Missing Device list for immediate action to recover devices.
+
+
+
+Missing Device Alert Notification
+
+ Known Issue: On WS50 or WT6300 devices, the Missing Device notification does not navigate directly to the Missing Devices list. Instead, it opens a menu screen, from which users must select &quot;Missing Devices&quot; to proceed.
+
+
+
+Peripheral Devices
+
+Prior to tracking Peripheral Devices, users must pair the device using the appropriate method:
+
+
+Pair Bluetooth Scanner
+
+Pair WS101 Device (Headset)
+
+
+When tracking is enabled for Peripherals, two tabs are visible on the device screen:
+
+
+Mobile Device - Displays a list of mobile computers that have been marked To Be Found after being reported lost or missing
+
+Peripherals - Displays the following:
+
+
+
+My Peripherals - Shows the Peripheral devices paired and connected to the host mobile computer. The following information is displayed: device friendly name, battery level, connection status (connected, disconnected), and MAC address. Only one peripheral can be connected to the host at any given time. If there is no peripheral paired with the mobile computer, no device is listed in this section.
+
+Other Peripherals - Shows a list of Peripheral devices that have been marked To Be Found after being reported lost or missing.
+
+
+
+
+    
+        
+                    
+        
+    
+    
+        My Peripherals
+                    
+        Other Peripherals
+    
+
+
+
+
+Pair/Unpair Bluetooth Scanner
+
+To pair and connect a Bluetooth scanner to the mobile computer:
+
+
+Launch Bluetooth Pairing Utility, pre-installed on the mobile computer by default.
+
+
+Use the Bluetooth scanner accessory to scan the barcode displayed.
+
+
+Select whether to allow access to contacts and call history, and tap Pair in the confirmation message.
+
+
+In Device Guardian mobile app, tap the Bluetooth Scanner tab in the To Be Found screen. My Bluetooth Scanner displays the paired and connected Bluetooth scanner.
+
+
+
+This procedure automatically registers the Bluetooth scanner to the Device Guardian system. If lost, it can be marked as Missing (To Be Found) to initiate the search.
+
+To unpair the Bluetooth scanner, place it in a powered cradle. This automatically unpairs and disconnects the Bluetooth scanner from its associated mobile computer and removes it from the My Bluetooth Scanner section.
+
+
+
+
+
+Pair WS101 Device
+
+There are two primary methods for pairing the WS101 (Bluetooth headset) device with a host device.
+
+Method 1: Manual Bluetooth Pairing
+
+
+Initiate Pairing Mode: Press and hold the WS101 power button for 5 seconds until the LED flashes rapidly, indicating pairing mode is active.
+
+Connect via Android Settings: On the host device, go to Settings &gt; Connected Devices &gt; Pair new device. Select the WS101 device from the list of discovered devices.
+
+Open BT Comms: Launch the Zebra BT Comms utility on the host device and select the WS101 device from the list of discovered devices to connect.
+
+
+If successful, a message appears indicating the device is connected.
+
+
+Method 2: NFC Tap-to-Pair
+
+
+Ensure NFC is enabled on the host device. 
+
+Press and hold the WS101 power button for 5 seconds to enter pairing mode (the LED flashes rapidly).
+
+Tap the WS101 against the host device&#x27;s NFC.
+
+Accept the pairing confirmation prompt on the host screen.
+
+
+
+
+Find Peripherals
+
+To find a Peripheral:
+
+
+On the device, open Device Guardian client. Tap on the device tile under My Peripherals.
+
+
+The peripheral details are listed along with the button to begin finding the device.
+
+
+There are 3 different scenarios when finding a Peripheral:
+
+
+Within Bluetooth Range and Connected - To find a peripheral within Bluetooth range, tap Start Finding button. The peripheral is placed in the Missing (To Be Found) state and the proximity meter is displayed with the option to Play Sound.
+
+Note: When finding a mobile computer or peripheral, the proximity values displayed may be different on each device even when they are in the same distance to the finding device.
+
+Out of Bluetooth Range and Disconnected - In the web portal, the When disconnected Beaconing Rule must be enabled. To find a peripheral out of range, under Other Peripherals, tap on the device to find. The device details screen appears. When the device is moved within Bluetooth range, the proximity meter will appear to locate the device.
+
+
+Located nearby - The Lost Devices Nearby notifications setting must be enabled in the web portal. When a peripheral is set Missing (To Be Found) and Bluetooth beaconing is enabled on the peripheral, the Nearby tab in the Missing screen displays the peripherals that are detected to be in close proximity to the mobile computer.
+
+
+
+
+
+Virtual Tethering
+
+Virtual Tethering notifies the user if a paired peripheral device is moving beyond the effective Bluetooth range from its associated mobile computer. A pop-up notification appears on the mobile computer indicating that the peripheral is moving out of range. Supplemental notifications in the form of beeping, LED flashing, audio tone, and vibration can occur on the peripheral and mobile computer. These alert options vary depending on the device. Virtual Tethering and its options are enabled in the Peripherals setting from the web portal.
+
+
+
+Virtual tethering pop-up notification
+
+
+
+
+
+Decommission Device
+
+When a device is no longer in use or needs to be removed from the active device pool, mark it as Decommissioned to prevent any further reporting to the server. This applies to situations when the device is being sent for repair, the device is being replaced, or the device is deprecated and needs to be removed. When a device is decommissioned, the license is automatically deallocated from the device and returned to the license pool for it to be reallocated to another device.
+
+If a device is decommissioned by a manager, the device is removed from the assigned site and therefore no longer visible in the manager dashboard. The device can be recommissioned only by an administrator.
+
+To decommission a device (admin/manager access required):
+
+
+From the device list, tap and hold on the device card. Tap Decommission from the popup menu.
+
+
+The status is changed to Decommissioned and the user is prompted to enter a note.
+
+If desired, add a note by entering text in the Note section to indicate the reason for the device decommission; see Add/Edit Note.
+
+Tap back. The note is saved and the device is placed in the Decommissioned category in the dashboard.
+
+
+
+
+Add/Edit Note
+
+Administrators and managers can add a note to capture comments specific to the device to help in device tracking or identifying device problems. For example, a comment could be &quot;device screen damaged&quot;.
+
+To add or edit a note:
+
+
+From the device list, tap and hold the device card and tap Add a Note. If a note already exists, the option is provided to Edit a Note.
+
+
+The Note section appears in the Device Details screen prompting to enter in text.
+Enter a note or comment
+
+After entering text for the note, tap the back button.
+
+The note is saved and can be viewed in the Device Details screen.
+
+
+
+
+Notification Behavior
+
+Device Guardian notifications differ significantly between Android versions prior to 14 and versions 14 and above due to changes in the Android platform.
+
+Android Versions Prior to 14
+
+For Android versions prior to 14, users cannot dismiss notifications triggered by the Device Guardian app, including those received upon successful installation and enrollment.
+
+Android Versions 14 and Higher
+
+Android 14 introduces updates to notification behavior, enabling users to manually dismiss Device Guardian notifications from the device&#x27;s notification drawer, especially in the following scenarios:
+
+
+Users can dismiss foreground notifications that were previously non-dismissible.
+
+Notifications received after successful installation and enrollment of the Device Guardian app can be dismissed.
+
+Notifications that appear upon device reboot or when a new event is triggered can be dismissed.
+
+
+
+Device Guardian Notification
+
+
+
+See Also
+
+
+About Device Guardian + Access Management
+
+Admin Guide
+
+Install &amp; Setup
+
+Configuration
+
+Dashboard
+
+APIs
+
+Secondary BLE
+
+Licensing
+
+FAQ
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates.
+    Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+
+
+
+Back to Top</pre></body></html>

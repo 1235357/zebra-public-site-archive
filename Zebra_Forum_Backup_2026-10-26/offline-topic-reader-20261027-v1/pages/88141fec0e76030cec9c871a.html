@@ -1,0 +1,194 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>ZQ620 do not bluetooth connection from Chrome (JavaScript)</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>ZQ620 do not bluetooth connection from Chrome (JavaScript)</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zq620-do-not-bluetooth-connection-chrome-javascript; original snapshot: threads/00196.html; SHA-256: f6efb163727743d34892eb12d61c28a3ab84df43dcd1f0766493ba2a3e4d583f</small><pre id="topic">
+
+    
+        ZQ620 do not bluetooth connection from Chrome (JavaScript)
+
+
+        
+      
+                        
+                    
+            M
+          
+          Makoto Uno
+          2 years 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            241
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I want to connection ZQ620(this is verification machine) and print, use bluetooth from Android Chrome browser JavaScript (pure or jQuery) only.My sample source.const DEVICE_UUID = &#x27;0000fe79-0000-1000-8000-00805f9b34fb&#x27;;
+const SERVICE_UUID = &#x27;38eb4a84-c570-11e3-9507-0002a5d5c51b&#x27;;
+var printer = null;
+var printRes = null;
+function sendText(s) {
+	let encoder = new TextEncoder(&quot;utf-8&quot;);
+	let txt     = encoder.encode(s+ &#x27;\u000A\u000D\u000A\u000D\u000A\u000D\u000A\u000D\u000A\u000D&#x27;);
+	return printer.writeValue(txt);
+}
+
+function fnc(eve){
+	navigator.bluetooth.requestDevice({
+		filters: [{
+			namePrefix: &#x27;X&#x27;,
+		}],
+		optionalServices: [SERVICE_UUID]
+	})
+	.then(device =&gt; {
+		console.log(&#x27;connect device start&#x27;);
+		return device.gatt.connect();
+	})
+	.then(server =&gt; {
+		console.log(&#x27;start primary servicies&#x27;);
+		return server.getPrimaryServices();
+	})
+	.then(services =&gt; {
+		console.log(services);
+	})/*
+	.then(service =&gt; {
+		console.log(&#x27;start characteristic&#x27;);
+		return service.getCharacteristic(SERVICE_UUID);
+	})
+	.then(characteristic =&gt; {
+		printer = characteristic;
+		printRes = sendText($(&quot;#_textarea&quot;).val());
+	})
+	*/
+	.catch(error =&gt; {
+		console.err(&#x27;error occurred&#x27;, error);
+	});
+}But, error occurrd. Throws error is &#x27;NotFoundError: No Services found in device.&#x27; from &#x27;return server.getPrimaryServices();&#x27;nRF Connect app said service is exist, but can not access(screeenshot). So, how connect and print? This printer not supported?Can I use it on other devices?I&#x27;m sorry if my English is strange.
+              
+
+                    
+          
+      
+              
+ メディア.jpg
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Looks like the UUID for the service is wrong. The service UUID should be &quot;38eb4a80-c570-11e3-9507-0002a5d5c51b&quot;, i.e., starting with 38eb4a80, not 38eb4a84.
+const SERVICE_UUID = &#x27;38eb4a84-c570-11e3-9507-0002a5d5c51b&#x27;;See the example project for more info on how to connect to printer&#x27;s BLE - zebraPrinterBLEDemo and the Link-OS Environment Bluetooth Low Energy AppNote for the currect UUIDs.
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,710 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>How to connect fixed FX9600 RFID Reader to Normal Android Tablet via USB to read Tags?</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/how-connect-fixed-fx9600-rfid-reader-normal-android-tablet-usb-read-tags; snapshot threads/00149.html; SHA-256 e767f1a79ed40e7269ff9e4eac26706e62fa98df7d00da180ecc9641abf04f99. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">How to connect fixed FX9600 RFID Reader to Normal Android Tablet via USB to read Tags?</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            P
+          </div>
+          <div class="forum-topic__author-name">Prakash Barik</div>
+          <div class="forum-topic__timestamp">1 year 11 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            387
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            8
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi All, </p><p>I would like to highlight the process to connect programmatically any android tablet to RFID reader and read tags. SO basically what i did, Downloaded latest RFID SDK (2.0.3.162) and unzip it and added inside Lib folder of android studio(Ladybug) and build gradle(8.7) Added code in my kotlin project to connect reader, where my RFID Reader is FX9600.</p><p><strong>Source Code:</strong></p><pre><code class="language-plaintext">
+
+import android.os.Bundle
+import android.os.StrictMode
+import android.os.StrictMode.ThreadPolicy
+import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import com.dcs.sanitrader.R
+import com.dcs.sanitrader.databinding.ActivityRfidScanBinding
+import com.dcs.sanitrader.databinding.HomepageBinding
+import com.zebra.rfid.api3.ENUM_TRANSPORT
+import com.zebra.rfid.api3.InvalidUsageException
+import com.zebra.rfid.api3.OperationFailureException
+import com.zebra.rfid.api3.RFIDReader
+import com.zebra.rfid.api3.ReaderDevice
+import com.zebra.rfid.api3.Readers
+import com.zebra.rfid.api3.RfidEventsListener
+import com.zebra.rfid.api3.RfidReadEvents
+import com.zebra.rfid.api3.RfidStatusEvents
+
+
+class RFIDActivity : AppCompatActivity() {
+
+    private var rfidReader: RFIDReader? = null
+    private var readersList: Readers? = null
+    private var readerDevice: ReaderDevice? = null
+    private lateinit var connectionEventHandler: EventHandler
+    private lateinit var binding: ActivityRfidScanBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityRfidScanBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        enableEdgeToEdge()
+
+        val policy = ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
+
+        // Initialize the RFID reader
+
+        binding.startScanButton.setOnClickListener { initializeRFIDReader() }
+    }
+
+    private fun initializeRFIDReader() {
+        try {
+            // Initialize readers
+            readersList = Readers(this, ENUM_TRANSPORT.SERVICE_USB)
+            //binding.tagDataTextview.text = "RFID Reader is connecting by SERVICE_USB"
+            val availableRFIDReaderList = readersList?.GetAvailableRFIDReaderList()
+            if (!availableRFIDReaderList.isNullOrEmpty()) {
+                readerDevice = availableRFIDReaderList[0]
+                rfidReader = readerDevice?.rfidReader
+                connectToRFIDReader()
+            } else {
+                //binding.tagDataTextview.text = "RFID Reader is not connected"
+                Toast.makeText(this, "No RFID readers available", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun connectToRFIDReader() {
+        try {
+            if (rfidReader != null &amp;&amp; !rfidReader!!.isConnected) {
+                // Connect to the RFID reader
+                rfidReader?.connect()
+                //binding.tagDataTextview.text = "RFID Reader is connected"
+                Toast.makeText(this, "RFID Reader connected", Toast.LENGTH_SHORT).show()
+                // Set up the RFID tag event handler
+                setupReaderHandlers()
+                // Enable tag reading (once connected)
+                rfidReader?.Actions?.Inventory?.perform()
+            }
+        } catch (e: InvalidUsageException) {
+            e.printStackTrace()
+            //binding.tagDataTextview.text = "RFID Reader error: ${e.printStackTrace()}"
+        } catch (e: OperationFailureException) {
+            e.printStackTrace()
+            //binding.tagDataTextview.text = "RFID Reader error ${e.printStackTrace()}"
+        }
+    }
+
+    private fun setupReaderHandlers() {
+        // Set up event handler for tag data
+        rfidReader?.Events?.addEventsListener(connectionEventHandler)
+
+        // Configure event notifications (enable RFID data capture)
+        rfidReader?.Events?.apply {
+            setInventoryStartEvent(true)
+            setInventoryStopEvent(true)
+            setTagReadEvent(true)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Clean up and disconnect when done
+        try {
+            rfidReader?.disconnect()
+        } catch (e: InvalidUsageException) {
+            e.printStackTrace()
+        } catch (e: OperationFailureException) {
+            e.printStackTrace()
+        }
+    }
+
+    // Define your event handler to capture tag data
+    private inner class EventHandler : RfidEventsListener {
+        override fun eventReadNotify(e: RfidReadEvents) {
+            // This function is called when a tag is read
+            val tags = rfidReader?.Actions?.getReadTags(100)//e.readEventData.tagData//rfidReader?.readerCapabilities?.rfidOptions?.rfidTags
+            tags?.forEach { tag -&gt;
+                runOnUiThread {
+                    Toast.makeText(
+                        this@RFIDActivity,
+                        "Tag scanned: ${tag.tagID}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                println("Tag read: ${tag.tagID}")
+            }
+        }
+
+        override fun eventStatusNotify(e: RfidStatusEvents?) {
+            // Handle reader status events here
+        }
+    }
+}</code></pre><p><strong> Error:</strong></p><p> The error am getting is as, Operation Failed: Connection error, no RFID reader available</p><p>I don't know where am i wrong? and what should be the better approach to connect the reader from tablet? I am also using same network in reader and tablet. Let me know what should i do?</p><p> </p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      8 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-53571" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              I
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Ian Hatton</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>As per the release notes, the RFID SDK for Android supports Zebra mobile readers only - it is not compatible with fixed readers such as the FX9600. The method recommended to interface to the FX9600 from an Android tablet would be to connect both to a WiFi network and then configure one of the IOT Connector protocol options to send data between the two e.g. MQTT . </p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-53586" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>There is also an alternative:<br>The up-to-date RFID SDK for Android Studio - does contain the "ZIOTCSampleApp" project - this is designed to allow the Android Device to connect to either the Fixed "FX-Series" readers via LLRP-Based RFID SDK, as well as the Fixed "FXR-Series" FXR90 using the ZIOTC support to the FXR.  You do need to have V2.0.3.148++ of the RFID SDK for Android Studio to try these demo apps out.<br><br>NOTE: The ZIOTC uses the IoT connection that the FXR90 is setup with by Default - if you have configured a spearate MQTT endpoint on the FXR90 - you will not be able to connect to it with this demo app. ( I would suggest to backup your settings - and "enterprise" reset the FXR90 settings to defaults before you begin testing.)</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-53592" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              A
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Alex Lavie</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>the code you are using is trying to connect via USB as if it where a mobile reader.</p><p>there is a possibility to connect to fixed readers from android sdk but you need to follow the below (where the method for fixed readers is slightly different):</p><p><span data-original-href="https://techdocs.zebra.com/dcs/rfid/android/2-0-3-162/guide/connection/">https://techdocs.zebra.com/dcs/rfid/android/2-0-3-162/guide/connection/</span></p><p>more useful info here to do some other operations:</p><p><span data-original-href="https://techdocs.zebra.com/dcs/rfid/android/2-0-3-162/tutorials/">https://techdocs.zebra.com/dcs/rfid/android/2-0-3-162/tutorials/</span></p><p> </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-53593" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              A
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Alex Lavie</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>https://techdocs.zebra.com/dcs/rfid/android/2-0-3-162/samples/fx_hellorfid/</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-53609" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              P
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Prakash Barik</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p><span>Hi All,</span></p><p><span>Thanks to all of you for the positive responses. Still i'm unable to connect to my fixed reader FX9600 in normal Tablet.</span></p><p><span>The process which i'm following to connect the reader such as,</span></p><ol><li><span>Samsung Galaxy Tab A8 with Android Version 14</span></li><li><span>Fixed RFID reader is FX96000</span></li><li><span>RFID SDK Version is 1.0.2.116</span></li><li><span>Type C with Ethernet Adapter to connect Reader</span></li></ol><p> </p><p>The Reader is able to connect with my Windows 11 machine via USB Type C with the Ethernet port of the Fixed Reader. But the same approach does not work when i connect the fixed Reader with Galaxy Tab A8. Not sure if i am missing any configurations needed to connect the Fixed reader with the Android Tablet.</p><p>Appreciate for the prompt response.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-53610" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              P
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Prakash Barik</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p><span>Hi All,</span></p><p><span>Thanks to all of you for the positive responses. Still i'm unable to connect to my fixed reader FX9600 in normal Tablet.</span></p><p><span>The process which i'm following to connect the reader such as,</span></p><ol><li><span>Samsung Galaxy Tab A8 with Android Version 14</span></li><li><span>Fixed RFID reader is FX96000</span></li><li><span>RFID SDK Version is 1.0.2.116</span></li><li><span>Type C with Ethernet Adapter to connect Reader</span></li></ol><p><span>Instead of IP address, could it possible to connect directly via ethernet or USB from tablet to reader?</span></p><p><span>Is there required any third party software to download in Tablet to connect or anything am missing to connect via code?</span></p><p><span>Awaiting for positive responses!</span></p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-53701" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 10 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Two Points:<br>1) The reader needs to be on a network - that is both routeable and the Mobile Device can connect to the Wireless LAN to also get the similar networking to get to / see the reader.  If you are unable to get to the reader with Chrome on the Table via "https://{reader-ip} - then the Sample Apps will not be able to either.  (One uses Web Sockets (Port 80/443) the other uses LLRP on Port 5084)<br>2) Your the up-to-date RFID SDK - V116 is badly out of date - the newer Android Studio Sample App on V148 and on V162 - both work on the Samsung Galaxy 7 Tablet I use.  </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-54275" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Jack Burgess</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            9 months 3 weeks ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I know this is an old thread, but I've just had to do this exact thing and would have appreciated it if someone else had done the hard work for me!</p><p>The things I have found for this is that, generally speaking, off-the-shelf android hardware will NOT have the right kernel modules available, and you will likely need to build your own image or work with an OEM to get it working. I tried a Lenovo tablet, OnePlus 7 Pro, Moto G84, and some colleagues tried other manufacturers to no avail.</p><p>For quick development work, you can use the Android emulator with the Zebra reader connected to your laptop - so that you can visit 169.254.10.1 on your laptop, and the emulator will share the host's network, and then you can access it there.</p><p>To test on real hardware, however, there are prerequisites that must be met. The kernel needs USB_NET_CDCETHER and CONFIG_USB_USBNET enabled, and the system must have sudo ability (at least at this stage).</p><p>After connecting the reader via a USB port or USB-C -&gt; USB-A OTG adapter, you should see the `usb0` interface appear in the output of `ip link show`, like so:</p><pre><code class="language-plaintext">$ ip link show usb0
+38: usb0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP mode DEFAULT group default qlen 1000
+   link/ether 0a:52:f2:ed:d0:d5 brd ff:ff:ff:ff:ff:ff</code></pre><p>(your exact output may vary)</p><p>Now you can run the following commands to give the interface the correct IP, setup the routing tables, and disable IPv6 on the interface.</p><pre><code class="language-plaintext">ip link set usb0 up
+ip addr flush dev usb0
+ip addr add 169.254.10.102/16 dev usb0
+ip route add 169.254.10.1 dev usb0 src 169.254.10.102 table 100
+ip rule add priority 10 to 169.254.10.1 lookup 100
+ip route add 169.254.0.0/16 dev usb0
+ip -6 addr flush dev usb0
+echo 1 &gt; /proc/sys/net/ipv6/conf/usb0/disable_ipv6</code></pre><p>From that you should be able to ping and curl etc the link-local IP and still retain existing Wi-Fi or other networking capabilities.</p><p>I don't know the exact methods our OEM used, but they provided an updated Android OS image with the comment "Please be well note, for this updated system, which when the usb0 node is created, the system automatically executes a script containing commands provided by your company.".</p><p>From there, I set up the reader for interaction within React Native. This was relatively straightforward with the Zebra Android SDK doing the work. Note that the API/functionalities differ from the Java SDK (which is a little annoying).</p><p>You will need to ensure that your application allows plaintext traffic to the IP of the reader. I did this using an expo plugin I wrote:</p><pre><code class="language-javascript">const {
+    AndroidConfig,
+    withAndroidManifest,
+    withDangerousMod,
+} = require('expo/config-plugins')
+const { mkdir, writeFile } = require('fs/promises')
+const { join } = require('path')
+
+const networkSecurityConfigXml = `&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;network-security-config&gt;
+   &lt;domain-config cleartextTrafficPermitted="true"&gt;
+       &lt;domain includeSubdomains="true"&gt;169.254.10.1&lt;/domain&gt;
+       &lt;domain includeSubdomains="true"&gt;localhost&lt;/domain&gt;
+   &lt;/domain-config&gt;
+&lt;/network-security-config&gt;`
+/**
+* Android network security config
+*
+* @param {import('@expo/config-types').ExpoConfig} config
+* @returns {import('@expo/config-types').ExpoConfig} config
+*/
+module.exports = function withExpoNetworkSecurityConfig(config) {
+    const { getMainApplicationOrThrow } = AndroidConfig.Manifest
+    const { getResourceFolderAsync } = AndroidConfig.Paths
+
+    // Write network security config to android/app/src/main/res/xml
+    withDangerousMod(config, [
+        'android',
+        async (config) =&gt; {
+            const { projectRoot } = config.modRequest
+            const resourcePath = await getResourceFolderAsync(projectRoot)
+
+            await mkdir(join(resourcePath, '/xml'), { recursive: true })
+            await writeFile(
+                join(resourcePath, '/xml/network_security_config.xml'),
+                networkSecurityConfigXml,
+            )
+
+            return config
+        },
+    ])
+
+    // Add networkSecurityConfig to AndroidManifest.xml
+    withAndroidManifest(config, (config) =&gt; {
+        const mainApplication = getMainApplicationOrThrow(config.modResults)
+
+        mainApplication.$['android:networkSecurityConfig'] =
+            '@xml/network_security_config'
+
+        return config
+    })
+
+    return config
+}</code></pre><p>Then you can add this to your <code>app.json</code>'s <code>plugins</code> list. </p><p> </p><p>Unfortunately I'm not able to share my Android native code to interact with the module, and your usage would definitely vary, but look into Expo Modules as an implementation starter.</p><p>I've got a note for this thread, so I'll come back if I need to add anything else!</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/how-connect-fixed-fx9600-rfid-reader-normal-android-tablet-usb-read-tags%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/how-connect-fixed-fx9600-rfid-reader-normal-android-tablet-usb-read-tags%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

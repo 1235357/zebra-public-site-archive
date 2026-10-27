@@ -1,0 +1,399 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Binary executable environment requirements</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Binary executable environment requirements</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/binary-executable-environment-requirements; original snapshot: threads/00692.html; SHA-256: cebf1010ac4e9e75dfbda6a843d9b4083cb905120a01e71ec3116c200c5364cc</small><pre id="topic">
+
+    
+        Binary executable environment requirements
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          3 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            273
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  A Zebra newbie here. I could not find anything in the Linux SDK Guide. Other than the actual binary file(s), what is required to be installed on the computer running executable files that were derived from Zebra&#x27;s sample corescanner console source code? 
+Details:
+I adapted the corescanner console sample source code on an Ubuntu machine (RPi 4 with Java and Zebra SDK installed) to create what I hoped would be three (semi?) stand-alone binary files that will be launched by the subsystem&#x27;s proof-of-concept control computer (for now, a Raspberry Pi 3B). 
+The three binary files, derived from the corescanner console, 1) enable the scanner, 2) read/transmit barcodes, and 3) disable the scanner (MS4717). When I  attempted to launch the &quot;enable&quot; or &quot;disable&quot; executable on the control computer (without Java or Zebra&#x27;s SDK), I got &quot;error while loading shared libraries: libcs_client.so: cannot open shared object file: No such file or directory&quot;.  
+The SDK guide makes no mention of what is required in the final installation environment (e.g. Java, drivers…). Thought of simply loading the one file, but wasn&#x27;t sure (since it is looking for &quot;shared libraries&quot;) if it will then ask for another 3 to 500 (or more) files. Searching here for previous discussions on &quot;libcs_client.so&quot; I got zero hits. Any insight on what I am (actually, the proof of concept control computer is) missing? 
+Luis
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Luis.
+A quick question if possible - the Linux Solution you are working with running the Ubuntu image for Raspberry PI
+Is this Pi-based solution using a 64-bit Runtime - or a 32-bit runtime? And is the Ubuntu ( Armish )you are working with, the compatible version as listed in the matrix on this Support portal here:
+https://www.zebra.com/us/en/support-downloads/software/developer-tools/…
+You indicated that the Target may be a RPi 3B (32-bit) - so my reasons for aksing this is to be sure that the support for the Device and the Target Runtime is the correct one and that you have the correct support for the Specific Scanner in question? ( Is your MS4717 - supported by the Linux Armish 32-bit solution?).
+FYI It might not - this link:
+https://www.zebra.com/us/en/support-downloads/oem/oem-engines/ms4717.ht…
+Does not show the Linux SDK as a possible option.  ( I might add how vague this is the MS4717 is mentioned in the Linux SDK release notes as a bugfix. but it does not specify for what target platform that support is part of. )
+I think I would suggest testing the MS4717 with an Intel 32/64-bit supported Ubuntu and see if the Intel Version works with this MS4717 before testing out the Armish on Raspberry Pi platforms.
+Sincerely.  -sean
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for that Luis.
+As you indicate that aarch64 on your RPi 4 - and the MS4717 work fine on the Development Machine.
+The Bullseye on the 3B give me pause, I know you put 64-bit on (aarch64 - this is correct 64-bit ARM7 (armish) platform)
+But I cannot speak to Bullseye filesystem / softlinks being consistent to what the Ubuntu dev platform uses.
+I found this using a Google search for &quot;works on Ubuntu on ARM Raspberry pi not on Bullseye&quot;
+https://forums.raspberrypi.com/viewtopic.php?t=325414
+Is the 3B Bullseye a fresh install, or an upgrade from Buster?  ( Just spitballing options for you here )
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              L
+            
+          
+                
+          
+            Luis Melendez
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Back from the Thanksgiving break and would like to make some more progress running the three output/executable files, and sorting out the necessary installation environment. Do you need more information? Is the question too vague to help sort out what I need to look into? 
+Luis
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              L
+            
+          
+                
+          
+            Luis Melendez
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for the follow up, Sean. If I understand your question correctly (not clear exactly what you refer to with &quot;runtime&quot; or &quot;Armish&quot;), both the Development (Ubuntu) and Test (Raspberry Pi OS) environments are 64-bit. 
+Initially the Test machine was set up for 32-bit, and we got the error &#x27;bash: ./program: cannot execute binary file: Exec format error&quot;. We then reconfigured the Test machine (hardware and OS) to 64-bit and got the error &quot;error while loading shared libraries: libcs_client.so: cannot open shared object file: No such file or directory&quot;, and don&#x27;t know what to make of the message. 
+If it help clarify things, running &quot;lscpu&quot; on both machines reports &quot;aarch64&quot; as the architecture. 
+Here&#x27;s a little more detail on the two setups:
+	1) Development machine: RPi 4 with Ubuntu 22.04.01 LTS, Linux SDK (zebra-scanner-corescanner_4.4.1-28_arm64.deb)  and Java (18.0.1.1)
+	- The version of Ubuntu we are using is one major release higher (22.x vs 21.x) and not listed on the Supported Distribution page you sent. 
+	2) Test machine: RPi 3B with Raspberry Pi OS 11 (bullseye), RPi HQ camera, GPIO comm for motor and light source control, as well as various custom scripts we are testing.
+	- Neither Linux SDK or Java are installed
+The MS4717 works on both machines as a conventional (out of the box) USB barcode scanner. It&#x27;s the three control executable files (enable, capture, disable) we are having problems with on the Test machine. (All three executables work on the Development machine.)
+FWIW, we started with a Raspberry Pi primarily because its combination of &quot;native&quot; camera integration and GPIO (for motor and light source control). We are beginning to investigate hardware and Linux distros to potentially scale with and longer-term use.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              L
+            
+          
+                
+          
+            Luis Melendez
+          
+          
+            3 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks, Sean. It is a fresh build: new RPi 3B, new 64-bit Pi OS image loaded on new micro SD and ran apt get updates and upgrades. (Our original Test machine was an RPi 2B, which can only operate 32-bit.)
+If I interpret your response correctly, you are indirectly saying executable files derived from the corescanner sample code should not require dependencies and that these binary output files ought to run without the SDK or Java installed on a 64-bit Linux machine. Is that correct? 
+Apologies; my initial post included a typo. I erroneously used an underscore instead of a hyphen in &quot;libcs-client.so&quot;. That one small difference can make or break a search. (I just attempted to rerun the binary file and confirmed it is indeed a hyphen, and not an underscore.) 
+I thought it may have to do with a dependency because the file it appears to be looking for (&quot;libcs-client.so&quot;), is on the Dev machine in &quot;/usr/lib/zebra-scanner/corescanner&quot;.  There are 20 or so files in that subdirectory. &quot;libcs-client.so&quot; file &quot;Properties&quot; and then &quot;Type&quot; indicates &quot;Link to shared library (application/x-sharedlib), and &quot;Link target&quot; as &quot;libcs-client.so.4.4.1&quot;. Other than shared objects or library files, I&#x27;m not sure what .so files are, but 4.4.1 looks to be the same version of the SDK. 
+(The link you sent discusses a potential issue with a manual upgrade process (from Buster to Bullseye) and a few binary files to do with cmake and bc that was corrected by adding a -checksum flag.)
+I could build an Ubuntu Test machine, but have not yet found good material on connecting a CSI camera (RPi HQ camera). I reached out to Ubuntu to investigate a formal business relationship, that is very early on in the works. 
+Any other ideas or insight?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

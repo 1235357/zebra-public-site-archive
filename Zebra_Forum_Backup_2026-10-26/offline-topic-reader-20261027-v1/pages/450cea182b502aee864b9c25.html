@@ -1,0 +1,461 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Enterprise Browser CustomDOM</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Enterprise Browser CustomDOM</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/35007; original snapshot: threads/resume-00225.html; SHA-256: 4005e8585ab4be244cab518d6f4c513048dea224ca1953773adbda58ac93c2e1</small><pre id="topic">
+
+    
+        Enterprise Browser CustomDOM
+
+
+        
+      
+                        
+                    
+            M
+          
+          Martin Sramo
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            73
+          
+                
+                  
+            
+            6
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi everybody, I just run into some strange situation with Enterprise Browser. I wanted to use Custom DOM feature, so I prepared some javascripts to inject. Some of them do some stuff at page load, like looking for &#x27;bgsound&#x27; tag and playing custom sound using Notification API. Everything was looking fine until I left the device (TC8000) on the desk for a while. When I came back, device was at sleep of course. I woke it up, refreshed the page and I noticed my custom wav file sounds strange, like it tries to run it several times. So I started to dig deeper what could be the problem and finally I end with a very easy way to reproduce my situation.
+ 
+These are the steps:
+1. install EB from scratch (or delete config.xml to force EB to recreate)
+2. in default config, change only the start page (I used google.com) and path to CustomDOMElements tags file (tags.txt in my case)
+3. use tags file with only one javascript file (test.js in my case)
+4. in the javascript file, only use alert() function to show a message at every page load
+5. start EB and browse a few pages, everything should be working fine, for every page an alert should show up
+6. put the device to sleep by pressing Power button and wake it up after a few seconds (or you can wait for display timeout)
+7. now browse a few pages again
+In my case, at this step, I got 2 to 15 (or more) alerts for every page. At first, I though that after every sleep, one alert is added, but I left the device in sleep for about a minute and after wake up, I got 15 alerts for every page.
+ 
+Finally I turned on debug mode in EB and checked the source in Chrome developer tools. I noticed, that after initial EB startup, only one &quot;script code&quot; is added into HEAD section using DOM injection. But when I sleep/wake device and reload a page, &quot;script code&quot; is multiplied in the source code. Like this:
+The number of multiplications stays the same for every page, until I sleep the device again. Then the code is multiplied even more times. When you restart EB, it will start from one again.
+ 
+I use TC8000 with latest OS patch (Lollipop) and EB 1.7.1.0. I tried two TC8000s and TC56 (Marshmallow) with the same results. I also tried EB 1.6, again with the same results.
+ 
+This is all I was able to gather  I work with EB only for a short time so I guess I could easily make some mistake or forgot something. I tried to find an answer on techdocs at first, but I was not lucky. I also attached abovementioned files including config.xml and log.txt (enabled log for everything).
+ 
+I would appreciate any help to solve the situation.
+ 
+Thank you very much in advance.
+ 
+Regards,
+Martin
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      6 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Herbert De Jong
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Michal,
+we have sent you an fix based on EB 1.7&amp;nbsp; by mail
+EnterpriseBrowser_signed_1.7.1.7.apk&amp;nbsp; please let me know if this resolves for you.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Herbert De Jong
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Martin,
+i was contacted by EB engineers to find out if you have an support case open with Zebra Support ?
+also could you tell me what company and for which end-customer this fix is needed.
+we would like to get an Support case in place as well for this issue.
+contact me back on xbr786 
+EB engineers have identified the rootcause and are planning to add this in EB 1.8 version
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Michal Keracik
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Herbert,
+we don&#x27;t have ticket yet as we didn&#x27;t assumed this is bug at first so we placed question here - do we need to create one? Will it speed up release of 1.8 version or some kind of patch?
+don&#x27;t get me wrong but as I understand it all EB customers using CustomDOM (one of most promoted EB functionality ) need this fix urgently and I&#x27;m quite surprised nobody reported it till now. If you need one name it&#x27;s Pharmacopola.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Martin Sramo
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hey guys,
+any news please on this issue? My project relies on this feature. I would be glad for some info.
+Thank you.
+Regards,
+Martin
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Martin Sramo
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Guys, any idea?
+​ or ​ maybe?
+Thank you,
+Martin
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I understand pdth87&#x27;s team have reproduced this and it is in the backlog to be fixed.&amp;nbsp; He or somebody from his team should be able to provide an update.
+Thanks,
+Darryn.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,257 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>New line command for ^FD in zpl?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>New line command for ^FD in zpl?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/new-line-command-fd-zpl; original snapshot: threads/00883.html; SHA-256: 71e1138702ee01955397241fe0117070852a62527c5f818e45dd312045d2c5fd</small><pre id="topic">
+
+    
+        New line command for ^FD in zpl?
+
+
+        
+      
+                        
+                    
+            V
+          
+          Vince Quach
+          4 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            4701
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I have a program where my user can input anywhere from 1 word to 5 words for a Zebra GK420t to print. However, if the user inputs more than 1 word, each word has to be on its own line. So if they input &quot;Hello&quot;, the printer outputs a label saying &quot;Hello&quot;. But if they input &quot;Hello,World,Hi&quot; then the printer outputs a label with &quot;Hello&quot;, &quot;World&quot;, and &quot;Hi&quot; on separate lines.
+Because of the dynamic nature of this program, I figured having a single ^FD snippet would work, and that the new lines would be triggered by replacing the commas with the &quot;\\&amp;amp;&quot; command, so that if they input &quot;Hello,World,Hi&quot; then the variable that gets passed into the ZPL string would be &quot;Hello\&amp;amp;World\&amp;amp;Hi&quot;. I looked up the new-line command and found multiple StackOverFlow posts saying that &quot;\&amp;amp;&quot; creates a new line. However, when I tried printing &quot;^...FDHello\\&amp;amp;World\\&amp;amp;Hi^FS^PQ1,0,1,Y^XZ&quot;, the printer outputted &quot;Hello&amp;amp;World&amp;amp;Hi&quot; with all 3 words on the same line, separated by an ampersand. Is there a reason this is happening? Is there a better way to go about instructing the printer to print the words on multiple lines? 
+Stackoverflow post I found: https://stackoverflow.com/questions/13416299/new-line-in-zebra-zpl (
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            To make the \&amp; work as a carriage return and new line feed in the ^FD statement, you would need to have a preceding ^FB statement to define a box, so that the printer knows where the next line should start. Without the ^FB, everything in the ^FD will be in one line.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              N
+            
+          
+                
+          
+            Neha Saggam
+          
+          
+            3 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            It did not really work for me, even after adding FB. Would you be able to show an example including FH, FB, and FD
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            See the examples of multi lines in a text block in the ^FB section in the ZPL User Guide.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,159 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Printing Barcodes using Variable Fields Cuts off first 3 Characters</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Printing Barcodes using Variable Fields Cuts off first 3 Characters</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/24898; original snapshot: threads/resume-00373.html; SHA-256: f4b4946c2a35fc37de690253d68fa225bf2aacba69f3fa3c127606a821e2c6f3</small><pre id="topic">
+
+    
+        Printing Barcodes using Variable Fields Cuts off first 3 Characters
+
+
+        
+      
+                        
+                    
+            S
+          
+          System Admin
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            516
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi there,
+We have implemented the Zebra SDK into our iOS and Android application and we are hitting an issue where the first 3 characters are getting cut off when printing out QR Code information using a variable field.
+I have reached out to Zebra Support on this and they recommended that I come here. They do have this article but this resolution does not work when using variable fields Link (https://supportcommunity.zebra.com/s/article/QR-code-missing-first-three...)
+In our scenario we are doing the following:
+When using variable fields, you query the printer to get a list of the variable fields for a specific zpl file. All the data that comes back from that call is the field number (which zebra generates in the zpl file) and the field name (the name the label creator gives it, ie what you enter in the prompt text box). The sdk doesn’t give a way to determine if the variable field is for a text or for a barcode object. If it gave that (along with the barcode type) I could add the missing characters, but realistically, the sdk should add those characters when replacing actual data for a barcode variable field.
+Has anyone experienced this and found a resolution on this. We did try this on Zebras printing app on the store and it has the same problem. So it sounds like this is a core problem with the SDK.
+Thoughts?
+Thanks in advance
+-Ben
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            6 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Ben,
+Thanks for sharing the finding. It looks like an issue to me too. This is because we need to pass the Switch Code to the template for the QR code encoding. This Switch Code is an extra characters in addition to the text to be encoded in the QR code. The only solution that I can come up with is to ask the people who creates the template to name the variable for QR code in the template with a special prefix or suffix, such as qr_xxxx or xxxx_qr. So that your application can differentiate the QR code variable from regular variables, then the application can attach the extra characters of Switch Code in front of the text that to be encoded by QR code.
+Would this be a resonable workaround?
+Regards,
+Steven
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,683 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>c# Maui Zebra.Printer.SDK cannot find any printers</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>c# Maui Zebra.Printer.SDK cannot find any printers</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/c-maui-zebraprintersdk-cannot-find-any-printers; original snapshot: threads/00729.html; SHA-256: a443f8a0a0317cc5519d00bb8497fc0281563a6334481dce8e6945b622a207db</small><pre id="topic">
+
+    
+        c# Maui Zebra.Printer.SDK cannot find any printers
+
+
+        
+      
+                        
+                    
+            D
+          
+          David Kermott
+          4 years ago
+        
+        
+      
+        
+            
+                  
+            
+            1617
+          
+                
+                  
+            
+            10
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  https://techdocs.zebra.com/link-os/2-12/pc/content/com/zebra/sdk/printe…
+I pulled some sample c# code from the above link and made some slight modifications to get it to run.
+The FindPrinters command doesn&#x27;t seem to do anything.
+I attached the Sample Code.txt file with what I was attempting.
+The scenario I am attempting is this:
+The app allows the user to supply the printer device name (like USBELPRW001).
+When the user attempts to login to the app it will search for the printer.
+If the app cannot find the printer the user cannot continue.
+When the user logs out of the app the printer is disconnected and unpaired.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      10 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            David Kermott
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I thought I had posted this issue a week ago.  I think the submission of discussions needs some work.  I clicked Preview and then the only button was subscribe to updates.  I pressed that and got an error.  I clicked back once or twice and clicked &quot;Save&quot; and then &quot;Subscribe&quot; and then it worked.
+I had also put this request through the technical support group two or three weeks ago.  They said to open a discussion with the developers (Case 13765633).  I see the value of having visibility for the community but there really should be something explaining that developers from Zebra will review these and respond.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi David,
+By looking at the sample code.txt posted by you in this discussion thread, it seems like you are trying to discover the Bluetooth printers from an app in Android. Not sure if you are aware about the Bluetooth discovery restriction enforced in the Android 10 and higher, which requires the ACCESS_FINE_LOCATION permission must be declared in the app&#x27;s manifest file and requested explicitly. Otherwise, the Bluetooth discovery won&#x27;t start. Please refer to this article for more details:  Link-OS SDK for Android | Permissions and Bluetooth API.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alfred Teixeira
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Have you tried the C# sample code unmodified? If so, does it discover the printers?
+Which printer model(s) is/are you trying to discover?
+Are you attempting BT discovery or network discovery?
+if BT
+    You will need to use the following method: FindBluetoothPrinters
+    Do the printer(s)&#x27;s BT configuration(s) include being set to allow it/them to be discovered?
+    Can you get the printer(s)&#x27;s current BT settings and post it/them? If you still have an active support case, please get your printer(s)&#x27;s AllCV(s) and
+    submit it/them to the support case.
+if Network
+   Are the printer(s) on the same subnet as the device you are running the sample app?
+There are developer demos for Xamarin among the sample code available with the link-os multi-platform SDK; I would recommend you download/install this SDK and try one of the Xamarin developer demos to see if it can locate your printer(s).
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            David Kermott
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I must have pasted the wrong url in my previous message.
+Here&#x27;s the URL I got the sample code from:
+https://techdocs.zebra.com/link-os/2-14/pc_net/content/html/920db44d-4f…
+When I try the unmodified code the only error I get is &quot;No overload for method FindPrinters contains one argument&quot;.
+The intellisense says this for parameters:
+void BluetoothDiscoverer.FindPrinters(Context context, DiscoveryHandler discoveryHandler, DeviceFilter deviceFiter) (+1 overload).  The other overload requires only Context and DiscoveryHandler.
+Intellisense does not show a method called FindBluetoothPrinters in the BluetoothDiscoverer (which would seem a bit redundant with the naming).
+I already created a Tech Support ticket and they told me to create a discussion on developer.zebra.com.  Case 13765633.
+I added more info to the support ticket Case 13765633 including a screenshot.
+&lt;strong&gt;I&#x27;m not impressed with your support website.  How many places do I have to login?  I lost what I typed because I added a screenshot.  I know better than to click the &quot;Preview&quot; button.&lt;/strong&gt;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alfred Teixeira
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello David,
+I reviewed your case; the support agent appears to be waiting on some information he requested; were you able to provide that information?
+As per my previous posting, I would recommend you download/install the link-os multi-platform SDK and try one of the Xamarin developer demos (sample applications) that are included to see if the printer discovery works as expected. You can download this SDK-installer from the following link: https://www.zebra.com/us/en/support-downloads/printer-software/link-os-…
+AT
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            David Kermott
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I have had the following permissions in the AndroidManifest.xml file since before I started scanning for BT devices
+uses-permission android:name=&quot;android.permission.ACCESS_NETWORK_STATE&quot;
+uses-permission android:name=&quot;android.permission.INTERNET&quot;
+uses-permission android:name=&quot;android.permission.ACCESS_FINE_LOCATION&quot;
+uses-permission android:name=&quot;android.permission.ACCESS_COARSE_LOCATION&quot; 
+uses-permission android:name=&quot;android.permission.READ_EXTERNAL_STORAGE&quot;
+uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot; 
+uses-feature android:name=&quot;android.hardware.bluetooth&quot;
+uses-permission android:name=&quot;android.permission.BLUETOOTH&quot;
+uses-permission android:name=&quot;android.permission.BLUETOOTH_ADMIN&quot;
+uses-permission android:name=&quot;android.permission.BLUETOOTH_CONNECT&quot;
+uses-permission android:name=&quot;android.permission.BLUETOOTH_SCAN&quot;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            An explicit user permission request is also required for the Bluetooth Discovery to work. Please see https://developer.android.com/training/permissions/requesting on how to request the permission in the app.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            David Kermott
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I&#x27;ve done this before but will try again.
+Previously, when I checked to see if I already had bt permissions it returned &quot;Granted&quot; right away so I didn&#x27;t need to actually perform the request.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            It&#x27;s not the Bluetooth permission. It&#x27;s the ACCESS_FINE_LOCATION permission, which allows the app to search for the nearby devices.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            David Kermott
+          
+          
+            3 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I suspect some settings from MobiControl are preventing prompting for fine location permission.  My code works fine if I deploy to a standard android device (my phone) but not when it is deployed to the Zebra scan-gun (managed through MobiControl).
+
+I re-worked how printer configuration is performed within the app.  An administrator will scan the BT Printer UPC mac address on the bottom of the printer.  I use Zebra.Sdk.Comm to facilitate the automatic bonding through the BluetoothConnection function.
+
+With this process change I no longer need to search for available bt devices.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

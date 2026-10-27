@@ -1,0 +1,384 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MC18 - Undocked.</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MC18 - Undocked.</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/33017; original snapshot: threads/resume-00136.html; SHA-256: 29249bbfcb475defbe8fdf307e9de074565d021f1737561d8951e1b70219d7aa</small><pre id="topic">
+
+    
+        MC18 - Undocked.
+
+
+        
+      
+                        
+                    
+            A
+          
+          Andrew Wood
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            41
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+Just wanting to know if anyone else with Android MC18 units are seeing them reporting as UnDocked when sitting in the three slot cradle? I have a UK customer that has seen several dozen units become &quot;Undocked&quot; after a period of time.
+ 
+Any thoughts as to what may be happening here?
+ 
+Thanks
+ 
+Andy
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hey Andrew, see my previous post.
+In order to monitor if the device is in or out of the cradle, you must monitor the following intents. Monitoring battery changed will not give you an accurate indication of dock status.
+The broadcasts that should be monitored are:
+ android.intent.action.ACTION_POWER_DISCONNECTED andandroid.intent.action.ACTION_POWER_CONNECTED
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Andrew Wood
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Andrew Wood
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Bill,
+The developer has just come back with some usefull info - glad to get your thoughts please. I need a work around or some such.
+I&#x27;ve made an interesting discovery: when the battery becomes fully charged, a BATTERY_CHANGED status is broadcast that indicates the device has become unplugged (plugged = 0) and that the battery is discharging (status = 3).
+However - the MC18 is *still* in the cradle !
+I&#x27;ve captured the BATTERY_CHANGED intent : 
+intent = Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }  mAction = android.intent.action.BATTERY_CHANGED  mExtras = Bundle[{battery_type=201, battery_percent_decommission_threshold=75, technology=Li-ion, battery_usage_decommission_threshold=400, icon-small=17302931, present_capacity=2454, time_to_empty=1080, seconds_since_first_use=33523412, health=2, total_cumulative_charge=171913, status=3, ratedcapacity=2625, plugged=0, present=true, mfd=2015-04-14, level=99, base_cumulative_charge=171916, scale=100, partnumber=BT000018A01 Rev.01, temperature=260, voltage=4174, serialnumber=A2249, bkvoltage=2526, health_percentage=95, time_to_full=65535, invalid_charger=0, present_charge=2429, battery_decommission=0}]  mFlags = 1610612752
+I&#x27;ve also attached a screenshot of the debugger in action.
+It seems like a bug because when the battery is fully charged and in the cradle, I would logically expect to see plugged = 1, and battery status = 3
+Currently this is a big problem because devices become fully charged in the cradle and by the end of the day a lot of devices will be in the cradle, yet MQTT will announce them as out of the cradle.
+ -----------------------------------------------------------------------------------------------
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Andrew, What API are they using to detect that the device is undocked?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Andrew Wood
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Bill,
+Ive asked and just got this back - 
+I&#x27;ve just had a look through the code, and it looks like we are using the following intent:
+Intent.ACTION_BATTERY_CHANGEDSo I believe if there is a problem with the battery reporting back its status, the app could potentially believe its not docked however I&#x27;d like to get a colleague&amp;nbsp; to confirm this.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

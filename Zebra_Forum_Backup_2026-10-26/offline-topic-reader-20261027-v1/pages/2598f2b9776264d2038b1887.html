@@ -1,0 +1,555 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to listen for USB Alerts</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to listen for USB Alerts</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/how-listen-usb-alerts; original snapshot: threads/00433.html; SHA-256: 15e87ddae14d23ccf9021f2762d724d6d26b2d31e2582c6fc94c53bef43dae6a</small><pre id="topic">
+
+    
+        How to listen for USB Alerts
+
+
+        
+      
+                        
+                    
+            S
+          
+          SDK NDD
+          2 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            308
+          
+                
+                  
+            
+            7
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                          //Solved
+        
+  
+
+    
+    
+        
+      
+            
+                  Hi, We are implementing a feature to retrieve Alerts from Zebra Printer Link-OS devices, such as ZT231, via USB.I found the class PrinterAlert in the PC-Java SDK that has a constructor that you can pass various settings about how the Alert will be sent, for example:PrinterAlert myPrinterAlert = new PrinterAlert(AlertCondition.PAPER_OUT, AlertDestination.USB, true, false, , , false);and then later you can pass this alert to be configured on the printer calling &quot;ZebraPrinterLinkOs.configureAlert(myPrinterAlert );&quot;Until that part we found explained on the documentation. What we couldn&#x27;t understand is how to listen for the incoming alerts at the other end via USB. Do you have any sample code that show us how that is meant to work? Best regards,
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+        
+      
+        ✓ Accepted Solution
+      
+      
+          
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            We don&#x27;t have sample code on how to receive alerts. For USB, however, you would have to create a USB connection with the API from the Link-OS SDK, and then monitor the alerts sent from the printer over USB (i.e., reading from the USB connection (i.e., connection.read()) in a loop) to receive alerts. 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+      
+    
+  
+      
+    
+      7 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            We don&#x27;t have sample code on how to receive alerts. For USB, however, you would have to create a USB connection with the API from the Link-OS SDK, and then monitor the alerts sent from the printer over USB (i.e., reading from the USB connection (i.e., connection.read()) in a loop) to receive alerts. 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            SDK NDD
+          
+          
+            2 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi, I will try using the connection.read() loop. About configuring the Alert, how do we set up the PrinterAlert constructor to configure for a USB connection? I tried the way below but it did not work, maybe I am passing incorrect values to the constructor?PrinterAlert  alert = new PrinterAlert(AlertCondition.HEAD_OPEN, AlertDestination.USB, false, false, &quot;&quot;, 0, false); I suspect of parameters 5 and 6. Parameter 5 asks for a String for destinationAddress and parameter 6 for an Int for Port, but we are not sure if this is right since it is a USB connection. Best regards,
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The parameters for the IP address and the port number will be ignored if the alert destination is USB. If you want to get alerts for the HEAD OPEN on set and on clear, you will need to pass true to the onSet and onClear parameter (as shown below)
+// Define the alert to monitor
+PrinterAlert  alert = new PrinterAlert(AlertCondition.HEAD_OPEN, AlertDestination.USB, true, true, &quot;&quot;, 0, false);
+
+// Configure the printer with the defined alert
+printer.configureAlert(alert);
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            SDK NDD
+          
+          
+            2 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Steven, I am trying to run the code below on a ZD230 like this:     public static void ConfigureAlerts(DiscoveredPrinterDriver printer) {
+       Connection connection = null;
+       try {
+           connection = printer.getConnection();
+           connection.open();
+           ZebraPrinter genericPrinter = ZebraPrinterFactory.getInstance(connection);
+           ZebraPrinterLinkOs linkOsPrinter = ZebraPrinterFactory.createLinkOsPrinter(genericPrinter);
+           
+           PrinterAlert alert = new PrinterAlert(AlertCondition.HEAD_OPEN, AlertDestination.USB, true, true, &quot;&quot;, 0, false);
+           linkOsPrinter.configureAlert(alert);
+       } catch (Exception e) {
+           logMessage(&quot;Error &quot; + e.getMessage());
+       } finally {
+            connection.close();             
+       }
+   } but its giving the following error: Cannot invoke &quot;com.zebra.sdk.printer.ZebraPrinterLinkOs.configureAlert(com.zebra.sdk.printer.PrinterAlert)&quot; because &quot;linkOsPrinter&quot; is null Running the same code in a ZT231 works as normal, do you know why is that? Best regards.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The ZD230 is not a Link-OS printer. It&#x27;s a Link-OS Basic printer. The following statement is only applicable to Link-OS printers. If it used for a non Link-OS printer or a Link-OS Basic printer, a null pointer will be returned.
+ZebraPrinterLinkOs linkOsPrinter = ZebraPrinterFactory.createLinkOsPrinter(genericPrinter);
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            SDK NDD
+          
+          
+            2 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Does this mean that Link-OS Basic printers do not have the Alerts system that can be captured? or does this mean that for getting the alerts from that device we can&#x27;t use the above code and therefore if we want to configure and listen for alerts for this device, we need to use other methods? like connecting the printer via network and accessing the MIB?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Alerts are supported on both Link-OS and Link-OS Basic printers. With Link-OS Basic printers, we have to stick with the ZebraPrinter instance to communicate with the printer, as we cannot use the ZebraPrinterLinkOs instance. Unlike the ZebraPrinterLinkOs, which has convenient alert methods, the alert configuration with the ZebraPrinter instance can be done via the SGD commands.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

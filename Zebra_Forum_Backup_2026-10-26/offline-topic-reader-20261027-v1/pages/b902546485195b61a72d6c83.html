@@ -1,0 +1,296 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>com.symbol.emdk.emdkservice on Android 14 (TC26)</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>com.symbol.emdk.emdkservice on Android 14 (TC26)</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/comsymbolemdkemdkservice-android-14-tc26; original snapshot: threads/00051.html; SHA-256: 3048c0f39848dd13faeddc87bbdfca4c0929f25812613af3af669651f49ee342</small><pre id="topic">
+
+    
+        com.symbol.emdk.emdkservice on Android 14 (TC26)
+
+
+        
+      
+                        
+                    
+            G
+          
+          G Zondervan
+          1 year 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            459
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,We are using the TC26 and TC27.In our custom application, we utilize the EMDK and have adhered to the programming best practices outlined here: Zebra EMDK Programming Practices.We want our application to run on both Zebra and Non-Zebra devices. So we do the check as described in the before mentiond Programming Practices.However, after updating from Android 13 to Android 14, we&#x27;ve encountered an issue with the EMDK version check that employs the PackageManager. The following code snippet, recommended in the programming practices, no longer functions as expected, the EMDK service does not exist on the device:try {
+    String emdkPkgName = &quot;com.symbol.emdk.emdkservice&quot;;
+        PackageInfo pinfo = getPackageManager().getPackageInfo(emdkPkgName, 0);
+        String emdkVersion = pinfo.versionName;
+} catch (PackageManager.NameNotFoundException e) {
+    // EMDK does not exists on the device.
+}With:&lt;uses-permission android:name=&quot;com.symbol.emdk.permission.EMDK&quot; /&gt;
+&lt;queries&gt;
+    &lt;package android:name=&quot;com.symbol.emdk.emdkservice&quot; /&gt;
+&lt;/queries&gt;Upon investigation, it appears that the emdkservice is no longer running on devices updated to Android 14. I&#x27;ve checked this with adb. adb shell dumpsys activity services com.symbol.datawedge.emdkservice Which returned 0 results on the latest Android 14 Zebra release. (it does on Android 13).Now the Programming Practices documentation we have used and linked above have been written for Android 13.0, but these have not been changed since Android 11.0. There is no updated documentation page for Android 14.0 yet.Could you please confirm whether this programming practice is still valid for programmatically checking the EMDK version on devices running Android 14? If not, what alternative method would you recommend for retrieving the EMDK version in this environment? I know it can be checked with the EMDKManager, but we need to do the check before this is initialized.I have noticed there is a EMDKService running on Android 14:  com.symbol.datawedge/.EMDKServiceDid the package name change?Thank you for your assistance.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              N
+            
+          
+                
+          
+            Nicola De Zolt
+          
+          
+            1 year 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi, 
+
+The engineering team that owns EMDK confirmed the architectural change in Android 14
+
+At the moment, a valid way to check the EMDK version is
+        if(Build.MANUFACTURER.contains(&quot;Zebra&quot;)) {
+            Log.i(TAG, &quot;This is a Zebra device&quot;);
+            versionManager = (VersionManager) emdkManager.getInstance(EMDKManager.FEATURE_TYPE.VERSION);
+            if (versionManager != null) {
+                String version = versionManager.getVersion(VersionManager.VERSION_TYPE.EMDK);
+                Log.i(TAG, &quot;EMDK Version: &quot; + version);
+            } else {
+                Log.e(TAG, &quot;Failed to get EMDK Version&quot;);
+            }
+        }
+Please elaborate more on the use case that requires to get the EMDK version before it is instantiated.
+
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            G Zondervan
+          
+          
+            1 year 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Nicalo,Thanks for your reply. Please elaborate more on the use case that requires to get the EMDK version before it is instantiated.In our application, we’ve integrated built-in scanner functionality, but it also needs to run on a wide range of Android devices—not just Zebra devices. But also on Zebra devices that do not have a built-in scanner. We’re not particularly concerned about the specific EMDK version. What we do need to determine early on is:Whether the device is a Zebra deviceWhether it includes a built-in scannerBased on these checks, we enable or disable certain scanner-related UI components in the app. For instance, if no scanner is present, we may display a camera view as a fallback for barcode scanning.We used to be able to do these checks very early,  before attempting to instantiating any emdkManager classes—by checking for the presence of the com.symbol.emdk.emdkservice package. Unfortunately it seems that this is no longer possible on the Zebra Android 14 build. But maybe there is another way to determine of the device has a built in Scanner installed?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              N
+            
+          
+                
+          
+            Nicola De Zolt
+          
+          
+            1 year 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi G, thanks for the details you shared above.
+
+The method you described did not guarantee the presence of an internal scanner anyway. Devices like EM45 only have a camera, but EMDK is still onboard.
+To check for a Zebra/non Zebra device, I&#x27;m confirming the  Build.MANUFACTURER option shown above.
+Once you are certain of the Zebra brand, one way to check for the scanner is
+
+Instantiate EMDK (use emdkManager.getInstanceAsync so it works fine even at startup) 
+Get a list of the available scanners by the barcodeManager.getSupportedDevicesInfo();  and look for &quot;2D Barcode Imager&quot;
+
+
+
+Here is an example of what a TC58 would return
+and this is a EM45 -note the 2D Barcode Imager missing
+If you are interested in the source code, let me know your github username and i will let you in here https://github.com/NDZL/EMDK-EXERCISER-2024/blob/eaebd8c8bae0c46794aa0dfff241d43781debab7/EMDK.BARCODE/src/main/java/com/zebra/emdk_barcode/ZebraEMDKBarcode.java#L50 
+ 
+Hope this helps
+ 
+Nicola dzl. 
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

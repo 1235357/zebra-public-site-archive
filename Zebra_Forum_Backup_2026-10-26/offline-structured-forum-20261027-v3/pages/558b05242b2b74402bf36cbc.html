@@ -1,0 +1,262 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Service app DataWedges API</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/forum/25972; snapshot supplement/threads/4cb93d4ac62390dc6676bbf4.html; SHA-256 a2422e5870b121767e09718eed0426fee53f18db76bf23a237a4a9090b6ad8b4. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Service app DataWedges API</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            F
+          </div>
+          <div class="forum-topic__author-name">felix heitbrock</div>
+          <div class="forum-topic__timestamp">5 years 4 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            68
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            2
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi, i am using a Zebra TC26 scanner and want to create a background java service that can trigger scans and read barcodes.<br>
+I have a app that has no activity and only one service (this service is a middleman between my app and the zebra scanner api). I implemented a BroadcastReceiver that seems to be working for action results such as the soft scan trigger result and the config result. Send a SOFT_SCAN_TRIGGER action will start scanning but i never receive a result with the barcode. Only the command results.<br>
+When i run the same code in a seperate app with an activity it works and i reveive the scanned code. What do i need to do so i can receive the scanned code with this service that has no activity?<br>
+Here is my code so far:<br>
+    public class MyService extends Service {<br>
+        private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {<br>
+            @Override<br>
+            public void onReceive(Context context, Intent intent) {<br>
+                String decodedSource = intent.getStringExtra(SOURCE);<br>
+                String decodedData = intent.getStringExtra(DATA_STRING);<br>
+                // ...<br>
+            }<br>
+        };<br>
+        // ...<br>
+        private void startListening() {<br>
+            IntentFilter filter = new IntentFilter();<br>
+            filter.addCategory(Intent.CATEGORY_DEFAULT);<br>
+            filter.addAction(MY_ACTION);<br>
+            registerReceiver(broadcastReceiver, filter);<br>
+        }<br>
+        public void triggerScan() {<br>
+            Intent i = new Intent();<br>
+            i.setAction(ACTION);<br>
+            i.putExtra(SWITCH_PROFILE, MY_PROFILE);<br>
+            i.putExtra("SEND_RESULT","true");<br>
+            i.putExtra(SOFT_SCAN_TRIGGER, "START_SCANNING");<br>
+            this.sendBroadcast(i);<br>
+        }<br>
+        // ...<br>
+        private void initConfiguration(){<br>
+            Bundle bundleMain = new Bundle();<br>
+            // profile name and state<br>
+            bundleMain.putString("PROFILE_NAME", MY_PROFILE);<br>
+            bundleMain.putString("PROFILE_ENABLED","true");<br>
+            bundleMain.putString("CONFIG_MODE", "UPDATE");<br>
+            // Associate profile with this app<br>
+            Bundle appConfig = new Bundle();<br>
+            appConfig.putString("PACKAGE_NAME", getPackageName());<br>
+            appConfig.putStringArray("ACTIVITY_LIST", new String[]{"*"});<br>
+            bundleMain.putParcelableArray("APP_LIST", new Bundle[]{appConfig});<br>
+            // Configure intent output for captured data to be sent to this app<br>
+            Bundle bundleIntentOutConfig = new Bundle();<br>
+            bundleIntentOutConfig.putString("PLUGIN_NAME", "INTENT");<br>
+            bundleIntentOutConfig.putString("RESET_CONFIG", "false");<br>
+            // Param list properties<br>
+            Bundle bundleIntentParams = new Bundle();<br>
+            bundleIntentParams.putString("intent_output_enabled", "true");<br>
+            bundleIntentParams.putString("intent_action", MY_ACTION);<br>
+            bundleIntentParams.putString("intent_category", Intent.CATEGORY_DEFAULT);<br>
+            bundleIntentParams.putString("intent_delivery", "2");   //0 - activity, 1 - service, 2 - Broadcast<br>
+            bundleIntentOutConfig.putBundle("PARAM_LIST", bundleIntentParams);<br>
+            ArrayList bundlePluginConfig = new ArrayList();<br>
+            bundlePluginConfig.add(bundleIntentOutConfig);<br>
+            bundleMain.putParcelableArrayList("PLUGIN_CONFIG", bundlePluginConfig);<br>
+            Intent bundleSetConfig = new Intent();<br>
+            bundleSetConfig.setAction(ACTION);<br>
+            bundleSetConfig.putExtra(SET_CONFIG, bundleMain);<br>
+            bundleSetConfig.putExtra("SEND_RESULT", "COMPLETE_RESULT"); //Supported values: NONE, LAST_RESULT, COMPLETE_RESULT<br>
+            bundleSetConfig.putExtra("COMMAND_IDENTIFIER", "INTENT_API");<br>
+        }<br>
+    }</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      2 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-47758" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Darryn Campbell</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 7 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi, you want to configure DataWedge to send a startService(), then you can listen for scans using your Android Service.&amp;nbsp; The sample app can do this to show the principle,&amp;nbsp;<span data-original-href="https://github.com/ZebraDevs/DataWedge-Android-Samples/blob/master/DataW">https://github.com/ZebraDevs/DataWedge-Android-Samples/blob/master/DataW</span>... and&amp;nbsp;<span data-original-href="https://github.com/ZebraDevs/DataWedge-Android-Samples/blob/master/DataW">https://github.com/ZebraDevs/DataWedge-Android-Samples/blob/master/DataW</span>...</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-48095" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Deepmala Barkhane</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 3 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>testing comment</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/forum/25972%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/forum/25972%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

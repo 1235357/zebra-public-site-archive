@@ -1,0 +1,149 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Getting TID value from tag using SDK 2.0.4.177 for TC53E-RFID device</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Getting TID value from tag using SDK 2.0.4.177 for TC53E-RFID device</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/getting-tid-value-tag-using-sdk-204177-tc53e-rfid-device; original snapshot: threads/00084.html; SHA-256: ba9a25d6f9ba302399ba00587f5a8ec00be79df8e0611f156fe143986590841d</small><pre id="topic">
+
+    
+        Getting TID value from tag using SDK 2.0.4.177 for TC53E-RFID device
+
+
+        
+      
+                        
+                    
+            C
+          
+          chetan patel
+          1 year 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            219
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello Team,I created plugin for my cordova application using SDK 2.0.4.177.I used TC53E-RFID device for my cordova application I need to get TID value from Tag using this plugin.I initialized plugin after app startedprivate void ConfigureZebraReader() {    Log.d(TAG, &quot;ConfigureReader2 &quot; + reader.getHostName());    if (reader.isConnected()) {        TriggerInfo triggerInfo = new TriggerInfo();        triggerInfo.StartTrigger.setTriggerType(START_TRIGGER_TYPE.START_TRIGGER_TYPE_IMMEDIATE);        triggerInfo.StopTrigger.setTriggerType(STOP_TRIGGER_TYPE.STOP_TRIGGER_TYPE_IMMEDIATE);        try {            // receive events from reader            if (eventHandler == null)                eventHandler = new EventHandler();            reader.Events.addEventsListener(eventHandler);            // HH event            reader.Events.setHandheldEvent(true);            // tag event with tag data            reader.Events.setTagReadEvent(true);            reader.Events.setAttachTagDataWithReadEvent(true);            // power levels are index based so maximum power supported get the last one            MAX_POWER = reader.ReaderCapabilities.getTransmitPowerLevelValues().length - 1;            // set antenna configurations            Antennas.AntennaRfConfig config = reader.Config.Antennas.getAntennaRfConfig(1);            config.setTransmitPowerIndex(200);  //270            //config.setrfModeTableIndex(0);            config.setTari(18800);            reader.Config.Antennas.setAntennaRfConfig(1, config);            // Set the singulation control            Antennas.SingulationControl s1_singulationControl = reader.Config.Antennas.getSingulationControl(1);            s1_singulationControl.setSession(SESSION.SESSION_S0);            s1_singulationControl.Action.setInventoryState(INVENTORY_STATE.INVENTORY_STATE_AB_FLIP);            s1_singulationControl.Action.setSLFlag(SL_FLAG.SL_ALL);            reader.Config.Antennas.setSingulationControl(1, s1_singulationControl);            // delete any prefilters            reader.Actions.PreFilters.deleteAll();        } catch (InvalidUsageException | OperationFailureException e) {            e.printStackTrace();        }    }}After initialized plugin, Reader start for get TID value using below functionreaderCapabilities = rfidHandler.reader.ReaderCapabilities;short[] allAntennas = new short[readerCapabilities.getNumAntennaSupported()];for(short i = 1; i&lt;= readerCapabilities.getNumAntennaSupported(); i++) {   allAntennas[i-1] = i;}TagAccess tagAccess = new TagAccess();TagAccess.ReadAccessParams readAccessParams = tagAccess.new ReadAccessParams();//Set the param valuesreadAccessParams.setCount(12);readAccessParams.setOffset(0);readAccessParams.setMemoryBank(MEMORY_BANK.MEMORY_BANK_TID);AntennaInfo antennaInfo = new AntennaInfo(allAntennas);try {   rfidHandler.reader.Actions.purgeTags();   rfidHandler.reader.Actions.TagAccess.readEvent(readAccessParams, null, antennaInfo);} catch (InvalidUsageException e) {   if( e!= null &amp;&amp; e.getStackTrace().length&gt;0){ Log.e(&quot;wyt&quot;, e.getStackTrace()[0].toString()); }} catch (OperationFailureException e) {   if( e!= null &amp;&amp; e.getStackTrace().length&gt;0){ Log.e(&quot;wyt&quot;, e.getStackTrace()[0].toString()); }   //rfidListeners.onFailure(e);} Using below Handler function to catch tag value ,&quot;eventReadNotify&quot; funcation call every sec and green light blinking with beep sound, but not value fill in &quot;MyTags&quot; variable // TID is stored in MemoryBankDataString tid = tag.getMemoryBankData();public class EventHandler implements RfidEventsListener {    // Read Event Notification    public void eventReadNotify(RfidReadEvents e) {        TagData[] myTags = reader.Actions.getReadTags(100);        if (myTags != null) {            for (TagData tag : myTags) {                // Extract EPC data                String epc = tag.getTagID();                // Check if TID data is available (check for null or empty value)                if (tag.getOpCode() == ACCESS_OPERATION_CODE.ACCESS_OPERATION_READ &amp;&amp;                        tag.getOpStatus() == ACCESS_OPERATION_STATUS.ACCESS_SUCCESS &amp;&amp;                        tag.getMemoryBankData() != null) {                                        // TID is stored in MemoryBankData                    String tid = tag.getMemoryBankData();                    Message msg = new Message();                    msg.what = 1;                    msg.obj = tid;                    stopInventory();                    if(TC53e.isLoop == true)                    {                        TC53e.isLoop = false;                        mHandler.sendMessage(msg);                    }                } else {                    Log.d(TAG, &quot;TID not available for this tag&quot;);                }            }            new AsyncDataUpdate().execute(myTags);        }    } it is working fine but sometime not read tag value, and some time read tag value but it take 5-10 sec.i checked in &quot;123RFID Mobile&quot;, it is read tag value &lt; 1 sec.can you please suggest, is there any missing in initialize plugin function.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Bradley Abelman
+          
+          
+            1 year 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Chetan,In the initialization, you set:reader.Events.setAttachTagDataWithReadEvent(true);This causes the TagData object to be joined to the RfidReadEvent and can&#x27;t be accessed with the getReadTags function.// Replace this line 
+TagData[] myTags = reader.Actions.getReadTags(100);
+
+// With this line
+TagData myTag = e.getReadEventData().tagData; If you&#x27;d rather get all the tags together as an array using getReadTags, set:reader.Events.setAttachTagDataWithReadEvent(false);
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

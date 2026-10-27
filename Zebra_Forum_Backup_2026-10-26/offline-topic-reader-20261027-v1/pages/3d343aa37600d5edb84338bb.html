@@ -1,0 +1,276 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Carriage return does not work in ^FB command</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Carriage return does not work in ^FB command</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/carriage-return-does-not-work-fb-command; original snapshot: threads/00717.html; SHA-256: 909be4d0b8124d1cfe5ad01b9f3185db646ea834f81bc5624b582e6a2ac47558</small><pre id="topic">
+
+    
+        Carriage return does not work in ^FB command
+
+
+        
+      
+                        
+                    
+            R
+          
+          Rudolf Simon
+          4 years ago
+        
+        
+      
+        
+            
+                  
+            
+            165
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi there,
+we do have two ZT411 printers to get our labels printed from ABAS ERP software. I switched from Jasper Reports to use directly ZPL commands.
+So far everything works fine, except the ^FB command. According to ZPL II Programming Guide, an \&amp;amp; within the string, should make an carriage return. But it is not working. 
+Thats a part of my code:
+^FT552,512^A0B,28,28^FH\^FDParts^FS
+^FT749,512^A0B,25,24^FB250,6,0,L,0
+^FDTest1 \&amp;amp;Test2 \&amp;amp;Test3 \&amp;amp;Test4 ^FS
+Any help would be welcome. Thanks a lot.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Try adding the home location, i.e., ^HL0,0
+^XA
+^HL0,0
+^FT552,512^A0B,28,28^FH\^FDParts^FS
+^FT749,512^A0B,25,24^FB250,6,0,L,0
+^FDTest1 \&amp;Test2 \&amp;Test3 \&amp;Test4 ^FS
+^XZ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Rudolf Simon
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks SSi1 for your hint. But I do have all those settings already made. 
+As I had explained, the newline does not work as described in the programming documents.
+I have now added a ^FH Field Hexadecimal Indicator and now the line break is made in the text box.
+My code looks now like that:
+^FT552,512^A0B,28,28^FH\^FDParts^FS
+^FT755,512^FB250,7,4,L,0^A0B,25,24^FH^FDTest1 _5c_26 Test2 _5c_26 Test3 _5c_26 Test4 ^FS
+Again, thanks for the help.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The hexadecimal is the valid alternative. Glad to see you made it work. As described on the ZPL Programming Guide, the \&amp; should work as well for carriage return and newline for the ^FB command. If it doesn&#x27;t work in your case, it might be because the backslash has been redefined as something else in your ZPL script.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

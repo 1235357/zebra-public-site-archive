@@ -1,0 +1,341 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Frequently Asked Questions - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/emdk-for-android/latest/faq/</code><br>Observed final URL: <code>https://techdocs.zebra.com/emdk-for-android/latest/faq/</code><br>Raw source: <code>raw/4568466cafb029cc9f65d734.html</code><br>Raw SHA-256: <code>3270d231ed8b67e6d9a777e55a6a9430f6e096552f947cdd18f6d12f4e5095e0</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                           EMDK for Android 15.1
+                          
+                          
+                                EMDK for Android 4.2
+                                EMDK for Android 4.0
+                          
+                                            
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Set Up
+                            
+                        
+                        
+                            
+                                    Tutorials
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Profile Manager
+                            
+                        
+                        
+                            
+                                    FAQs
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Frequently Asked Questions
+                        
+                    About the FAQQ. Can I determine programmatically which EMDK version is on a device?Q: Why did the scanner stop working when switching apps?Q: Why doesn&#x27;t my app work on devices running Android 11?Q: Should I use DataWedge or EMDK for my app?Q: Why don&#x27;t my KitKat and/or Lollipop apps work with Nougat and/or Oreo?Q: Zebra APIs appear to offer limited fault tolerance. How can my app adapt to this?Q: Why do my apps display Application Not Responding (ANR) messages so often?Also See
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Frequently Asked Questions
+                                    
+                                            EMDK for Android
+                                            15.1
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        
+   PAGE UPDATED: Apr. 2, 2025
+
+
+About the FAQ
+
+This page presents some of the most commonly asked questions submitted to Zebra customer support by Zebra customers and partners along with brief answers and links to relevant documentation.
+
+
+
+Q. Can I determine programmatically which EMDK version is on a device?
+
+A: Yes. The following Java code calls the VersionManager Android API and returns the EMDK version installed on the device at run time:
+
+
+// Get an instance of VersionManager:
+VersionManager versionManager = (VersionManager) emdkManager.getInstance(EMDKManager.FEATURE_TYPE.VERSION);
+
+// Use the getVersion method, passing in the VersionManager.VERSION_TYPE.EMDK: 
+String version = versionManager.getVersion(VersionManager.VERSION_TYPE.EMDK);
+
+ On devices running Android 14 (or later), querying the EMDK version programmatically could show an installed EMDK version of 15.0 (or greater). Any such version would be functionally equivalent to EMDK-A 14.0 and use the same documentation.
+
+
+
+Q: Why did the scanner stop working when switching apps?
+
+A: For proper operation of scanning apps on a device, control of scanning hardware must be programmatically released when the app quits or goes to the background. When a scanning app takes control of any device scanner, other apps on the device are blocked from all device scanning resources. Learn how to prevent these failures in the Barcode Scanning Guide.
+
+
+
+Q: Why doesn&#x27;t my app work on devices running Android 11?
+
+A: Due to package visibility restrictions imposed by Android 11 (API 30), EMDK apps targeting A-11 must include the following &lt;queries&gt; element in their AndroidManifest.xml file:
+
+  
+  &lt;queries&gt;
+     ...
+     &lt;package android:name=&quot;com.symbol.emdk.emdkservice&quot; /&gt;
+     ...
+  &lt;/queries&gt;
+
+Apps targeting API 29 (or earlier) have no such restriction; no change to the &lt;queries&gt; element is required.
+
+
+
+Q: Should I use DataWedge or EMDK for my app?
+
+A: DataWedge provides a quick and easy way to add scanning capabilities to an existing app, and Zebra recommends evaluating the use of DataWedge before building or modifying an app for scanning with EMDK. DataWedge comes preinstalled on all Zebra devices, accepts input from scanners, imagers, cameras, mag-stripe readers, RFID and other peripherals, can infinitely manipulate the acquired data and outputs it as keystrokes, intent payload or over an IP connection. All functions of DataWedge can be controlled programmatically through Android intents. See the DataWedge vs. EMDK feature comparison chart for more information.
+
+
+
+Q: Why don&#x27;t my KitKat and/or Lollipop apps work with Nougat and/or Oreo?
+
+NOTE: EMDK for Android 7.4 (and higher) no longer targets devices running Nougat.
+
+A: Due to the many advancements in newer Android versions, some older apps require modification to run properly on newer flavors. Among the common causes of incompatibility of older apps relate to changes in background processing implemented mainly to optimize battery life.
+
+When developing an app, Android developers should specify in the app manifest a target API along with minimum and maximum Android API levels. This maps the app to specific Android OS versions to run on. For example, if API level 23 is specified as the target level, it indicates that the app is intended to run on Android 6.0 (Marshmallow) and can prevent attempts to run the app on incompatible versions.
+
+Helpful links:
+
+
+What&#x27;s New for Android &#x27;N&#x27; and the Impact on Zebra Developers | Zebra engineering
+
+What&#x27;s New for Android &#x27;O&#x27; and the Impact on Zebra Developers | Zebra engineering
+
+The Android &#x27;&lt;uses-sdk&gt;&#x27; parameter | Android development community
+
+Android 7 Nougat behavior changes | Android development community
+
+Migrating to Android 8 Oreo | Android development community
+
+Migrating to Android 9 Pie | Android development community
+
+
+
+
+Q: Zebra APIs appear to offer limited fault tolerance. How can my app adapt to this?
+
+A: Retry the API command or gracefully exit the app. The exception handling code snippet below also might be helpful:
+
+catch (ScannerException ex)
+{
+    Log.d(&quot;EMDK Exception&quot;,&quot;&quot; + ex.getStackTrace());
+
+    // Check if the failure is recoverable within the application
+    if (ex.getResult() == ScannerResults.FAILURE ||
+            ex.getResult() == ScannerResults.SCANNER_NOT_ENABLED ||
+            ex.getResult() == ScannerResults.SCANNER_NOT_CONNECTED ||
+            ex.getResult() == ScannerResults.INVALID_OBJECT ||
+            ex.getResult() == ScannerResults.NO_DATA_LISTENER)
+    {
+        // Decide what actions can be taken as per the business logic
+    }
+
+    // Check if the failure is not recoverable within the application
+    if (ex.getResult() == ScannerResults.SCANNER_IN_USE ||
+            ex.getResult() == ScannerResults.FEATURE_NOT_SUPPORTED ||
+            ex.getResult() == ScannerResults.SCANNER_NOT_SUPPORTED ||
+            ex.getResult() == ScannerResults.SCANNER_INIT_FAILURE )
+    {
+        // Decide what actions can be taken as per the business logic
+    }
+}
+
+
+
+Q: Why do my apps display Application Not Responding (ANR) messages so often?
+
+A: ANR errors occur when the main UI thread of an app is blocked for a long period of time; the exact timeout period varies by Android version. To avoid ANRs during drawn-out sections of an app, a good coding practice is to code long-term tasks into background or worker threads instead of using the app&#x27;s main thread.
+
+Helpful links:
+
+
+What&#x27;s New for Android &#x27;N&#x27; and the Impact on Zebra Developers | Zebra engineering
+
+What&#x27;s New for Android &#x27;O&#x27; and the Impact on Zebra Developers | Zebra engineering
+
+ANR basics | Android development community
+
+Keeping your app responsive | Android development community
+
+
+
+
+Also See
+
+
+Barcode Scanning Guide | Recommendations for EMDK Barcode API usage
+
+General Programming Practices | Recommendations for building scanning apps
+
+EMDK vs. DataWedge | Which tool is best? A side-by-side comparison
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

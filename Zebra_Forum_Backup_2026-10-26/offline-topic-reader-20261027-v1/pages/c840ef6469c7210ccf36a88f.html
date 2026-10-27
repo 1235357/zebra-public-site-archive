@@ -1,0 +1,251 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Can you use Enterprise Browser on a Nougat WT6000?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Can you use Enterprise Browser on a Nougat WT6000?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/can-you-use-enterprise-browser-nougat-wt6000; original snapshot: threads/00304.html; SHA-256: c675c2e8794b142644e21b5b4d22b7d86fed0b775c0d2af1b130de07b4f465e4</small><pre id="topic">
+
+    
+        Can you use Enterprise Browser on a Nougat WT6000?
+
+
+        
+      
+                        
+                    
+            C
+          
+          Chris Buechler
+          2 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            79
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Can you use Enterprise Browser on a Nougat WT6000?    
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Matt Dermody
+          
+          
+            2 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Yes you can. You may however run into issues with the underlying WebView versions offered by the WT6000 and long term compatibility with whatever web applications you&#x27;re trying to interface with. Any Android browser, including Zebra Enterprise Browser, is still going to be ultimately powered by and dependent on the WebView implementation. On the WT6000 this is just the base System WebView since it is an AOSP only device. It can&#x27;t get WebView updates from Google Play since it doesn&#x27;t have GMS features so it has to receive updates only in the form of firmware updates from Zebra. Zebra was actually updating the WebView contained in the firmware for the WT6000 for a time as the WebView dependence issue came to light for a number of customers. The WT6000 however won&#x27;t be supported however forever so you can&#x27;t guarantee access to long term ongoing WebView updates that your web application will be dependent on. With all of that in mind, while things may &quot;work&quot; today interfacing a WT6000 to a business web app through Enterprise Browser I can&#x27;t personally recommend that you launch a project today in 2024 doing so. I have numerous customer environments in this position today and we are working aggressively to refresh the WT6000s given the risks they pose in the environment. The risks are that future security updates or requirements added to the web application could break compatibility with the older OS and WebView version on the WT6000, possibly severing connection to that application and offering no recourse other than purchasing new equipment. The risks are multi-day to week outages in this sort of scenario with huge unexpected financial burdens. I therefore can&#x27;t possibly recommend that you consider going down the path of just starting to explore using a WT6000 for accessing a web application via Enterprise Browser in 2024 when most people are looking to stop that very practice as soon as possible.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Chris Buechler
+          
+          
+            2 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you Matt for your detailed and well reasoned answer on what not to do.    What would you suggest I do if I&#x27;m just sitting down now with a bunch of WT6000 devices patched up to the latest LifeGuard patch and I want to write a warehouse solution that will run on them for the next 5+ years?        Is React Native an option - does it work with the barcode scanner?      
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Matt Dermody
+          
+          
+            2 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Do you own the full stack? The WMS or host application system, network infrastructure, IDP, etc? If you had to use WT6000 for 5+ years and you are only just now starting that journey then I think you&#x27;d probably want to look only as close to a native Android application as possible, with React Native likely being a decent option. I would personally avoid anything that requires rendering in a WebView as that is the system component that won&#x27;t be updated over time with the WT6000 due to the lack of GMS features. This also includes the auth mechanism you use in your app. Most modern IDPs will perform auth in a WebView or CCT on Android devices so you are basically precluded long term from using any of those auth workflows. You&#x27;d probably be stuck using some sort of local user accounts for the lifetime of those devices as I don&#x27;t think you can expect any modern cloud based IDP to support connectivity from Android 7 devices for the next 5+ years. Another thing to be concerned with is your wireless infrastructure and security requirements there. The WT6000 is potentially going to be the lowest common denominator device in the environment which means your wireless infrastructure will have to continue to offer support for WiFi5 devices and you won&#x27;t be able to take advantage of new capabilities in Wifi 6, 6E, and future generations of WiFi. I don&#x27;t think the WT6000 supports WPA3 either so you will be stuck on lower security protocols which 3-5 years from now are going to look very outdated. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

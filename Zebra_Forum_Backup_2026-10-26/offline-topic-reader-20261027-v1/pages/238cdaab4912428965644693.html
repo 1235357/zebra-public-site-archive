@@ -1,0 +1,190 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>QR Code is missing the first three characters when using variable fields</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>QR Code is missing the first three characters when using variable fields</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/qr-code-missing-first-three-characters-when-using-variable-fields; original snapshot: threads/01041.html; SHA-256: 74dc45270d0b8266df104f7c50b325a52dec4cfcb94788dc776ce2742262fe5c</small><pre id="topic">
+
+    
+        QR Code is missing the first three characters when using variable fields
+
+
+        
+      
+                        
+                    
+            T
+          
+          Tomas Hilbert
+          5 years 3 months ago
+        
+        
+      
+        
+            
+                  
+            
+            118
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  After saving zpl code from Zebra Designer 3 and print from Zebra Utilities for iOS, when sending data through variable fields, the first three characters of the data are missing, I&#x27;ve tried to specify the QA, LA, QM,A parameters after the FN1 field but nothing changes as suggested on the following article: https://www.zebra.com/us/en/support-downloads/knowledge-articles/ait/QR….
+The codes I&#x27;ve used is the following:
+^XA^DFE:SERVICE2_QR_CODE.ZPL
+^FS
+~JS
+^LT0
+^MNW
+^MTD
+^PON
+^PMN
+^LH0,0
+^JMA
+^PR5,5
+^JUS
+^LRN
+^CI27
+^PA0,1,1,0
+^MMT
+^PW432
+^LL229
+^LS0
+^FT141,219
+^BQN,2,3
+^FH\^FN1QM,A&quot;UrlServicio&quot;^FS
+^FT262,19^A0I,20,33^FH\^CI28^FN2&quot;noSerie&quot;^FS
+^CI27
+^XZ
+Can someone help to find what is missing on this part of the code:
+^FH\^FN1QM,A&quot;UrlServicio&quot;^FS
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You should not change the template file at all. The template file is the Store format and should be untouched as it is.
+^XA^DFE:SERVICE2_QR_CODE.ZPL
+^FS
+
+......
+
+^BQN,2,3
+^FH\^FN1&quot;UrlServicio&quot;^FS
+^FT262,19^A0I,20,33^FH\^CI28^FN2&quot;noSerie&quot;^FS
+^CI27
+^XZTo make it work, you need to add the QA, LA or QM parameter in the Recall format, as shown below.
+^XA
+^XFE:SERVICE2_QR_CODE.ZPL^FS
+^CI27^FN1^FH\^FDLA,valueOfUrlServiceIo^FS
+^PQ1,0,1
+^XZ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,178 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Launching RDP session with Start Page</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Launching RDP session with Start Page</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/31828; original snapshot: threads/resume-00058.html; SHA-256: 4ef0a2bbfb5cab64c1601546516a7494bae4e15b1c4628cbe96029aa579b9062</small><pre id="topic">
+
+    
+        Launching RDP session with Start Page
+
+
+        
+      
+                        
+                    
+            M
+          
+          Mark Mann
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            31
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Team,
+I have a customer that is using a Start Page for Rho and EB and they would like to have the ability to have one of the buttons on the start page to launch the RDP shortcut on VC70.  They currently have two buttons.  One that will launch the Wavelink TelnetCE client and one that will exit them out of the start page which prompts for password.  Now they want to add a third button that will launch RDP.  Has anyone done this on the start page to launch RDP with validations to make sure they are not opening more than one session?
+Below is a snippet of code that they wrote for the Wavelink Telnet application.  I&#x27;m assuming the same could be done for Remote Desktop (RDP);
+    //Start wavelink telnet (SAP)
+    function doWavelink()
+    {
+//rho      var wavelinkPath = gen.GetRegistrySetting(2, &#x27;SOFTWARE\\Wavelink\\TelnetCE&#x27;, &#x27;FlashDir&#x27;) + &#x27;\\TelnetCE.exe&#x27;;
+      var wavelinkPath = EB.System.getRegistrySetting(2, &#x27;SOFTWARE\\Wavelink\\TelnetCE&#x27;, &#x27;FlashDir&#x27;) + &#x27;\\TelnetCE.exe&#x27;;
+      var wavelinkCL = &#x27;&#x27;;
+//rho      wavelinkID = gen.LaunchProcessNonBlocking(wavelinkPath, wavelinkCL); 
+      wavelinkID = EB.System.runApplication(wavelinkPath, wavelinkCL, False);
+ 
+//rho      gen.InvokeMetaFunction(&#x27;application&#x27;, &#x27;minimize&#x27;);
+      EB.Application.minimize();
+      setTimeout(&#x27;doWavelinkThread()&#x27;, 10);
+    }
+   
+    function doWavelinkThread()
+    {
+   if(gen.GetProcessExitCode(wavelinkID) == 0)
+      {
+        wavelinkID = -1;
+//rho        gen.InvokeMetaFunction(&#x27;application&#x27;, &#x27;restore&#x27;);
+        EB.Application.restore();
+    document.location.reload();
+      }
+      else
+        setTimeout(&#x27;doWavelinkThread()&#x27;, 1000);
+    }
+Cheers,
+Mark
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Glenn Sayer
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Mark,
+yes the code for RD would be the same.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,716 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>User Guide - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/rxlogger/latest/guide/usage/</code><br>Observed final URL: <code>https://techdocs.zebra.com/rxlogger/latest/guide/usage/</code><br>Raw source: <code>raw/8194631a4a783d3429421b0e.html</code><br>Raw SHA-256: <code>558f7f1c27b823e23929e52336fc881e8ca1f705f693cd0d62a547309a14eb9f</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            RxLogger
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Settings
+                            
+                        
+                        
+                            
+                                    User Guide
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            User Guide
+                        
+                    OverviewStatesStartTransitioningStopMenu OptionsHomeBackup (Collect Logs)Delete LogsBug ReportInstant LoggingDevice InfoRelated Links
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    User Guide
+                                    
+                                            RxLogger
+                                            15.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+This guide outlines the available options for using RxLogger. While the standard workflow involves configuring the logging modules to specify the type of information to log and setting logging parameters (for example, log duration) before starting the logging process, this guide highlights additional options and features beyond the standard workflow. 
+
+
+
+States
+
+The RxLogger main screen displays an action button (Start or Stop depending on the current state) and additional options displayed at the bottom menu.
+
+To check RxLogger&#x27;s running status programmatically, applications can use the property persist.sys.dd.autostart, which returns true if RxLogger is running and false otherwise.
+
+Start
+
+To begin logging, tap the Start button. After logging starts, the interface transitions to the running state, and the Stop button replaces the Start button.
+
+
+  
+    
+       
+    
+  
+  
+    After tapping the Start button, the Stop button appears.
+  
+
+
+
+
+Transitioning
+
+The transitioning state occurs immediately after tapping the Start or Stop button and remains until the desired state is reached.
+
+
+
+Stop
+
+When RxLogger is first launched, it defaults to the Stop state. To begin logging, tap the Start button.
+
+
+
+
+
+
+Menu Options
+
+This section discusses the options accessible from the menu buttons located at the bottom of the main RxLogger screen.
+
+
+
+Home
+
+Home Displays the main home screen.
+
+
+
+
+
+Backup (Collect Logs)
+
+The Backup feature creates an .zip file on-demand containing all the RxLogger logs. This is particularly useful for saving a snapshot of logs on a device at a specific point in time, such as immediately after an issue occurs. The process and output differ depending on whether Secure Mode is activated.
+
+When Secure is Mode Off
+
+(This is the default state for RxLogger v15.0.14.71 and later.)
+
+In this mode, a standard, non-encrypted .zip file is created. Secure Mode can be turned off by the Control Secure Logging option within OEMConfig.
+
+File Storage:
+
+
+File Location: /sdcard/rxlogger/
+
+File Name: Backup-&lt;date&gt;-&lt;HHMMSS&gt;.zip
+
+
+Creating a Backup:
+
+
+From the User Interface: On the main screen, tap Backup from the bottom menu. Tap Yes to confirm.
+
+
+Using an Android intent: Broadcast the BackupNow intent: com.symbol.rxlogger.intent.action.BACKUP_NOW
+
+
+When Secure Mode is On
+
+In this mode, a password-protected .zip file is created for secure storage. It can be turned on via the Control Secure Logging option in OEMConfig.
+
+Password Requirements: 
+
+
+Minimum 8 characters
+
+Must contain at least one of each: an uppercase letter, a lowercase letter, a digit, and a special character (e.g. @#_$%^&amp;*+-=!). 
+
+
+File Storage: 
+
+
+File Location: 
+
+
+
+Internal storage: /sdcard/RxLogger/
+
+External storage (SD card): /storage/&lt;UUID&gt;/RxLogger/, where UUID represents the unique identifier of the device.
+ Important: To use the external SD card for log storage, the SD card must be encrypted using Encryption Manager from MX. If it is not encrypted, the backup path automatically defaults to internal storage.
+
+
+Password-protected File Named: SecureBackup-&lt;date&gt;-&lt;HHMMSS&gt;.zip
+
+
+Creating a Backup:
+
+
+From the User Interface: On the main screen, tap Backup from the bottom menu. When prompted, enter a valid password, tap OK, then tap Yes to confirm.
+
+
+Using an Android intent - Use the BackupNow broadcast intent that includes the password parameter, see BackupNow for details.
+
+
+
+
+Delete Logs
+
+Delete clears log storage and optimizes space by removing specified log types, either log files or backup files. This option is unavailable while RxLogger is active and only becomes available when RxLogger is stopped, ensuring data integrity and preventing accidental deletion during logging.
+
+Note: The config.json and RxInfo.txt files are preserved to retain essential configuration and remove intent data.
+
+There are two methods to create a backup:
+
+
+RxLogger - Tap Delete from the bottom menu on the main screen, select the file type to remove, and tap Delete. The options for file type are:
+
+
+
+Log file(s): Deletes all files stored in either of the following storage path in use:
+
+
+
+Internal storage: /sdcard/Android/data/com.symbol.rxlogger/RxLogger/secure/log_data/
+
+External storage: /storage/&lt;UUID&gt;/Android/data/com.symbol.rxlogger/RxLogger/secure/log_data/, where &lt;UUID&gt; is the device&#x27;s unique identifier
+
+
+Backup file(s): Deletes only files generated from a backup, stored in either of the following file paths:
+
+
+
+Internal storage path: /sdcard/Android/data/com.symbol.rxlogger/RxLogger/secure/log_data/SecureBackup-&lt;date&gt;-&lt;HHMMSS&gt;.zip
+
+External storage path: /storage/&lt;UUID&gt;/Android/data/com.symbol.rxlogger/RxLogger/secure/log_data/SecureBackup-&lt;date&gt;-&lt;HHMMSS&gt;.zip
+
+
+
+
+Android intent - Use the Delete broadcast intent, see Delete Logs.
+
+
+
+
+Bug Report
+
+The Bug Report collects and compiles diagnostic data, including device logs, stack traces, and system information, to assist in troubleshooting app or system issues. This feature offers flexibility to initiate data collection whether RxLogger is running or stopped. To avoid overlapping reports, the Bug Report option is temporarily disabled until the current report is completed, depending on the Android platform. It may take up to a few minutes to generate the report.
+
+The bug report includes the following:
+
+
+Dumpsys - Diagnostic output for system services.
+
+Dumpstate - System error logs.
+
+Logcat - System messages, including stack traces and logs from apps using the Log class.
+
+Systrace - Execution times of app and system processes for performance analysis.
+
+
+Data is stored in the following folder paths:
+
+
+Internal storage: /sdcard/Android/data/com.symbol.rxlogger/RxLogger/secure/log_data/
+
+External storage: /storage/&lt;uuid&gt;/Android/data/com.symbol.rxlogger/RxLogger/secure/log_data/, where &lt;uuid&gt; represents the UUID of the device
+
+
+There are two methods to create a bug report:
+
+
+RxLogger - Tap Bugreport from the bottom menu on the main screen, then tap Yes.  Upon completion, a message appears indicating success or failure. If successful, bug report is saved as a .zip file named: RxBugreport-&lt;ProductName&gt;-&lt;BuildID&gt;-&lt;Date&gt;-&lt;Time&gt;.zip
+
+
+Android Intent - Use the Bugreport broadcast intent.
+
+
+
+
+Instant Logging
+
+Instant Logging simplifies the process of capturing logs by enabling users to collect specific logs on-demand, offering a quick and efficient way to diagnose device-related issues. Users can easily select the desired log type - such as Battery, Audio, Scanner, Bluetooth, Wi-Fi or Cellular - define the logging duration, and initiate the capture process. Once the designated duration ends, the logging process automatically terminates, and the logs can be accessed and retrieved from the device.
+
+Logs captured with Instant Logging are distinctly marked with the text &quot;Single-Touch&quot; at the beginning of their log content, indicating the log type. In contrast, logs not generated using Instant Logging are labelled with the term &quot;Legacy&quot; instead.
+
+Access Instant Logging
+
+There are two methods to access Instant Logging:
+
+
+From the RxLogger Main Screen: Tap More, then tap Instant Logging to display the Instant Logging screen.
+
+    
+        
+           
+        
+           
+        
+    
+
+
+Using the RxLogger App Shortcut: From the Android home screen, open the zMonitor folder. Tap and hold the RxLogger app icon, then select Instant Logging to open its screen.
+
+    
+        
+           
+        
+           
+        
+    
+
+
+
+
+
+Enable Instant Logging
+
+To enable Instant Logging, tap Enable Module and perform the following:
+
+
+Log Module(s): Select the module(s) to enable logging: 
+
+
+
+Battery - Captures QXDM logs filtered for battery-related data.
+
+Scanner - Captures defaultLogcat logs.
+
+Wi-Fi - Captures Kernel logs integrated with Logcat for a unified output.
+
+Audio - Captures QXDM logs filtered for audio-specific data.
+
+Bluetooth - Captures BTSnooplog logs.
+
+Cellular - Captures QXDM logs with default-lite filter applied.
+If no selection is made, only the default logs are captured: ANR, Kernel, Logcat, Ramoops, Resource, Snapshot, Tombstone
+
+
+Enable Log Duration: Toggle this option to activate logging for a specific time period. 
+
+
+
+Log Duration: Choose from 30 minutes, 1 hour, 2 hours, 3 hours, or 4 hours.
+
+
+    
+       
+    
+
+
+
+
+
+Configuration File
+
+The table below provides values for use in the configuration file config.json.
+
+
+  
+    Name
+     Description
+    Type
+    Value(s)
+  
+  
+    Enable Module
+    Enable or disable Instant Logging
+    Boolean
+    false (default)true
+  
+  
+    Select Module
+    Choose zero, one or two log options to capture in addition to the default RxLogger logs.If no selection is made, only the default logs are captured: ANR, Kernel, Logcat, Ramoops, Resource, Snapshot, Tombstone
+    List
+    An integer that represents either an individual option or a combination of options, as specified in the †Select Module table below:   • Battery (captures QXDM logs with battery filter applied)   • Bluetooth (captures BTSnooplog logs)   • Scanner (captures defaultLogcat logs)   • Audio (captures QXDM logs with audio filter applied)   • Cellular (captures QXDM logs with default-lite filter applied)   • WiFi (captures Kernel logs with logcat integration for single file output)
+    
+  
+  
+    Log Duration (sec)
+    Define the time interval for log capture.Note: Integers are designated for use in the configuration file (config.json).
+    List
+    0 - None (continuously logs)1 - 30 min2 - 1 hour3 - 2 hours4 - 3 hours5 - 4 hours
+  
+
+
+
+
+† Select Module is represented by an integer that reflects either a single option or the combination of the 6 available options: audio, battery, Bluetooth, cellular, and WiFi.
+
+
+  
+    Integer
+    Option(s)    
+  
+  
+    1
+    audio
+  
+  
+    2
+    audio &amp; battery
+  
+  
+    3
+    audio &amp; Bluetooth
+  
+  
+    4
+    audio &amp; cellular
+  
+  
+    5 
+    audio &amp; scanner
+  
+  
+    6
+    audio &amp; WiFi
+  
+  
+    7
+    battery
+    
+  
+    8
+    battery &amp; Bluetooth
+  
+  
+    9
+    battery &amp; cellular
+  
+  
+    10 
+    battery &amp; scnner
+  
+  
+    11
+    battery &amp; WiFi
+  
+  
+    12
+    Bluetooth
+  
+  
+    13
+    Bluetooth &amp; cellular
+  
+  
+    14
+    Bluetooth &amp; scanner
+  
+  
+    15
+    Bluetooth &amp; WiFi
+  
+  
+    16
+    cellular
+  
+  
+    17
+    cellular &amp; scanner
+  
+  
+    18
+    cellular &amp; WiFi
+  
+  
+    19
+    scanner
+  
+  
+    20
+    scanner &amp; WiFi
+  
+  
+    21
+    WiFi
+  
+  
+    22
+    none (default)
+  
+
+
+
+
+Device Info
+
+Device Info provides detailed information about the device&#x27;s hardware (for example, CPU, display, camera, sensors), connectivity, battery, thermal data, and installed apps.
+
+To access Device Info:
+
+
+From the RxLogger Main Screen: Tap More, then tap Device Info. This opens the Device Info screen, displaying tabs with categorized information in the top menu.
+
+
+
+    
+        
+           
+        
+           
+        
+    
+
+
+
+
+The following sections offer more information on each tab.
+
+
+
+Device
+
+The Device tab displays details such as device name, model, device ID, and serial number.
+
+
+
+
+
+System
+
+The System tab displays platform details, including Android version, API level, release date, and build ID.
+
+
+
+
+
+CPU
+
+The CPU tab displays details such as processor, type, features, and frequency.
+
+
+
+
+
+Battery
+
+The Battery tab displays information such as health, level (%), status, temperature, current, power, and charge cycles.
+
+
+
+Network
+
+The Network tab displays information on the Wi-Fi and SIM networks when connected.
+
+
+
+
+
+Connectivity
+
+The Connectivity tab displays details on various modes of connectivity, such as Wi-Fi, Bluetooth, NFC, and USB.
+
+
+
+
+
+Display
+
+The Display tab provides information on the built-in screen, including resolution, density, brightness level, and refresh rate. 
+
+
+
+
+
+Memory
+
+The Memory tab displays usage information for memory and internal storage.
+
+
+
+
+
+Camera
+
+The Camera tab displays details on the front and back camera, including megapixels, image resolution, and focal length. Select Front or Back to display the corresponding information.
+
+
+
+
+
+Thermal
+
+The Thermal tab displays temperature readings for components such as CPU, battery, and USB.
+
+
+
+
+
+Sensors
+
+The Sensors tab displays details about the device sensors, such as accelerometer, magnetometer, and gyroscope.
+
+
+
+
+
+Apps
+
+The Apps tab provides information about all applications on the device. The total number of apps is displayed at the top left. This screen also includes tabs to filter apps by category: User apps, System apps, and All apps. For each app, details such as the package name, version, and memory usage are provided. 
+
+
+
+
+
+
+
+Related Links
+
+
+About RxLogger - Provides an overview of RxLogger
+
+Settings - Guides how to configure settings and modules
+
+APIs - Guides how to use APIs
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+    
+       
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2026 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

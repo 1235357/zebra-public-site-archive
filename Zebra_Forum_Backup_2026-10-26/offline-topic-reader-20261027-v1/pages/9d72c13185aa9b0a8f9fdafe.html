@@ -1,0 +1,326 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Android SDK - Null Pointer Exception by setting regulatory config</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Android SDK - Null Pointer Exception by setting regulatory config</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/android-sdk-null-pointer-exception-setting-regulatory-config; original snapshot: threads/00856.html; SHA-256: 906649adf4fb5b87b823c39abf72bf0c2d1b4c58d33b013937093e115ee44679</small><pre id="topic">
+
+    
+        Android SDK - Null Pointer Exception by setting regulatory config 
+
+
+        
+      
+                        
+                    
+            A
+          
+          Andrey Sedelnikov
+          4 years 7 months ago
+        
+        
+      
+        
+            
+                  
+            
+            357
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  HI,
+I am trying to connect to MC3300 reader using Android SDK (2.0.1.44). First connection fails because of &quot;not configured region&quot;.
+Ok, I set region exactly with the code snippet as recommended here:
+https://techdocs.zebra.com/dcs/rfid/android/2-15/guide/regulatory/
+But I get the exception as below on the last line.
+What am I missing? 
+Regards
+    java.lang.NullPointerException: Attempt to get length of null array
+        at com.zebra.rfid.api3.l1.b(Unknown Source:95)
+        at com.zebra.rfid.api3.l.b(Unknown Source:2)
+        at com.zebra.rfid.api3.k.b(Unknown Source:0)
+        at com.zebra.rfid.api3.o.b(Unknown Source:2)
+        at com.zebra.rfid.api3.Config.setRegulatoryConfig(Unknown Source:4)
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Andrey Sedelnikov
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            After some empirical testing, I have figured out that regionInfo.getSupportedChannels() returns the null instead of array, which is what causes SDK to fail. 
+Ok, I am overriding the list and passing the empty array to the enabled channels:
+regulatoryConfig.setEnabledChannels(new String[0]);
+But the reconnect attempt fails at the same message: 
+OperationFailureException Command Not Allowed- Region Not Set
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+I think you&#x27;ll need to use the 
+regulatoryConfig.setRegion(regionInfo.getRegionCode()); 
+API first, before trying to set the enabled channels - see here for more info: https://techdocs.zebra.com/dcs/rfid/android/2-15/guide/regulatory/
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Davit Makharadze
+          
+          
+            1 year 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello, I was stuck with this same problem and after following this discussion now I am getting Com.Zebra.Rfid.Api3.OperationFailureException when trying to set RegulatoryConfig.Any idea what I could do?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Davit Makharadze
+          
+          
+            1 year 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello, I had the same exact problem, following this discussion now I am getting Com.Zebra.Rfid.Api3.OperationFailureException without any message. I am working on MAUI app which should connect to RFD8500.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

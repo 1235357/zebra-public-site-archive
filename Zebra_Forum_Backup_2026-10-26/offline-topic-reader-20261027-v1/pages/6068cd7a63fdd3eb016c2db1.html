@@ -1,0 +1,160 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Getting printer status with Browser Print api</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Getting printer status with Browser Print api</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/getting-printer-status-browser-print-api; original snapshot: threads/00579.html; SHA-256: 8df85e236d6d92bd21e8e75befde035476686cd6b2a3a302fdfbc891fb3d422f</small><pre id="topic">
+
+    
+        Getting printer status with Browser Print api
+
+
+        
+      
+                        
+                    
+            T
+          
+          Tuncay Bahadır
+          3 years 5 months ago
+        
+        
+      
+        
+            
+                  
+            
+            176
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  With my gk 420 printer, I cannot get the printer status via the browser with the BrowserPrint-3.1.250 version api file. Is the cover open, like there is an error in the printer. It is mentioned in the status section of the API document, but I was not successful in accessing it. Also, printer statuses appear in BrowserPrint-Zebra-1.1.250 js file, but how do I use it? The documentation is not for beginners, but for those who already know the product.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The printer status is in the Zebra module of the JavaScript library. You can use the index.html in the Sample folder as a base to add the printer status. Include the BrowserPrint-Zebra-1.1.250.min.js library in the index.html as shown below.
+&lt;script type=&quot;text/javascript&quot; src=&quot;BrowserPrint-Zebra-1.1.250.min.js&quot;&gt;&lt;/script&gt;Add the following function for status checking.
+// The printer is already identified by the selected_device object in the index.html.
+var checkPrinterStatus = function() {
+    var printer = new Zebra.Printer(selected_device);
+    var status = printer.getStatus(success, failure);
+}
+var success = function(status) {
+    var statusMsg = status.getMessage();
+    var isReady = status.isPrinterReady();
+    alert(&quot;statusMsg: &quot; + statusMsg +&quot;\nisReady: &quot; + isReady);
+}
+var failure = function(status) {
+    alert(&quot;Got a failure&quot;);
+} 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

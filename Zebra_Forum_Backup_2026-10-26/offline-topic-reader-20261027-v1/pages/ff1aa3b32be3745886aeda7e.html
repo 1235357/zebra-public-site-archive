@@ -1,0 +1,333 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>java.lang.AbstractMethodError: abstract method &amp;quot;void com.symbol.emdk.EMDKManager$EMDKListener.onOpened(com.symbol.emdk.EMDKManager)&amp;quot;</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>java.lang.AbstractMethodError: abstract method &amp;quot;void com.symbol.emdk.EMDKManager$EMDKListener.onOpened(com.symbol.emdk.EMDKManager)&amp;quot;</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/javalangabstractmethoderror-abstract-method-void-comsymbolemdkemdkmanageremdklisteneronopenedcomsymbolemdkemdkmanager; original snapshot: threads/00680.html; SHA-256: 08a6cf896ba12820460cd774fbefca2b31cf5e9e80a31ba305e8a9b182172795</small><pre id="topic">
+
+    
+        java.lang.AbstractMethodError: abstract method &amp;quot;void com.symbol.emdk.EMDKManager$EMDKListener.onOpened(com.symbol.emdk.EMDKManager)&amp;quot;
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          3 years 10 months ago
+        
+        
+      
+        
+            
+                  
+            
+            186
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi, when tring to use EMDKManager.getEMDKManager(applicationContext,this) i get java.lang.AbstractMethodError: abstract method &quot;void com.symbol.emdk.EMDKManager$EMDKListener.onOpened(com.symbol.emdk.EMDKManager)&quot;
+and full errror mesage in attachments
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Michael Buelow
+          
+          
+            3 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hey,
+
+I just had the same problem while developing a Flutter-Plugin for a Flutter app. The problem occurred only when building for release mode. Turns out gradle removes unused classes/functions in libraries when building for release. And I think them EMDK uses reflection to find the EMDKListener and the onOpenend-Method. Reflection is something gradle cannot take into account when building. That&#x27;s why gradle thinks these classes are unused and simply strips them from the release app.
+
+To prevent gradle from removing your classes you can annotate them with @Keep. See here for more information https://developer.android.com/reference/androidx/annotation/Keep.
+
+Hope this helps.
+
+Kind regards
+Michael
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jose Georges
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I&#x27;m using a Wrapper to access the serial number through the EMDK https://github.com/ltrudu/DeviceIdentifiersWrapper
+
+I&#x27;m encountering the exact same issue. Which class/package should I add to proguard to get it running in release? I tried 
+
+-keep class com.symbol.emdk.* { *; }
+-keep class com.github.ltrudu.* { *; }
+
+ 
+
+but doesn&#x27;t seem to work
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              N
+            
+          
+                
+          
+            Niclas Lindgren
+          
+          
+            2 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Absolutely amazing sir. You deserve a medal for this. I spent probably 1-2 weeks on this problem now. It worked fine in debug mode while it did not work at all in release....Annotating with @Keep solved it. Thank you very much!
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jose Georges
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I&#x27;m using a Wrapper to access the serial number through the EMDK https://github.com/ltrudu/DeviceIdentifiersWrapper
+
+I&#x27;m encountering the exact same issue. Which class/package should I add to proguard to get it running in release? I tried 
+
+-keep class com.symbol.emdk.* { *; }
+-keep class com.github.ltrudu.* { *; }
+
+ 
+
+but doesn&#x27;t seem to work
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

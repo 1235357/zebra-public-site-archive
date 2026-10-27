@@ -1,0 +1,327 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>ZD410 Bluetooth connection Random not connected</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/zd410-bluetooth-connection-random-not-connected; snapshot threads/00825.html; SHA-256 7ed95c46f5195b0b33948a7c531b25653c2280c63506def370bd49d371edb5be. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">ZD410 Bluetooth connection Random not connected</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            A
+          </div>
+          <div class="forum-topic__author-name">Andrea Greggio</div>
+          <div class="forum-topic__timestamp">4 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            146
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            3
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi, i've develop an application on Android 11 with  link-os SDK 2.14.5198  for print ticket on zd410 and connect it  with bluetooth.<br>
+The progam senda data, open connection, print 1 title, close connection and repeat the operation x time in function of the number of tickets.<br>
+Random when i print more 2 or 3 or 4 ticket the system can generate an connectione exception with this code:</p>
+<p>2022-04-13 17:20:55.068 5245-5811/? I/bt_stack: [INFO:btsnoop.cc(544)] clear_l2cap_whitelist: Clearing whitelist from l2cap channel. conn_handle=10 cid=80:0<br>
+2022-04-13 17:20:55.068 5245-5811/? W/bt_l2cap: l2cu_no_dynamic_ccbs starting IDLE timeout: 30000 ms<br>
+2022-04-13 17:20:55.068 5245-5811/? W/bt_rfcomm: PORT_StartCnf: failed result:5<br>
+2022-04-13 17:20:55.069 5245-5853/? E/bt_btif_sock_rfcomm: find_rfc_slot_by_id unable to find RFCOMM slot id: 11<br>
+2022-04-13 17:20:55.069 5245-5811/? E/bt_btm: Reset sec_bd_name and name flag. (BR/EDR link)<br>
+2022-04-13 17:20:55.073 5245-5811/? W/bt_btif: BtifAvPeer *BtifAvSource::FindOrCreatePeer(const RawAddress &amp;amp;, tBTA_AV_HNDL, uint32_t): Create peer: peer_address=48a493 bta_handle=0x41 peer_id=0<br>
+2022-04-13 17:20:55.074 5245-5811/? W/bt_btif: virtual bool BtifAvStateMachine::StateIdle::ProcessEvent(uint32_t, void *): Peer 48a493 : event=BTIF_AV_ACL_DISCONNECTED(0x23)<br>
+2022-04-13 17:20:55.074 5245-5811/? W/bt_btif: DeleteIdlePeers: Deleting idle peer: 48a493 bta_handle=0x41</p>
+<p>2022-04-13 17:20:55.077 11192-19911/it.sistemiterritorialispa.vendita D/ticket&amp;nbsp;-: Could not connect to device: read failed, socket might closed or timeout, read ret: -1</p>
+<p>And the ticket is not printed.<br>
+I've paring the printer with pin using android settings interface and this is the value of zd410 parameter:</p>
+<p>bluetooth.<br>
+bluetooth.discoverable : off , Choices: on,off<br>
+bluetooth.friendly_name : ZD410AB<br>
+bluetooth.version : 6.0.1<br>
+bluetooth.date : 12/05/2018<br>
+bluetooth.local_name : ZD410AB<br>
+bluetooth.address : 48:XX:XX:XX:XX:XX<br>
+bluetooth.bluetooth_pin : *<br>
+bluetooth.short_address : 48XXXXXX<br>
+bluetooth.radio_version : 4.2<br>
+bluetooth.enable : on , Choices: on,off<br>
+bluetooth.connected : no<br>
+bluetooth.minimum_security_mode : 4 , Choices: 1,2,3,4<br>
+bluetooth.connected_security_mode : nc<br>
+bluetooth.bonding : on , Choices: on,off<br>
+bluetooth.clear_bonding_cache<br>
+bluetooth.enable_reconnect : off , Choices: off,iOS_only<br>
+bluetooth.allow_non_display_numeric_comparison : no print , Choices: off,print,no print<br>
+bluetooth.le.<br>
+bluetooth.le.controller_mode : classic , Choices: both,classic,le<br>
+bluetooth.json_config_channel_enable : on , Choices: on,off<br>
+bluetooth.page_scan_window : 60 , Choices: 15,60<br>
+bluetooth.power_class : 1 , Choices: 1-2</p>
+<p>In the code i've create the class BluetoothSecureConnection in this way:</p>
+<p>public class BluetoothSecureConnection {</p>
+<p>    private boolean sendData = true;</p>
+<p>    Connection printerConnection = null;</p>
+<p>    public static int startPrint(String macValue, String dataPass, String type, String url, String printerType) {<br>
+        int Status = 0;</p>
+<p>        BluetoothSecureConnection connSC = new BluetoothSecureConnection();<br>
+Status = connSC.connectAndSendLabel(macValue, dataPass, type, url, printerType);</p>
+<p>        return Status;<br>
+    }<br>
+And in the connect and sendLabel i create the connection:</p>
+<p>    private int connectAndSendLabel(final String mac, String dataPass, String type, String url, String printerType) {</p>
+<p>        printerConnection = new BluetoothConnection(mac);<br>
+        int Status = 0;<br>
+        try {<br>
+            printerConnection.open();</p>
+<p>            ZebraPrinter printer = null;</p>
+<p>if (printerConnection.isConnected()) {</p>
+<p>I've change the printer with another with the same setting but random the problem exist.<br>
+So what i've to modify to resolve this problem or thereis the possibilituy to reopen connection if is close? </p>
+<p>Thanks</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      3 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-50314" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>With the partial code snippet, it's difficult to say where the issue is. In general, the recommended logic flow is:</p>
+<ol>
+<li>Create a connection object</li>
+<li>Open the connection</li>
+<li>Check the printer status with the getCurrentStatus() API to make sure the printer is ready to print</li>
+<li>Send data (or ZPL) to the printer to print</li>
+<li>Wait until the data is sent or the label is printed, e.g., Thread.sleep(500)</li>
+<li>Finally close the connection.</li>
+</ol>
+<p>If we use the above flow for each label print, then the connection open &amp; close for each label may pose some overhead. Otherwise, we can send multiple labels at the step 4 with just one iteration of the connection open &amp; close.</p>
+<p> </p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-50358" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              A
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Andrea Greggio</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thanks for the answer .. for how the program is built I have to keep the opening and closing of the connection for each ticket otherwise the whole app and logic are upset.<br>
+So if I introduce a 500 ms waiting time before reopening the connection in the next title, could this be enough to eliminate the opening exception?</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-50363" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I cannot say that for sure if 500ms is enough. You will have to test if that works for you depending on the data size of each ticket. It's also depending on the UI flow of the app. You may want to keep the connection open in one particular UI view, so that the user can print multiple tickets in that UI view without the need to open &amp; close for each individual ticket. You may only close the connect when the user navigate away from the particular UI view.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div></div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/zd410-bluetooth-connection-random-not-connected%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/zd410-bluetooth-connection-random-not-connected%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

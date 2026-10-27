@@ -1,0 +1,471 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Using ZDM Queries - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/flux/query</code><br>Observed final URL: <code>https://techdocs.zebra.com/flux/query/</code><br>Raw source: <code>raw/5fd5a53faefa8354ee115680.html</code><br>Raw SHA-256: <code>1c083a50df36cec93af4a35764288773c1c94f174339a7d6f80a92c361832de3</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            Android Platform Transition
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About Transition
+                            
+                        
+                        
+                            
+                                    About MX
+                            
+                        
+                        
+                            
+                                    MX Feature Matrix
+                            
+                        
+                        
+                            
+                                    Setup
+                            
+                        
+                        
+                            
+                                    Query Device
+                            
+                        
+                        
+                            
+                                    Delegate Access
+                            
+                        
+                        
+                            
+                                    Architecture
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Using ZDM Queries
+                        
+                    OverviewZebra-app QueriesManifest of Calling AppsSample CodeDelegation QueryVerify TokenAcquire TokenVerify App PermissionQuery System Setting UI statusAlso See
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Using ZDM Queries
+                                    
+                                            Android Platform Transition
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        
+
+Overview
+
+ZDM implements a content provider interface, allowing apps to perform simple queries for information about sharing of files and data among apps on the device. The content provider URIs used to query ZDM are treated as query identifiers, which ZDM redirects to ZDMQueryInterface implemented classes. The ZDMProviderConstants.java object provides column names and other URI details required to query ZDM. Query results are returned in the COLUMN_QUERY_RESULT column of the result URI. 
+
+Apps calling for access to another app&#x27;s interface(s) must be explicitly granted permission by the implementing app, and ZDM manages those permissions. When an app attempts to use an interface that the implementing app has chosen to protect using a Delegation Scope, the implementing app must query ZDM to determine whether the calling app has been granted (by the administrator) a Delegation Scope that grants access to that interface. When a given function supported by ZDM or a Zebra app is controlled by a Delegation Scope, it allows only direct use of that function by a genuine instance of an app that has been explicitly granted that Delegation Scope.
+
+When a genuine instance of an app is allowed direct use of a function controlled by a Delegation Scope, that app might choose to allow indirect use of that function by another application through a defined interface such as AIDL or a JavaScript callback. In such cases, the app that&#x27;s allowed to use the function becomes responsible for ensuring that any use of that by another app is appropriately controlled.
+
+
+
+Zebra-app Queries
+
+Use one or more of the URIs in the table below to query Zebra applications on the device. 
+
+
+
+  
+    Action
+    URI
+  
+
+
+  Confirm that token is valid for Delegation Scope
+  public static final String AUTHORITY = &quot;com.zebra.devicemanager.zdmcontentprovider&quot;;
+
+
+
+  Get the authorization URI showing an app&#x27;s (published) interfaces
+  public static final URI AUTHORITY_URI = Uri.parse(&quot;content://&quot; + AUTHORITY);
+
+
+
+  Acquire a token for access to an app&#x27;s (published) interfaces
+  public static final URI ACQUIRE_TOKEN_URI = Uri.withAppendedPath(AUTHORITY_URI, &quot;AcquireToken&quot;);
+
+
+
+  Verify that a token is acquired and valid
+  public static final URI VERIFY_TOKEN_URI = Uri.withAppendedPath(AUTHORITY_URI, &quot;VerifyToken&quot;);
+
+
+
+  Verify that permission is granted to acquire token
+  public static final URI VERIFY_PERMISSION_URI = Uri.withAppendedPath(AUTHORITY_URI, &quot;VerifyAppPermission&quot;);
+
+
+
+  Delegate content to be published
+  public static final URI DELEGATION_CONTENT_URI = Uri.withAppendedPath(AUTHORITY_URI, &quot;Delegation&quot;);
+
+
+
+  Access Android System settings interfaces
+  public static final URI SYSTEM_SETTINGS_UI_URI = Uri.withAppendedPath(AUTHORITY_URI, &quot;SystemSettingsUI&quot;);
+
+
+
+  Get signature
+  public static final String COLUMN_SIGNATURE = &quot;signature&quot;;
+
+
+
+  Get package name
+  public static final String COLUMN_PACKAGE_NAME = &quot;package_name&quot;;
+
+
+
+  Get query result
+  public static final String COLUMN_QUERY_RESULT = &quot;query_result&quot;;
+
+
+
+  Get Delegation Scope
+  public static final String COLUMN_DELEGATION_SCOPE = &quot;delegation_scope&quot;;
+
+
+
+  Get access token
+  public static final String COLUMN_TOKEN = &quot;token&quot;;
+
+
+
+
+
+
+Manifest of Calling Apps
+
+Apps that call for access to protected interfaces of other apps must contain the following lines in their manifest.xml file:  
+
+
+&lt;uses-permission android:name=&quot;com.zebra.devicemanager.provider.READ_PERMISSION&quot;/&gt;
+
+&lt;uses-permission android:name=&quot;com.zebra.devicemanager.provider.WRITE_PERMISSION&quot;/&gt;
+
+For Android 11 or later, the tag below also is required to specify the package name of the Content Provider (aka &quot;implementing app&quot;):
+
+
+&lt;queries&gt;
+       &lt;package android:name=&quot;com.zebra.devicemanager&quot; /&gt;
+&lt;/queries&gt;
+
+
+
+Before coding, Zebra recommends understanding guidance from the Android developer community about constructing the query. 
+
+Sample Code
+
+The following code snippets illustrate how to use the URIs programmatically to achieve a desired result.
+
+Delegation Query
+
+This query determines whether the app has been granted the specified Delegation Scope. Use this code to verify that the calling app is bound to a service. The service must share the caller details, such as caller package name and signature, and the Delegation Scope defined by it. 
+
+Result Codes
+
+
+TRUE - The given caller is assigned the given Delegation Scope; the specified app is permitted to call the service**
+
+FALSE -  Caller is NOT assigned the Delegation Scope specified in the query
+
+
+Example
+
+
+val cursor: Cursor = appContext.contentResolver.query(DELEGATION_CONTENT_URI, null,
+        COLUMN_PACKAGE_NAME + &quot;=? AND &quot; + COLUMN_SIGNATURE + &quot;=? AND &quot; + COLUMN_DELIGATION_SCOPE + &quot;=?&quot;,
+        arrayOf(&quot;com.example.application&quot;, &quot;hfoahdsohsgjhsjv=&quot;, &quot;delegation-zebra-datawedge-intent-api&quot;), null)!!
+
+if (cursor != null &amp;&amp; cursor.count &gt; 0) {
+    cursor.moveToFirst()
+     val result = cursor.getString(cursor.getColumnIndex(COLUMN_QUERY_RESULT)))
+}
+
+
+
+Verify Token
+
+This code confirms that a token allows calls to a specified service. For example, a receiver of an intent can verify whether the token sent by the caller app is valid. Since the intent receiver knows the Delegation Scope protects that operation, it must send both the token and the associated Delegation Scope.
+
+Result Codes
+
+
+TRUE - the received token is valid for the given Delegation Scope
+
+FALSE  - the received token is NOT valid for the given Delegation Scope
+
+TokenExpiredException - The token is expired
+
+
+Example
+
+
+val cursor: Cursor = appContext.contentResolver.query(VERIFY_TOKEN_URI, null, COLUMN_TOKEN + &quot;=? AND &quot; + COLUMN_DELIGATION_SCOPE + &quot;=?&quot;, arrayOf(&quot;34uuuuuojsnushnjd232434snmnsdms23434&quot;, &quot;delegation-zebra-datawedge-intent-api&quot;), null)!!
+
+if (cursor != null &amp;&amp; cursor.count &gt; 0) {
+    cursor.moveToFirst()
+    result = cursor.getString(cursor.getColumnIndex(COLUMN_QUERY_RESULT)))
+}
+
+OPTIONAL:
+If verification of access is desired, the package name and signature can be included in the ZDM query along with the token and Delegation Scope, as below:  
+
+
+val cursor: Cursor = appContext.contentResolver.query(VERIFY_TOKEN_URI, null, COLUMN_TOKEN + &quot;=? AND &quot; + COLUMN_DELIGATION_SCOPE + &quot;=?&quot; + COLUMN_PACKAGE_NAME + &quot;=?&quot; + COLUMN_SIGNATURE + &quot;=?&quot;, arrayOf(&quot;34uuuuuojsnushnjd232434snmnsdms23434&quot;, &quot;delegation-zebra-datawedge-intent-api&quot;, &quot;com.example.app1&quot;, &quot;dyghfjbcdh8=wjsmndhsjenfbaueyruefut&quot;), null)!!
+
+if (cursor != null &amp;&amp; cursor.count &gt; 0) {
+    cursor.moveToFirst()
+    result = cursor.getString(cursor.getColumnIndex(COLUMN_QUERY_RESULT)))
+}
+
+
+
+
+
+Acquire Token
+
+An application that requires a token to call interfaces of another app can obtain it using the ZDM Content Provider. The caller app must send the Delegation Scope name as defined by the implementing app as part of the column value. If the caller app is granted the same Delegation Scope, ZDM generates and returns a token valid for 24 hours. Otherwise, a SecurityException is generated.
+
+Result Codes
+
+
+TRUE - caller app granted Delegation Scope and token valid for 24 hours
+
+SecurityException - caller is not authorized to receive the token
+
+
+Example
+
+
+val cursor: Cursor = appContext.contentResolver.query(ACQUIRE_TOKEN_URI, null,
+        COLUMN_DELIGATION_SCOPE + &quot;=?&quot;, arrayOf(&quot;delegation-zebra-datawedge-api-access-query&quot;), null)!!
+if (cursor != null &amp;&amp; cursor.count &gt; 0) {
+    cursor.moveToFirst()
+    result = cursor.getString(cursor.getColumnIndex(COLUMN_QUERY_RESULT)))
+}
+
+
+
+Verify App Permission
+
+Verifies whether authority is granted to an app for accessing a token. 
+
+Result Codes
+
+
+TRUE - app is authorized to request a token
+
+FALSE - app is NOT authorized to request a token; token requests will be denied
+
+
+Example
+
+
+val cursor: Cursor = appContext.contentResolver.query(VERIFY_PERMISSION_URI,  null, COLUMN_PACKAGE_NAME + &quot;=? AND &quot; + COLUMN_PERMISSION + &quot;=?&quot;,
+arrayOf(&quot;com.example.application&quot;, &quot;android.permission.PACKAGE_USAGE_STATS&quot;), null)!!
+
+if (cursor != null &amp;&amp; cursor.count &gt; 0) {
+   cursor.moveToFirst()
+   result = cursor.getString(cursor.getColumnIndex(COLUMN_QUERY_RESULT)))
+}
+
+Query System Setting UI status
+
+Determines access to the Android Settings panel UI for the current device user.
+
+Result Codes
+
+
+0 - user has full access to the Android Settings panel 
+
+1 - user has access only to Display, Volume and About features of the Android Settings panel 
+
+2 – no access to Android Settings panel
+
+
+Example
+
+
+val cursor: Cursor = appContext.contentResolver.query(SYSTEM_SETTINGS_UI_URI,  null,  null , null, null)!!
+
+if (cursor != null &amp;&amp; cursor.count &gt; 0) {
+    cursor.moveToFirst()
+    result = cursor.getString(cursor.getColumnIndex(COLUMN_QUERY_RESULT)))
+}
+
+
+
+Also See
+
+Android Developer Docs
+
+
+Android Content Provider Basics | Introduction to ACP concepts
+
+Creating a content provider | Why and how to share an app&#x27;s data
+
+Android Cursor docs | How to interface with a result data set
+
+Content Observer | Get a callback when data changes
+
+
+Articles by Zebra Engineers
+
+
+How to display serial and IMEI numbers on device | Sample app, instructions, source code
+
+Save OEM identifiers to a file on the device | Sample app, source code
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2025 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

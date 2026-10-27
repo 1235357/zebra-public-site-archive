@@ -1,0 +1,210 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra Android SDK printer not printing with android 11: bluetooth light is flashing but not printing</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Zebra Android SDK printer not printing with android 11: bluetooth light is flashing but not printing</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/26140; original snapshot: supplement/threads/8457bb76dbd4f6f0a093a4b3.html; SHA-256: f0e557e20445998bdb916c02c4ed4c109410818fff529458b27ef48df584f7d3</small><pre id="topic">
+
+    
+        Zebra  Android SDK printer not printing with android 11: bluetooth light is flashing but not printing
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            228
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We have an android app in order to print images using the android sdk for zebra (ZSDK_ANDROID_API.jar). The printer is the ZQ320 model and is in ZPL_HYBRID mode.
+The same app with the same  printer in some devices doesn&#x27;t work: the bluetooth light flashing but it stopping flashing and ending up not printing anything meanwhile in other devices prints okey.
+We are trying finding out if any exception is thrown but it seems no exception throws in all code as far as we know.
+One of the devices that produces the issue has the following OS data:
+Model: SAMSUNG S-10.
+Android version: 11
+knox VERSION: knox API LEVEL 33.
+UI version: 3.1
+Please could anyone give us a clue or some strategy to debug the problem?
+Thanks in advance.
+ public static void printBitmapZebra(ZebraPrinter printer, Bitmap path) throws ConnectionException {
+        String setSizeCommand = &quot;^XA^LL&quot; + path.getHeight() + &quot;^XZ&quot;;
+        // Sets size.
+        printer.sendCommand(setSizeCommand);
+        ZebraImageAndroid oZebraImage = new ZebraImageAndroid(path);
+        printer.printImage(
+                oZebraImage, 0, 0,
+                path.getWidth(),
+                path.getHeight(), false);
+    }
+	And previous method is invoked from this from UI:
+	   public void onClickPrint(View view) {
+        new Thread(() -&gt; {
+            Connection connection = null;
+            try {
+                String mac = macAddress.getText().toString();
+                if (isNullOrEmpty(mac)) {
+                    runOnUiThread(() -&gt; UIHelper.showCustomToast(
+                            this,
+                            &quot;Debe de especificar una dirección para la impresora.&quot;));
+                    return;
+                }
+                showModalLoadingDialog(&quot;Impresión&quot;, &quot;Generando imagen&quot;);
+                Bitmap bm = BitmapUtils.getBitmapFromWebview(oWebViewBmpGenerator);
+                BitmapUtils.saveBitmapToTempFolder(this,bm);
+                bm = BitmapUtils.toGrayScale(bm);
+                bm = BitmapUtils.getScaledPrinterBitmap(bm, 203);  // 203 -&gt; ZEBRA ZQ320
+                if (bm == null) {
+                    throw new Exception(&quot;No se generó una imagen para imprimir.&quot;);
+                }
+                updateLoadingDialog( &quot;Conectando con la impresora&quot;);
+                SettingsHelper.saveBluetoothAddress(PrintZebraActivity.this, mac);
+                connection = new BluetoothConnection(macAddress.getText().toString());
+                connection.open();
+                ZebraPrintUtils.setStatus(connection);
+                ZebraPrinter printer = ZebraPrinterFactory.getInstance(connection);
+                updateLoadingDialog(&quot;Enviando imagen&quot;);
+                ZebraPrintUtils.printBitmapZebra(printer, bm);
+                connection.close();
+                connection = null;
+            } catch (Exception e) {
+                cclsLog.log(this, e);
+                UIHelper.showWarning(this, e);
+            } finally {
+                dismissModalProgressDialog();
+                if (connection != null) {
+                    try {
+                        connection.close();
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+        }).start();
+    }
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Does this problem only happen on Android devices that run Android 11? To use Bluetooth on Android 10 and above, we need to add&amp;nbsp;ACCESS_FINE_LOCATION. Make sure that the FINE location permission is in the manifest file. Let us know if this solves the issue.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

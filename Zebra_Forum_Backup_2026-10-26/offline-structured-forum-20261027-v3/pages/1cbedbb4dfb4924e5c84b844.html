@@ -1,0 +1,381 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>DS2278: Different Transmission of &lt;TAB&gt; character?</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/ds2278-different-transmission-character; snapshot threads/00548.html; SHA-256 013ddc323579610c3348a767dc38bedd943a6674cb0466bd675d12192b02992e. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">DS2278: Different Transmission of &lt;TAB&gt; character?</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            M
+          </div>
+          <div class="forum-topic__author-name">Michael R</div>
+          <div class="forum-topic__timestamp">3 years 4 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            454
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            3
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                          <span class="forum-solved">//Solved</span>
+        </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>I'd like to generate a DMC code representing the input for two subsequent form fields in a browser, separated by a <span><span><code><span>&lt;TAB&gt;</span></code></span></span>.</p>
+
+<p>My DMC for testing is ABCD\t1234 and generated using <span data-original-href="https://barcode.tec-it.com/de/GS1DataMatrix?data=ABCD%5Ct1234">this generator</span> it looks as follows:</p>
+
+<p><img alt="DMC ABCD\t1234" src="../assets/248d9582016aa7c4d3eef0ffeabdc8283be2134e7560b18bf873024b7b5caed2.gif" data-source-url="https://developer.zebra.com/sites/default/files/inline-images/Bild1.gif"></p>
+
+<p><span><span>Scanning this code with a DS2278 in USB HID keyboard emulating mode gives different results. The scanner is configured to add CRLF suffix:</span></span></p>
+
+<ul>
+	<li><span><span><span>Notepad++:</span></span></span></li>
+</ul>
+
+<p><span><span>       <img alt="Notepad++" src="../assets/3483b873d3f9f9c1f17f54b4a90dde935b7f5d438938c6a5419cba330247a23b.png" data-source-url="https://developer.zebra.com/sites/default/files/inline-images/Bild2.png"></span></span></p>
+
+<p><span><span>This is exactly what I expect.</span></span></p>
+
+<ul>
+	<li><span><span><span>Browser form:</span></span></span></li>
+</ul>
+
+<p><span><span>       <img alt="Browser form" src="../assets/2e4b26a979b38f87bb5dbc6dc5cdddc016813f33728d14cd03f568f6447dbdd2.png" data-source-url="https://developer.zebra.com/sites/default/files/inline-images/Bild3.png"></span></span></p>
+
+<p><span><span>There's a <code><span>&lt;TAB&gt;</span></code>, but it's differently handled than the <code><span>&lt;TAB&gt;</span></code> keyboard input, which sets the cursor to field "Password".</span></span></p>
+
+<ul>
+	<li><span><span><span>Excel:</span></span></span></li>
+</ul>
+
+<p><span><span>       <img alt="Excel" src="../assets/6f4447799fd6436abb074fab1651eddd934a80bf2eff37e3d3a394d67b0f6aaa.png" data-source-url="https://developer.zebra.com/sites/default/files/inline-images/Bild4.png"></span></span></p>
+
+<p><span><span>No <code><span>&lt;TAB&gt;</span></code>. Expectation: 1234 should be in cell B1, just like it would be when I entered ABCD<code><span>&lt;TAB&gt;</span></code>1234 using a "real" keyboard.<br>
+However: When I configure the DS2278 so that it appends <code><span>&lt;TAB&gt; </span></code>as a general suffix, it works! The cursor jumps to B1 after putting ABCD1234 in A1.</span></span></p>
+
+<p><span><span>In 123Scan DataView I see in both cases that a <code><span>&lt;TAB&gt; </span></code>is transmitted. I wonder what's the difference to a <code><span>&lt;TAB&gt;</span></code> in the DMC itself?<br>
+I have tried to increase the keystroke delay, it didn't help (actually I'm not sure if it worked at all).<br>
+How can I make the scanner to handle the <code><span>&lt;TAB&gt; </span></code>like a "normal" keyboard input? </span></span></p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+      <div class="field field--name-field-attachment field--type-file field--label-hidden field__items">
+              <div class="field__item">
+<span class="file file--mime-image-gif file--image"> <span data-original-href="/sites/default/files/user-uploads/2023/06/16/Bild1.gif">Bild1.gif</span></span>
+</div>
+          </div>
+  
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+        <div class="forum-topic__accepted-solution">
+      <div class="forum-topic__accepted-solution-badge">
+        <span class="forum-topic__accepted-solution-label">✓ Accepted Solution</span>
+      </div>
+      <div class="forum-topic__accepted-solution-content">
+          
+
+
+
+<article id="comment-51801" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              R
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Riad Benallou</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>looks like you need to enable function key mapping <br>
+check article  https://supportcommunity.zebra.com/s/article/Enter-and-Tab-keys-in-the-Scanned-Data-are-Not-Properly-Recognized-in-Some-Applications?language=en_US<br>
+<br>
+addtitionaly for more details you can check also the following which provide details on other USB / BT HID options that impact how data is sent to the host <br>
+https://supportcommunity.zebra.com/s/article/000026279?language=en_US</p>
+
+<p>Regards</p>
+
+<p>Riad</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+      </div>
+    </div>
+  
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      3 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-51801" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              R
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Riad Benallou</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>looks like you need to enable function key mapping <br>
+check article  https://supportcommunity.zebra.com/s/article/Enter-and-Tab-keys-in-the-Scanned-Data-are-Not-Properly-Recognized-in-Some-Applications?language=en_US<br>
+<br>
+addtitionaly for more details you can check also the following which provide details on other USB / BT HID options that impact how data is sent to the host <br>
+https://supportcommunity.zebra.com/s/article/000026279?language=en_US</p>
+
+<p>Regards</p>
+
+<p>Riad</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-51804" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              M
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Michael R</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Riad.</p>
+
+<p>Thanks! This did the trick. I wonder why the intelligent chatbot didn't show me the article you've linked... anyway, it works now. @Zebra: It's great to have that flexibility, but maybe it would be a good idea to enable function key mapping by default? I guess most users expect to have "normal" keys instead of some strange control-key sequences (which, to be honest, I didn't know before my DS2278 issue).</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-51805" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              R
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Riad Benallou</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Michael , in fact the barcode is encoding ascii decimal value 9 which per windows system translate to Ctrl + I and hence that's what the scanner is sending by default . The function key mapping will translate Ctrl I to the extended TAB key . Same apply to extended keys like ESC or Enter .</p>
+
+<p>Regards </p>
+
+<p>Riad</p>
+
+<p> </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/ds2278-different-transmission-character%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/ds2278-different-transmission-character%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

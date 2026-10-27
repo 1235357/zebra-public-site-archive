@@ -1,0 +1,170 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>How to print custom tag ID data via Zebra ZT410</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/how-print-custom-tag-id-data-zebra-zt410; snapshot threads/00057.html; SHA-256 8785a8ebaafba1c0174b7fc800042c2f5856ac97139ce692ee16c454c93306e6. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">How to print custom tag ID data via Zebra ZT410</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            M
+          </div>
+          <div class="forum-topic__author-name">Muhammad Azal</div>
+          <div class="forum-topic__timestamp">1 year 7 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            460
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Currently I'm using ZT410 printer and I've got issue where i need to print 16 characters on the RFID label, but when I'm trying to print using ZPL it will add additional padding '0' at the back after 16 characters. </p><p>Expectation: C1234567890876A<br>Result: c601146010001462a000ffff</p><p>Already done my research, seems like it is because of my EPC is 96-bit and to print 16 characters, had been tried change the EPC to 64 bit it would'nt working. Also tried to convert ASCII(C1234567890876A) into hexadecimal but the result is like this c601146010001462a000ffff and not as expected.</p><pre><code class="language-plaintext">Below is my code 
+
+BrowserPrint.getDefaultDevice("printer", function(device) {
+   if (!device) {
+       console.error("No printer found.");
+       return;
+   }
+   const testZPL = `
+     ^XA
+     ^RFW,H,0,8,0,4331323334353637^FS
+     ^RFR,H,0,8,0^FS
+     ^FO20,20^A0N,30,30
+     ^FD{R:9.16}^FS
+     ^XZ
+   `;
+   device.send(testZPL, function() {
+       console.log("ZPL sent!");
+       device.read(function(response) {
+           console.log("Printer Response:", response);
+       });
+   });
+});
+
+ </code></pre>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-54172" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Not a Printer-Specific response:   ( An EPC E2G2 spec compliant possible solution )</p><p>Some RFID options is to setup the "PC" {Protocol Control} word on the TAG to show only 4-words of EPC data.</p><p><br>In that manner if you are only writing the EPC with 64-bit data - the PC word when called on an inventory will only show the 64-bits (4-words) -- You could try setting the PC value (if you read it as "3000" hex,  and setup to "2000" hex for the PC word. <br>{ If the PC value is 3400 -- then try setting "2400" to see if this works too. }  Please Test this with Handheld RFID Readers just to confirm if this may work for you. </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/how-print-custom-tag-id-data-zebra-zt410%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/how-print-custom-tag-id-data-zebra-zt410%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

@@ -1,0 +1,364 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Which MX/OSX is Installed? - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/mx/mx-version-on-device</code><br>Observed final URL: <code>https://techdocs.zebra.com/mx/mx-version-on-device/</code><br>Raw source: <code>raw/7b7296661606b9b12ba73f2e.html</code><br>Raw SHA-256: <code>62ca7b964aeb78d74f92bf8ba98e1e6a33362cf6a16e0ff0bffc58c5666fd353</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About MX
+                            
+                        
+                        
+                            
+                                    ★ New in MX ★
+                            
+                        
+                        
+                            
+                                    MX Evolution
+                            
+                        
+                        
+                            
+                                    Feature Matrix
+                            
+                        
+                        
+                            
+                                    Mobile-display Problems?
+                            
+                        
+                        
+                            
+                                    Which MX/OSX is on my Device?
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Which MX/OSX is Installed?
+                        
+                    MX/OSX versions on the device can be determined:Using the Settings PanelIn the StageNow ClientUsing EMDK For AndroidSubmitting XMLUsing ADBOther useful ADB shell commands:Choosing an MX Version
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Which MX/OSX is Installed?
+                                    
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        
+
+MX/OSX versions on the device can be determined:
+
+
+Manually using the Settings panel on the device (not fully supported pre-KitKat)
+
+Manually in the StageNow client menu
+
+Programmatically using EMDK for Android
+
+By submitting XML to the MX CSP through Zebra StageNow (or EMDK and Profile Manager)
+
+Using adb to query a connected device from a PC or Mac 
+
+
+ Also see Android version numbers, API levels and code names 
+
+
+
+Using the Settings Panel
+
+The Settings panel of some devices running Android versions prior to Android KitKat 4.4 do not display MX and OSX information. To determine the MX and/or OSX version present on such a device, one of the other procedures must be used. 
+
+To view MX and/or OSX versions using the Settings panel: 
+
+1. In the Settings panel, tap &quot;About Device&quot; (or &quot;About Phone&quot;), then tap SW Components. 
+
+2. Locate MX in the list of components.   
+
+3. On most pre-L devices, the left-most two numerical digits indicate the major and minor MX and OSX versions. On devices running Android 5.x (Lollipop) and later, the first number following the letters on in OSX field still indicates the Android version (5=L, 6=M, etc.) but the full OSX major.minor version is indicated by the first two of the four digits at the end of the string. 
+
+
+Settings panel showing OSX 4.4 and MX 4.4
+
+
+
+Settings panel of a Zebra TC20 device showing OSX 7.3 (UL) and MX 7.0
+
+
+Note: On some older devices, version information is returned in two groups of digits separated by an underscore ( _ ) character. The numbers relevant to the version are those immediately following the underscore, as below:
+
+
+This panel shows OSX 4.2 running Android Jelly Bean (kernel 3.4.0)
+
+
+
+
+In the StageNow Client
+
+Most devices running Android 4.x (KitKat) and later include the StageNow client app, which is used for device configuration and management.  
+
+To view MX and OSX versions on the device using the StageNow client app: 
+
+1. Tap the StageNow client app on the device:
+
+
+
+2. Tap the menu and select &quot;View Client Info&quot;:
+
+
+
+3. MX and OSX versions are displayed:
+
+
+
+
+
+Using EMDK For Android
+
+Version numbers can be obtained programmatically through the VersionManager Android API in EMDK using the following Java code:
+
+
+// Get an instance of VersionManager
+versionManager = (VersionManager) EMDKManager.getInstance(EMDKManager.FEATURE_TYPE.VERSION);
+
+// Use the getVersion method, passing in the version_Type.mx enum
+mxVersion = versionManager.getVersion(VERSION_TYPE.MX)
+
+
+
+Submitting XML
+
+System Administrators can obtain version numbers through Zebra&#x27;s StageNow tools or a compatible mobile device management system by submitting the following XML to the MX CSP: 
+
+
+&lt;wap-provisioningdoc&gt;
+    &lt;characteristic type=&quot;MX&quot;&gt;
+        &lt;parm-query name=&quot;Version&quot;/&gt;
+    &lt;/characteristic&gt;
+&lt;/wap-provisioningdoc&gt;
+
+The result contains the MX version (which in this case is &quot;4.4&quot;) returned in the MXMFVersion parameter shown below: 
+
+ 
+&lt;wap-provisioningdoc&gt;
+    &lt;characteristic type=&quot;MX&quot; version=&quot;4.4&quot;&gt;
+        &lt;parm name=&quot;MXMFVersion&quot; value=&quot;4.4.3.6&quot;/&gt;
+    &lt;/characteristic&gt;
+&lt;/wap-provisioningdoc&gt;
+
+
+
+Using ADB
+
+The MX version can be obtained from a PC or Mac by querying a USB-connected device using the adb shell command shown below:
+
+$ adb shell getprop
+
+The output must be filtered using grep or a similar tool. For Zebra-branded devices, use the string ro.symbol.osx.version in the grep argument, as shown below with the result:
+
+$ adb shell getprop | grep ro.symbol.osx.version
+[ro.symbol.osx.version]: [QC_OSX_4.4-3]
+
+The result above shows a device with MX 4.4. The number following the hyphen (&quot;-3&quot;) indicates the release number of the latest OS patch applied to the device.
+
+For legacy Motorola Solutions-branded devices, use the string ro.motosln.enterprise.version in the grep argument, as shown below with the result:
+
+$ adb shell getprop | grep ro.motosln.enterprise.version
+[ro.motosln.enterprise.version]: [MX_TI4AJ.1.1_3.5.1-1]
+
+The result above shows a device with MX 3.5. 
+
+Other useful ADB shell commands:
+
+// get the OSx version:
+getprep ro.symbol.osx.version 
+
+// get the OS build version:
+getprep ro.build.display.id 
+
+//get the OS build date: (helps determine build differences)
+getprep ro.build.version.date 
+
+//get the device model: 
+getprep ro.product.device
+
+//get the Android version:
+getprep ro.build.version.release
+
+//get the Android security patch level:
+getprep ro.build.version.security_patch
+
+
+
+Choosing an MX Version
+
+To determine which versions of MX and OSX to target:
+
+
+List the features, capabilites and functions required of the device and its users. 
+
+Scan the CSP list to determine which CSPs are required to deliver the desired features. 
+
+Determine which MX and OSX versions deliver the required CSPs.
+
+Check which MX/OSX version is installed on the device to be targeted.
+
+
+
+
+About MX
+
+The MX Management System (MXMS) is an XML-based communication framework that provides an interface for managing the capabilities and behaviors of Zebra Android devices. This provides developers and administrators with an extensible, efficient, reliable and scalable means to configure and administer devices in their organization. 
+
+The OSX layer provides extensions to the base operating system to implement functionality not offered by Android. The root OSX version number always matches the root number of the Android version that it extends (i.e. OSX 5.x extends Android 5.x). The MX Management System provides a uniform interface into privileged and unprivileged Android APIs on the device. Some features require a specific pairing of MX and OSX versions, some are available using the Android version alone, and still others require a specific MX version plus a minimum version of Android.
+
+The versions of MX and/or OSX on a device determine whether certain settings and/or features are supported. The Zebra-proprietary OSX layer provides extensions to the base operating system to implement functionality not offered by Android. The root OSX version number always matches the root number of the Android version that it extends. For example, OSX 4.x will always be found on devices running Android 4.x. 
+
+The same is not always true of MX, which provides a uniform interface into privileged and unprivileged APIs on a variety of Android versions, but does not extend the OS. For some features, the Android version alone is enough to determine a feature set. For others, a specific pairing of MX and Android is required, and still others need a certain combination of MX and OSX. 
+
+Related guides: 
+
+
+EMDK for Android
+
+Setting up ADB
+
+Zebra StageNow
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

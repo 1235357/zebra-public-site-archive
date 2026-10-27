@@ -1,0 +1,582 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Scan available wireless networks - how to obtain security and encription type of SSID from results?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Scan available wireless networks - how to obtain security and encription type of SSID from results?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/scan-available-wireless-networks-how-obtain-security-and-encription-type-ssid-results; original snapshot: threads/00712.html; SHA-256: 31e25a4871593ea71ec13546c6aae236569e90fd88504143545aaf49fbb63e26</small><pre id="topic">
+
+    
+        Scan available wireless networks - how to obtain security and encription type of SSID from results?
+
+
+        
+      
+                        
+                    
+            J
+          
+          Jiri Mikeska
+          4 years ago
+        
+        
+      
+        
+            
+                  
+            
+            1090
+          
+                
+                  
+            
+            9
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello.
+We use in company hundreds of MC2180 device with Windows CE operating system.
+I need to obtain from the result of wireless network scan: security type and encription type of SSIDs. For example whether has concrete SSID access point security type WPA_PSK or WPA2_PSK or WEB and whether has concrete SSID access point encryption type AES or TKIP.
+But in returned EMDK structures NDIS_WLAN_BSSID I don&#x27;t see informations about it. Maybe they are not directly named with &quot;securityType&quot; and &quot;encryptionType&quot;, maybe they are &quot;hidden&quot; for my eyes.  In structure NDIS_WLAN_BSSID is byte array IEs, but I don&#x27;t know what means these byte values. Maybe they contains these informations about scanned SSID AP?
+I&#x27;m pretty sure that the information about the type of security and encryption in those returned structures is because when I perform a network scan directly in the operating system (Find WLANs) using Zebra Fusion tools and left-click on the founded access point and choose to &quot;Create a profile&quot;, the SSID profile creation wizard shows me correctly pre-bids both the security type and the encryption type.
+For find SSIDs/WLANS I am using this code:
+      WLAN.Adapters[0].NDIS.BSSIDList.Scan();
+      WLAN.Adapters[0].NDIS.BSSIDList.Get();
+      ArrayList al = WLAN.Adapters[0].NDIS.BSSIDList.BSSIDList;
+or
+      ArrayList al = WLAN.Adapters[0].GetSSIDs();
+or
+      ArrayList al = WLAN.Adapters[0].GetAccessPoints(SSID_name);
+How to parse from &quot;al&quot; variable the type of security and the type encryption of found wireless access point?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      9 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Aimee Duffy
+          
+          
+            2 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You can learn more how to do it through the instructions here https://techdocs.zebra.com/bestpractices/migration/ mario games
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            jason bevis
+          
+          
+            1 year 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Need help getting started? Follow these https://techdocs.zebra.com/bestpractices/migration/ Sprunki instructions to learn how.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              Q
+            
+          
+                
+          
+            Quinell Carr
+          
+          
+            1 year 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            To obtain the security type (e.g., WPA2, WPA3, WEP) and encryption protocol (e.g., AES, TKIP) of available Wi-Fi networks (SSIDs)
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            jacin da
+          
+          
+            1 year 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            To obtain the security and encryption types from the NDIS_WLAN_BSSID structure, you may need to parse the Information Elements (IEs) within the byte array. These IEs often contain details about the network&#x27;s security settings, such as WPA_PSK, WPA2_PSK, or WEB, and encryption types like AES or TKIP. You can refer to the IEEE 802.11 standards documentation for a detailed breakdown of IE formats. Additionally, tools like Zebra Fusion might be interpreting these IEs internally to display the correct security and encryption types. For further assistance, consider exploring &lt;a href=&quot;https://webpconvert.net/&quot;&gt;Webp To Png&lt;/a&gt; for efficient file conversion needs.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            jacin da
+          
+          
+            1 year 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You can learn more how to do it through the instructions here https://techdocs.zebra.com/bestpractices/migration/ Webp To Png
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              T
+            
+          
+                
+          
+            tom petty
+          
+          
+            1 year 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Need help getting started? Follow these https://techdocs.zebra.com/bestpractices/migration/ personal loan instructions to learn how.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              I
+            
+          
+                
+          
+            iron fu
+          
+          
+            1 year 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Passionate about discovering and sharing the best online games, I love exploring interactive experiences that challenge and entertain players of all ages. Whether you’re a fan of puzzle adventures like GeoGuessr Free, endless arcade action with Crossy Road, or addictive clicker fun in Cookie Clicker 2 Unblocked, I’m always on the lookout for the next big hit. For those who crave excitement behind the wheel, check out Drive Beyond Horizons Play Free Online. And if you’re after rewards and bonuses, don’t miss out on  Coin Master Free Spins. Let’s connect and dive into the world of online gaming together!
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              I
+            
+          
+                
+          
+            iron fu
+          
+          
+            1 year 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            If you love exploring the world from your desk, GeoGuessr is the perfect game for you. It drops you into a random location on Google Street View, and your challenge is to figure out where you are. Want to try it out for free? Check out GeoGuessr Free for an exciting virtual adventure.For fans of endless arcade fun, Crossy Road is a must-play. Guide your character across busy roads and rivers, dodging obstacles and collecting coins. Play now at Crossy Road and see how far you can get!If you have a sweet tooth for idle games, Cookie Clicker 2 Unblocked lets you bake cookies and upgrade your empire endlessly. Start clicking and growing your bakery at Cookie Clicker 2 Unblocked.Ready for a driving challenge? Drive Beyond Horizons lets you test your skills on thrilling tracks and explore new worlds. Play for free at Drive Beyond Horizons.Looking for daily rewards in a popular mobile game? Get your Coin Master Free Spins and boost your chances of winning big in Coin Master!
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Aaron Sun
+          
+          
+            1 year 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Need help getting started? Follow these https://techdocs.zebra.com/bestpractices/migration/ Cartoon Network Games instructions to learn how.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

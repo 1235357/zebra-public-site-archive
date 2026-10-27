@@ -1,0 +1,291 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>No Response From SendFileToPrinter</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>No Response From SendFileToPrinter</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/no-response-sendfiletoprinter; original snapshot: threads/00874.html; SHA-256: d128a2517693d1cac9bba35ec4e83f73535e0bbaac473430dc879bea368e88ad</small><pre id="topic">
+
+    
+        No Response From SendFileToPrinter
+
+
+        
+      
+                        
+                    
+            B
+          
+          Babatunde Akinyanmi
+          4 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            99
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m able to send ZPL commands to my printer using Postman. But when I try it with python (python-requests), it doesn&#x27;t get to the printer and no response comes back i.e it does not throw an exception, the timeout does not trigger. Is there any restrictions I should be aware of when calling the endpoint from code?
+Please see my code below:
+&lt;code&gt;
+from requests import post
+...
+response = post(
+            url=&quot;https://api.zebra.com/v2/devices/printers/send&amp;quot;,
+            headers={
+                &quot;Content-Type&quot;: &quot;multipart/form-data&quot;,
+                &quot;apikey&quot;: &quot;XXXXX&quot;,
+                &quot;tenant&quot;: &quot;XXXXX&quot;
+            },
+            files={
+                &#x27;zpl_file&#x27;: (&#x27;label.zpl&#x27;, open(&#x27;/home/tunde/Downloads/label.zpl&#x27;, &#x27;rb&#x27;)),
+                &#x27;sn&#x27;: &quot;D2N203900310&quot;
+            },
+            timeout=10
+        )
+...
+&lt;/code&gt;
+Any help will be appreciated
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Babatunde Akinyanmi
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I made a bit of progress by using urllib3. This time, I get the following error:
+```
+b&#x27;{&quot;fault&quot;:{&quot;faultstring&quot;:&quot;Execution of JS-ExtractPrinterList failed with error: Javascript runtime error: \\&quot;TypeError: Cannot read property \\&quot;1\\&quot; from null. (JS-ExtractPrinterList.js:7)\\&quot;&quot;,&quot;detail&quot;:{&quot;errorcode&quot;:&quot;steps.javascript.ScriptExecutionFailed&quot;}}}&#x27;
+```
+Can anyone point me in the right direction?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            It looks like the server cannot parse the multipart body of the request. If you are able to print out the body of the request, make sure that the format of the body complies with the following format. There should be no additional header in each part and the double quotes are properly placed around the keys, such as &quot;sn&quot;, &quot;zpl_file&quot;, etc. Sometimes, the Content-Length is placed in the file part by the 3rd party library, which needs to be removed. Otherwise, the extra content header will cause the parser error.
+--203fab52-5a95-4e51-9e5c-53248aae2256
+Content-Disposition: form-data; name=&quot;sn&quot;
+
+XXZJJ174600934
+--203fab52-5a95-4e51-9e5c-53248aae2256
+Content-Disposition: form-data; name=&quot;zpl_file&quot;; filename=&quot;HelloWorld.txt&quot;
+Content-Type: text/plain
+
+^XA^FO50,50^ADN,36,20^FDHello World!^FS^XZ
+--203fab52-5a95-4e51-9e5c-53248aae2256-- 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Babatunde Akinyanmi
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you so much for these tips. It was helpful and I&#x27;ve gotten it to work
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

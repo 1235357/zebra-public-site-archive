@@ -1,0 +1,232 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>In-build reader not found in TC53e-RFID device using SDK 2.0.3.162</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>In-build reader not found in TC53e-RFID device using SDK 2.0.3.162</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/build-reader-not-found-tc53e-rfid-device-using-sdk-203162; original snapshot: threads/00099.html; SHA-256: ab1e9cee7067bcfe2bd8e1a344135ee012c1159a952e29fc1e56685f14a88f05</small><pre id="topic">
+
+    
+        In-build reader not found in TC53e-RFID device using SDK 2.0.3.162
+
+
+        
+      
+                        
+                    
+            C
+          
+          chetan patel
+          1 year 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            280
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Helloi am cordova developer and i am trying to create cordova plugin for TC53e-RFID device using SDK 2.0.3.162 for our applicationhttps://www.zebra.com/us/en/support-downloads/software/rfid-software/rfid-sdk-for-android.html?downloadId=37746677-7567-4b97-a54b-33dce8bdb7c2Currently, the problem is that the in-build reader is not being foundusing context = cordova.getActivity().getApplicationContext();readers = new Readers(context, ENUM_TRANSPORT.RE_SERIAL);availableRFIDReaderList = readers.GetAvailableRFIDReaderList();got error when run &quot;readers.GetAvailableRFIDReaderList()&quot;also i directly tried to get ReaderDevice using ReaderDevice readerDevice12 = new ReaderDevice(&quot;RE40&quot;, &quot;COM_PORT&quot;, new RFIDReader(&quot;RFIDTC53E&quot;, 921600, &quot;RE_SERIAL&quot;));but still got same error.can please suggest any case that can be use in our plugin and read data from Tag.I faced one issue regarding USB cable.if in-build reader is connected in &quot;123RFID Mobile&quot; or &quot;HH sample&quot; application and i connect cable in mobile then reader is auto disconnect.please provide developer document for find in-build reader and how to connect reader.i also checked 123RFID Mobile application for test, it is working fine as expected and i need to get same result using cordova plugin.https://play.google.com/store/apps/details?id=com.zebra.rfidreaderAPI.demo&amp;hl=en_INThank you
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            1 year 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I would have Expected this for RFID SDK V2.0.3.162 two seeks ago.That RFID SDK is not compatible with the RE40E used on the TC53E-RFID - device.Please use RFID SDK V2.0.4.177 for Android Studio - at this point.  (MAUI is being developed and expected later in End of Q1-Early-Q2 timeframe)I have updated the TC53E-RFID to the up-to-date A13 (13.24.08 U00) &lt;2025-01-17&gt;  and V2.0.4.177 HHSampleApp - works, as does 123RFID Mobile V2.0.4.177 from GMS Play Store. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            6 months 2 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            FYI - a further update - RFID SDK V2.0.5.238 - is the most compatible to all the Zebra RFID Handheld Platforms.The HHSampleApp Project inside the RFID SDK for Android Studio - still uses the Older Connection Method - and modifying the following Enumerate portion of Code in the RFIDHandler.java  Source file will allow the app to connect to the wider series of devices / RFID NGE enegines.&lt;snip&gt;  // Enumerates SDK based on host device
+   private class CreateInstanceTask extends AsyncTask&lt;Void, Void, Void&gt; {
+       private InvalidUsageException invalidUsageException = null;
+       @Override
+       protected Void doInBackground(Void... voids) {
+           Log.d(TAG, &quot;CreateInstanceTask&quot;);
+           try {
+               readers = new Readers(context, ENUM_TRANSPORT.BLUETOOTH);
+               availableRFIDReaderList = readers.GetAvailableRFIDReaderList();
+               if(availableRFIDReaderList.isEmpty()) {
+                   Log.d(TAG, &quot;Reader not available in SERVICE_USB Transport trying with BLUETOOTH transport&quot;);
+                   readers.setTransport(ENUM_TRANSPORT.BLUETOOTH);
+                   availableRFIDReaderList = readers.GetAvailableRFIDReaderList();
+               }
+               if(availableRFIDReaderList.isEmpty()) {
+                   Log.d(TAG, &quot;Reader not available in BLUETOOTH Transport trying with SERVICE_SERIAL transport&quot;);
+                   readers.setTransport(ENUM_TRANSPORT.SERVICE_SERIAL);
+                   availableRFIDReaderList = readers.GetAvailableRFIDReaderList();
+               }
+               if(availableRFIDReaderList.isEmpty()) {
+                   Log.d(TAG, &quot;Reader not available in SERVICE_SERIAL Transport trying with SERVICE_USB transport&quot;);
+                   readers.setTransport(ENUM_TRANSPORT.SERVICE_USB);
+                   availableRFIDReaderList = readers.GetAvailableRFIDReaderList();
+               }
+               if(availableRFIDReaderList.isEmpty()) {
+                   Log.d(TAG, &quot;Reader not available in SERVICE_USB Transport trying with RE_SERIAL transport&quot;);
+                   readers.setTransport(ENUM_TRANSPORT.RE_SERIAL);
+                   availableRFIDReaderList = readers.GetAvailableRFIDReaderList();
+               }
+           } catch (InvalidUsageException e) {
+               invalidUsageException = e;
+               e.printStackTrace();
+           }
+           return null;
+       }&lt;/snip&gt;Adding this to the 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

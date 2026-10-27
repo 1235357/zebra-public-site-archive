@@ -1,0 +1,181 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Problem using EMDK for Android getting ClassNotFoundException</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Problem using EMDK for Android getting ClassNotFoundException</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/35230; original snapshot: threads/resume-00239.html; SHA-256: d54d068a0e1a10584559eb9973f1f6184e2f673fc893cd70fb3db7548c11b531</small><pre id="topic">
+
+    
+        Problem using EMDK for Android getting ClassNotFoundException
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            205
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m using the latest release of the Android EMDK with Android Studio version 2.3. 
+ 
+I&#x27;ve imported the com.symbol.emdk.jar file and added it as a dependency to my project.
+ 
+I&#x27;ve added  to my manifest.
+ 
+Then when I implement the EMDKListener on my main activity as follows:
+ 
+public class GLinkInstallActivity extends AppCompatActivity implements EMDKListener
+ 
+and then add the implemented methods, I get the ClassNotFoundException when I try to execute the application.  Removing the &quot;implements EMDKListener&quot; will fix the problem, but that defeats the purpose.
+ 
+My build.gradle file is as follows:
+ 
+apply plugin: &#x27;com.android.application&#x27;android {
+  compileSdkVersion 25   buildToolsVersion &quot;26.0.2&quot;   defaultConfig {
+  applicationId &quot;com.zebra.glinkinstall&quot;   minSdkVersion 19   targetSdkVersion 23   versionCode 1   versionName &quot;1.0&quot;   testInstrumentationRunner &quot;android.support.test.runner.AndroidJUnitRunner&quot;   }
+  buildTypes {
+  release {
+  minifyEnabled false   proguardFiles getDefaultProguardFile(&#x27;proguard-android.txt&#x27;), &#x27;proguard-rules.pro&#x27;   }
+  }
+  productFlavors {
+  }
+}
+ 
+dependencies {
+  compile fileTree(include: [&#x27;*.jar&#x27;], dir: &#x27;libs&#x27;)
+  androidTestCompile(&#x27;com.android.support.test.espresso:espresso-core:2.2.2&#x27;, {
+  exclude group: &#x27;com.android.support&#x27;, module: &#x27;support-annotations&#x27;   })
+  compile &#x27;com.android.support:appcompat-v7:25.3.1&#x27;   compile &#x27;com.android.support:support-v4:25.3.1&#x27;   testCompile &#x27;junit:junit:4.12&#x27;   provided project(&#x27;:com.symbol.emdk&#x27;)
+}
+ 
+ 
+Any ideas as to what I&#x27;m missing?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Solved my own problem.&amp;nbsp; Wish the EMDK group would document this in their help files.&amp;nbsp; In order to include com.symbol.emdk.jar into a project, you need to:
+Use &quot;Import Module&quot; to import the jar into your Android Studio Project.
+Modify the AndroidManifest.xml for your application to include the permission &quot;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

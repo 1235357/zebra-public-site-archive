@@ -1,0 +1,150 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Issues using ResultReceiver with PrintConnect (Android 13)</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Issues using ResultReceiver with PrintConnect (Android 13)</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/issues-using-resultreceiver-printconnect-android-13; original snapshot: threads/00409.html; SHA-256: a25c260b4e7c816285a82a11101a9ccbc1e1a3984efb40fc8f3483d3da5151e4</small><pre id="topic">
+
+    
+        Issues using ResultReceiver with PrintConnect (Android 13)
+
+
+        
+      
+                        
+                    
+            S
+          
+          S Solbeck
+          2 years 10 months ago
+        
+        
+      
+        
+            
+                  
+            
+            193
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,We have an Android app which uses the PrintConnect app to handle connecting to receipt printers. After the recent update to support Android 13, we are finding that the callback function associated with the passthrough service intent (com.zebra.printconnect.PrintService.RESULT_RECEIVER) is no longer being called. We are registering this callback as described in the Zebra PrintConnect User Guide and examples there, but I do note that guide is dated 2015, so perhaps that interface has changed with the latest updates.Are there changes to how service intent callbacks are registered with PrintConnect? And if so, can we get updated documentation that reflects that?Thank you!     
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Since Android Oreo (Android 8), it is required to use the startForegroundService() to send an intent to another app. Starting with the PrintConnect v1.2.95, please replace all the occurrences of the startService() in your app with the following code, and your app should work as expected.
+if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.O) {
+    activity.startForegroundService(printerStatusIntent);
+} else {
+    activity.startService(printerStatusIntent);
+}
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

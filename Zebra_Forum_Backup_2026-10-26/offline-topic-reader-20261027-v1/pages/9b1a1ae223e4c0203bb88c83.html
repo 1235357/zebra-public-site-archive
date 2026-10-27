@@ -1,0 +1,373 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>IE Content cache OEM 35</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>IE Content cache OEM 35</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/24253; original snapshot: threads/01317.html; SHA-256: c14ffcbfba3731cf85aa3fca29a97079401efefcb7f1eb7d3bbd79b043e45557</small><pre id="topic">
+
+    
+        IE Content cache OEM 35 
+
+
+        
+      
+                        
+                    
+            H
+          
+          Herbert De Jong
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            24
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  case 2039626 23 dec 2009 13:00 pm GMT +1 MC75 OEM 35 IE Content cache OEM 35  slowing down.  question raised by Moto TA that MC75 is PIE slowing down because of large Content Cache on
+\Windows\Profiles\guest\Temporary Internet Files  after some research found following:   
+ 
+PEB #: PEB0106A  mentioning changes in this area for OEM 35 MC55 - MC75 - VC6096
+Changed IE Cache entries to take default values from MSFT (CacheLimit=5MB).
+- IE Cache gets pointed to Persistent store (\\Windows) so that we can have much larger data limit for IE browsing.
+ Comparing registries of MC75 OEM 27.3 i see that   following is being used for Content Cache  \Cache Disk\Profiles\guest\Temporary Internet Files  the limit is set to: 
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\Content:CacheLimit  set to  46627   (B623) hex
+Comparing registries of MC75 OEM 35 i see that   following is being used for Content Cache  \Windows\Profiles\guest\Temporary Internet Files
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\5.0\Cache\Content:CacheLimit  set to  5120   (1400)
+so now the question  How is the OEM 35 handling clearing the Internet Explorer Content Cache ?  i experimented a bit and dont see any mechanisme that clears the Content Cache on \Windows\Profiles\guest\Temporary Internet Files ?  on OEM 27 the Content Cache is on Cache Disk and is cleared on a warmboot.   
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            George Dellaratta
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            According to Microsoft there is no automatic way to clear the entire cache.&amp;nbsp; The suspicion is that when the cache was stored in Cache Disk, it was cleared as a matter of course during normal operation (reboots, etc.)&amp;nbsp; Now that it is in persistent store, it must be cleared manually.&amp;nbsp; Microsoft has provided two APIs:   DeleteUrlCacheEntry and FreeUrlCacheSpaceA both are exported from WININET.DLL
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Herbert De Jong
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            George thanks for the clarification.   If i understand correct&amp;nbsp;the following is changed.   On &amp;nbsp;OEM 27 the IE temporary files were stored on Cache Disk by default.  so even without the MS mechanisme these temp files were deleted after a warmboot because of the Cache Disk behavior.   On OEM 35 IE temporary files are in Program store with a size limit of 5mb.  if that limit is reached then MS mechanisme&amp;nbsp;starts&amp;nbsp;to&amp;nbsp;remove some files.   Now to the TA complaint he is saying that when the cache in Program store is full the device is slowing down.   is there someway to check if the MS mechanisme is working as designed or what the CPU usuage is of this process.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Herbert De Jong
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Maybe also good to communicate this change of behavior around temporary internet files on OEM&amp;nbsp;35&amp;nbsp;to a wider audience.   AFAIK a wide audience is under the impression that default behavior of Cache Disk is taking care of&amp;nbsp;clearing temporary internet files, as it one of our&amp;nbsp;Value adds.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            George Dellaratta
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I think that there are really 2 distinct questions stuck in there.   1) What mechanism is used to clear the cache?  2) Why was the cache parameters changed in BSP35?   I have some answers to #1 and I&#x27;m waiting for answers to #2.   1) From Microsoft, the CacheLimit value describes the maximum size to be used to store IE data.&amp;nbsp; When the limit is reached and a new entry is required, IE will use a number of parameters to decide which of the existing entries need to be removed.&amp;nbsp; IE will look at size, hit rate, age and other factors to decide which existing entries to be removed.&amp;nbsp; At no time will the entire cache be erased automatically.&amp;nbsp; A user needs to perform that function manually.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Herbert De Jong
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            bump , any answer is appreciated around this topic
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

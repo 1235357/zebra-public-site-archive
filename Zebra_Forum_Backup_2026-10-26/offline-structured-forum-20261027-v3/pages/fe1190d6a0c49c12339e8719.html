@@ -1,0 +1,392 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>CORS policy problem with Zebra Printers</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/cors-policy-problem-zebra-printers; snapshot threads/00553.html; SHA-256 dd465db922d76c3bd5ab437f6bf0519b2ab38e83f36b10844431780df7e005c5. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">CORS policy problem with Zebra Printers</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            B
+          </div>
+          <div class="forum-topic__author-name">Brian Wilson</div>
+          <div class="forum-topic__timestamp">3 years 4 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            1461
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            5
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>I suppose this isn't directly browser print related, but I am attempting to either use BrowserPrint which I can't get working at all or simply a post request to http://{printerIP}/pstprnt to print qr codes on a Zebra ZT230. </p>
+
+<p> </p>
+
+<p>The post request method is working successfully in development, but the moment I deploy my application and either attempt to hit the printer with a post request at HTTP or HTTPS, I am blocked by CORS policy, and I am reading that this is because the printer does not send back a header with Access-Control-Allow-Origin: "*".</p>
+
+<p> </p>
+
+<p>It's a bit frustrating that there is such a lack of documentation and nothing but outdated SDK's surrounding these printers. Is there anyone who has successfully deployed an app or knows how to work past this CORS error? If this can work, I wouldn't touch browser print with a 10 foot pole. I just need to be able to print a label on demand from my web app, and like I said, it's working in development but not in deployment.</p>
+
+<p> </p>
+
+<p>I am using a Next.js (React) app with an ASP.NET Cor Web API backend. I am working behind a pretty strict corporate proxy as well, and the client-side request I showed above to the pstprnt endpoint is the only thing that seemed to even have a chance of working, and then the CORS issue popped up.</p>
+
+<p> </p>
+
+<p>This issue is mentioned here:</p>
+
+<p> </p>
+
+<p>https://supportcommunity.zebra.com/s/question/0D56S00009DYjcjSAD/has-browserprint-stopped-working-in-chrome-due-to-cors-issue?language=en_US</p>
+
+<p> </p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      5 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-51790" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>There is a mini webservice built into the firmware of Zebra printers that accepts the http://{printerIP}/pstprnt POST request for printing. This mini webservice has not been updated for awhile and does not handle more modern security improvements in browsers. That's why the CORS errors pop up, though the print will happen correctly. The pstprint is still an option for printing from browsers, if the web application can accept or ignore this particular CORS error.</p>
+<p>For the Browser Print, it is a better option than the pstprnt. The Browser Print supports Windows, MacOS and Android, and supports the network, USB or Bluetooth (for Android) connected printers. Besides, the Browser Print gets updated on a regular basis. The Browser Print requires a local client app runs in background that bridges the communication between the web app running in the browser and the printers connected via network, USB or Bluetooth (for Android).</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-51797" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              B
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Brian Wilson</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi there and thank you for your response.</p>
+
+<p>I have to say the installation of an app is not ideal for any app that is intended to scale widely, though it’s not egregious either given that getting an installation on any computers that need the browser print bridge app is not a huge deal.</p>
+
+<p>Do you know if the Asp.Net SDK “Zebra.Printing.SDK” (or whatever it is, sorry I’m not at the computer right now) has any issues with this? If I were to utilize it in an ASP.NET core web api from server side rather than client side, maybe that would bypass any issues?</p>
+
+<p>I will have to test it tomorrow to find out I suppose..</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-51799" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>The Zebra.Printer.SDK is meant for the .NET Framework for building desktop applications. Instead of building your own Webservice, the simplest and easiest way for printing from a web app would be the <span data-original-href="https://developer.zebra.com/apis/sendfiletoprinter-model#/default/SendFiletoPrinter">SendFileToPrinter API</span>, which is a REST API that can be called from anywhere in any programming language. See this article for more details about this API: <span data-original-href="https://developer.zebra.com/blog/use-sendfiletoprinter-api-your-cloud-based-printing-needs">Use the SendFileToPrinter API for Your Cloud-Based Printing Needs</span>.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-53721" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              R
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Reinout Mechant</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 10 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi,</p><p>I tested with Browser Print (on Mac), but I always get a CORS error (just fetching the printer list). So it appears that Browser Print also has limited CORS to 127.0.0.1.</p><p>It is actually strange, using Chrome, in a webapplication on a domain, but when I activate BrowserPrint in that application (latest SDK), I get a popup in BrowserPrint to allow 127.0.0.1 (instead of my domain name). After that I always get the CORS error saying that my domain name is not equal to 127.0.0.1 as the allowed origin...</p><p>I even tried the <span data-original-href="https://cagdemo.com">https://cagdemo.com</span> site, but also there same issue.</p><p>Thanks for your help;</p><p>Kind regards,</p><p>Reno</p><p> </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-52885" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              R
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Robert Hamilton</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 3 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I was able to post-print from a hosted SPA directly to a local printer, but there were a couple of hoops:</p><ol><li>Install a certificate on the printer to get around the browser's mixed content (https &gt; http) restriction.</li><li>Add the 'mode' property with value 'no-cors' to the request.</li></ol><p>Getting the certificate loaded on the printer was the most challenging part. I ended up leveraging Zebra's <span data-original-href="https://supportcommunity.zebra.com/s/article/000022515?language=en_US">Print Secure Demo App</span> by replacing the files in the 'demo-certs' folder with my own. I generated the private key and CSR using OpenSSL, and got a wildcard certificate from GoDaddy. When using OpenSSL, be sure the private is produced unencrypted. The file 'HTTPS_KEY.NRD' contains the private key and 'HTTPS_CERT.NRD' contains the certificate. If you do end up using something from a certificate authority, you'll need to add the chain file 'HTTPS_CA.NRD' to the 'demo-certs' folder and update the 'ZEBRA-PRINTSECURE_DEMO_SCRIPT.bat' file to push that file to the printer as well. You can get the contents for the chain file by copying your certificate (PEM) into any certificate chain composer / resolver online. I used this <span data-original-href="https://tools.keycdn.com/certificate-chain">one</span>. You're looking for everything that comes after the certificate you pasted in.<br><br>Once I had my certificate on the printer, it printed fine, but I was still getting that error in DevTools. I was able to remove that error with step 2 above. When you do this, CORS is still implemented. This just tells the browser that you're not looking for a response, so it makes the request <span data-original-href="https://developer.mozilla.org/en-US/docs/Web/API/Request/mode">CORS-safe</span> and doesn't warn that anything was blocked. Note: In this case, CORS doesn't block the request, <span data-original-href="https://ieftimov.com/posts/deep-dive-cors-history-how-it-works-best-practices/">it blocks the response</span>. You'll still get a 200 OK from the printer though.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/cors-policy-problem-zebra-printers%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/cors-policy-problem-zebra-printers%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

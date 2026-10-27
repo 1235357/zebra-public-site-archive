@@ -1,0 +1,499 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Scanner - Programmatically make a beep sound (c#)</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Scanner - Programmatically make a beep sound (c#)</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/scanner-programmatically-make-beep-sound-c; original snapshot: threads/00726.html; SHA-256: c6408a0ec5bbfc1231c63fc0a92ad1e5162a51e3fcea90337d3871d640052790</small><pre id="topic">
+
+    
+        Scanner - Programmatically make a beep sound (c#)
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          4 years ago
+        
+        
+      
+        
+            
+                  
+            
+            1040
+          
+                
+                  
+            
+            7
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi, I am new to programming for Zebra devices.
+I am using .NET (C#) to connect to the Zebra ring scanner via SerialPort.
+When the data is scanned - the application analyzes it. And I want the scanner to beep if the data is incorrect.
+How can it be implemented?
+I have found an answer to my question, but the solution is for HoneyWell scanner.
+https://support.honeywellaidc.com/s/article/How-to-send-a-beep-from-the…
+Is there something similar for the Zebra scanner and, if yes, how can I make the scanner beep using .net?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      7 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Could you specify the zebra scanner you have ?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              V
+            
+          
+                
+          
+            Valery Sh
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            It&#x27;s RS5100
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There are few options :
+If using BT serial SPP you can check the list of special characters including BEL
+ASCII 0x07 one listed within the manual in page 58 .
+https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/mobile-com…
+Is the BEL beep only requirement? Using SDK you could simplify the pairing process without having to set serial port and allow to control LED, different beep sequence as well mich more .
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              V
+            
+          
+                
+          
+            Valery Sh
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I can not use the SDK in this project. Could you show a code example of how to send the 0x07 signal to the scanner
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            suggest you run quick test using putty just to verify there is no connection or config issues . once you open port using puty pressing Ctrl G should make scanner Beep  .
+Regarding the code , see below snippet using SerialPort.Write(Byte[], Int32, Int32) method .
+var content = new List();
+content.Add(7); // ASCII BEL
+byte[] buffer = content.ToArray();
+serialPort1.Write(buffer, 0, buffer.Length);
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              V
+            
+          
+                
+          
+            Valery Sh
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank You a lot! It worked
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            We are happy to help
+For more advanced feature you can use SSI supported in all Zebra Scanners over RS232 , BT Serial or USB CDC and which is
+Check the SSI programmer guide https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/barcode-sc…
+Which allows a programmer to open a virtual com port over a Bluetooth connection and issue commands that control a cordless scanner. This solution utilizes the pre-existing Bluetooth driver of the host OS to establish communication between the scanner and host.
+Application functionality can include:
+• Receiving bar code data.
+• Command and control
+• Get/Set symbologies
+• Control Beeper/LED
+• Enable/disable the vibrator
+• Scanning control (enable/disable scanning and host applications initiated triggering).
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

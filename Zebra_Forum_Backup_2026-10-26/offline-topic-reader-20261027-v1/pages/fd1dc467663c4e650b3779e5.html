@@ -1,0 +1,226 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Print a .ZPL file to the Windows printer from notepad or from Visual C Software</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Print a .ZPL file to the Windows printer from notepad or from Visual C Software</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25893; original snapshot: threads/resume-00586.html; SHA-256: c9c7d25fae35dcf9b14943850b6ccc820df07efe94b4009726dfcdaa68c0b1ab</small><pre id="topic">
+
+    
+        Print a .ZPL file to the Windows printer  from notepad or from Visual C Software
+
+
+        
+      
+                        
+                    
+            E
+          
+          Evandro Kalfelz Schmitz
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            948
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m a developer
+I have the following environment:
+A- Zebra ZD500R (passive RFID printer)
+Windows 10 with Zebra connected to USB
+B- Azure system with Windows Server 2019 and connections using Terminal Services
+In Azure I developed a Windows .exe software
+I need to print from my Windows .exe software on Azure to the local Windows 10 printer
+My system generates the .ZPL file with the commands
+On local Windows 10, printing the .ZPL file to Zebra using Zebra Setup Utilities works well
+But opening the .ZPL file in Notepad and sending it to the printer doesn&#x27;t work
+Some guys told me that it only works if I send the file to LPT1:,  using net use LPT1: \\ computer \ printer
+But windows 10 does not allow me to use net use (error after entering the password), nor Azure
+I tried:
+A- Share the local Zebra printer on Windows 10 - ok
+B- Net use in Windows 10 - Not ok
+C- Share the redirected terminal service Zebra (TS00089)  in Azure Windows 2019 Terminal Services - as an administrator, it does not allow me to share
+D- Network usage in Azure Windows 2019 Terminal Services - not ok
+How can I send print data directly to Zebra from my .EXE application without using LPT1?
+I need to send to the windows printer directly  (using the windows printer driver)
+(all other normal printers work fine on my .exe system on Azure (normal reports to local laser printers for instance)
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Brad Allen
+          
+          
+            5 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Add the below to make a new class RawPrinterHelper.
+After installing the printer in Windows, use the EXACT printer name as shown in Windows, a document name to view in the Windows Print spooler, and the ZPL.
+RawPrinterHelper.SendStringToPrinter(&quot;My USB Printer&quot;,&quot;Test Label Job 1&quot;,&quot;^XA^FO100,100^A0N,50,50^FDHello^FS^XZ&quot;);
+To test, you can Pause the printer in its queue in Windows, then call the function. You should see the print job spooled in the queue and can then unPause to print just like any other normal print job. This works for all connection types and it doesn&#x27;t even matter what actual driver you set up. For example, you can set up Generic, Text Only for any printer. But the port info you set up has to be correct. Hope it helps.
+using System;
+using System.Text;
+using System.Runtime.InteropServices;
+    public struct DOCINFO
+    {
+        public string pDocName;
+        public string pOutputFile;
+        public string pDataType;
+    }
+    public class RawPrinterHelper
+    {
+        [DllImport(&quot;winspool.drv&quot;, CharSet = CharSet.Ansi, ExactSpelling = false, CallingConvention = CallingConvention.StdCall)]
+        public static extern long OpenPrinter(string pPrinterName, ref IntPtr phPrinter, int pDefault);
+        [DllImport(&quot;winspool.drv&quot;, CharSet = CharSet.Ansi, ExactSpelling = false, CallingConvention = CallingConvention.StdCall)]
+        public static extern long StartDocPrinter(IntPtr hPrinter, int Level, ref DOCINFO pDocInfo);
+        [DllImport(&quot;winspool.drv&quot;, CharSet = CharSet.Auto, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+        public static extern long StartPagePrinter(IntPtr hPrinter);
+        [DllImport(&quot;winspool.drv&quot;, CharSet = CharSet.Ansi, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+            public static extern long WritePrinter(IntPtr hPrinter, byte[] data, int buf, ref int pcWritten);
+        [DllImport(&quot;winspool.drv&quot;, CharSet = CharSet.Auto, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+            public static extern long EndPagePrinter(IntPtr hPrinter);
+        [DllImport(&quot;winspool.drv&quot;, CharSet = CharSet.Auto, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+            public static extern long EndDocPrinter(IntPtr hPrinter);
+        [DllImport(&quot;winspool.drv&quot;, CharSet = CharSet.Auto, ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+            public static extern long ClosePrinter(IntPtr hPrinter);
+        public static bool SendStringToPrinter(string printerName, string docname, string outputString)
+        {
+            bool bSuccess;
+            bSuccess = SendBytesToPrinter(printerName, docname, Encoding.ASCII.GetBytes(outputString));
+            return bSuccess;
+        }
+        public static bool SendBytesToPrinter(string printerName, string docname, byte[] byteData)
+        {
+            int dwError = 0;
+            int dwWritten = 0;
+            IntPtr hPrinter = new IntPtr(0);
+            DOCINFO di = new DOCINFO();
+            bool bSuccess = false;
+            di.pDocName = docname + Convert.ToByte(0);
+            di.pDataType = &quot;RAW&quot;;
+            if (OpenPrinter(printerName, ref hPrinter, 0)!=0)
+            {
+                if (StartDocPrinter(hPrinter, 1, ref di)!=0)
+                {
+                    if (StartPagePrinter(hPrinter)!=0)
+                    {
+                        bSuccess = (WritePrinter(hPrinter, byteData, byteData.Length, ref dwWritten)!=0);
+                        EndPagePrinter(hPrinter);
+                    }
+                    EndDocPrinter(hPrinter);
+                }
+                ClosePrinter(hPrinter);
+            }
+            if (!bSuccess)
+                dwError = Marshal.GetLastWin32Error();
+            return bSuccess;
+        }
+    }
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

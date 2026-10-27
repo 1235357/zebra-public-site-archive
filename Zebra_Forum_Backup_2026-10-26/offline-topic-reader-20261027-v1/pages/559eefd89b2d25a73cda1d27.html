@@ -1,0 +1,233 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>react native - zpl - zebra ZT411 - rfid - multiple print</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>react native - zpl - zebra ZT411 - rfid - multiple print</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/react-native-zpl-zebra-zt411-rfid-multiple-print; original snapshot: threads/00817.html; SHA-256: eed2cebe4f7f7e6829577b70ebce6b53d181ac6d85f19284fa40b667eb5377d7</small><pre id="topic">
+
+    
+        react native - zpl - zebra ZT411 - rfid - multiple print
+
+
+        
+      
+                        
+                    
+            G
+          
+          Giorgio Zett
+          4 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            319
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi all!
+I have a react native app and I have to print multiple tags.
+I also need to get all the TagIds provided by this zpl command:
+&lt;code&gt;^XA^RFR,H,0,12,2^FN1^FS^HV1,,^FS^XZ&lt;/code&gt; (the label is empty, it&#x27;s just as example to show how I get the tag id)
+I used a public &lt;a href=&quot;https://github.com/anmoljain10/react-native-zebra-bluetooth-printer&quot;&gt;re… lib&lt;/a&gt; to address it
+but when I try to print multiple labels with an async loop, it seems that 1 label works , but the next one fails. And it repeat this behaviour.
+It seems it loose bluetooth connection.
+So, I&#x27;m trying your &lt;a href=&quot;https://github.com/ZebraDevs/Zebra-Printer-Samples/tree/ZSDKRCTDevDemo&quot;… app&lt;/a&gt;
+I can patch the android code in order to get the tag id value back in the javascript code:
+&lt;code&gt;
++        byte[] configLabel = getConfigLabel(zebraPrinter, label);
++        byte[] tid = connection.sendAndWaitForResponse(configLabel, 2000, 2000, null);
++        success = true;
++        loading = false;
++        String sTid = new String(tid);
++        Log.d(&quot;sTid&quot;, sTid);
++        promise.resolve(sTid);
+&lt;/code&gt;
+but I can&#x27;t manage an async loop to print multiple tags.
+Is there any ZPL command that could help me to print multiple tags with only one command, and get back all the tag ids?
+I found a &lt;a href=&quot;https://developer.zebra.com/thread/34828&quot;&gt;discussion&lt;/a&amp;gt; that could be interesting, but I&#x27;m doubtful if there can be a better and faster option. Do you have any suggestions?
+thanks a lot
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Giorgio Zett
+          
+          
+            4 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Just to keep notes for the future, I resolved it in this way:
+&lt;code&gt;
+ WritableArray resultList = Arguments.createArray();
+...
+                for (int i=0; i &amp;lt; counter; i++) {
+                    byte[] tid = printerConnection.sendAndWaitForResponse(testLabel, 2000, 2000, null);
+                    String sTid = new String(tid);
+                    Log.d(&quot;sTid&quot;, sTid);
+                    resultList.pushString(sTid);
+                }
+                promise.resolve(resultList);
+&lt;/code&gt;
+Counter is a params from js that indicates how many labels I want to print
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            6 months 2 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks Georgio for the update. -sèan
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,261 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Concurrent TCP and Weblink connections to printer</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/concurrent-tcp-and-weblink-connections-printer; snapshot threads/00183.html; SHA-256 94162fa966986506d43099232a4328cef4516c2fae8c3bc821c0080596a3655f. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Concurrent TCP and Weblink connections to printer</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            H
+          </div>
+          <div class="forum-topic__author-name">Hayden Yates</div>
+          <div class="forum-topic__timestamp">2 years 1 month ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            1281
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            3
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi, I have a question/issue regarding whether all Zebra printers can support multiple concurrent network connections and communications from a server. I have seen documentation for Weblink that says a printer that supports Weblink is able to host up to 10 Weblink connections at once (if I recall correctly), and in the Link-OS documentation it mentions that the raw TCP port is on a first-come-first-served basis but is there a recommended way to programmatically manage both types of connections to the same printer?</p><p>I ask this because currently we have a ZD621 to test with and we have printing over TCP and Weblink separately working perfectly via our Win32 C++ server, but if our server tries to host both a TCP and Weblink connection to it then we get some less desirable behavior. For instance if TCP connection was established first, then any ZPL print jobs or queries sent by Weblink are written to the printer without issue but we receive no responses to queries and no print jobs are executed until the TCP connection sends its own ZPL to essentially flush the printer's received buffer. And then the reverse order is true, where a Weblink connection established first then prevents any TCP operations until the next Weblink operation occurs. Closing down the first received connection type also seems to effectively flush out any queued operations from the other connection type as well.</p><p>So is there any way to neatly maintain and support both of these connections at the same time or is there some setting to enable that I am missing for this? Or is this just working as intended and the only way to get my desired behavior is by closing the first received connection if the second one has an operation to execute? Because currently that seems to be the only option here which is not preferred since re-connecting the closed connection every time will have quite a bit of overhead for us.</p><p>Any help or confirmation would be greatly appreciated, thank you.</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      3 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-53194" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>All Zebra printers supports multiple concurrent TCP connections. However, there is only one print engine on a printer. If print jobs are sent to the printer on all TCP connections at the same time, the print engine will be taken on a first come and first served basis. In other words, the printer will take the print job that arrives first, then take the job arrives second after the previous job finishes, and so on.</p>
+<p>For the Weblink connection, all Zebra Link-OS printers support two Weblink connections (via the settings of the weblink.ip.<strong>conn1</strong>.location and weblink.ip.<strong>conn2</strong>.location), i.e., a Link-OS printer can connect to two different webservers via the two Weblinks at the same time. As described above, there is only one print engine on a printer. This print engine is shared between the TCP connections, Weblink connections, USB connection, and Bluetooth connection on a first come and first served basis.</p>
+<p>Because of different connection types and multiple connections may coexist concurrently, we have to be mindful of not occupying the print engine for too long, as this could potentially block the access from the other connections to the print engine. Here is one example. If only half of a ZPL is sent via the connection A to the printer, the print engine is occupied by the connection A. The print engine will be waiting on the connection A until it receives the second half of the ZPL. This essentially blocks the other connections. If the second half ZPL never comes over the connection A, the other connections will be blocked forever.</p>
+<p>To keep the printer running smoothly with multiple connections, always make sure don't leave the print engine waiting for more data.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-53195" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              H
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Hayden Yates</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thank you for the quick reply, that explanation makes sense but seems to mean then that the printer is always expecting more ZPL data from us even with the most basic queries. <br><br>An example of this is TCP connection established first and Weblink established second and we poll all connections every minute with the ~HQES query. Our server's TCP connection sends that query first and gets a reply back immediately with a valid printer status message and then some time after that we send the same query over Weblink. From our end it shows it succeeded to send the query packet to the printer but does not receive a response back until the next time our TCP connection sends that status query again. So is there something missing from the first ~HQES packet that needs to signify end of data or is there some separate command to send to assert that we are done sending data?<br><br>I noticed a similar issue when trying to use PuTTY in addition to one of our connections, i.e. if I connect and then send "~HQES" over PuTTy and then our server connects to the printer and sends the same query it will not get a response back until I send something else over PuTTY.<br><br><br>Edit: I played around with PuTTY + our TCP connection a bit more and found that I can assert the end of data by sending a separate packet of just "^XZ" after the query over PuTTY and then my TCP connection can send its own query and get a response just fine. Edited the server code to do this as well and now it is able to receive valid responses from both connection types perfectly fine. </p><p><br>Edit 2: Did more testing on the print job side and found that sending "^XA^FO100,100^ADN,36,20^FDHello from Weblink!^FS^XZ" would leave the print engine waiting for more data and requires an extra ^XZ packet sent to it but changing it to "^XA\r\n^FO100,100^ADN,36,20^FDHello from Weblink!^FS\r\n^XZ" with the carriage return and newline included frees it up and allows print jobs from the other connection without an extra ^XZ packet. This behavior makes sense but still leaves me wondering why it is not the same for "~HQES\r\n^XZ" since I tested variations of wrapping ~HQES with the label signifiers ^XA and ^XZ and including newlines and carriage returns but every attempt still requires an extra follow-up "^XZ" packet to free the print engine. <br> </p><p>Final Edit: It seems to me that ^XZ can only be treated as the ETX character '\3' if it is sent on its own, otherwise if it is sent in concatenation with the ~HQES command then it is read only as the ^XZ tag and since that doesn't apply to ~HQES since it is not a label string then it is just treated as a no-op. So from that I found that sending "~HQES\3" works the same as sending ~HQES and then ^XZ separately since it doesn't require the printer to substitute ^XZ for '\3' in this context. I was aware that response messages are wrapped with characters '\2' and '\3' but I didn't see anywhere in the docs saying that the queries to the printer need to be wrapped the same way.<br><br>Thanks again for the help, that was plenty of information to narrow down the cause of this behavior and sort things out.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-53472" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thanks for sharing the details of your observation. To print labels and monitor status of the printer at the same time, it is recommended to use separate TCP ports on the printer. There are two TCP ports, i.e., 9100 (raw port) and 9200 (status port). The 9100 port is for a TCP raw connection and connected to the internal ZPL print engine for label printing. The 9200 port is the dedicated status port that only accepts the SGD commands in JSON format for printer configuration and status query. If we decouple the label printing and the status query by using different ports, then the label printing and the status query will be completely independent and won't inter-locking on each other. Otherwise, we likely run into issues, such as the inter-locking that you observed above, in many different scenarios. For details on how to use the SGD commands in JSON form, pleaser refer to the <span data-original-href="https://www.zebra.com/content/dam/support-dam/en/documentation/unrestricted/guide/software/zpl-zbi2-pg-en.pdf#page=603">JSON (JavaScript Object Notation) section of the ZPL Programming Guide</span>.</p>
+<p>The same concept is also implemented in the Weblink connection, in which they are called the Raw Channel and the Status Channel respectively. Same as the TCP connection, the Raw Channel is for printing, while the Status Channel is for status query and printer configuration. See the <span data-original-href="https://techdocs.zebra.com/link-os/2-14/webservices/content/Weblink%20WebSocket%20Endpoint%20Configuration.pdf">Weblink / WebSocket Endpoint Configuration</span> document for details.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div></div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/concurrent-tcp-and-weblink-connections-printer%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/concurrent-tcp-and-weblink-connections-printer%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

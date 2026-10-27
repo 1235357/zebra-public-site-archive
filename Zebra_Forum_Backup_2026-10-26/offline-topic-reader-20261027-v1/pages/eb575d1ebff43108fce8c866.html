@@ -1,0 +1,313 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Tag reading speed. LLRP VS IoT</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Tag reading speed. LLRP VS IoT</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/tag-reading-speed-llrp-vs-iot; original snapshot: threads/00005.html; SHA-256: e9cc07b320a5b85a4a63e43d6fd3ff6d13cbd2512fe5d341163155066108a2cc</small><pre id="topic">
+
+    
+        Tag reading speed. LLRP VS IoT
+
+
+        
+      
+                        
+                    
+            R
+          
+          Rafał Srokowski
+          1 week 3 days ago
+        
+        
+      
+        
+            
+                  
+            
+            47
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  How to configure the reader in IoT mode.Regarding the tag read rate (for a single tag).When I enable LLRP and read tags via the reader&#x27;s UI, the tags are updated (read) approximately every 0.5 seconds. However, when I switch to IoT mode and log the tags using a Python script, each tag is read only once every 3 seconds. In IoT mode, I have set the operation to INVENTORY with a 1-second interval.I also tried using CUSTOM settings, but without success.Could someone advise on how to configure the reader so that the read frequency is similar to what is observed in the LLRP-based UI?
+              
+
+                    
+          
+      
+              
+ ReadingTags.jpg
+
+              
+ ReadingTagsIoT.jpg
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            1 week 2 days ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Interesting you are not specifically referring to a Reader Platform:  ( FX-Series {ZIOTC},  or FXR-Series {ZIOTC} )Since you mention LLRP - my go-to assumption is using FX-Series.A quick tip.  On 123RFID Mobile  - vs 123RFID Desktop - there is no consistent &quot;Balanced Performance&quot; profile - that can be assessed - vs the &quot;DEMO&quot; mode seen ( Tag Read in the FX-Series menu.  - Which is &quot;Fastest Read&quot; profile similar on the Handheld RFD-based readers.  ( HH Embedded Readers are different from device platform to device platform. )For the Above - a few tips: Handheld - &quot;Balanced Performance&quot; profile uses typically:Antenna Power ~ 270 dBiMLink Profile ~ M4 240K  -- which will setup PIE &amp; TARI as per this drop-down.Singulation Mode - Session_1  {S1}Tag Population - 30, Inventory State - STATE_A, SL_Flag - ALL.This typically gives a .5s to 1.5s responses from tags in Field - drven largely due to the Session = S1 (tag-based holdoff)For the Above - a few tips: Handheld - &quot;Balanced Performance&quot; profile uses typically:Antenna Power ~ 270 dBiM (300 for FCC readers)Link Profile ~ FM0 640K  -- which will setup PIE &amp; TARI as per this drop-down.Singulation Mode - Session_0  {S0}Tag Population - 30, Inventory State - AB_FLIP, SL_Flag - ALL. This DEMO setting which is very quick has no resiliency - because the Link Mode contains no Miller Value Redundancy - which from some UHF tags can lead to Spurious Tag reads. (Mangled EPC - possible)  For EU-Based / RoW RFD readers the settings may be setup with max power as 270 dBiM and the Link Profile changes to M2 320K. ( No Mangled EPC data ) For FX-Series readers the above using LLRP can also be setup where the &quot;Balanced Performance&quot; is:Antenna Power ~ 2700 dBiLink Profile ~ Index 17  -- which will setup PIE &amp; TARI as per this drop-down.Singulation Mode - Session_1  {S1}Tag Population - 100, Inventory State - STATE_A, SL_Flag - ALL. High Performance would be setup as:Antenna Power ~ 3000 (fcc) or 2700 dBiLink Profile ~ Index_1 (fcc)  / Index_33 (etsi)   -- which will setup PIE &amp; TARI as per this drop-down.Singulation Mode - Session_0  {S0}Tag Population - 100, Inventory State - AB_FLIP, SL_Flag - ALL. ( Please Note that the Above is for FCC / ETSI RFID RFD / FX-Series Devices. )In ZIOTC - this is managed via the &quot;/cloud/mode&quot; or &lt;mqtt&gt; &quot;get_mode/set_mode&quot; JSON you provide the RFID Controls for the ZIOTC.For FXR90 - this Integration Guide shows the &quot;MODE&quot; config on PP48 :https://www.zebra.com/content/dam/support-dam/en/documentation/unrestricted/guide/product/fxr90-rfid-ig-en.pdfFor FX-Series with ZIOTC defined - this portal is your Guide - and Specifically the &quot;/cloud/mode&quot; / &lt;mqtt&gt; &quot;get_mode/set_mode&quot;Starting here: https://zebradevs.github.io/rfid-ziotc-docs/And HTTP-POST - &quot;/cloud/mode&quot; : https://zebradevs.github.io/rfid-ziotc-docs/api_ref/local_rest/index.html   ( Control sub-menu )And MQTT Broker - &quot;get_mode / set_mode&quot; : https://zebradevs.github.io/rfid-ziotc-docs/schemas/raw_mqtt_payloads/commands/index.html  (get operating mode)Using ZIOTC Modes - does not give a specific &quot;link profile&quot; to use - rather this is setup by the combination of the Profile Types (INVENTORY, SIMPLE, PORTAL) and / or config with settings that are &quot;CUSTOM&quot;. There are other postings I have shared in the RFID Forum where the JSON used - may help you in your search.  (USE &quot;RFID&quot; ZIOTC, and &quot;JSON&quot; for forum responses that may be helpful. )
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            1 week 2 days ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            ALSO A FOLLOW UP.For Developers - I tend to recommend to NOT use the DEMO mode &quot;Fastest Read&quot;  - Rather adjusting the &quot;Balanced Performance&quot; to a Reader Defined for &quot;Better Performance as follows:Handheld - &quot;Better Performance&quot; profile:Antenna Power ~ 270 dBiMLink Profile ~ M4 240K  -- which will setup PIE &amp; TARI as per this drop-down.Singulation Mode - Session_0  {S0}Tag Population - 100, Inventory State - STATE_A, SL_Flag - ALL.  / (Optionally you can use - &quot;AB_FLIP&quot; - but be careful - AB_FLIP can cause issues when using explicit &quot;state_b&quot; for prefilter conditions. )LLRP Fixed - &quot;Better Performance&quot; profile:Antenna Power ~ 2700 dBiLink Profile ~ Index_7(fcc/etsi) -- which will setup PIE &amp; TARI as per this drop-down.Singulation Mode - Session_0  {S0}Tag Population - 200, Inventory State - STATE_A, SL_Flag - ALL.  / (Optionally you can use - &quot;AB_FLIP&quot; - but be careful - AB_FLIP can cause issues when using explicit &quot;state_b&quot; for prefilter conditions. )
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Rafał Srokowski
+          
+          
+            1 week 2 days ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you for your time.Yes, I have read the relevant documents.The reader I am using for testing is an FX7500.Reader Software Version: 3.31.22Communication: ZIOTC, WebSocket / writing to a file (via a Python script).My current configuration (retrieved from the REST API) is:/cloud/mode&quot;environment&quot;: &quot;AUTO_DETECT&quot;,&quot;modeSpecificSettings&quot;: {&quot;interval&quot;: {&quot;unit&quot;: &quot;seconds&quot;,&quot;value&quot;: 1}},&quot;tagMetaData&quot;: [&quot;ANTENNA&quot;,&quot;RSSI&quot;,&quot;SEEN_COUNT&quot;,{&quot;userDefined&quot;: &quot;192.168.1.10&quot;}],&quot;transmitPower&quot;: 29.2,&quot;type&quot;: &quot;INVENTORY&quot;}I cannot find the settings you mentioned within the REST API. I also don&#x27;t know where to find information on how to change &quot;Reader Profiles&quot; (Default, Maximum Data Rate, Dock Door Without Motion Sensor, Conveyor, Transition Point, Current Config) or the &quot;Link Profile&quot; / &quot;Singulation Mode.&quot;When I use 123Desktop and open the configuration, the options you mentioned (Link Profile / Singulation Mode) are not available, so I cannot experiment with them. I only see these options when I enable LLRP mode.I was using version 3.0.0.71 of 123Desktop.My goal:1. I am building a timing/time-measurement system. 2. I would like to have a high number of readings.3. I select the tag with the strongest signal (RSSI).4. Based on the RSSI, I can determine when a competitor has crossed the finish line (in terms of probability).5. For my solution, readings every 0.5 seconds are sufficient.In IoT mode, there are fewer configuration options available (I do not see these options in the REST API).
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            6 days 17 hours ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            In your Above - the Profile in use GET (&quot;/cloud/mode&quot;) is &quot;INVENTORY&quot; - the FX9600 / FX7500 - Support Documents - will detail what this config is.I don&#x27;t think that Profile is ideal for cycling/racing/running timing.As per my recommendation - for looking at the other JSON I have suggested...I may recommend looking at this forum Posting and the &quot;set_mode&quot; &lt;MQTT&gt;  / PUT (&quot;cloud/mode&quot;) you can try:https://developer.zebra.com/content/zebra-iot-connector-read-performance
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

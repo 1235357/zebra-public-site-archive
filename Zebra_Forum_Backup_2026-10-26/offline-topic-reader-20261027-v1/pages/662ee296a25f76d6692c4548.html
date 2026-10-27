@@ -1,0 +1,144 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>NET MAUI Wrapper for Scanner SDK - DS3678 - reconnect after app relaunch</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>NET MAUI Wrapper for Scanner SDK - DS3678 - reconnect after app relaunch</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/net-maui-wrapper-scanner-sdk-ds3678-reconnect-after-app-relaunch; original snapshot: threads/00027.html; SHA-256: b78cefab506ec39b7ba3c9304f2695e365249cee38c77594dd2f4f694837f83c</small><pre id="topic">
+
+    
+        NET MAUI Wrapper for Scanner SDK - DS3678 - reconnect after app relaunch
+
+
+        
+      
+                        
+                    
+            S
+          
+          Stijn Vandenbroucke
+          1 year 1 month ago
+        
+        
+      
+        
+            
+                  
+            
+            416
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,I experience issues with the reconnect functionality.I tested also the demo app (https://www.zebra.com/us/en/support-downloads/software/scanner-software/net-maui-wrapper.html?downloadId=f2762d90-7643-476c-98ca-068dea9486cf) with the same results.Android Device: Zebra ET65 (Android 13)Scanner Device: DS3678 (latest firmware) If the scanner (bluetooth device) is not known by the device and you scan the paring code on the tablet, the connection works perfect.If the scanner (bluetooth device) is allready known by the device and you rescan the pairing barcode, it sometimes works.Same for application restart: it sometimes reconnects automatically.There is one thing consistent in all scenarios: the event &#x27;EVENT_SCANNER_APPEARANCE&#x27; is always there, but 9 tries on 10, the connect &#x27;failes&#x27; [using scannerManager.AutoReconnectToLastConnectedScannerOnAppRelaunch(true);].Below logging for an &#x27;ok scenario&#x27; and a &#x27;not ok scenario&#x27;. Below the SDK logging when connection is ok:[SDKHandler] Initialized[SDKHandler] dcssdkSetDelegate() called...[SDKHandler] dcssdkGetVersion() called[SDKHandler] dcssdkEnableAvailableScannersDetection() called[SDKHandler] discoverAvailableScannersWithNotification() Started[SDKHandler] dcssdkEnableBluetoothScannersDiscovery() called[SDKHandler] dcssdkSetOperationalMode() Received operational mode is DCSSDK_OPMODE_BT_LE [BluetoothLEManager] BluetoothLEManager: Bluetooth Enabled. Continue.[BluetoothLEManager] BluetoothLEManager: Support BLUETOOTH_LE[BluetoothLEManager] startLEScan: LOLLIPOP or above scanning starts. [BluetoothLEManager] stopLEScan: LOLLIPOP or above Scan stopping [BluetoothAdapter] isLeEnabled(): ON[BluetoothLeScanner] could not find callback wrapper[BluetoothAdapter] isLeEnabled(): ON[BluetoothLeScanner] onScannerRegistered() - status=0 scannerId=30 mScannerId=0[SDKHandler] dcssdkSubsribeForEvents() called[SDKHandler] dcssdkGetAvailableScannersList() called[SDKHandler] discoverAvailableScannersWithNotification() Started[SDKHandler] dcssdkGetAvailableScannersList() called[SDKHandler] discoverAvailableScannersWithNotification() Started[SDKHandler] dcssdkGetPairingBarcode() STC protocol. Add P and Default option KEEP_CURRENT[SDKHandler] dcssdkGetPairingBarcode() Selected protocol is  SSI_BT_LE[BluetoothLEManager] ScanCallback: onScanResult found a matching record[BluetoothLEManager] ScanCallback: onScanResult it is a Zebra device ** Use Debug Build ***[BluetoothLEManager] ScanCallback: onScanResult My MAC = 159DEE67BFDD advertised MAC= 159DEE67BFDD[BluetoothLEManager] ScanCallback: onScanResult found a matching record[BluetoothLEManager] ScanCallback: onScanResult it is a Zebra device ** Use Debug Build ***[BluetoothLEManager] ScanCallback: onScanResult My MAC = 159DEE67BFDD advertised MAC= 159DEE67BFDD[BluetoothLEManager] ScanCallback: onScanResult  Device; Address = 88:BC:AC:0E:AD:3B is in connecting state.[BluetoothLEManager] LEEventHandler GATT_DEV_FOUND received[BluetoothLEManager] connectGATT: connecting to DS3678 25119523072440[BluetoothLEManager] connectGATT: Marshmallow or above. Use TRANSPORT_LE[BluetoothGatt] connect() - device: 88:BC:AC:0E:AD:3B, auto: true, eattSupport: false[BluetoothGatt] registerApp()[BluetoothGatt] registerApp() - UUID=09b3ef15-2581-4fdd-9faf-1653755aabab[BluetoothGatt] onClientRegistered() - status=0 clientIf=31[BluetoothLEManager] ScanCallback: onScanResult found a matching record[BluetoothLEManager] ScanCallback: onScanResult it is a Zebra device ** Use Debug Build ***[BluetoothLEManager] ScanCallback: onScanResult My MAC = 159DEE67BFDD advertised MAC= 159DEE67BFDD[BluetoothLEManager] ScanCallback: onScanResult  Device; Address = 88:BC:AC:0E:AD:3B is in connecting state.[BluetoothGatt] onClientConnectionState() - status=0 clientIf=31 device=88:BC:AC:0E:AD:3B[BluetoothLEManager] BluetoothGattCallback: onConnectionStateChange status = 0 newState = 2[BluetoothLEManager] BluetoothGattCallback: onConnectionStateChange STATE_CONNECTED[BluetoothLEManager] BluetoothGattCallback: onConnectionStateChange BLE_DEVICE_DETAILS stored[BluetoothLEManager] LEEventHandler GATT_CONNECTED received[SDKHandler] bluetoothLEDeviceAppeared Appeared BT scanner DS3678 25119523072440[SDKHandler] bluetoothLEDeviceAppeared Appeared BT scanner DS3678 25119523072440[SDKHandler] bluetoothLEDeviceAppeared Add new discovered BT scanner DS3678 25119523072440[SDKHandler] assignNextScannerID() called for BTLE scanner named DS3678 25119523072440[SDKHandler] assignNextScannerID() device not found in the backup list. Creating a new ID.[SDKHandler] assignNextScannerID() returning 1[BluetoothLEScanner] dcssdkEventScannerAppeared event sending for DS3678 25119523072440[BluetoothLEScanner] RSMEventSender thread started bStopRSMEventSender = false[DOTNET] appeared: 1 - DS3678 25119523072440 -  - 88:BC:AC:0E:AD:3B[SDKHandler] dcssdkGetAvailableScannersList() called[SDKHandler] discoverAvailableScannersWithNotification() Started[SDKHandler] dcssdkGetAvailableScannersList() called[SDKHandler] discoverAvailableScannersWithNotification() Started[BluetoothGatt] discoverServices() - device: 88:BC:AC:0E:AD:3B[BluetoothGatt] onConnectionUpdated() - Device=88:BC:AC:0E:AD:3B interval=6 latency=0 timeout=500 status=0[BluetoothGatt] onSearchComplete() = Device=88:BC:AC:0E:AD:3B Status=0[BluetoothLEManager] BluetoothGattCallback: onServicesDiscovered[BluetoothLEManager] LEEventHandler GATT_SERVICES_DISCOVERED received[BluetoothLEManager] enumerateServicesAndCharacteristics: Started[BluetoothLEManager] enumerateServicesAndCharacteristics: LE_SERIAL_SERVICE found. Enumerating Characteristics[BluetoothLEManager] enumerateServicesAndCharacteristics: UUID_CONNECTION_REQUEST found.[BluetoothGatt] setCharacteristicNotification() - uuid: 21f9e2b9-e59c-4e49-84e9-8cf2be479d0b enable: true[BluetoothLEManager] enumerateServicesAndCharacteristics: UUID_CONNECTION_RESPONSE found.[BluetoothGatt] setCharacteristicNotification() - uuid: 256a0615-c232-4eec-8187-9afb38226a5a enable: true[BluetoothLEManager] enumerateServicesAndCharacteristics: btGDConnectionResponse initiated.[BluetoothLEManager] enumerateServicesAndCharacteristics writeDescriptors:** Use Debug Build *** UUID = 00002902-0000-1000-8000-00805f9b34fb returns true[BluetoothGatt] onConnectionUpdated() - Device=88:BC:AC:0E:AD:3B interval=24 latency=0 timeout=500 status=0[BluetoothLEManager] enumerateServicesAndCharacteristics: UUID_CREDIT_OUTPUT found.[BluetoothGatt] setCharacteristicNotification() - uuid: 89ae8d0b-8905-45a7-a4b2-d61b94cb20de enable: true[BluetoothLEManager] enumerateServicesAndCharacteristics: UUID_CREDIT_INPUT found.[BluetoothGatt] setCharacteristicNotification() - uuid: f3ae6f04-8407-44b6-85a3-59c6feb21924 enable: true[BluetoothLEManager] enumerateServicesAndCharacteristics: btGDCreditInput initiated.[BluetoothLEManager] enumerateServicesAndCharacteristics writeDescriptors:** Use Debug Build *** UUID = 00002902-0000-1000-8000-00805f9b34fb returns true[BluetoothLEManager] enumerateServicesAndCharacteristics: UUID_INFO_OUTPUT found.[BluetoothGatt] setCharacteristicNotification() - uuid: 91a765f5-ec8f-4882-a9eb-cc0e5b0915af enable: true[BluetoothLEManager] enumerateServicesAndCharacteristics: UUID_INFO_INPUT found.[BluetoothGatt] setCharacteristicNotification() - uuid: 4b0e1f59-c0f4-4eee-91ad-da9a1532ea00 enable: true[BluetoothLEManager] enumerateServicesAndCharacteristics: btGDInfoInput initiated.[BluetoothLEManager] enumerateServicesAndCharacteristics writeDescriptors:** Use Debug Build *** UUID = 00002902-0000-1000-8000-00805f9b34fb returns false[BluetoothLEManager] btGDConnectionResponse.setValue returns:true[BluetoothLEManager] writeDescriptors:** Use Debug Build *** UUID = 00002902-0000-1000-8000-00805f9b34fb returns false[BluetoothLEManager] BluetoothGattCallback: onDescriptorWrite. UUID = 00002902-0000-1000-8000-00805f9b34fb status = 0[BluetoothLEManager] BluetoothGattCallback: onDescriptorWrite. notify WAIT_OBJECT_DESCRIPTOR_WRITE[BluetoothLEManager] writeDescriptors:** Use Debug Build *** UUID = 00002902-0000-1000-8000-00805f9b34fb returns true[BluetoothLEManager] BluetoothGattCallback: onDescriptorWrite. UUID = 00002902-0000-1000-8000-00805f9b34fb status = 0[BluetoothLEManager] BluetoothGattCallback: onDescriptorWrite. notify WAIT_OBJECT_DESCRIPTOR_WRITE[BluetoothLEManager] writeDescriptors:** Use Debug Build *** UUID = 00002902-0000-1000-8000-00805f9b34fb returns true[BluetoothLEManager] BluetoothGattCallback: onDescriptorWrite. UUID = 00002902-0000-1000-8000-00805f9b34fb status = 0[BluetoothLEManager] BluetoothGattCallback: onDescriptorWrite. notify WAIT_OBJECT_DESCRIPTOR_WRITE[BluetoothLEManager] sendConnectionRequest: Started.[BluetoothLEManager] sendConnectionRequest: writeCharacteristic Data = ** Use Debug Build *** UUID = 21f9e2b9-e59c-4e49-84e9-8cf2be479d0b returns true.[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: UUID = 256a0615-c232-4eec-8187-9afb38226a5a Data = ** Use Debug Build ***[BluetoothLEManager] BluetoothGattCallback: onCharacteristicWrite[BluetoothLEManager] LEEventHandler GATT_CHARACTERISTICS_WRITE received[SDKHandler] makeConnected BluetoothLEScanner  DS3678 25119523072440[BluetoothLEScanner] writeData: Set characteristics UUID = 91a765f5-ec8f-4882-a9eb-cc0e5b0915af Buffer = ** Use Debug Build ***[BluetoothLEScanner] writeCharacteristic: started.[BluetoothLEScanner] writeCharacteristic: Write success. waiting.[BluetoothLEManager] BluetoothGattCallback: onCharacteristicWrite[BluetoothLEManager] BluetoothGattCallback: onCharacteristicWrite  characteristic = 91a765f5-ec8f-4882-a9eb-cc0e5b0915af data = ** Use Debug Build ***[BluetoothLEScanner] writeCharacteristic: waiting completed. Write successful. [BluetoothLEScanner] sendHostInit command write successful. Wait for Status.[BluetoothLEScanner] sendHostInit wait until WAIT_OBJECT_CMD_ACK_NACK notify[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: UUID = 4b0e1f59-c0f4-4eee-91ad-da9a1532ea00 Data = ** Use Debug Build ***[BluetoothLEManager] GATT_CHARACTERISTICS_CHANGED UUID_INFO_INPUT received[BluetoothLEManager] UUID_INFO_INPUT: First packet. Length=44[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: localCredits = 59[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: UUID = 4b0e1f59-c0f4-4eee-91ad-da9a1532ea00 Data = ** Use Debug Build ***[BluetoothLEManager] GATT_CHARACTERISTICS_CHANGED UUID_INFO_INPUT received[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: localCredits = 58[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: UUID = 4b0e1f59-c0f4-4eee-91ad-da9a1532ea00 Data = ** Use Debug Build ***[BluetoothLEManager] GATT_CHARACTERISTICS_CHANGED UUID_INFO_INPUT received[BluetoothLEScanner] processData notify WAIT_OBJECT_CMD_ACK_NACK: Status SSI_STATUS_SUCCESS.[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: localCredits = 57[BluetoothLEScanner] sendHostInit Waiting completed[BluetoothLEScanner] writeData: Set characteristics UUID = 91a765f5-ec8f-4882-a9eb-cc0e5b0915af Buffer = ** Use Debug Build ***[BluetoothLEScanner] writeCharacteristic: started.[BluetoothLEManager] BluetoothGattCallback: onCharacteristicWrite[BluetoothLEManager] BluetoothGattCallback: onCharacteristicWrite  characteristic = 91a765f5-ec8f-4882-a9eb-cc0e5b0915af data = ** Use Debug Build ***[BluetoothLEScanner] writeCharacteristic: Write success. waiting.[BluetoothLEScanner] writeCharacteristic: waiting completed. Write successful. [BluetoothLEScanner] mgmtCommand command write successful. Wait for Results.[BluetoothLEScanner] mgmtCommand wait until WAIT_OBJECT_SSI_MGMT_RSP notify[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: UUID = 4b0e1f59-c0f4-4eee-91ad-da9a1532ea00 Data = ** Use Debug Build ***[BluetoothLEManager] GATT_CHARACTERISTICS_CHANGED UUID_INFO_INPUT received[BluetoothLEManager] UUID_INFO_INPUT: First packet. Length=16[BluetoothLEScanner] processMgmtData notify WAIT_OBJECT_SSI_MGMT_RSP[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: localCredits = 56[BluetoothLEScanner] mgmtCommand Waiting completed[BluetoothLEScanner] mgmtCommand returning 1[BluetoothLEScanner] setStoreAttributes starting[BluetoothLEScanner] setStoreAttributes generateManagementPayload attribute index = 0 offset = 0[BluetoothLEScanner] generateSetStoreAttributeManagementPayload starting[BluetoothLEScanner] generateSetStoreAttributeManagementPayload processing attribute index = 1[BluetoothLEScanner] writeData: Set characteristics UUID = 91a765f5-ec8f-4882-a9eb-cc0e5b0915af Buffer = ** Use Debug Build ***[BluetoothLEScanner] writeCharacteristic: started.[BluetoothLEScanner] writeCharacteristic: Write success. waiting.[BluetoothLEManager] BluetoothGattCallback: onCharacteristicWrite[BluetoothLEManager] BluetoothGattCallback: onCharacteristicWrite  characteristic = 91a765f5-ec8f-4882-a9eb-cc0e5b0915af data = ** Use Debug Build ***[BluetoothLEScanner] writeCharacteristic: waiting completed. Write successful. [BluetoothLEScanner] mgmtCommand command write successful. Wait for Results.[BluetoothLEScanner] mgmtCommand wait until WAIT_OBJECT_SSI_MGMT_RSP notify[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: UUID = 4b0e1f59-c0f4-4eee-91ad-da9a1532ea00 Data = ** Use Debug Build ***[BluetoothLEManager] GATT_CHARACTERISTICS_CHANGED UUID_INFO_INPUT received[BluetoothLEManager] UUID_INFO_INPUT: First packet. Length=12[BluetoothLEScanner] processMgmtData notify WAIT_OBJECT_SSI_MGMT_RSP[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: localCredits = 55[BluetoothLEScanner] mgmtCommand Waiting completed[BluetoothLEScanner] mgmtCommand returning 1[BluetoothLEScanner] setStoreAttributes returning DCSSDK_RESULT_SUCCESS[BluetoothLEScanner] generateGetAttributeManagementPayload attribute id 533 added[BluetoothLEScanner] generateGetAttributeManagementPayload attribute id 534 added[BluetoothLEScanner] processInterfaceCommand ATTRIBUTE_GET payload ** Use Debug Build ***[BluetoothLEScanner] writeData: Set characteristics UUID = 91a765f5-ec8f-4882-a9eb-cc0e5b0915af Buffer = ** Use Debug Build ***[BluetoothLEScanner] writeCharacteristic: started.[BluetoothLEScanner] writeCharacteristic: Write success. waiting.[BluetoothLEManager] BluetoothGattCallback: onCharacteristicWrite[BluetoothLEManager] BluetoothGattCallback: onCharacteristicWrite  characteristic = 91a765f5-ec8f-4882-a9eb-cc0e5b0915af data = ** Use Debug Build ***[BluetoothLEScanner] writeCharacteristic: waiting completed. Write successful. [BluetoothLEScanner] mgmtCommand command write successful. Wait for Results.[BluetoothLEScanner] mgmtCommand wait until WAIT_OBJECT_SSI_MGMT_RSP notify[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: UUID = 4b0e1f59-c0f4-4eee-91ad-da9a1532ea00 Data = ** Use Debug Build ***[BluetoothLEManager] GATT_CHARACTERISTICS_CHANGED UUID_INFO_INPUT received[BluetoothLEManager] UUID_INFO_INPUT: First packet. Length=66[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: localCredits = 54[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: UUID = 4b0e1f59-c0f4-4eee-91ad-da9a1532ea00 Data = ** Use Debug Build ***[BluetoothLEManager] GATT_CHARACTERISTICS_CHANGED UUID_INFO_INPUT received[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: localCredits = 53[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: UUID = 4b0e1f59-c0f4-4eee-91ad-da9a1532ea00 Data = ** Use Debug Build ***[BluetoothLEManager] GATT_CHARACTERISTICS_CHANGED UUID_INFO_INPUT received[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: localCredits = 52[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: UUID = 4b0e1f59-c0f4-4eee-91ad-da9a1532ea00 Data = ** Use Debug Build ***[BluetoothLEManager] GATT_CHARACTERISTICS_CHANGED UUID_INFO_INPUT received[BluetoothLEScanner] processMgmtData notify WAIT_OBJECT_SSI_MGMT_RSP[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: localCredits = 51[BluetoothLEScanner] mgmtCommand Waiting completed[BluetoothLEScanner] mgmtCommand returning 1[BluetoothLEScanner] processGetResponse currentAttributeID is 533[BluetoothLEScanner] processGetResponse Attribute Type = ATTRIBUTE_TYPE_STRING[BluetoothLEScanner] processGetResponse currentAttributeID is 534[BluetoothLEScanner] processGetResponse Attribute Type = ATTRIBUTE_TYPE_STRING[BluetoothLEScanner] updateAssetInfo serial = 25119523072440   model = DS3678-SR0F003VZWW[BluetoothLEScanner] writeData: Set characteristics UUID = 91a765f5-ec8f-4882-a9eb-cc0e5b0915af Buffer = ** Use Debug Build ***[BluetoothLEScanner] writeCharacteristic: started.[BluetoothLEScanner] writeCharacteristic: Write success. waiting.[BluetoothLEManager] BluetoothGattCallback: onCharacteristicWrite[BluetoothLEManager] BluetoothGattCallback: onCharacteristicWrite  characteristic = 91a765f5-ec8f-4882-a9eb-cc0e5b0915af data = ** Use Debug Build ***[BluetoothLEScanner] writeCharacteristic: waiting completed. Write successful. [BluetoothLEScanner] scanEnable command write successful. Wait for Status.[BluetoothLEScanner] scanEnable wait until WAIT_OBJECT_CMD_ACK_NACK notify[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: UUID = 4b0e1f59-c0f4-4eee-91ad-da9a1532ea00 Data = ** Use Debug Build ***[BluetoothLEManager] GATT_CHARACTERISTICS_CHANGED UUID_INFO_INPUT received[BluetoothLEManager] UUID_INFO_INPUT: First packet. Length=8[BluetoothLEScanner] processData notify WAIT_OBJECT_CMD_ACK_NACK: Status SSI_STATUS_SUCCESS.[BluetoothLEManager] BluetoothGattCallback: onCharacteristicChanged: localCredits = 50[BluetoothLEScanner] scanEnable Waiting completed[BluetoothLEScanner] dcssdkEventCommunicationSessionEstablished starting barcode event thread for DS3678 25119523072440[BluetoothLEScanner] dcssdkEventCommunicationSessionEstablished saving DS3678 25119523072440 as last connected device[BluetoothLEScanner] dcssdkEventCommunicationSessionEstablished event sending for DS3678 25119523072440[BluetoothLEManager] stop: BLE Scan stopping [BluetoothLEManager] stopLEScan: LOLLIPOP or above Scan stopping [BluetoothAdapter] isLeEnabled(): ON[BluetoothLEScanner] BarcodeSender thread started bStopBarcodeSender = false Below the SDK logging when connection is failing:[SDKHandler] Initialized[SDKHandler] dcssdkSetDelegate() called...[SDKHandler] dcssdkGetVersion() called[SDKHandler] dcssdkEnableAvailableScannersDetection() called[SDKHandler] discoverAvailableScannersWithNotification() Started[SDKHandler] dcssdkEnableBluetoothScannersDiscovery() called[SDKHandler] dcssdkSetOperationalMode() Received operational mode is DCSSDK_OPMODE_BT_LE [BluetoothLEManager] BluetoothLEManager: Bluetooth Enabled. Continue.[BluetoothLEManager] BluetoothLEManager: Support BLUETOOTH_LE[BluetoothLEManager] startLEScan: LOLLIPOP or above scanning starts. [BluetoothLEManager] stopLEScan: LOLLIPOP or above Scan stopping [BluetoothAdapter] isLeEnabled(): ON[BluetoothLeScanner] could not find callback wrapper[BluetoothAdapter] isLeEnabled(): ON[BluetoothLeScanner] onScannerRegistered() - status=0 scannerId=30 mScannerId=0[SDKHandler] dcssdkSubsribeForEvents() called[SDKHandler] dcssdkGetAvailableScannersList() called[SDKHandler] discoverAvailableScannersWithNotification() Started[SDKHandler] dcssdkGetAvailableScannersList() called[SDKHandler] discoverAvailableScannersWithNotification() Started[BluetoothLEManager] connectGATT: connecting to DS3678 25119523072440[BluetoothLEManager] connectGATT: Marshmallow or above. Use TRANSPORT_LE[BluetoothGatt] connect() - device: 88:BC:AC:0E:AD:3B, auto: true, eattSupport: false[BluetoothGatt] registerApp()[BluetoothGatt] registerApp() - UUID=0e3a967a-aab7-40a3-ba47-adbeb7c89cef[BluetoothGatt] onClientRegistered() - status=0 clientIf=31[BluetoothLEManager] connectGATT: connecting to DS3678 25119523072440[BluetoothLEManager] connectGATT: Marshmallow or above. Use TRANSPORT_LE[BluetoothGatt] connect() - device: 88:BC:AC:0E:AD:3B, auto: true, eattSupport: false[BluetoothGatt] registerApp()[BluetoothGatt] registerApp() - UUID=72047890-31de-49a8-81a8-e635b118c1d6[BluetoothGatt] onClientRegistered() - status=0 clientIf=32[BluetoothLEManager] connectGATT: connecting to DS3678 25119523072440[BluetoothLEManager] connectGATT: Marshmallow or above. Use TRANSPORT_LE[BluetoothGatt] connect() - device: 88:BC:AC:0E:AD:3B, auto: true, eattSupport: false[BluetoothGatt] registerApp()[BluetoothGatt] registerApp() - UUID=cf6e6bc8-aa3d-456c-858c-c07b67331e09[BluetoothGatt] onClientRegistered() - status=133 clientIf=0[BluetoothLEManager] BluetoothGattCallback: onConnectionStateChange status = 257 newState = 0[BluetoothLEManager] BluetoothGattCallback: onConnectionStateChange STATE_DISCONNECTED[BluetoothGatt] cancelOpen() - device: 88:BC:AC:0E:AD:3B[BluetoothGatt] onClientConnectionState() - status=0 clientIf=31 device=88:BC:AC:0E:AD:3B[BluetoothLEManager] BluetoothGattCallback: onConnectionStateChange status = 0 newState = 2[BluetoothLEManager] BluetoothGattCallback: onConnectionStateChange STATE_CONNECTED[BluetoothGatt] onClientConnectionState() - status=0 clientIf=32 device=88:BC:AC:0E:AD:3B[BluetoothLEManager] BluetoothGattCallback: onConnectionStateChange status = 0 newState = 2[BluetoothLEManager] BluetoothGattCallback: onConnectionStateChange STATE_CONNECTED[BluetoothLEManager] BluetoothGattCallback: onConnectionStateChange BLE_DEVICE_DETAILS stored[BluetoothLEManager] BluetoothGattCallback: onConnectionStateChange BLE_DEVICE_DETAILS stored[BluetoothLEManager] LEEventHandler GATT_DISCONNECTED received[BluetoothGatt] close()[BluetoothGatt] unregisterApp() - mClientIf=0[BluetoothLEManager] LEEventHandler GATT_CONNECTED received[SDKHandler] bluetoothLEDeviceAppeared Appeared BT scanner DS3678 25119523072440[SDKHandler] bluetoothLEDeviceAppeared Appeared BT scanner DS3678 25119523072440[SDKHandler] bluetoothLEDeviceAppeared Add new discovered BT scanner DS3678 25119523072440[SDKHandler] assignNextScannerID() called for BTLE scanner named DS3678 25119523072440[BluetoothLEScanner] RSMEventSender thread started bStopRSMEventSender = false[SDKHandler] assignNextScannerID() device not found in the backup list. Creating a new ID.[SDKHandler] assignNextScannerID() returning 1[BluetoothLEScanner] dcssdkEventScannerAppeared event sending for DS3678 25119523072440[DOTNET] appeared: 1 - DS3678 25119523072440 -  - 88:BC:AC:0E:AD:3B[SDKHandler] dcssdkGetAvailableScannersList() called[SDKHandler] discoverAvailableScannersWithNotification() Started[SDKHandler] dcssdkGetAvailableScannersList() called[SDKHandler] discoverAvailableScannersWithNotification() Started[BluetoothGatt] discoverServices() - device: 88:BC:AC:0E:AD:3B[BluetoothLEManager] LEEventHandler GATT_CONNECTED received
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Stijn Vandenbroucke
+          
+          
+            1 year 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+             I have found some additional logging.09-13 13:12:09.359 D/BluetoothGatt(10255): onClientConnectionState() - status=0 clientIf=25 device=88:BC:AC:0E:AD:3B09-13 13:12:09.359 I/BluetoothLEManager(10255): BluetoothGattCallback: onConnectionStateChange status = 0 newState = 209-13 13:12:09.359 I/BluetoothLEManager(10255): BluetoothGattCallback: onConnectionStateChange STATE_CONNECTED09-13 13:12:14.325 E/BluetoothDevice(10255): java.util.concurrent.TimeoutException09-13 13:12:14.325 E/BluetoothDevice(10255): java.lang.Throwable09-13 13:12:14.325 E/BluetoothDevice(10255):     at android.bluetooth.BluetoothDevice.getName(BluetoothDevice.java:1651)09-13 13:12:14.325 E/BluetoothDevice(10255):     at com.zebra.scannercontrol.SDKHandler.bluetoothLEDeviceAppeared(SDKHandler.java:2441)09-13 13:12:14.325 E/BluetoothDevice(10255):     at com.zebra.scannercontrol.BluetoothLEManager$LEEventHandler.handleMessage(BluetoothLEManager.java:901)09-13 13:12:14.325 E/BluetoothDevice(10255):     at android.os.Handler.dispatchMessage(Handler.java:106)09-13 13:12:14.325 E/BluetoothDevice(10255):     at android.os.Looper.loopOnce(Looper.java:201)09-13 13:12:14.325 E/BluetoothDevice(10255):     at android.os.Looper.loop(Looper.java:288)09-13 13:12:14.325 E/BluetoothDevice(10255):     at android.app.ActivityThread.main(ActivityThread.java:7930)09-13 13:12:14.325 E/BluetoothDevice(10255):     at java.lang.reflect.Method.invoke(Native Method)09-13 13:12:14.325 E/BluetoothDevice(10255):     at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:548)09-13 13:12:14.325 E/BluetoothDevice(10255):     at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:942)
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

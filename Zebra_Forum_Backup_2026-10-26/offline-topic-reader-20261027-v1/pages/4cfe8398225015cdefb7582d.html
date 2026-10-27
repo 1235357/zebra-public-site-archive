@@ -1,0 +1,154 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Printing using the Java SDK with an InputStream (no file)</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Printing using the Java SDK with an InputStream (no file)</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25928; original snapshot: threads/resume-00594.html; SHA-256: 03c7bffc6312e4208343d9c6cc3e49bacbf3dc9b19fee312db5252713beaceb3</small><pre id="topic">
+
+    
+        Printing using the Java SDK with an InputStream (no file)
+
+
+        
+      
+                        
+                    
+            J
+          
+          Josh Blease
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            82
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi team,
+Our system fetches PDF objects from a file store and our current implementation of printing is based around using this object as an InputStream.
+Looking at the Zebra Java SDK I am trying to print directly to the printer without having to save the file to the host machine at all.
+This doesn&#x27;t seem possible at the moment as I can only find the FileUtil class which takes in a file location to send to a printer. Is there any code I&#x27;ve not found that can achieve this or can I raise a feature request?
+It appears that it could be easily implemented using the ZebraFileConnection class as I can provide the InputStream and the fileSize, but there are deep within the SDK and not available for use by the average developer.
+Thanks,
+Josh
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The printer.sendFileContents(filePath) is a convenient way to send the data in a file to the printer. The underneath implementation of sendFileContents() is to convert the file into InputStream and then send the data in the InputStream in chunks to the printer. Since you&amp;nbsp;already have the data in&amp;nbsp;a&amp;nbsp;InputStream, then you can read the data in chunks from the InputStream and send the data one chunk at a time to the printer with connection.write() API.
+&amp;nbsp;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

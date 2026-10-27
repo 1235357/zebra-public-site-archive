@@ -1,0 +1,219 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>[C#.NET] PrintStoredFormat doesn&#x27;t make printer print the stored format file</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>[C#.NET] PrintStoredFormat doesn&#x27;t make printer print the stored format file</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/26079; original snapshot: threads/resume-00395.html; SHA-256: 018cecd6a00cf0abbe2043be0aaa07c6177957714040e2c94a797eaeb05da128</small><pre id="topic">
+
+    
+        [C#.NET] PrintStoredFormat doesn&#x27;t make printer print the stored format file
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            273
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I am using Zebra SDK v2.15.2634 to develop Xamarin.Android application. It looks good until I try to execute following line:
+                var btAddress = &quot;48:A4:93:89:63:97&quot;;
+                Connection connection = new BluetoothConnection(btAddress);
+                connection.MaxTimeoutForRead = 30000;
+                ZebraPrinter printer;
+                try
+                {
+                    connection.Open();
+                    // Successful printed.
+                    //var bytes = Encoding.UTF8.GetBytes(&quot;^PON^LH0,0^FWN^XA^FO150,200^FDHelloWorld^FS^XZ&quot;);
+                    //connection.Write(bytes);
+                    printer = ZebraPrinterFactory.GetInstance(connection);
+                    Dictionary vars = new Dictionary
+                    {
+                    };
+                    printer.PrintStoredFormat(&quot;E:HELLO2.ZPL&quot;, vars, &quot;utf-8&quot;);
+                }
+                catch (ConnectionException e)
+                {
+                    Console.WriteLine(e.ToString());
+                }
+                catch (ZebraPrinterLanguageUnknownException e)
+                {
+                    Console.WriteLine(e.ToString());
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                }
+                finally
+                {
+                    connection.Close();
+                }
+The printer showed it got bluetooth activity by flashing the icon on display. But nothing print out.
+Environment:
+- Printer model: ZQ520
+- Zebra SDK v2.15.2634
+- Visual Studio 2019
+- Xamarin.Android
+FYI:
+- There is HELLO2.ZPL file on the printer&#x27;s flash storage.
+- Successfully printed, if I send this file to printer via Printer Tools Program.
+- There is no problem with connection, my app can connect to printer successfully.
+- I can execute BluetoothConnection.Write() method successfully with printed slip, on following code:
+var bytes = Encoding.UTF8.GetBytes(&quot;^PON^LH0,0^FWN^XA^FO150,200^FDHelloWorld^FS^XZ&quot;);
+connection.Write(bytes);
+The stored file is the problem.
+- I used both manual created ZPL file and from Zebra Designer 3, both stored on the printer.
+- I tried to PrintStoredFormat() with both of them. Nothing happened.
+- The code has no exception and the connection was closed successfully.
+How to reproduce the project and file I attached:
+- Please store &quot;HELLO2.ZPL&quot; (manually created) and GT.ZPL (Zebra Designer generated) on the ZQ520
+Additional question
+- Do we have to name file in capital letter before send to printer? for ex. hello2.zpl
+- if not, do we still to put its into capital letter when we refer to its path? for ex. printer.PrintStoredFormat(&quot;E:HELLO2.ZPL&quot;, vars, &quot;utf-8&quot;);
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Based on the code snippet above, there are a few things I&#x27;d like to comment on.
+1. The filenames of the files stored on the printer are&amp;nbsp;case insensitive. You can use either uppercase, lowercase or mixed cases. They all should work.
+2. It&#x27;s unclear if the try{} block is executed on a UI thread or a background thread. When interacting with the printer, such as getting printer status or executing print functions via Link-OS SDK API, please do not use the UI thread. Always spin off a separate thread when interacting with the printer.
+3. After calling printer.PrintStoredFormat() API, please add a delay before closing the connection to make sure that the data has been transmitted to the printer at Bluetooth link layer. The return of&amp;nbsp;printer.PrintStoredFormat() API doesn&#x27;t necessary mean that the entire data has been sent to the printer at the link layer. The suggested code is below. Hope this helps.
+await Task.Run(async () =&amp;gt; {
+    try {
+        connection.Open();
+        ZebraPrinter printer = ZebraPrinterFactory.GetInstance(connection);
+        Dictionary vars = new Dictionary { };
+        printer.PrintStoredFormat(&quot;E:HELLO2.ZPL&quot;, vars, &quot;utf-8&quot;);
+        await Task.Delay(1000);
+    } catch (Exception e) {
+        await DisplayConnectionStatusAsync($&quot;Error: {e.Message}&quot;, Color.Red, 3000);
+    } finally {
+        try {
+            connection?.Close();
+        } catch (ConnectionException) { }
+    }
+});&amp;nbsp;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

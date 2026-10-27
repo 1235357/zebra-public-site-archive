@@ -1,0 +1,443 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Shift state on hardware keyboard</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Shift state on hardware keyboard</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/shift-state-hardware-keyboard; original snapshot: threads/00789.html; SHA-256: 2e4416854374da82ac29c6408ac7fdad2c20d7e77c6ecd502e797d05ce08d21a</small><pre id="topic">
+
+    
+        Shift state on hardware keyboard
+
+
+        
+      
+                        
+                    
+            J
+          
+          Jiri Mikeska
+          4 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            65
+          
+                
+                  
+            
+            6
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Please, is it possible, programmatically, to check whether Shift key on hardware keyboard is &quot;on&quot; or &quot;locked&quot; on Android 11 on device MC2200?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      6 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alfred Teixeira
+          
+          
+            4 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello,
+Please review the information available at the following link and let us know if this information provides what you require:
+https://developer.android.com/reference/android/media/MediaDrm.KeyStatus
+Thank you
+AT
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jiri Mikeska
+          
+          
+            4 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            This is related to Media DRM not to hardware keyboard.
+I already tried to search some informations about it, but found nothing (zebra web site, stackoverflow.com, developer.android.com).
+There simply does not exist any api with which it would be possible to determine the status of Hardware keyboard (not onscreen keyboard) on MC2200.
+- Whether is active or locked Shift state - important for me.
+- Whether is active typing &quot;abc&quot; letters - important for me.
+- Whether is active Alt state.
+- Whether is active Ctrl state.
+- And whether is active Diamond key - important for me too (after pressing diamond key on hardware keyboard on display is showed menu with letters &quot;+-@/#:,~!&quot;).
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alfred Teixeira
+          
+          
+            4 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello,
+I believe this is the approach you will need to take:
+https://developer.android.com/training/keyboard-input/commands
+https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/shiftKey
+https://stackoverflow.com/questions/11659801/java-check-if-control-key-…
+Thank you
+A T
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jiri Mikeska
+          
+          
+            4 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            https://developer.android.com/training/keyboard-input/commands
+https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/shiftKey
+https://stackoverflow.com/questions/11659801/java-check-if-control-key-…
+event.isShiftPressed and similar (for example event.isControlDown()) is related to concrete key message, is NOT related to shift state of the whole hardware keyboard. I already know about it, but I don&#x27;t need it (I use these, but for different things).
+Explanation: Zebra don&#x27;t offer any api for controlling state of hardware keyboard. Therefore I have created my own controlling, but for this I need to know the state of the WHOLE hardware keyboard (whether Shift is on or locked, whether is enabled typing &quot;abc&quot; or &quot;123&quot; etc.)
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              E
+            
+          
+                
+          
+            Edward Correia
+          
+          
+            4 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I don&#x27;t know if this will help, but here are links to the MC2200 Product Reference Guide
+PDF:  https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/mobile-com…;
+HTML: https://docs.zebra.com/content/tcm/us/en/mobile-computers/handheld/mc2-…
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jiri Mikeska
+          
+          
+            4 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            No, this don&#x27;t help and this is not related to my question. This is user manual. But I am software developer.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

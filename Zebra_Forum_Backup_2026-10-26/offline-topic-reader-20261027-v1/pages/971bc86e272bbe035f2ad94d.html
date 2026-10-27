@@ -1,0 +1,336 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Issue reading barcode content in EMDK Xamarin</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Issue reading barcode content in EMDK Xamarin</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/issue-reading-barcode-content-emdk-xamarin; original snapshot: threads/00892.html; SHA-256: 204d57faa1977e930a4e50c60b42d0df9ad4ca1cbebfb9a063ade09881050a1f</small><pre id="topic">
+
+    
+        Issue reading barcode content in EMDK Xamarin
+
+
+        
+      
+                        
+                    
+            R
+          
+          Rakesh R Nair
+          4 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            35
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  In my barcode contains a Norwegian character (Ålesund). But while scanning it on the Zebra device I am not getting the letter (Å) instead I am getting something like this (�lesund).
+The configuration that I am following the app is,
+ if (null != _mScanner)
+            {
+                if (_mScanner.IsEnabled &amp;amp;&amp;amp; !_mScanner.IsReadPending)
+                {
+                    //EMDK: Configure the scanner settings
+                    var config = _mScanner.GetConfig();
+                    if (null != config)
+                    {
+                        config.ScanParams.DecodeLEDFeedback = true;
+                        config.DecoderParams.Code39.Enabled = true;
+                        config.DecoderParams.Code93.Enabled = true;
+                        config.DecoderParams.Code128.Enabled = true;
+                        config.DecoderParams.Ean8.Enabled = true;
+                        config.DecoderParams.Pdf417.Enabled = true;
+                        config.DecoderParams.I2of5.Enabled = true;
+                        _mScanner.SetConfig(config);
+                    }
+                }
+            }
+The barcode type is pdf417
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+You can use the character set selection api (https://techdocs.zebra.com/emdk-for-android/8-0/api/reference/com/symbo…) and set it to ISO-8859-1 which should decode the Å for you.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Rakesh R Nair
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Could you please let me know how I can set the CharacterSet? I cant find the method that accept this
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Should be something like this:
+ScannerConfig scannerConfig = new ScannerConfig();
+scannerConfig.readerParams.readerSpecific.imagerSpecific.characterSetSelection = CharacterSet.ISO_8859_1; 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Rakesh R Nair
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Wow...! that was a life saver. Thanks a lot James. It is working
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

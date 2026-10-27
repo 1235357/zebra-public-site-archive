@@ -1,0 +1,396 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Managed Configurations - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/ddt/latest/guide/managed-config/</code><br>Observed final URL: <code>https://techdocs.zebra.com/ddt/latest/guide/managed-config/</code><br>Raw source: <code>raw/2bb363b986ba1da00b8822cc.html</code><br>Raw SHA-256: <code>bc87599e5f52e78e9632c2b6dcfafae94ad967e0c0c19e501aced10d2c645cbc</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            Device Diagnostic Tool
+                                            3.1
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Using Device Diagnostic Tool
+                            
+                        
+                        
+                            
+                                    Configuration
+                            
+                        
+                        
+                            
+                                    Test Criteria
+                            
+                        
+                        
+                            
+                                    Managed Config
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+
+                        
+                            US - English
+                          
+                          
+                                 CN - 普通话
+                                 DE - Deutsch
+                                 ES - Español
+                                 FR - Français
+                                 IT - Italiano
+                                 JP - 日本語
+                                 PT - Português
+                          
+                                            
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Managed Configurations
+                        
+                    OverviewRequirementsUse Managed ConfigurationsApp RestrictionsAdmin ModeApp Restriction OptionsTest PlanTest Log RetentionUpload PreferenceSee Also
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Managed Configurations
+                                    
+                                            Device Diagnostic Tool
+                                            3.1
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+Device Diagnostic Tool (DDT) can be remotely configured through Managed Configurations, specifications developed by Google and the Android community to configure installed applications and deploy these configurations through an EMM (Enterprise Mobility Management). A schema defines the DDT features available for consumption by the EMM, providing the information necessary to present to the EMM&#x27;s corresponding data-driven UI. This mechanism integrates DDT remote configuration within the EMM for seamless operation and allows Zebra to release a new schema as soon as new features are available for use. DDT and the Zebra schema are available from the Google Play Store and must be used together to leverage DDT with its managed configurations to perform diagnostic operations.
+
+
+
+Requirements
+
+Requirements for use of Managed Configurations with DDT:
+
+
+Zebra device with Android 10 or Android 11
+
+DDT with the Zebra schema downloaded from the Google Play Store
+
+DDT is installed on the device and must be launched at least once
+
+An EMM for device deployment
+
+FTP Server to upload DDT test data
+Recommended: To minimize security risks from disclosure of login credentials, Zebra recommends uploading test data to a dedicated server.
+
+
+
+
+Use Managed Configurations
+
+This section provides general instructions to use Managed Configurations through an EMM. The UI layout may vary depending on the EMM. In the EMM, after adding DDT to the device app catalog for app installation, the corresponding schema is automatically retrieved and presented to the EMM managed configuration UI based on the data defined. Through this UI, the administrator can select the desired Managed Configurations. Prior to pushing the Managed Configurations to the device(s), DDT must be launched at least once in order to accept these configurations. Instructions include how DDT can be launched remotely with OEMConfig.
+
+General instructions to use Managed Configurations:
+
+
+Add Device Diagnostic Tool to the application catalog. In the EMM, browse or search for Device Diagnostic Tool 2.7 or higher from the Google Play Store and add it to the app catalog. This automatically retrieves the corresponding schema for the app and makes the app available for deployment to the device(s) through the EMM.
+
+Configure app restrictions using Managed Configurations as described in the schema. See App Restrictions section that follows, which describes the available options.
+
+Push a policy that deploys the DDT app and the created Managed Configurations to the device(s).
+
+Launch DDT remotely using OEMConfig - DDT must be installed from step 3 prior to executing this step:
+
+
+Install OEMConfig on the device, if not previously installed.
+
+In OEMConfig, open Device Administration Configuration.
+
+Select Action &gt; Submit XML.
+
+In the input field for Submit XML, enter the text below to launch DDT:
+
+  &lt;wap-provisioningdoc&gt;
+  &lt;characteristic type=&quot;Intent&quot;&gt;
+  &lt;parm name=&quot;Action&quot; value=&quot;StartActivity&quot;/&gt;
+  &lt;parm name=&quot;ActionName&quot; value=&quot;android.intent.action.MAIN&quot;/&gt;
+  &lt;parm name=&quot;Package&quot; value=&quot;com.symbol.selfdiagnostics&quot;/&gt;
+  &lt;parm name=&quot;Class&quot; value=&quot;com.symbol.selfdiagnostics.activities.MainActivity&quot;/&gt;
+  &lt;characteristic type=&quot;Extra&quot;&gt;
+  &lt;parm name=&quot;ExtraType&quot; value=&quot;string&quot;/&gt;
+  &lt;parm name=&quot;ExtraName&quot; value=&quot;LAUNCH_DDT&quot;/&gt;
+  &lt;parm name=&quot;ExtraValue&quot; value=&quot;1&quot;/&gt;
+  &lt;/characteristic&gt;
+  &lt;/characteristic&gt;
+  &lt;/wap-provisioningdoc&gt;
+
+Note: Line breaks should be removed.
+
+Apply OEMConfig configuration to the device(s).
+
+
+
+
+App Restrictions
+
+There are 2 modes of operations for DDT: admin mode and user mode. Currently only admin mode is supported with managed configuration to schedule recurring tests and configure log uploads.
+
+Admin Mode
+
+In admin mode, the DDT app restrictions are as follows:
+
+
+Test Plan - Create or modify a test plan that includes Schedule, Activity, and Delivery.
+
+Test Log Retention - Select whether to keep or discard test plans on device after automatic upload to server.
+
+Upload Preference - Select whether to upload logs based on a specified schedule or only after a test failure.
+
+
+App Restriction Options
+
+This section provides the options available for each app restriction.
+
+Test Plan
+
+Test Plan creates or modifies a test plan that includes the weekly test schedule, specifying the test to perform and configuring the server to receive the test results.
+
+
+  
+    Restriction Name
+    Option
+    Description
+    Value(s)
+  
+
+  
+    Schedule
+    Test Day
+    Day of the week to automatically perform the weekly test 
+    • Monday• Tuesday• Wednesday• Thursday• Friday• Saturday• Sunday
+  
+
+  
+    Test Time
+    Designated time to run the test and upload the result log file
+    [Time in HH:MM 24-hour format] 
+  
+
+  
+    Activity
+    System to Test
+    Test to perform on the device 
+    • Bluetooth• WiFi• Battery• WWAN• SD card• USB• Network
+  
+
+  
+    Delivery
+    Protocol
+    Protocol used by the server that receives DDT file uploads 
+    FTP
+  
+
+  
+    IP Address
+    IP address for the user to access the DDT upload server 
+    [valid IP address]
+  
+
+  
+    User Name
+    User name to access the DDT upload server 
+    [valid user name]
+  
+
+  
+    Password
+    Password to access the DDT upload server 
+    [valid password]
+  
+
+
+
+Test Log Retention
+
+Test Log Retention specifies the action to take for all test plan files on the device after uploading them to the designated server.
+
+
+  
+    Restriction Name
+    Description
+    Value
+  
+
+  
+    Test Log Retention
+    Retain or discard test plan files on device after file upload to server
+    • Keep after upload• Delete after upload 
+  
+
+
+Upload Preference
+
+Upload Preference provides the selection to upload logs based on a specified schedule or only after a test failure.
+
+
+  
+    Restriction Name
+    Description
+    Value
+  
+
+  
+    Upload Preference
+    Select whether to upload logs based on specified schedule or only after a test failure
+    • All test logs• Only on failure 
+  
+
+
+
+
+
+
+See Also
+
+
+OEMConfig - for launching apps remotely
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2024 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

@@ -1,0 +1,708 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to connect fixed FX9600 RFID Reader to Normal Android Tablet via USB to read Tags?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to connect fixed FX9600 RFID Reader to Normal Android Tablet via USB to read Tags?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/how-connect-fixed-fx9600-rfid-reader-normal-android-tablet-usb-read-tags; original snapshot: threads/00149.html; SHA-256: e767f1a79ed40e7269ff9e4eac26706e62fa98df7d00da180ecc9641abf04f99</small><pre id="topic">
+
+    
+        How to connect fixed FX9600 RFID Reader to Normal Android Tablet via USB to read Tags?
+
+
+        
+      
+                        
+                    
+            P
+          
+          Prakash Barik
+          1 year 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            387
+          
+                
+                  
+            
+            8
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi All, I would like to highlight the process to connect programmatically any android tablet to RFID reader and read tags. SO basically what i did, Downloaded latest RFID SDK (2.0.3.162) and unzip it and added inside Lib folder of android studio(Ladybug) and build gradle(8.7) Added code in my kotlin project to connect reader, where my RFID Reader is FX9600.Source Code:
+
+import android.os.Bundle
+import android.os.StrictMode
+import android.os.StrictMode.ThreadPolicy
+import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import com.dcs.sanitrader.R
+import com.dcs.sanitrader.databinding.ActivityRfidScanBinding
+import com.dcs.sanitrader.databinding.HomepageBinding
+import com.zebra.rfid.api3.ENUM_TRANSPORT
+import com.zebra.rfid.api3.InvalidUsageException
+import com.zebra.rfid.api3.OperationFailureException
+import com.zebra.rfid.api3.RFIDReader
+import com.zebra.rfid.api3.ReaderDevice
+import com.zebra.rfid.api3.Readers
+import com.zebra.rfid.api3.RfidEventsListener
+import com.zebra.rfid.api3.RfidReadEvents
+import com.zebra.rfid.api3.RfidStatusEvents
+
+
+class RFIDActivity : AppCompatActivity() {
+
+    private var rfidReader: RFIDReader? = null
+    private var readersList: Readers? = null
+    private var readerDevice: ReaderDevice? = null
+    private lateinit var connectionEventHandler: EventHandler
+    private lateinit var binding: ActivityRfidScanBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityRfidScanBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        enableEdgeToEdge()
+
+        val policy = ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
+
+        // Initialize the RFID reader
+
+        binding.startScanButton.setOnClickListener { initializeRFIDReader() }
+    }
+
+    private fun initializeRFIDReader() {
+        try {
+            // Initialize readers
+            readersList = Readers(this, ENUM_TRANSPORT.SERVICE_USB)
+            //binding.tagDataTextview.text = &quot;RFID Reader is connecting by SERVICE_USB&quot;
+            val availableRFIDReaderList = readersList?.GetAvailableRFIDReaderList()
+            if (!availableRFIDReaderList.isNullOrEmpty()) {
+                readerDevice = availableRFIDReaderList[0]
+                rfidReader = readerDevice?.rfidReader
+                connectToRFIDReader()
+            } else {
+                //binding.tagDataTextview.text = &quot;RFID Reader is not connected&quot;
+                Toast.makeText(this, &quot;No RFID readers available&quot;, Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun connectToRFIDReader() {
+        try {
+            if (rfidReader != null &amp;&amp; !rfidReader!!.isConnected) {
+                // Connect to the RFID reader
+                rfidReader?.connect()
+                //binding.tagDataTextview.text = &quot;RFID Reader is connected&quot;
+                Toast.makeText(this, &quot;RFID Reader connected&quot;, Toast.LENGTH_SHORT).show()
+                // Set up the RFID tag event handler
+                setupReaderHandlers()
+                // Enable tag reading (once connected)
+                rfidReader?.Actions?.Inventory?.perform()
+            }
+        } catch (e: InvalidUsageException) {
+            e.printStackTrace()
+            //binding.tagDataTextview.text = &quot;RFID Reader error: ${e.printStackTrace()}&quot;
+        } catch (e: OperationFailureException) {
+            e.printStackTrace()
+            //binding.tagDataTextview.text = &quot;RFID Reader error ${e.printStackTrace()}&quot;
+        }
+    }
+
+    private fun setupReaderHandlers() {
+        // Set up event handler for tag data
+        rfidReader?.Events?.addEventsListener(connectionEventHandler)
+
+        // Configure event notifications (enable RFID data capture)
+        rfidReader?.Events?.apply {
+            setInventoryStartEvent(true)
+            setInventoryStopEvent(true)
+            setTagReadEvent(true)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Clean up and disconnect when done
+        try {
+            rfidReader?.disconnect()
+        } catch (e: InvalidUsageException) {
+            e.printStackTrace()
+        } catch (e: OperationFailureException) {
+            e.printStackTrace()
+        }
+    }
+
+    // Define your event handler to capture tag data
+    private inner class EventHandler : RfidEventsListener {
+        override fun eventReadNotify(e: RfidReadEvents) {
+            // This function is called when a tag is read
+            val tags = rfidReader?.Actions?.getReadTags(100)//e.readEventData.tagData//rfidReader?.readerCapabilities?.rfidOptions?.rfidTags
+            tags?.forEach { tag -&gt;
+                runOnUiThread {
+                    Toast.makeText(
+                        this@RFIDActivity,
+                        &quot;Tag scanned: ${tag.tagID}&quot;,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                println(&quot;Tag read: ${tag.tagID}&quot;)
+            }
+        }
+
+        override fun eventStatusNotify(e: RfidStatusEvents?) {
+            // Handle reader status events here
+        }
+    }
+} Error: The error am getting is as, Operation Failed: Connection error, no RFID reader availableI don&#x27;t know where am i wrong? and what should be the better approach to connect the reader from tablet? I am also using same network in reader and tablet. Let me know what should i do? 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      8 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              I
+            
+          
+                
+          
+            Ian Hatton
+          
+          
+            1 year 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            As per the release notes, the RFID SDK for Android supports Zebra mobile readers only - it is not compatible with fixed readers such as the FX9600. The method recommended to interface to the FX9600 from an Android tablet would be to connect both to a WiFi network and then configure one of the IOT Connector protocol options to send data between the two e.g. MQTT . 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            1 year 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There is also an alternative:The up-to-date RFID SDK for Android Studio - does contain the &quot;ZIOTCSampleApp&quot; project - this is designed to allow the Android Device to connect to either the Fixed &quot;FX-Series&quot; readers via LLRP-Based RFID SDK, as well as the Fixed &quot;FXR-Series&quot; FXR90 using the ZIOTC support to the FXR.  You do need to have V2.0.3.148++ of the RFID SDK for Android Studio to try these demo apps out.NOTE: The ZIOTC uses the IoT connection that the FXR90 is setup with by Default - if you have configured a spearate MQTT endpoint on the FXR90 - you will not be able to connect to it with this demo app. ( I would suggest to backup your settings - and &quot;enterprise&quot; reset the FXR90 settings to defaults before you begin testing.)
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alex Lavie
+          
+          
+            1 year 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            the code you are using is trying to connect via USB as if it where a mobile reader.there is a possibility to connect to fixed readers from android sdk but you need to follow the below (where the method for fixed readers is slightly different):https://techdocs.zebra.com/dcs/rfid/android/2-0-3-162/guide/connection/more useful info here to do some other operations:https://techdocs.zebra.com/dcs/rfid/android/2-0-3-162/tutorials/ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alex Lavie
+          
+          
+            1 year 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            https://techdocs.zebra.com/dcs/rfid/android/2-0-3-162/samples/fx_hellorfid/
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Prakash Barik
+          
+          
+            1 year 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi All,Thanks to all of you for the positive responses. Still i&#x27;m unable to connect to my fixed reader FX9600 in normal Tablet.The process which i&#x27;m following to connect the reader such as,Samsung Galaxy Tab A8 with Android Version 14Fixed RFID reader is FX96000RFID SDK Version is 1.0.2.116Type C with Ethernet Adapter to connect Reader The Reader is able to connect with my Windows 11 machine via USB Type C with the Ethernet port of the Fixed Reader. But the same approach does not work when i connect the fixed Reader with Galaxy Tab A8. Not sure if i am missing any configurations needed to connect the Fixed reader with the Android Tablet.Appreciate for the prompt response.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Prakash Barik
+          
+          
+            1 year 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi All,Thanks to all of you for the positive responses. Still i&#x27;m unable to connect to my fixed reader FX9600 in normal Tablet.The process which i&#x27;m following to connect the reader such as,Samsung Galaxy Tab A8 with Android Version 14Fixed RFID reader is FX96000RFID SDK Version is 1.0.2.116Type C with Ethernet Adapter to connect ReaderInstead of IP address, could it possible to connect directly via ethernet or USB from tablet to reader?Is there required any third party software to download in Tablet to connect or anything am missing to connect via code?Awaiting for positive responses!
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            1 year 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Two Points:1) The reader needs to be on a network - that is both routeable and the Mobile Device can connect to the Wireless LAN to also get the similar networking to get to / see the reader.  If you are unable to get to the reader with Chrome on the Table via &quot;https://{reader-ip} - then the Sample Apps will not be able to either.  (One uses Web Sockets (Port 80/443) the other uses LLRP on Port 5084)2) Your the up-to-date RFID SDK - V116 is badly out of date - the newer Android Studio Sample App on V148 and on V162 - both work on the Samsung Galaxy 7 Tablet I use.  
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jack Burgess
+          
+          
+            9 months 3 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I know this is an old thread, but I&#x27;ve just had to do this exact thing and would have appreciated it if someone else had done the hard work for me!The things I have found for this is that, generally speaking, off-the-shelf android hardware will NOT have the right kernel modules available, and you will likely need to build your own image or work with an OEM to get it working. I tried a Lenovo tablet, OnePlus 7 Pro, Moto G84, and some colleagues tried other manufacturers to no avail.For quick development work, you can use the Android emulator with the Zebra reader connected to your laptop - so that you can visit 169.254.10.1 on your laptop, and the emulator will share the host&#x27;s network, and then you can access it there.To test on real hardware, however, there are prerequisites that must be met. The kernel needs USB_NET_CDCETHER and CONFIG_USB_USBNET enabled, and the system must have sudo ability (at least at this stage).After connecting the reader via a USB port or USB-C -&gt; USB-A OTG adapter, you should see the `usb0` interface appear in the output of `ip link show`, like so:$ ip link show usb0
+38: usb0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP mode DEFAULT group default qlen 1000
+   link/ether 0a:52:f2:ed:d0:d5 brd ff:ff:ff:ff:ff:ff(your exact output may vary)Now you can run the following commands to give the interface the correct IP, setup the routing tables, and disable IPv6 on the interface.ip link set usb0 up
+ip addr flush dev usb0
+ip addr add 169.254.10.102/16 dev usb0
+ip route add 169.254.10.1 dev usb0 src 169.254.10.102 table 100
+ip rule add priority 10 to 169.254.10.1 lookup 100
+ip route add 169.254.0.0/16 dev usb0
+ip -6 addr flush dev usb0
+echo 1 &gt; /proc/sys/net/ipv6/conf/usb0/disable_ipv6From that you should be able to ping and curl etc the link-local IP and still retain existing Wi-Fi or other networking capabilities.I don&#x27;t know the exact methods our OEM used, but they provided an updated Android OS image with the comment &quot;Please be well note, for this updated system, which when the usb0 node is created, the system automatically executes a script containing commands provided by your company.&quot;.From there, I set up the reader for interaction within React Native. This was relatively straightforward with the Zebra Android SDK doing the work. Note that the API/functionalities differ from the Java SDK (which is a little annoying).You will need to ensure that your application allows plaintext traffic to the IP of the reader. I did this using an expo plugin I wrote:const {
+    AndroidConfig,
+    withAndroidManifest,
+    withDangerousMod,
+} = require(&#x27;expo/config-plugins&#x27;)
+const { mkdir, writeFile } = require(&#x27;fs/promises&#x27;)
+const { join } = require(&#x27;path&#x27;)
+
+const networkSecurityConfigXml = `&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;network-security-config&gt;
+   &lt;domain-config cleartextTrafficPermitted=&quot;true&quot;&gt;
+       &lt;domain includeSubdomains=&quot;true&quot;&gt;169.254.10.1&lt;/domain&gt;
+       &lt;domain includeSubdomains=&quot;true&quot;&gt;localhost&lt;/domain&gt;
+   &lt;/domain-config&gt;
+&lt;/network-security-config&gt;`
+/**
+* Android network security config
+*
+* @param {import(&#x27;@expo/config-types&#x27;).ExpoConfig} config
+* @returns {import(&#x27;@expo/config-types&#x27;).ExpoConfig} config
+*/
+module.exports = function withExpoNetworkSecurityConfig(config) {
+    const { getMainApplicationOrThrow } = AndroidConfig.Manifest
+    const { getResourceFolderAsync } = AndroidConfig.Paths
+
+    // Write network security config to android/app/src/main/res/xml
+    withDangerousMod(config, [
+        &#x27;android&#x27;,
+        async (config) =&gt; {
+            const { projectRoot } = config.modRequest
+            const resourcePath = await getResourceFolderAsync(projectRoot)
+
+            await mkdir(join(resourcePath, &#x27;/xml&#x27;), { recursive: true })
+            await writeFile(
+                join(resourcePath, &#x27;/xml/network_security_config.xml&#x27;),
+                networkSecurityConfigXml,
+            )
+
+            return config
+        },
+    ])
+
+    // Add networkSecurityConfig to AndroidManifest.xml
+    withAndroidManifest(config, (config) =&gt; {
+        const mainApplication = getMainApplicationOrThrow(config.modResults)
+
+        mainApplication.$[&#x27;android:networkSecurityConfig&#x27;] =
+            &#x27;@xml/network_security_config&#x27;
+
+        return config
+    })
+
+    return config
+}Then you can add this to your app.json&#x27;s plugins list.  Unfortunately I&#x27;m not able to share my Android native code to interact with the module, and your usage would definitely vary, but look into Expo Modules as an implementation starter.I&#x27;ve got a note for this thread, so I&#x27;ll come back if I need to add anything else!
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

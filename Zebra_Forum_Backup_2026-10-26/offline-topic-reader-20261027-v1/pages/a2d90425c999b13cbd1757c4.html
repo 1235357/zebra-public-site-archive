@@ -1,0 +1,474 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Any documentation on mqtt for printers?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Any documentation on mqtt for printers?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/any-documentation-mqtt-printers; original snapshot: threads/00412.html; SHA-256: fb28f3c8c4d41ee21dfd3089d61b06b44a7242cd3a0171dd5b51aa56b47c53bb</small><pre id="topic">
+
+    
+        Any documentation on mqtt for printers?
+
+
+        
+      
+                        
+                    
+            J
+          
+          Javier Hernández
+          2 years 10 months ago
+        
+        
+      
+        
+            
+                  
+            
+            743
+          
+                
+                  
+            
+            7
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I have read in different places about zebra printers adding MQTT protocol support.On the set-do manual for the printer, it shows how to configure the mqtt server. And if Alerts configured to the printer. The zebra printer is sending status notifications to a mqtt server.However I have not found any documentation on how to send data back to the printer.Something like endpoints and objects to send. I have only seen for RFID readers but not for printers.I have several printers, and I have successfully connected the printer to an mqtt server. If i set the printer in pause I see an alert notification on the mqtt server published in (topic)/(id)/notificationsBut I do not know how to send information to the printer. What subtopic and message format to send. Is there any documentation of such? 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      7 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Robbert de Jong
+          
+          
+            1 year 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Javier, I have the same problem atm.did you already found a solution for this? i think i know the subtopic for your commands but don&#x27;t know what to send. (json / string / etc)the subtopic  = (topic)/(id)/command. kind regards,Robbert
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              E
+            
+          
+                
+          
+            Evan Prothro
+          
+          
+            1 year 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I have been looking for the same this morning and agree, this is critically missing documentation. Disappointing to have no response from Zebra here. Steven Si?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            1 year 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Evan,
+We are in the process of releasing the Zebra MQTT API Guide in a week or two. I will put a link here once the guide is published on Zebra site. Apologize for the prolonged processing time.
+Regards,
+Steven Si
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              T
+            
+          
+                
+          
+            Torbjorn Carlqvist
+          
+          
+            1 year 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi@Steven Si, any news on this doc? We are sitting with the same issue as above. The printers are connected via MQTT but we cannot find anywhere how to send the print script to them!?The only thing I have manage to acomplish in terms of mutual communication is if I send an invalid (formatted) JSON to the command topic. That results in error code on topic zebra/{serialnum}/notification (a topic I just just guessed in fact, is there other topic that we must know of?){
+  &quot;method&quot;: &quot;error&quot;,
+  &quot;params&quot;: {
+    &quot;code&quot;: -32700,
+    &quot;message&quot;: &quot;Parse error&quot;
+  }
+}This looks like JSON-RPC:ish format to me. Is that also supposed to be used for command? I tried some samples but no luck. Nothing in printer debug log or in mqtt log either which I found strange.Stuck for now...//Torbjorn
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              T
+            
+          
+                
+          
+            Torbjorn Carlqvist
+          
+          
+            1 year 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            UPDATE:I actually found a doc that brings me a little bit further.https://www.zebra.com/content/dam/support-dam/en/documentation/unrestricted/guide/software/mqtt-api-guide-en.pdfSo now I have all I need to CONFIGURE the printers via MQTT by using the JSON-RPC method &quot;settings&quot;The only small missing piece still is how do I actually PRINT something. Is there a different method for this? As far as I can tell byt the doc above only configuration is supported via MQTT!?  
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            1 year 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The MQTT on Zebra Link-OS printers is currently designed and implemented for printer management and configuration. It cannot be used for printing. For label printing, you need to use other connection types, such as TCP, WebSocket, Bluetooth, USB etc.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              T
+            
+          
+                
+          
+            Torbjorn Carlqvist
+          
+          
+            1 year 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for the update Steven! Even though I really could not believe it I started to get that feeling too. Any specific reason why printing is not avalible? It seamed like a really suitable feature just to post a ZPL code down via command subscription. So finally any thoughs about the future, will it be avalible?Cheers
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

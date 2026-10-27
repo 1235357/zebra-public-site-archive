@@ -1,0 +1,186 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>XmlPrinting with .Net core - Zebra.Printer.SDK not working (Builder not correctly implemented)</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>XmlPrinting with .Net core - Zebra.Printer.SDK not working (Builder not correctly implemented)</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/xmlprinting-net-core-zebraprintersdk-not-working-builder-not-correctly-implemented; original snapshot: threads/00918.html; SHA-256: 21e6a61593e6d4380bd25028644fc332b68074e7a10c69a4e159c7619ab3ecc6</small><pre id="topic">
+
+    
+        XmlPrinting with .Net core - Zebra.Printer.SDK not working (Builder not correctly implemented)
+
+
+        
+      
+                        
+                    
+            X
+          
+          Xavier Stevenne
+          4 years 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            871
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+I designed a label with Zebra Designer for Developers. I could test print it from there on a ZT411 300dpi, with default values for the variables.
+I am now trying to print it from .Net 5 code, without success.
+I tried :
+1.
+Create a console application in .Net 5.
+Install Nuget package Zebra.Printer.SDK (2.15.2634)
+Copy-paste the following code example: https://techdocs.zebra.com/link-os/2-14/pc_net/content/html/8026e23d-26…
+Create the file XmlPrinterExampleTemplate.zpl and add the ZPL code (see comment in example)
+Change the IP address to use the correct one.
+When I start the program, the first call to XmlPrinter.Print works (it only logs to the console) but the other two give me the following error:
+System.ArgumentException: Builder not correctly implemented
+   at Zebra.Sdk.Comm.Internal.ConnectionBuilderInternal.Build(String descriptionString)
+   at Zebra.Sdk.Printer.CsvPrinter.OpenConnection(String destinationDevice)
+   at Zebra.Sdk.Printer.CsvPrinter.Print(String destinationDevice, Stream sourceDataStream, String templateFilename, String defaultQuantityString, Stream outputDataStream, Boolean verbose)
+   at Zebra.Sdk.Printer.XmlPrinter.Print(String destinationDevice, Stream sourceDataStream, String templateFilename, String defaultQuantityString, Stream outputDataStream, Boolean verbose)
+I tried several IP address formats (« 1.2.3.4 », « 1.2.3.4:9100 », « TCP:1.2.3.4 », et « TCP:1.2.3.4:9100 ») but always get the same error.
+2.
+I found this doc about ConnectionBuilder: https://techdocs.zebra.com/link-os/2-15/pc_net/content/html/ba1a1ca6-59…
+After I copy-pasted the method &quot;SendZplOverTcp&quot; I get the compile-time error &quot;Error CS0103 The name &#x27;ConnectionBuilder&#x27; does not exist in the current context&quot;
+It seems the ConnectionBuilder class is not publicly accessible in the 2.15 version of the nuget package.
+When I downgrade to version 2.14.1989, I get a warning and another compile-time error.
+    Warning NU1701 Package &#x27;Zebra.Printer.SDK 2.14.1989&#x27; was restored using &#x27;.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8&#x27; instead of the project target framework &#x27;net5.0&#x27;. This package may not be fully compatible with your project.
+    Error      NETSDK1149      SdkApi_Desktop.dll cannot be referenced because it uses built-in support for WinRT, which is no longer supported in .NET 5 and higher.  An updated version of the component supporting .NET 5 is needed. For more information, see https://aka.ms/netsdk1149
+The compilation error was fixed by downgrading the project to .Net Core 3.1
+With version 2.14 of the package and .Net core 3.1 I could print &quot;This is a ZPL test&quot; with the printer. However, the XmlPrinterExample is still not working; I got errors regarding a dependency with CsvHelper. I managed to find a compatible version of CsvHelper and I then get the following error :
+Exception thrown: &#x27;System.IO.FileNotFoundException&#x27; in SdkApi_Core.dll 
+I tried to use .Net Framework 4.7.2 and had the same error about SdkApi_Core.dll
+3.
+As the nuget package was definitely not working, I tried downloading the SDK from here: https://www.zebra.com/fr/fr/support-downloads/printer-software/link-os-… (Windows version)
+Unfortunately, in the lib directory, there is nothing else than the nuget package (the one that I can&#x27;t make work)
+There is also a demo included in the SDK, in C:\Program Files\Zebra Technologies\link_os_sdk\PC-.NET\v2.15.2634\demos-desktop\Source
+This demo contains multiple examples but I don&#x27;t see an example for XML printing with the label I designed in Zebra Designer.
+I feel stuck. Can someone help me print my label with Xml printing ?
+Other acceptable solutions :
+- Something else than Xml printing that would let me print a label with variables
+- Print from web browser (javascript)
+Thanks.
+Xavier
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The whole implementation of the Link-OS SDK for PC-.NET is built for the .NET Framework 4.7 (or higher). The .NET 5 &amp; the .NET 6 are the evolution of the .NET Core 3.1, which is not supported by the Link-OS SDK for PC-.NET from the beginning.
+Please change your .NET project to a .NET Framework 4.7 or 4.8 based project.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,301 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Get Disabled App List - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/getdisabledapplist</code><br>Observed final URL: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/getdisabledapplist/</code><br>Raw source: <code>raw/17e1f2501d14b634a028e51e.html</code><br>Raw SHA-256: <code>14ce49aca8badc6dee2a5d871fbe9eaab30127f506c523648632a954b1f65917</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs Home
+                        
+                                            DataWedge
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Get Started
+                            
+                        
+                        
+                            
+                                    Profiles
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Feature Matrix
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            US - English
+                          
+                          
+                                 CN - 普通话
+                                 JP - 日本語
+                          
+                                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Get Disabled App List
+                        
+                    GET_DISABLED_APP_LISTFunction PrototypeParametersReturn ValuesExample CodeNotes
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Get Disabled App List
+                                    
+                                            DataWedge
+                                            15.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        GET_DISABLED_APP_LIST
+
+Introduced in DataWedge 6.5.
+
+Returns the Disabled Apps List, a list of apps and activities that are blocked from using DataWedge.
+
+Function Prototype
+
+Intent i = new Intent();
+i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+i.putExtra(&quot;com.symbol.datawedge.api.GET_DISABLED_APP_LIST&quot;, &quot;&quot;);
+
+Parameters
+
+ACTION [String]: &quot;com.symbol.datawedge.api.ACTION&quot;
+
+EXTRA_DATA [String]: &quot;com.symbol.datawedge.api.GET_DISABLED_APP_LIST&quot;
+
+Return Values
+
+APP_LIST [ ]:
+
+
+APP_LIST [0]:
+
+PACKAGE_NAME [String]: &quot;com.symbol.emdk.barcodesample1&quot;
+
+ACTIVITY_LIST [String array]: [“com.symbol.emdk.barcodesample1.MainActivity” ,”com.symbol.emdk.barcodesample1.ResultsActivity”]
+
+APP_LIST [1]:
+
+PACKAGE_NAME [String]: &quot;com.symbol.emdk.notificationsample1&quot;
+
+ACTIVITY_LIST [String array]: [“*”]
+
+
+
+
+Example Code
+
+The code below sends an intent to request the current Disabled App List:
+
+
+// create the intent and action
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.putExtra(&quot;com.symbol.datawedge.api.GET_DISABLED_APP_LIST&quot;,&quot;&quot;);
+
+// send the intent
+    this.sendBroadcast(i);
+
+// process the results inside onReceive callback
+    ArrayList&lt;Bundle&gt; disabledAppList  = new ArrayList&lt;&gt;();
+    if(intent.hasExtra(&quot;com.symbol.datawedge.api.RESULT_GET_DISABLED_APP_LIST&quot;))
+        disabledAppList = intent.getParcelableArrayListExtra(&quot;com.symbol.datawedge.api.RESULT_GET_DISABLED_APP_LIST&quot;);
+
+    if(disabledAppList!= null &amp;&amp; disabledAppList.size() &gt; 0){
+        for (Bundle bundle:disabledAppList) {
+            String packageName = bundle.getString(&quot;PACKAGE_NAME&quot;);
+
+            ArrayList&lt;String&gt; activityList = new ArrayList&lt;&gt;();
+            activityList =bundle.getStringArrayList(&quot;ACTIVITY_LIST&quot;);
+
+            Log.d(&quot;TAG&quot;,&quot;PackageName: &quot; + packageName);
+            for(String activityName : activityList){
+                Log.d(&quot;TAG&quot;,&quot;\t\t\tActivity: &quot; + activityName);
+            }
+        }
+    }
+    else{
+        Log.d(&quot;TAG&quot;,&quot;Disabled app list is empty&quot;);
+        }
+
+Notes
+
+(none)
+
+
+
+SEE ALSO:
+
+Zebra Support Central | Integrator Guides, Product Manuals, Software Downloads and Support
+
+LaunchPad | Zebra Developer Community
+
+Intent | Android Developers
+
+Intents and Intent Filters | Android Developers
+
+Android Intents | Tutorial
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2024 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+      
+
+
+
+Back to Top</pre></body></html>

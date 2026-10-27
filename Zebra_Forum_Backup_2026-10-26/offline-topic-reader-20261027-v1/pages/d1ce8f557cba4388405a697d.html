@@ -1,0 +1,183 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Add base64 signature png to zpl printer object</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Add base64 signature png to zpl printer object</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25948; original snapshot: threads/resume-00593.html; SHA-256: 8df14c28f02883d030c569941354c7d1d079c8b30003d1e7e20c7ff4842b6c90</small><pre id="topic">
+
+    
+        Add base64 signature png to zpl printer object
+
+
+        
+      
+                        
+                    
+            T
+          
+          Thomas Birkenes
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            61
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I have a ZPL object, but I would like to add a users signature to an existing ZPL object/string.
+Would anyone know how to achieve this?
+This would be for an Android devices.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              T
+            
+          
+                
+          
+            Thomas Birkenes
+          
+          
+            5 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Found the solution right here if anyone is wondering.
+private void printLabelWithImage(Bitmap bitmap, Context context)
+  {
+   //  The context is the passed in from the calling method
+   //  using getApplicationContext()
+   Connection conn = new BluetoothLeConnection(nfcMacAddress, context);
+   try
+   {
+    conn.open();
+    ZebraPrinter zprinter = ZebraPrinterFactory.getInstance(conn);
+    ZebraImageI zi = ZebraImageFactory.getImage(bitmap);
+    zprinter.storeImage(&quot;E:IMAGE.PNG&quot;, zi, zi.getWidth(), zi.getHeight());
+    Thread.sleep(500);
+    string label = &quot;^XA~TA000~JSN^LT0^MNM^MTD^PON^PMN^LH0,0^JMA^PR2,2~SD21^JUS^LRN^CI0^XZ&quot; +
+     &quot;^XA&quot; +
+     &quot;^MMT&quot; +
+     &quot;^PW300&quot; +
+     &quot;^LL3300&quot; +
+     &quot;^LS0&quot; +
+     &quot;^FO0,2400&quot; +
+    &quot;^IME:IMAGE.PNG^FS&quot; +                                                        //  This is where the image is used.
+     &quot;^FT70,2395^A0B,67,67^FH\\^FD**patient_name**^FS&quot; +
+     &quot;^FT121,2288^A0B,42,40^FH\\^FD**birth**^FS&quot; +
+     &quot;^FT123,2393^A0B,42,40^FH\\^FDDOB:^FS&quot; +
+     &quot;^FT174,2391^A0B,42,40^FH\\^FDPatient ID:^FS&quot; +
+     &quot;^FT172,2204^A0B,42,40^FH\\^FD**id**^FS&quot; +
+     &quot;^BY5,0^FT280,1347^BOB,5,N,0,N,1,&quot; +
+     &quot;^FH\\^FD**barcode**^FS&quot; +
+     &quot;^PQ1,0,1,Y^XZ&quot;);
+    conn.write(label.getBytes());
+    Thread.sleep(500);
+    conn.close();
+   }
+   catch (Execption e)
+   { e.printStackTrace() }
+          }
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

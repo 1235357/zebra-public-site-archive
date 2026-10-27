@@ -1,0 +1,530 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>browserPrint appears to detect printer but is unable to print to it. Returns 500 errors and network &#x27;write&#x27; errors</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>browserPrint appears to detect printer but is unable to print to it. Returns 500 errors and network &#x27;write&#x27; errors</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/browserprint-appears-detect-printer-unable-print-it-returns-500-errors-and-network-write-errors; original snapshot: threads/00990.html; SHA-256: a69d31dcaed4bd896e428fd47af3e388a0401889e76f21bd5f2e48685bcd93ec</small><pre id="topic">
+
+    
+        browserPrint appears to detect printer but is unable to print to it. Returns 500 errors and network &#x27;write&#x27; errors
+
+
+        
+      
+                        
+                    
+            M
+          
+          Matt Mattox
+          5 years ago
+        
+        
+      
+        
+            
+                  
+            
+            2008
+          
+                
+                  
+            
+            7
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi our company, Faithlife, uses your Zebra printers for one of our services in our church management software. We are inquiring about a problem we are noticing on the front end that we think our customers will run into involving your “browser print” SDK.
+The code that is failing was pulled straight from &lt;em&gt;your documentation&lt;/em&gt;. See below.
+Here&#x27;s a video of our interface and the console/network errors. https://recordit.co/d9RbFF6YId
+Attached are some screenshots as well of the 500 errors and network errors. 
+Tdlr: On my MacBook pro the default?type=printers request succeeded and returned a printer then when it tried to do write it would error out and say something like Could not print to printer
+&lt;code&gt;export const getDevices = (
+	onGetDevices: ({
+		defaultDevice,
+		devices,
+	}: {
+		defaultDevice: IZebraDevice;
+		devices: IZebraDevice[];
+	}) =&amp;gt; void
+) =&amp;gt; {
+	//Get the default device from the application as a first step. Discovery takes longer to complete.
+	browserPrint.getDefaultDevice(
+		&#x27;printer&#x27;,
+		(defaultDevice: IZebraDevice) =&amp;gt; {
+			//Discover any other devices available to the application
+			browserPrint.getLocalDevices(
+				(devices: IZebraDevice[]) =&amp;gt; {
+					onGetDevices({
+						defaultDevice: [defaultDevice, ...devices].find(({ name }) =&amp;gt; name),
+						devices,
+					});
+				},
+				() =&amp;gt; {
+					console.error(&#x27;Error getting local devices&#x27;);
+				},
+				&#x27;printer&#x27;
+			);
+		},
+		error =&amp;gt; {
+			console.error(error);
+		}
+	);
+}; &lt;/code&gt;
+We also noticed that your test app isn’t sending the request that is failing in our app so we are not sure if your example is representative of the API we are using. Here&#x27;s what we see in the `default?type=printer` network tab response.
+&lt;blockquote&gt; {&quot;deviceType&quot;:&quot;printer&quot;,&quot;uid&quot;:&quot;usb#vid_0a5f&amp;amp;pid_0120#D2N204202525#bus_002#addr_004#model_ZTC ZD420-203dpi ZPL&quot;,&quot;provider&quot;:&quot;com.zebra.ds.webdriver.desktop.provider.DefaultDeviceProvider&quot;,&quot;name&quot;:&quot;ZD420-203dpi ZPL (D2N204202525)&quot;,&quot;connection&quot;:&quot;usb&quot;,&quot;version&quot;:4,&quot;manufacturer&quot;:&quot;Zebra Technologies&quot;} 
+Here&#x27;s what we see in the available network response type.
+ {}
+ which looks like an empty array
+Here&#x27;s what we see in the `write` network response tab.
+ Failed to write to device: Unable to establish connection to ZD420-203dpi ZPL (D2N204202525) 
+We are also curious if you have any better documentation that won’t require customers to install the SDK as we’ll most likely have people run into problems.
+&lt;/blockquote&gt;
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      7 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            When you get the 500 error, it means that the printer is unreachable. Are you sure that the printer is truly reachable? You can verify that by opening the settings of the Browser Print client on your MacBook, and click on the Change button next to the Default Devices. Then you should be able to see the the printer that is either connected via USB or the network. If it&#x27;s not there, then you will get 500 error.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Matt Mattox
+          
+          
+            5 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for the reply. I did the following steps and I do see my printer.
+When I click change I get a small window that says &quot;Select Default Device&quot; and under it, it says Device Type: Printer and below that says Device: ZD420-203dpi ZPL...etc.
+Here&#x27;s a screenshot: https://amber.faithlife.com/shares/0Mq0C6YZkKqmy5it
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Would you be able to print from the Browser Print demo? The demo code is packed with the Download Browser Print JavaScript Library package, under the sample folder. To run the demo, you can either simply double click on the index.html file, or load the entire sample folder onto your server and access the demo on the server from a local browser.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Matt Mattox
+          
+          
+            5 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Yeah i&#x27;ve used this before and so did other developers. https://www.zebra.com/us/en/forms/browser-print-request-osx.html 
+That works, but it seems to work differently than their example code in the docs because I don&#x27;t see the same requests when using that as when I use the example code.
+I think the question we need to get answered is what is a reliable way for our customers to setup to be able to use browser print?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Matt Mattox
+          
+          
+            5 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Bump -- 
+What is the recommended way for users (not developers) to operate the zebra printer? Do you guys have a step-by-step guide that doesn&#x27;t require the SDK to install?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Bryan Kenote
+          
+          
+            5 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi I am one of one of the developers working on supporting Zebra label printers for the customers of our app.
+I downloaded your Browser Print sdk found here: https://www.zebra.com/us/en/products/software/barcode-printers/link-os/…
+This download requires a form to be filled out that requires a company name. The files included in the download are more than the print web service. It also includes documentation. Is there documentation that we can refer our customers to that will allow them to setup a zebra label printer, like the ZD420, to work with a web app using your browser print sdk? And a way for them to download the web service without filling out a form and receiving the documentation for development?
+Also we are trying to set this up for others internally and as Matt has mentioned, we are noticing some differences with how the example is setup and how the documentation recommends checking for available printers. Matt was having some issues getting everything working on his machine even after installing the sdk. We are hoping we can get this working reliably for customers as well as other developers.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 12 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Bryan,
+The Browser Print supports Windows PC, Mac OS and Android OS. Depending on the environment your customer will be using, your customer needs to download the corresponding client part of the Browser Print and install it on their Windows PC, Mac OS or Android device. The Browser Print download page provides a list of the client parts of the Browser Print and their corresponding user&#x27;s guides. See the screenshot below. Your customer should be able to install the clients in their environment by following the user&#x27;s guide. Just a note: The Browser Print User Guide is for both Windows PC and Mac OS, while the Browser for Android User Guide is specific for Android users. The Browser Print JavaScript Library is for the web app on the server to use. Let us know if any questions.
+
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

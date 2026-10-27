@@ -1,0 +1,162 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Broadcast receiver receives scan payload but no field &quot;com.symbol.datawedge.data_string&quot; is present</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Broadcast receiver receives scan payload but no field &quot;com.symbol.datawedge.data_string&quot; is present</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/broadcast-receiver-receives-scan-payload-no-field-comsymboldatawedgedatastring-present; original snapshot: threads/00460.html; SHA-256: e1dd887707029068cd79ff5dc37621d48a4d2556f3a5bcf7ba04db81836bb825</small><pre id="topic">
+
+    
+        Broadcast receiver receives scan payload but no field &quot;com.symbol.datawedge.data_string&quot; is present
+
+
+        
+      
+                        
+                    
+            S
+          
+          Stelios Papamichail
+          3 years ago
+        
+        
+      
+        
+            
+                  
+            
+            183
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I am trying to add support for receiving barcode data in our native Android app using Zebra scanners. After going through the docs and doing the required setup in both, our app and the DataWedge profile, I can successfully receive scan events but the &quot;com.symbol.datawedge.data_string&quot; field is missing.Here&#x27;s some more info:I have declared my broadcast receiver in the AndroidManifest file like so:        &lt;receiver android:name=&quot;.receivers.ZebraBarcodeBroadcastReceiver&quot; android:exported=&quot;true&quot;&gt;
+           &lt;intent-filter&gt;
+               &lt;action android:name=&quot;com.hermessolutions.lyrawms.ZEBRA_BARCODE_SCAN&quot;/&gt;
+           &lt;/intent-filter&gt;
+       &lt;/receiver&gt;The ZebraBarcodeBroadcastReceiver is defined as follows:class ZebraBarcodeBroadcastReceiver : BroadcastReceiver() {
+   override fun onReceive(cntxt: Context?, intent: Intent?) {
+       if(intent?.action == ZebraScannerIntentInfo.ZEBRA_SCAN_INTENT_ACTION) {
+           val extras = intent.extras
+           val payload = extras?.getString(ZebraScannerIntentInfo.ZEBRA_SCAN_INTENT_BARCODE_EXTRA_KEY)
+           Log.d(
+               ZebraBarcodeBroadcastReceiver::class.java.simpleName, &quot;Got data $payload&quot; +
+                   &quot;&quot;)
+       }
+   }
+}where the broadcast related constants are defined here:object ZebraScannerIntentInfo {
+   const val ZEBRA_SCAN_INTENT_ACTION = &quot;com.hermessolutions.lyrawms.ZEBRA_BARCODE_SCAN&quot;
+   const val ZEBRA_SCAN_INTENT_BARCODE_EXTRA_KEY = &quot;com.symbol.datawedge.data_string&quot;
+}I have set up the DataWedge profile for our app according to the docs so that it sends the appropriate intent action to our application upon scanning barcodes and it seems to be working since the broadcast receiver does log the event along with the payload info. The only thing that seems to be missing from the intent bundle is the &quot;data_string&quot; field which is strange since it is probably the most important part. I have of course tried scanning multiple different products but without success. Any ideas on what I may be missing here?
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Stelios.Your code seems similar to other code - but my reference source code for this topic is the &quot;BasicIntent1&quot; source code for Android Studio.The github to find this is here: https://github.com/ZebraDevs/DataWedge-Android-Samples( You get to this from the Datawedge TechDoc page &quot;Samples&quot; starting here:https://techdocs.zebra.com/datawedge/13-0/guide/about/FYI: I always refer to techdocs in a response. )Basicintent1 is very simple - and the string involved in that sample seems to be &quot;R.string.datawedge_intent_key_data&quot;  which I am unsure if your code above seems to be addressing to get.  ( Please follow the directions in the Sample Code page - it indicates how to create the BasicIntent1 Datawedge profile step-by-step, and you will need this for the app to work as expected.) 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

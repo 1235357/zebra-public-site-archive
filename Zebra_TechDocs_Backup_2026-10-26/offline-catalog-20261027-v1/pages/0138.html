@@ -1,0 +1,549 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>APIs - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/deviceguardian/latest/api/</code><br>Observed final URL: <code>https://techdocs.zebra.com/deviceguardian/latest/api/</code><br>Raw source: <code>raw/f87204b9aab2076938ac66ba.html</code><br>Raw SHA-256: <code>a5cf0b5fd30b1515a6d13e5041919038e56ac182a20332b9391f8e60419085e4</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            Device Guardian &amp; Access Management
+                                            2.8
+                        
+
+                    
+                
+                
+                    
+                        
+                            
+                                        About
+                            
+                        
+                        
+                            
+                                        Admin Guide
+                            
+                        
+                        
+                            
+                                        Install
+                            
+                        
+                        
+                            
+                                        Configuration
+                            
+                        
+                        
+                            
+                                        User Guide
+                            
+                        
+                        
+                            
+                                        Dashboard
+                            
+                        
+                        
+                            
+                                        APIs
+                            
+                        
+                        
+                            
+                                        FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            APIs
+                        
+                    OverviewRequirementsDevice Check-out/Check-inSample CodeDevice StateSample CodeSee Also
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    APIs
+                                    
+                                            Device Guardian &amp; Access Management
+                                            2.8
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        
+  All references to Device Guardian within this guide also apply to Device Guardian Access Management, unless explicitly stated otherwise.
+
+
+Overview
+
+This guide discusses Device Guardian (DG) and DG Access Management (DGAM) APIs. It utilizes a content provider interface to securely retrieve and share data between applications. The content provider URI consists of four components: &lt;Scheme:&gt;//&lt;Authority&gt;/&lt;API&gt;/&lt;Data&gt;
+
+
+Scheme - Identifies the URI accessing a content source, typically represented as content://.
+
+Authority - The name of the provider authority, usually formatted as packagename.provider.
+
+API - The path that differentiates the content data.
+
+Data - The key pointing to specific data within the path.
+
+
+Example of content provider URI:   content://com.zebra.mdna.els.provider/&lt;API&gt;/&lt;data&gt;
+
+Replace &lt;API&gt; and &lt;data&gt; with the appropriate strings for specific use cases.
+
+
+
+Requirements
+
+
+Modify AndroidManifest.xml: In your application&#x27;s AndroidManifest.xml, include the necessary permission and the &lt;queries&gt; tag to specify the Identity Guardian package name:
+
+&lt;uses-permission android:name=&quot;com.zebra.mdna.els.permission.PROVIDER&quot; /&gt;
+&lt;queries&gt;
+    &lt;package android:name=&quot;com.zebra.mdna.els&quot; /&gt;
+&lt;/queries&gt;
+
+Allowlist Your App: For security, your app must be on Identity Guardian&#x27;s allowlist using AccessMgr CSP from Zebra Device Manager (ZDM). Create a profile via StageNow to configure your app&#x27;s allowlist. Set the following parameters:
+
+
+Operation Mode: &quot;Single User without Whitelist&quot;
+
+Service Access Action: &quot;Allow Caller to Call Service&quot;
+
+Service Identifier: &lt;delegation scope of the API category&gt;
+
+Specify Caller Package Name: &lt;enter app package name, e.g.: com.company.appname&gt;
+
+Caller Signature: &lt;select signature file that contains the app certificate&gt;
+
+For information on generating a signature file, see Caller Signature in the Access Mgr CSP documentation. After creating the StageNow profile, use StageNow to scan the generated barcode or deploy the XML file via Enterprise Mobility Management (EMM) software.
+
+Add APIs to Your App&#x27;s Allowlist: Identity Guardian APIs must be added to your application&#x27;s allowlist.
+
+Prerequisites:
+
+
+Download SigTools.jar. This is used to generate the certificate to create a signature file for security purposes.
+
+Place your .APK app and SigTools.jar in the same folder on your host computer.
+
+Download StageNow. This is used to create the profile to allowlist the APIs.
+
+Procedure:
+
+To allowlist Identity Guardian APIs in your app using StageNow:
+
+
+
+From the command line, navigate to the directory containing your .APK and &quot;SigTools.jar.&quot;.
+
+Generate the certificate by executing the following command, replacing &quot;LOB_app.apk&quot; with your .APK file&#x27;s name:
+
+  java -jar SigTools.jar getcert -inform apk -outform der -in LOB_app.apk -outfile app.crt
+
+From your host system, open StageNow and click on Create New Profile.
+
+Select the MX version that matches or exceeds the one on your device. Refer to the MX documentation for guidance on how to determine the version.
+
+Select Expert Mode and click Create.
+  
+
+Enter a profile name and click Start.
+  
+
+Click the plus (+) sign next to AccessMgr. This adds AccessMgr to the Config tab on the right side. Click Add.
+  
+
+Enter/select the following for AccessMgr:
+
+
+Service Access Action: Allow Caller to Call Service
+
+Service Identifier: [Enter the API URI, see step 11. For example: content://com.zebra.mdna.els.provider/currentsession or content://com.zebra.mdna.dg.provider/devicestate]
+
+Caller Package Name: [Enter the package name for your .APK app file.]
+
+Caller Signature: [Browse to the .CRT certificate generated from step 2 above.]
+
+
+Click Continue.
+
+Click Complete Profiles.
+
+Repeat steps 3 to 10 for each API to allowlist in your app, replacing Service Identifier with the desired API URI:
+
+
+content://com.zebra.mdna.els.provider/currentsession (Device Check-out/Check-in)
+
+content://com.zebra.mdna.dg.provider/devicestate (Device State)
+
+After creating the StageNow profiles, use one of the following methods based on the desired tool for device deployment:
+
+
+
+StageNow: Generate the appropriate barcode for your Android system version from the StageNow profile. Open StageNow client on the device and scan the barcode(s) generated from the installation, configuration and/or BLE profile.
+
+EMM: Export each StageNow XML file from the StageNow installation, connection and BLE profiles. Do not edit the XML file - it can cause unexpected behavior. Send the XML using either OEMConfig or MX to configure the app and grant all required permissions. The installation profile and server connectivity profile XML files must be used separately.
+
+
+
+
+Device Check-out/Check-in
+
+Description: When Identity Guardian is used for accountability, this updates the device status to check-out or check-in based on the user&#x27;s sign-in or sign-out actions within Identity Guardian.
+
+Content URI:   content://com.zebra.mdna.els.provider/currentsession
+
+Parameters:
+
+
+  
+    Key
+    Type
+    Description/Value
+    Requirement
+  
+
+  
+       user_id
+    [string]
+    User identifier for the person signing in, in string format.
+    Mandatory if signing in a user
+  
+
+  
+    signed_in_state
+    [bool]
+    Signed in/out state as an integer:   • 1 - True: User signed in (checked out) the device, updating signin_time and ignoring signout_time.   • 0 - False: User signed out (checked in) the device, updating signout_time and ignoring signin_time.
+    Mandatory
+  
+
+  
+    signin_time
+    [string]
+    Time stamp indicating the user&#x27;s sign-in time in string format: “yyyy-dd-MM HH:mm:ss.SSSZ”. E.g., &quot;2023-10-04 10:53.381+0530&quot;
+    Mandatory if signing in a user
+  
+
+  
+    signout_time
+    [string]
+    Time stamp indicating the user&#x27;s sign-out time in string format: “yyyy-dd-MM HH:mm:ss.SSSZ”. E.g., &quot;2023-10-04 10:53.381+0530&quot;
+    Mandatory if signing out a user
+  
+
+
+
+Response:
+
+
+RESULT bundle:
+
+If successful:
+
+    {&quot;status&quot;:&quot;SUCCESS&quot;,&quot;message&quot;:&quot;successfully executed&quot;}
+
+If unsuccessful:
+
+    {&quot;status&quot;:&quot;FAILURE&quot;,&quot;message&quot;:&quot;error desc&quot;}
+
+The “message” value will vary depending on the error encountered.
+
+Null - Returned if the content provider does not implement the call.
+
+
+Exceptions:
+
+
+NullPointerException – Thrown if the URI or method is null.
+
+IllegalArgumentException – Thrown if the URI is not known.
+
+
+Sample Code
+
+This sample code demonstrates how to send the device check-out/check-in parameters.
+
+    public void getDataForCurrentUser() {
+        ContentResolver contentResolver = getContentResolver();
+        Uri uri = Uri.parse(&quot;content://com.zebra.mdna.els.provider/&quot;);
+        String METHOD_NAME = &quot;currentsession&quot;;
+
+        Bundle bundle = new Bundle();
+        bundle.putString(&quot;user_id&quot;, &quot;pd3445&quot;);
+        bundle.putBoolean(&quot;signed_in_state&quot;, true);
+        bundle.putString(&quot;signin_time&quot;, getCurrentDateAndTimeFormat(System.currentTimeMillis()));
+        bundle.putString(&quot;signout_time&quot;, “”);
+
+        Bundle response = contentResolver.call(uri,METHOD_NAME,null,bundle);
+        if (response != null &amp;&amp; response.containsKey(&quot;RESULT&quot;)) {
+            Log.i(TAG, response.getString(&quot;RESULT&quot;));
+        }
+    }
+
+
+
+Device State
+
+Device Guardian exposes a content provider to set a device’s tracking state to either Missing (To Be Found&quot;) or In Service (not missing). This is useful for those who prefer direct control over these states rather than relying on Device Guardian&#x27;s standard operations or automated rules for these state changes.
+
+Content URI:   content://com.zebra.mdna.dg.provider/devicestate
+
+Parameters:
+
+
+  
+    Key
+    Type
+    Description/Value
+    Requirement
+  
+
+  
+       device_state
+    [int]
+    Device State represented as an integer:   • 0 - IN SERVICE: The device is not missing.   • 1 - TO_BE_FOUND: The device is missing.
+    Mandatory
+  
+
+  
+    state_change_time
+    [string]
+    Time stamp of the state change in string format: “yyyy-dd-MM HH:mm:ss.SSSZ”. E.g., &quot;2023-10-04 10:53.381+0530&quot;
+    Mandatory
+  
+
+  
+    state_change_reason
+    [string]
+    Reason why the device was marked as missing.  Note: Any third-party application can modify the state_change_reason. If a third-party application sets a reason, it has the ability to overwrite or clear it; however, these modifications cannot be made directly through Device Guardian.
+    Optional
+  
+
+
+
+Response:
+
+
+RESULT bundle:
+
+If successful:
+
+    {&quot;status&quot;:&quot;SUCCESS&quot;,&quot;message&quot;:&quot;Device state saved successfully&quot;}
+
+If unsuccessful:
+
+    {&quot;status&quot;:&quot;FAILURE&quot;,&quot;message&quot;:&quot;error desc&quot;}
+
+The “message” value will vary depending on the error encountered.
+
+Null - Returned if the content provider does not implement the call.
+
+
+Exceptions:
+
+
+NullPointerException – Thrown if the URI or method is null.
+
+IllegalArgumentException – Thrown if the URI is not known.
+
+
+Sample Code
+
+The sample code below demonstrates how to call the device state content provider:
+
+    Uri uri = Uri.parse(&quot;content://com.zebra.mdna.dg.provider/&quot;);
+    String METHOD_NAME = &quot;devicestate&quot;;
+    ContentResolver cr = getContentResolver();
+    Bundle bundle = new Bundle();
+
+    Integer intDeviceState = 1; //set device to missing state
+    String stateChangeReason = &quot;&quot;; // optional
+
+    bundle.putInt(&quot;device_state&quot;, intDeviceState);
+    bundle.putString(&quot;state_change_reason&quot;, (stateChangeReason == null) ? &quot;&quot; : stateChangeReason);
+
+
+    // Add current date time in yyyy-dd-MM HH:mm:ss.SSSZ format for state_change_time
+    bundle.putString(&quot;state_change_time&quot;, getFormattedCurrentDate());
+
+    try {
+        Bundle response = cr.call(uri, METHOD_NAME, null, bundle);
+        if (response != null &amp;&amp; response.containsKey(&quot;RESULT&quot;)) {
+            if (response.getString(&quot;RESULT&quot;).equals(&quot;SUCCESS&quot;)) {
+                if (response.containsKey(&quot;status&quot;)) {
+                // To access the success message: response.getString(&quot;status&quot;);
+                }
+            } else {
+                result.setText(response.getString(&quot;RESULT&quot;));
+                // To access the result message of an unsuccessful call: response.getString(&quot;RESULT&quot;);
+            }
+        }
+    }
+    catch (Exception e) {
+        e.printStackTrace();
+    }
+
+Sample helper function to format the date:
+
+    static String getFormattedCurrentDate() {
+        Date currentDate = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(&quot;yyyy-dd-MM HH:mm:ss.SSSZ&quot;);
+        dateFormat.setLenient(false);
+
+        // Format the date
+        String formattedDate = dateFormat.format(currentDate);
+        return formattedDate;
+    }
+
+
+
+See Also
+
+
+About Device Guardian + Access Management
+
+Admin Guide
+
+Install &amp; Setup
+
+Configuration
+
+Device Use
+
+Dashboard
+
+Secondary BLE
+
+Licensing
+
+FAQ
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates.
+    Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+
+
+
+Back to Top</pre></body></html>

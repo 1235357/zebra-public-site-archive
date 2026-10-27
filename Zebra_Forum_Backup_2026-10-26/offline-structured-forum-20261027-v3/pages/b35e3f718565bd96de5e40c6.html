@@ -1,0 +1,644 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Activity Not Found Exception for Camera App</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/activity-not-found-exception-camera-app; snapshot threads/00567.html; SHA-256 68d67a482792cde241cda372784b6d30a916b692cc43e28d8b25dea4ae3f9e03. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Activity Not Found Exception for Camera App</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            C
+          </div>
+          <div class="forum-topic__author-name">Christoforos Vlachos</div>
+          <div class="forum-topic__timestamp">3 years 5 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            277
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            5
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                          <span class="forum-solved">//Solved</span>
+        </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi everyone,</p>
+
+<p>I have developed an industrial android app using kotlin. The app needs to launch the camera multiple times, it does so using this code :</p>
+
+<p> </p>
+
+<pre><em>val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+    putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+}
+startActivityForResult(
+    cameraIntent,
+    this@ExtraDieukrinhseisDeltiou.REQUEST_CODE_CAMERA
+)</em></pre>
+
+<p>I have also installed the "Enterprise Home Screen" (version 4.2.40) on the devices. The devices are MC2700 &amp; TC26 and the OS is Android 11.  Everything works as expected in the beginning but,<em> after 2-3weeks of the application running in the field I found out (using the RxLogger) that I get an "ActivityNotFound" exception when I try to launch the camera using the above code</em>. </p>
+
+<p>I also noticed from the devices in the field that they <em>were unlocked and the  "Enterprise Home Screen" app was misbehaving</em>. </p>
+
+<p>If I uninstall and re-install the "Enterprise Home Screen" then the camera app is launched successfully again. But after 2-3 weeks the same thing happens again. </p>
+
+<p>I know this is a very weird behavior and I cannot understand why this happens. Is this some known issue by now ? What do you think I should check to identify and solve this problem. Any help or idea is greatly appreciated since I am stuck.</p>
+
+<p>Thank you in advance,</p>
+
+<p>Chris</p>
+
+<p> </p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+        <div class="forum-topic__accepted-solution">
+      <div class="forum-topic__accepted-solution-badge">
+        <span class="forum-topic__accepted-solution-label">✓ Accepted Solution</span>
+      </div>
+      <div class="forum-topic__accepted-solution-content">
+          
+
+
+
+<article id="comment-51947" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              C
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Christoforos Vlachos</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 3 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hello Daniel,</p>
+
+<p>Your initial assumption was indeed accurate. I'm unsure of the exact cause of the issue, but I managed to resolve it by modifying my configuration in the EHS. The problem seemed to stem from the fact that I had disabled certain Google applications within my configuration, as listed below:</p>
+
+<pre><code>&lt;apps_disabled&gt;
+&lt;application package="com.android.contacts"/&gt;
+&lt;application package="com.android.mms"/&gt;
+&lt;application package="com.android.soundrecorder"/&gt;
+&lt;application package="org.codeaurora.dialer"/&gt;
+&lt;application package="com.google.android.apps.photos"/&gt;
+&lt;application package="com.google.android.apps.maps"/&gt;
+&lt;application package="com.android.chrome"/&gt;
+&lt;application package="com.google.android.gm"/&gt;
+&lt;application package="com.google.android.apps.docs"/&gt;
+&lt;application package="com.android.vending"/&gt;
+&lt;application package="com.google.android.videos"/&gt;
+&lt;application package="com.google.android.apps.tachyon"/&gt;
+&lt;application package="com.google.android.apps.messaging"/&gt;
+&lt;application package="com.google.android.youtube"/&gt;
+&lt;application package="com.google.android.apps.youtube.music"/&gt;
+&lt;application package="com.google.android.calendar"/&gt;
+&lt;/apps_disabled&gt;</code></pre>
+
+<p>Upon re-enabling all of these applications, the issue was successfully resolved.</p>
+
+<p>Best regards,</p>
+
+<p>Chris</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+      </div>
+    </div>
+  
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      5 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-51737" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/daniel-neamtu">Daniel Neamtu</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Chris,</p>
+<p>Are the devices under an EMM?</p>
+<p>You should check whether someone plays with the EHS and if the camera app has been mistakenly disabled.</p>
+<p>This is not something coming from us, it's purely a misconfiguration here.</p>
+<p>Daniel</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-51779" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              C
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Christoforos Vlachos</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hello Daniel, </p>
+
+<p>Thank you very much for your response. The devices are not under an EMM and also they do not have wifi or mobile data enabled (this is a request from our client).  The only way for someone to play with the EHS is if they have the administrator code which I am pretty sure they do not. </p>
+
+<p>Below I provide link which demostrates this behavior. </p>
+
+<p><span data-original-href="https://drive.google.com/file/d/1Y2gvtBnX8nonp_Wo8J6wpnqe-xyugnjj/view?usp=sharing">https://drive.google.com/file/d/1Y2gvtBnX8nonp_Wo8J6wpnqe-xyugnjj/view?usp=sharing</span></p>
+
+<p>The device that you see in the video is one of our test devices (not a client's device). This specific device was stored and was inactivefor about one month. Today I re-opened the device to perform some tests and, as you can see in the video,<em> the EHS was not automatically launched and also the camera app was disabled </em>(observe that there is no icon of the camera app at 0:15 of the video). </p>
+
+<p>Afterwards, in the video, I open our application and when I try to launch the camera the app crashes (0:36 in video - this is the <em>ActivityNotFound exception</em> that I saw using the RxLogger).</p>
+
+<p>At 0:42 I relaunch the EHS and after that everything works fine - the camera was re-enabled and our application was working as expected. </p>
+
+<p>For your reference, I am also sharing the contents of the EHS configuration file. Please review it and let me know if you notice anything unusual.</p>
+
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;config&gt;
+  &lt;kiosk&gt;
+    &lt;application label="Καταμέτρηση" package="com.chris.mciydro" activity="com.chris.mciydro.MainActivity"/&gt;
+  &lt;/kiosk&gt;
+  &lt;applications&gt;
+    &lt;application label="Καταμέτρηση" package="com.chris.mciydro" activity="com.chris.mciydro.MainActivity"/&gt;
+  &lt;/applications&gt;
+  &lt;tools&gt;
+    &lt;application label="Καταμέτρηση" package="com.chris.mciydro" activity="com.chris.mciydro.MainActivity"/&gt;
+  &lt;/tools&gt;
+  &lt;passwords&gt;
+    &lt;admin attempts="1"&gt;jDt1n+SY4UQozA9FygYPKcthE5/KOnTivNFi8GY/mls=aQhEJJCJuYrijkdAvLoPhFeP2KbHa1qcGPKzycozE/M=&lt;/admin&gt;
+  &lt;/passwords&gt;
+  &lt;user_options&gt;
+    &lt;icon_settings&gt;
+      &lt;app_icon_size&gt;M&lt;/app_icon_size&gt;
+    &lt;/icon_settings&gt;
+  &lt;/user_options&gt;
+  &lt;preferences&gt;
+    &lt;admin_inactivity_timeout&gt;120&lt;/admin_inactivity_timeout&gt;
+    &lt;orientation&gt;portrait&lt;/orientation&gt;
+    &lt;wallpaper/&gt;
+    &lt;usb_debugging_disabled&gt;0&lt;/usb_debugging_disabled&gt;
+    &lt;icon_label_text_color&gt;#FFFFFFFF&lt;/icon_label_text_color&gt;
+    &lt;auto_launch_enable&gt;0&lt;/auto_launch_enable&gt;
+    &lt;service_auto_launch_enable&gt;0&lt;/service_auto_launch_enable&gt;
+    &lt;keyguard_search_disabled&gt;1&lt;/keyguard_search_disabled&gt;
+    &lt;admin_max_attempts&gt;20&lt;/admin_max_attempts&gt;
+    &lt;system_settings_restricted&gt;1&lt;/system_settings_restricted&gt;
+    &lt;icon_label_background_color&gt;#00FFFFFF&lt;/icon_label_background_color&gt;
+    &lt;fullscreen&gt;0&lt;/fullscreen&gt;
+    &lt;keyguard_camera_disabled&gt;1&lt;/keyguard_camera_disabled&gt;
+    &lt;kiosk_mode_enabled&gt;0&lt;/kiosk_mode_enabled&gt;
+    &lt;title&gt;
+      &lt;value&gt;[serial_number]&lt;/value&gt;
+    &lt;/title&gt;
+    &lt;title_bar_icon&gt;
+      &lt;title_bar_icon_disabled&gt;0&lt;/title_bar_icon_disabled&gt;
+    &lt;/title_bar_icon&gt;
+    &lt;configurable_user_options&gt;
+      &lt;app_icon_settings_disabled&gt;1&lt;/app_icon_settings_disabled&gt;
+    &lt;/configurable_user_options&gt;
+    &lt;admin_lock_out&gt;
+      &lt;recovery_enabled&gt;0&lt;/recovery_enabled&gt;
+    &lt;/admin_lock_out&gt;
+    &lt;screen_blanking&gt;
+      &lt;blanking_enabled&gt;0&lt;/blanking_enabled&gt;
+      &lt;speed_threshold&gt;10&lt;/speed_threshold&gt;
+      &lt;blanking_mode&gt;1&lt;/blanking_mode&gt;
+    &lt;/screen_blanking&gt;
+    &lt;apps_disabled&gt;
+      &lt;application package="com.android.contacts"/&gt;
+      &lt;application package="com.android.mms"/&gt;
+      &lt;application package="com.android.soundrecorder"/&gt;
+      &lt;application package="org.codeaurora.dialer"/&gt;
+      &lt;application package="com.google.android.apps.photos"/&gt;
+      &lt;application package="com.google.android.apps.maps"/&gt;
+      &lt;application package="com.android.chrome"/&gt;
+      &lt;application package="com.google.android.gm"/&gt;
+      &lt;application package="com.google.android.apps.docs"/&gt;
+      &lt;application package="com.android.vending"/&gt;
+      &lt;application package="com.google.android.videos"/&gt;
+      &lt;application package="com.google.android.apps.tachyon"/&gt;
+      &lt;application package="com.google.android.apps.messaging"/&gt;
+      &lt;application package="com.google.android.youtube"/&gt;
+      &lt;application package="com.google.android.apps.youtube.music"/&gt;
+      &lt;application package="com.google.android.calendar"/&gt;
+    &lt;/apps_disabled&gt;
+    &lt;apps_enabled&gt;
+      &lt;application package="com.android.documentsui"/&gt;
+      &lt;application package="com.mci.ergolavia"/&gt;
+      &lt;application package="com.android.deskclock"/&gt;
+      &lt;application package="com.android.settings"/&gt;
+      &lt;application package="com.zebra.bluetooth.settings"/&gt;
+      &lt;application package="com.symbol.dataanalytics"/&gt;
+      &lt;application package="com.symbol.zebravolumecontrol"/&gt;
+      &lt;application package="com.zebra.smartmu.app"/&gt;
+      &lt;application package="com.symbol.vod"/&gt;
+      &lt;application package="com.symbol.tool.stagenow"/&gt;
+      &lt;application package="com.symbol.rxlogger"/&gt;
+      &lt;application package="com.symbol.pttexpress"/&gt;
+      &lt;application package="com.zebra.ppcclient"/&gt;
+      &lt;application package="com.google.android.googlequicksearchbox"/&gt;
+      &lt;application package="com.zebra.devicetracker"/&gt;
+      &lt;application package="com.symbol.datawedge"/&gt;
+      &lt;application package="com.symbol.fusionlogger"/&gt;
+      &lt;application package="org.codeaurora.snapcam"/&gt;
+      &lt;application package="com.symbol.batterymanager"/&gt;
+      &lt;application package="com.symbol.fusionsettings"/&gt;
+      &lt;application package="com.google.android.keep"/&gt;
+      &lt;application package="com.android.inputmethod.latin"/&gt;
+      &lt;application package="com.android.traceur"/&gt;
+      &lt;application package="com.google.android.calculator"/&gt;
+      &lt;application package="com.symbol.btapp"/&gt;
+      &lt;application package="com.displaylink.presenter"/&gt;
+      &lt;application package="com.symbol.mxmf.csp.enterprisekeyboard"/&gt;
+      &lt;application package="com.zebra.licenseuiapp"/&gt;
+      &lt;application package="com.qualcomm.qti.qms.service.telemetry"/&gt;
+    &lt;/apps_enabled&gt;
+  &lt;/preferences&gt;
+&lt;/config&gt;
+</code></pre>
+
+<p>Any suggestion is greatly appreciated. Thank you in advance.</p>
+
+<p>Chris</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-51781" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/daniel-neamtu">Daniel Neamtu</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Chris,</p>
+<p>I see you've registered for our DevKitchen event which will be next week in Athene.</p>
+<p>I'll be there because I'm among the presenters and I think it would be great if you could bring the device with you so we can better check the issue!</p>
+<p>I've also tested your configuration on my device but as much as I tried with different configurations I couldn't reproduce the issue where the camera app was disappearing from the list of apps.</p>
+<p>Maybe on-site we can figure it out something :)</p>
+<p>Regards,</p>
+<p>Daniel </p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-51785" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              C
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Christoforos Vlachos</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 4 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hello Daniel,</p>
+
+<p>I hope you're having a good morning. I wanted to let you know that I think your idea is fantastic, and I appreciate it very much. I'll make an effort to replicate the issue myself, or I'll try to obtain a device from our client that exhibits this problem (unfortunately, the device shown in the video is now functioning properly). I look forward to meeting you at the DevKitchen event.</p>
+
+<p>Bestregards,</p>
+
+<p>Chris</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-51947" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              C
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Christoforos Vlachos</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 3 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hello Daniel,</p>
+
+<p>Your initial assumption was indeed accurate. I'm unsure of the exact cause of the issue, but I managed to resolve it by modifying my configuration in the EHS. The problem seemed to stem from the fact that I had disabled certain Google applications within my configuration, as listed below:</p>
+
+<pre><code>&lt;apps_disabled&gt;
+&lt;application package="com.android.contacts"/&gt;
+&lt;application package="com.android.mms"/&gt;
+&lt;application package="com.android.soundrecorder"/&gt;
+&lt;application package="org.codeaurora.dialer"/&gt;
+&lt;application package="com.google.android.apps.photos"/&gt;
+&lt;application package="com.google.android.apps.maps"/&gt;
+&lt;application package="com.android.chrome"/&gt;
+&lt;application package="com.google.android.gm"/&gt;
+&lt;application package="com.google.android.apps.docs"/&gt;
+&lt;application package="com.android.vending"/&gt;
+&lt;application package="com.google.android.videos"/&gt;
+&lt;application package="com.google.android.apps.tachyon"/&gt;
+&lt;application package="com.google.android.apps.messaging"/&gt;
+&lt;application package="com.google.android.youtube"/&gt;
+&lt;application package="com.google.android.apps.youtube.music"/&gt;
+&lt;application package="com.google.android.calendar"/&gt;
+&lt;/apps_disabled&gt;</code></pre>
+
+<p>Upon re-enabling all of these applications, the issue was successfully resolved.</p>
+
+<p>Best regards,</p>
+
+<p>Chris</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/activity-not-found-exception-camera-app%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/activity-not-found-exception-camera-app%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

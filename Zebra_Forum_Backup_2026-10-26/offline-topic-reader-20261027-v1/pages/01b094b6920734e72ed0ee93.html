@@ -1,0 +1,209 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>RFID SDK iOS (Swift) RFD40 – WLAN APIs &quot;srfidAddWlanProfile&quot; crash or return NOT_SUPPORTED</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>RFID SDK iOS (Swift) RFD40 – WLAN APIs &quot;srfidAddWlanProfile&quot; crash or return NOT_SUPPORTED</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/rfid-sdk-ios-swift-rfd40-wlan-apis-srfidaddwlanprofile-crash-or-return-notsupported; original snapshot: threads/00033.html; SHA-256: 0587556259c06e69008909fda43a078cea03112266f6bc8ab482bf786821700c</small><pre id="topic">
+
+    
+        RFID SDK iOS (Swift) RFD40 – WLAN APIs &quot;srfidAddWlanProfile&quot; crash or return NOT_SUPPORTED
+
+
+        
+      
+                        
+                    
+            J
+          
+          John Rhea
+          1 year 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            139
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi Everyone,I am having a bit of trouble adding a WLAN Profile. Any help or pointers would be greatly appreciated. Thank you! srfidAddWlanProfile, getProtocol(), getPassword(): All seem to have the same affect The Objective-C Zebra iOS demo app (123Rfid_iOS_v_1_1_75) on the same device/reader connects to Wi-Fi just fine (scan, add profile, save, connect) and yes, before I start debugging I set the current Region and Maker sure than any Operation is not running.EnvironmentReader: RFD40 Premium (RFD4031)Firmware: PAAFKS00-009-R00 (latest, I’ve tried multiple versions)iPhone/iPad: iOS 18.0-18.5 (I’ve tried multiple iOS versions)Xcode / Swift: Xcode 16.4, Swift 5-6 (I’ve tried multiple Xcode version and both Swift 5 and 6)Zebra RFID iOS SDK: XCFramework (runtime log sometimes shows Zebra SDK Version: 1.1.35 and Symbol BT SDK version: 1.1.13)What worksAfter establishing communication session succeeds.Establishing ASCII/iAP succeeds (log: -[zt_AsciiProcotocolHandler initializeConnection] ProtocolConfig: echo off -&gt; OK).srfidWlanScanList Works fine I can get a list of network SSIDssrfidGetWifiStatus  succeeds and returns (example):I get logs like: {  &quot;2_4GHzAllowedChannelListMask&quot; = 0x00000000000007FF;  5GHzDFSAllowedChannelListMask = 0x0000000FFFF00000;  5GHzNonDFSAllowedChannelListMask = 0x000001F0000F0000;  ChannelListMask = 0x000001F0000F07FF;  PreferredSSID = &quot;&quot;;  STATE = DISCONNECTED;  WifiRegion = FCC;  wifi = ENABLE;} What failsEnabling Wi-Fi (even after ASCII OK):getWifiStatus → 4  (RESPONSE_TIMEOUT), message=nil   // on first call occasionallywifiEnable    → 6  (NOT_SUPPORTED), message=nilNote: radio often already reports wifi = ENAdding a WLAN profile intermittently crashes inside the SDK:Crash points I’ve seen:ZebraRfidSdkFramework -[CommandAddWlanProfile setSSID:]ZebraRfidSdkFramework -[CommandAddWlanProfile setPassword:]• • CF string mutation underneath (-[__NSCFString setString:])Simple Swift Example:override func srfidEventCommunicationSessionEstablished(_ activeReader: srfidReaderInfo!) {
+        let readerId = activeReader.getReaderID()
+
+        DispatchQueue.main.async {
+            let sdk = RFIDAPI.shared.sdk
+
+            sdk.srfidStopInventory(readerId, aStatusMessage: nil)
+
+            guard sdk.srfidEstablishAsciiConnection(readerId, aPassword: nil) == SRFID_RESULT_SUCCESS else {
+                print(&quot;ASCII FAILED&quot;); return
+            }
+            print(&quot;✅ ASCII OK&quot;)
+
+            // Small delay avoids races seen in some SDK builds
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.20) {
+                // Status often shows ENABLE/DISCONNECTED
+                var statusMsg: NSString?
+                var info: srfidGetWifiStatusInfo?
+                let st = sdk.srfidGetWifiStatus(readerId, wifiStatusInfo: &amp;info, aStatusMessage: &amp;statusMsg)
+                print(&quot;getWifiStatus →&quot;, st.rawValue, statusMsg ?? &quot;nil&quot;,
+                      (info?.getStatusDictionary() as? [String:Any]) ?? [:])
+
+                // Skip wifiEnable if already ENABLE (calling enable usually returns 6)
+                // Build profile exactly like the demo: SSID (quoted) → Password → Protocol
+                
+                let ssid = &quot;MYSSID&quot;
+                
+                let profile = sRfidAddProfileConfig()
+                profile.setSSID(ssid)                       // 1) SSID
+                profile.setPassword(&quot;MyPassword&quot;)           // 2) Password (omit for open networks; use &quot;No_Encryption&quot;)
+                profile.setProtocol(&quot;WPA2_Personal_CCMP&quot;)   // 3) Protocol (match demo literals)
+
+                print(&quot;DBG SSID:&quot;, profile.getSSID() ?? &quot;nil&quot;)
+                #warning(&quot;GRASH! -&gt; &#x27;profile.getProtocol()&#x27;&quot;)
+                print(&quot;DBG Protocol:&quot;, profile.getProtocol() ?? &quot;nil&quot;)
+                #warning(&quot;GRASH! -&gt; &#x27;profile.getPassword()&#x27;&quot;)
+                print(&quot;DBG PwdLen:&quot;, (profile.getPassword() ?? &quot;&quot;).count)
+
+                var msg: NSString?
+                #warning(&quot;GRASH! -&gt; &#x27;srfidAddWlanProfile&#x27;&quot;)
+                let add = sdk.srfidAddWlanProfile(readerId, srfidProfileConfig: profile, aStatusMessage: &amp;msg)
+                print(&quot;add →&quot;, add.rawValue, msg ?? &quot;nil&quot;)
+
+                if add == SRFID_RESULT_SUCCESS {
+                    let save = sdk.srfidWlanSaveProfile(readerId, aStatusMessage: &amp;msg)
+                    print(&quot;save →&quot;, save.rawValue, msg ?? &quot;nil&quot;)
+                    let conn = sdk.srfidConnectWlanProfile(readerId, ssidWlan: ssid, aStatusMessage: &amp;msg)
+                    print(&quot;connect →&quot;, conn.rawValue, msg ?? &quot;nil&quot;)
+                }
+            }
+        }
+    }
+              
+
+                    
+          
+      
+              
+ Screenshot 2025-08-11 at 9.32.55 AM.png
+
+              
+ Screenshot 2025-08-11 at 9.34.33 AM.png
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            John Rhea
+          
+          
+            1 year 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Works in Obj-C NSLog but crashes in SwiftSwift: Creating a  sRfidAddProfileConfig and setting the Protocol or Password will be empty string. let p = sRfidAddProfileConfig()
+p.setSSID(&quot;SSID&quot;)
+p.setProtocol(&quot;WPA2_Personal_CCMP&quot;)
+//print(p.getProtocol()) //&lt;--- Even trying to print out the protocol will result in
+/// ``EXC_BAD_ACCESS Result: --&gt; use-after-free / “message sent to deallocated instance” caused by a thread/actor violation with a non-Sendable Obj-C object.``
+p.setPassword(&quot;MySSIDPassword&quot;)
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

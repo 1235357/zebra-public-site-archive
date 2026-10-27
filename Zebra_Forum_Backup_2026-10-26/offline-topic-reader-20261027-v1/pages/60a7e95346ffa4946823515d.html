@@ -1,0 +1,156 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Connected Device is not showing in my devices in the dev portal</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Connected Device is not showing in my devices in the dev portal</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/connected-device-not-showing-my-devices-dev-portal-0; original snapshot: threads/00205.html; SHA-256: b0cc950a489b926ddab02e1902997d95ddda53bca809e509a6322f6996d80224</small><pre id="topic">
+
+    
+        Connected Device is not showing in my devices in the dev portal
+
+
+        
+      
+                        
+                    
+            K
+          
+          Krishna Zebra
+          2 years 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            142
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We are using the ZQ521 printer and i&#x27;ts a Link-OS printer. We want to use the &quot;Send File to Printer API&quot;, for that we are doing &quot;Web link Printer Configuration&quot; in the Printer setup app. We kept the Device Language as Zpl and tried with different Emulation options, getting &quot;Communication error&quot; (Error writing to connection: One or more errors occurred, broken Pipe). We restarted the printer, still it doesn&#x27;t work, the added device is not showing in the portal.We are sending the below JSON file into Printer Setup utilities using Android phone (Phone and Zebra printer are connected through Bluetooth).{}{ &quot;weblink.logging.max_entries&quot;:&quot;500&quot;, &quot;weblink.ip.conn1.location&quot;:&quot;https://savanna-device.zpc.zebra.com/weblink/connect?r=XXXXXXXXXXXXXXXXXXXXXXXXXXXXX&quot;, &quot;device.reset&quot;:&quot;1&quot; }I am not sure what we are doing wrong.
+              
+
+                    
+          
+      
+              
+ Zebra_Printer_error (1).png
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Looks like your Android device may have issues with Bluetooth. If you have an iPhone, you can download the same app on an iPhone and give it a try. Alternatively, use the same app (Zebra Setup Utility) to configure the ZQ521 to use WiFi, then connect the iPhone or Android phone to the printer via WiFi to get a better connection. You need the WiFi connection for the printer anyway, if you want to use the SendFileToPrinter API.
+To connect the ZQ521 to Zebra cloud for using the SendFileToPrinter API, we need to do two things. The first thing is to send the enrollment string, i.e., the JSON string as you mentioned above to the printer. The second thing is to make sure that the RTC (Real-Time Clock) on the printer is current. If the RTC on the printer is off, the printer will not pass the SSL authentication check and will fail to connect to Zebra cloud. This might be the reason of not seeing the printer on My Devices page. To set the RTC on the printer to the current time, use the following JSON string.
+{}{
+&quot;rtc.time&quot;:&quot;13:53:00&quot;,
+&quot;rtc.date&quot;:&quot;08-23-2024&quot;
+}
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,270 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Unable to call or trigger C# method when printed label removed from ZEBRA ZD621 printer.</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Unable to call or trigger C# method when printed label removed from ZEBRA ZD621 printer.</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/unable-call-or-trigger-c-method-when-printed-label-removed-zebra-zd621-printer; original snapshot: threads/00469.html; SHA-256: 43f33b820f94aaac09cbe65bdfae0aac20223de3adbcc664d7abe086db681d2e</small><pre id="topic">
+
+    
+        Unable to call or trigger C# method when printed label removed from ZEBRA ZD621 printer.
+
+
+        
+      
+                        
+                    
+            S
+          
+          suresh Amsala
+          3 years ago
+        
+        
+      
+        
+            
+                  
+            
+            144
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi All,
+
+I am using ZEBRA ZD621 printer and connected to my machine via USB.
+
+I am sending 5 labels to the printer, with the first one made available on the peeler. As user physically remove each label, My C# application needs to detects the label being removed and places the check mark in each successive checkbox.
+
+But I am unable to trigger or call the event in application immediately when user remove label from the printer.
+
+Can someone help me.
+
+Thanks.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Does the printer have a peeler installed with? The peel-off configuration on the printer goes hand in hand with a peeler installed on the printer. If a peeler is not installed on the printer, the sensor.peeler won&#x27;t be able to detect if a label needs to be removed from the peeler.
+If a peeler is installed and the printer is configured as peel-off, you can use the sensor.peeler SGD to check if a label on the peeler needs to be removed. Alternative, you can use the device.host_status SGD to check for the peel-off status as well.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            suresh Amsala
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Steven, Thanks for your reply.
+
+Yes, peeler was installed and configured as peel-off. I successfully achieved this by using &quot;odometer.total_label_count&quot; and sensor.peeler but looping and waiting until to complete all labels printing is eating performance. But the question is in which event I have to check this because if a label is printed and placed on sensor but user was not removed immediately, he removed label from printer after 15 mins. So, I think running or looping application until that time is not a good idea.
+
+So, I am trying an event to call when the user peel-off label from the printer. Like from C# when user clicked on button the button click event will trigger.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There is no event driven peel-off notification. We will have to query the status of the sensor.peeler in order to know if the label is removed or not. Sine your use case is depending on the removal of the label, it should not matter to loop through the sensor.peeler SGD with a 1 second interval until the sensor.peeler is clear.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

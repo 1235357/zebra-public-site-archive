@@ -1,0 +1,160 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>how to get wi-fi printer status(OFF/ON) before printing</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>how to get wi-fi printer status(OFF/ON) before printing</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25737; original snapshot: threads/resume-00553.html; SHA-256: 6a120e41667d8687dd2b186fd82017749337e4120bc9e3caa3564a7908acc3db</small><pre id="topic">
+
+    
+        how to get wi-fi  printer status(OFF/ON) before printing 
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            82
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  If printer is off mode every time i am getting Sockets.SocketException so how to check printer status before printing
+.
+printerIPendPoint = new IPEndPoint(IPAddress.Parse(printerIp), port);
+  using (socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+{
+ socket.Connect(printerIPendPoint);
+    ns = new NetworkStream(socket);
+  byte[] toSend = Encoding.ASCII.GetBytes(zplLabelString);
+ ns.Write(toSend, 0, toSend.Length);
+   }
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            What do you mean by &quot;off mode&quot;? Do you mean the sleep mode? If the printer has sleep mode (not all printers have this feature), then we can wake up the printer by Bluetooth, WiFi, etc. When the print is in sleep mode, it still listens on Bluetooth &amp;amp; WiFi. When the application tries to make a connection via Bluetooth or WiFi, it will wake the printer up. Check out this document for more details - Sleep Mode.
+One easiest way to test out is to put the printer in sleep mode with the following commands to enable the sleep mode and set the timeout to 5sec.
+! U1 setvar &quot;power.sleep.enable&quot; &quot;on&quot;
+! U1 setvar &quot;power.sleep.timeout&quot; &quot;5&quot;
+Once the printer is in the sleep mode, try to access the http://192.168.1.65/index.html (replace with your printer&#x27;s IP address) to wake it up.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

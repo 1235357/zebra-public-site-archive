@@ -1,0 +1,492 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Java.Lang.NoSuchMethodError</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Java.Lang.NoSuchMethodError</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/javalangnosuchmethoderror; original snapshot: threads/00893.html; SHA-256: 4e6e78b672d3cb1a75a9fb35941f250152b9fa3baa4f2c0816431e59ea743618</small><pre id="topic">
+
+    
+        Java.Lang.NoSuchMethodError
+
+
+        
+      
+                        
+                    
+            S
+          
+          Sam Ruckley
+          4 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            30
+          
+                
+                  
+            
+            7
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi All,
+The full error is: Java.Lang.NoSuchMethodError Message=no non-static method &quot;Lcom/symbol/emdk/sam/SAM;.getSmartCardATR()[B&quot;
+Im using a TC77 on 8.1 Android, Visual Studio 2019.
+Using v5 SAM examples located here: https://techdocs.zebra.com/emdk-for-xamarin/7-0/samples/sam/ (It says v7, but its actually v5)
+The v5 examples by default dont have the latest EMDK for Xamarin, so it has been updated using the NuGet package manager built in from Visual Studio.
+It successfully updates to 7.0.0.14, running the application at this stage works as expected.
+Moving upto 7.0.0.14 gives the additional methods: getSmartcardATR() and setSmartcardPPS()
+For the sake of this thread i&#x27;m only interested in getSmartcardATR().
+Adding in &quot;byte[] atrStream = sam.GetSmartCardATR();&quot; directly below &quot;sam.Connect();&quot; results in the error being thrown.
+After searching for the reason why this is happening, online it suggests that it could be a code shrinker issue, however the default project settings have no code shrinker.
+For sanity I added a code shrinker and then a proguard configuration as per alot of the comments I found. This didnt work either.
+EDIT: I have also gone through the project and deleted XamarinEMDK.dll which wasnt v7.0.0.14. Just incase it was picking up the older version.
+I tried looking at the documentation for v7 but the methods arent listed: https://techdocs.zebra.com/emdk-for-xamarin/7-0/api/sam/SAM/
+Ive also looked at the recent release noted with no reference to these methods.
+Am I missing something? Is the DLL compiled incorrectly?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      7 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Darryn Campbell
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Can I please clarify I have understood the issue correctly?
+EMDK for Android has the method getSmartCardATR() in the latest release, https://techdocs.zebra.com/emdk-for-android/11-0/api/reference/com/symb…--
+Whereas EMDK for Xamarin does not have that same method in its latest release, either in the docs or apparently in the Nuget package.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sam Ruckley
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            EMDK for Xamarin has the method getSmartCardATR() in the latest release.
+Using object viewer in Visual Studio shows the method in the dll.
+Just the online documentation doesnt have it listed, however any attempts to use this method is resulting in the Java.Lang.NoSuchMethodError.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Darryn Campbell
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            OK thanks... let me ask internally and see what I can find out.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Darryn Campbell
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi, the engineering team tell me they are looking into it.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sam Ruckley
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Any update?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Darryn Campbell
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Apologies for the delayed response, let me check...
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Darryn Campbell
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I have heard back from engineering - GetSmartCardATR() IS a valid method and should work in EMDK for Xamarin.  Apparently there was an issue with the documentation not getting generated for the latest DLL release.  Please keep an eye on http://zebra-stage.github.io/ for updated preview documentation in the next few days.  Why this is giving you a NoSuchMethodError I still can&#x27;t say, if you have a support contract I suggest raising a ticket at https://www.zebra.com/us/en/about-zebra/contact-zebra/contact-tech-supp… for additional support.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

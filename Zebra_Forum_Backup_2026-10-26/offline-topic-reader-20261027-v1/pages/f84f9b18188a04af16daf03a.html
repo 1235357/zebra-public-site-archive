@@ -1,0 +1,171 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to print an Image using USB Connection - Zebra GK420d</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to print an Image using USB Connection - Zebra GK420d</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/how-print-image-using-usb-connection-zebra-gk420d; original snapshot: threads/resume-00332.html; SHA-256: f9a6cc7c6e293904e4918be46fd3e10c0e2823f69b1d49a3bedb204e17fcc08a</small><pre id="topic">
+
+    
+        How to print an Image using USB Connection - Zebra GK420d
+
+
+        
+      
+                        
+                    
+            S
+          
+          System Admin
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            282
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I am using ZSDK_ANDROID_API.jar file. I tried the below code to Print data using USB Connection. It sends the signal to Zebra using the USB connection, However, the Printer prints empty page and getting the error - Could not disconnect from device: USB Connection failed to release. Please advise.
+Code link - http://techdocs.zebra.com/link-os/2-14/android/
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100 , bos);
+            byte[] bitmapData = bos.toByteArray();
+            ByteArrayInputStream bs = new ByteArrayInputStream(bitmapData);
+            try {
+                conn = discoveredPrinterUsb.getConnection();
+                conn.open();
+                //conn.write(&quot;~WC&quot;.getBytes());
+                conn.write(bs);
+            } catch (ConnectionException e) {
+               Toast.makeText(getApplicationContext(), e.getMessage() + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            } finally {
+                if (conn != null) {
+                    try {
+                        conn.close();
+                    } catch (ConnectionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), &quot;No permission to communicate&quot;, Toast.LENGTH_LONG).show();
+        }
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            7 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            To print image, you can use the printImage() in ZebraPrinter class, or use the API in GraphicsUtil class. If you want to use the raw API, like conn.write(), you need to make sure that the content in the write statement meets the ZPL spec for image print.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

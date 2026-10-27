@@ -1,0 +1,229 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>ButtonBar in EB 1.7</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>ButtonBar in EB 1.7</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/34886; original snapshot: threads/resume-00218.html; SHA-256: c3ec04812fa160e2a15eaee36479902a4077923dd4f9b2d5dbb647e4406a59da</small><pre id="topic">
+
+    
+        ButtonBar in EB 1.7
+
+
+        
+      
+                        
+                    
+            M
+          
+          Martin Sramo
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            49
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi all, I am playing a little bit with a new feature in Enterprise Browser 1.7 -&gt; Custom ButtonBars. I defined some layouts for the bars and I tried the custom JavaScripts for the buttons as well. Everything I tried worked fine for me until now.
+Today I wanted to create a button on the page to show/hide (toggle) the ButtonBar1 and ButtonBar2. So according to TechDocs I wrote a script right in the HEAD section of the html page with the following code:
+ 
+var barOpened = 0;         function toggleBar()         {             if (barOpened == 0){                 showBar();             } else {                 hideBar();             }         }                  function showBar()         {         barOpened = 1;         ButtonBar1.show();         ButtonBar2.show();         }          function hideBar()         {         barOpened = 0;         ButtonBar1.hide();         ButtonBar2.hide();                 } 
+and I added a button on the page:
+ 
+Toggle button bar  
+Unfortunately, it does not work. When I press the button, ButtonBars don&#x27;t show/hide as wanted. I debugged the code using Chrome DevTools and it throws an error for ButtonBar1:
+Uncaught ReferenceError: ButtonBar1 is not defined
+So I tried to use customDOM injection method I used before to show the bars and this works fine.
+  
+But even if I show the Button bars this way, my Toggle button still does not work.
+ 
+I tried to read the TechDocs articles related to ButtonBar API several times, but I wasn&#x27;t able to solve this issue. I guess I&#x27;m just missing little-something-somewhere, as usually
+ 
+Anyone have an idea what could be the problem?
+ 
+Martin
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Joydeep Chakraborty
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Martin,
+1.Have you added elements.js in your page?
+2.Can you please try buttonBar1.show() in ButtonBar1.show()?
+If not resolved please share the page. Will make it work.
+Regards,
+Joydeep
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Martin Sramo
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Joydeep,
+1. while I think it&#x27;s not obvious for the newcomers, I somehow put strings together and after I noticed that ButtonBar API is referenced under RhoElements APIs, I added the elements.js, but using DOM injection  Right now, I&#x27;m thinking if this could be the issue, because the script in html page is loaded first, before elements.js are loaded using DOM injection. I can test it again on monday by loading elements.js right in the html page and I will let you know.
+2. I already tried with lowercase and uppercase, there was no difference. In button.xml file, I have ButtonBar1 and ButtonBar2.
+Thanks for the idea.
+Regards,
+Martin
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,351 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Sending non-protected broadcast from system com.symbol.datawedge</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Sending non-protected broadcast from system com.symbol.datawedge</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/26150; original snapshot: threads/resume-00420.html; SHA-256: 43444faa18c708d95210fa774000ca321b7d80933fb94b651bcbb314ffdcab42</small><pre id="topic">
+
+    
+        Sending non-protected broadcast from system com.symbol.datawedge
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            4295
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi, on Android 7 and 8 we get this crash:
+2021-05-28 08:09:20.504 1891-3028/? E/ActivityManager: Sending non-protected broadcast com.mefer.ACTION from system 3061:com.symbol.datawedge/u0a15 pkg com.symbol.datawedge
+    java.lang.Throwable
+        at com.android.server.am.ActivityManagerService.checkBroadcastFromSystem(ActivityManagerService.java:19394)
+        at com.android.server.am.ActivityManagerService.broadcastIntentLocked(ActivityManagerService.java:19913)
+        at com.android.server.am.ActivityManagerService.broadcastIntent(ActivityManagerService.java:20148)
+        at android.app.IActivityManager$Stub.onTransact(IActivityManager.java:240)
+        at com.android.server.am.ActivityManagerService.onTransact(ActivityManagerService.java:3044)
+        at android.os.Binder.execTransact(Binder.java:697)
+2021-05-28 08:09:20.506 1891-3028/? E/ActivityManager: Sending non-protected broadcast com.mefer.ACTION from system 3061:com.symbol.datawedge/u0a15 pkg com.symbol.datawedge
+    java.lang.Throwable
+        at com.android.server.am.ActivityManagerService.checkBroadcastFromSystem(ActivityManagerService.java:19394)
+        at com.android.server.am.ActivityManagerService.broadcastIntentLocked(ActivityManagerService.java:20006)
+        at com.android.server.am.ActivityManagerService.broadcastIntent(ActivityManagerService.java:20148)
+        at android.app.IActivityManager$Stub.onTransact(IActivityManager.java:240)
+        at com.android.server.am.ActivityManagerService.onTransact(ActivityManagerService.java:3044)
+        at android.os.Binder.execTransact(Binder.java:697)
+Receiver is registered in activity:
+fun AppCompatActivity.scannerChanges() =
+    Observable.create { emit -&gt;
+        val action = &quot;$packageName.ACTION&quot;
+        val scanReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent?) {
+                if (intent != null &amp;&amp; intent.action == action) emit.onNext(intent)
+            }
+        }
+        val filter = IntentFilter().apply {
+            addCategory(Intent.CATEGORY_DEFAULT)
+            addAction(action)
+        }
+        lifecycle.onResume { registerReceiver(scanReceiver, filter) }
+        lifecycle.onPause  { try { unregisterReceiver(scanReceiver) } catch (e: Exception) { } }
+        emit.setCancellable {
+            try { unregisterReceiver(scanReceiver) } catch (e: Exception) { }
+        }
+    }
+Any idea how fix this issue?
+dependencies {
+     compileOnly &#x27;com.symbol:emdk:9.1.1&#x27;
+...
+}
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+      
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Pavol Franek
+          
+          
+            5 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Darryn Campbell I do not understand your answer or how can your answer help me? There is no difference between your sample and my code snippet. I have IntentFilter...
+And second question: Why we still see it in the log &quot;Sending non-protected broadcast&quot; when bug has been resolved in more recent builds? Should not negatively impact are you sure?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Darryn Campbell
+          
+          
+            5 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi, the &quot;E/ActivityManager: Sending non-protected broadcast com.mefer.ACTION from system 3061:com.symbol.datawedge/u0a15 pkg&quot; message was caused by a bug in DataWedge which has been resolved in more recent builds (I believe) but it should not negatively impact the performance or functionality of neither your app or DataWedge.
+You will need to add a filter to your broadcast receiver so you can receive Intents from DataWedge.&amp;nbsp; Please see an example at&amp;nbsp;https://techdocs.zebra.com/datawedge/8-2/guide/samples/basicintent1/.&amp;n…; You also do not need to use the EMDK with DataWedge.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Dave Hon
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Bumping this since I&#x27;m getting the same issue.
+
+We just purchased a WS50 and I can&#x27;t get the intent to send at all. I&#x27;ve added the correct profile via the EMDK plugin in android studio. I&#x27;ve confirmed it is loading. I&#x27;ve also followed the instructions and duplicated the examples provided here an elsewhere.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Martin Eberl
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Any update? I&#x27;m facing the same problem..
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

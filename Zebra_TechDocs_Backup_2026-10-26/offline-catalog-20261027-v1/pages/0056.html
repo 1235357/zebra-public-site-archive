@@ -1,0 +1,438 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Custom Detector - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/ai-datacapture/latest/customdetector/</code><br>Observed final URL: <code>https://techdocs.zebra.com/ai-datacapture/latest/customdetector/</code><br>Raw source: <code>raw/356b04b296f68ca8d7791ed9.html</code><br>Raw SHA-256: <code>d57b52a4b97df5988eda1c2c1f09d2470d101c7a1dc9a8d4f21614adb1ee90ab</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            AI Data Capture SDK
+                                            4.1
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Setup
+                            
+                        
+                        
+                            
+                                    Localizer
+                            
+                        
+                        
+                            
+                                    Product Recognition
+                            
+                        
+                        
+                            
+                                    Barcode Decoder
+                            
+                        
+                        
+                            
+                                    Text OCR
+                            
+                        
+                        
+                            
+                                    CameraX
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Custom Detector
+                        
+                    OverviewAI ModelDeveloper GuideStep 1: InitializationStep 2: Create CustomDetectorStep 3: Register with EntityTrackerAnalyzerStep 4: Handle ResultsStep 5: Release ResourcesMethodscreate (M modelInstance, String modelId, BiFunction processFn)process(ImageData imageData)process(ImageData imageData, Executor callbackExecutor)close()Sample AppsRelated Guides
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Custom Detector
+                                    
+                                            AI Data Capture SDK
+                                            4.1
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+The CustomDetector class (com.zebra.ai.vision.custommodels) enables seamless integration of any Android-compatible third-party machine learning model or SDK directly into the AI Data Capture pipeline. Developers can wrap external frameworks - such as TensorFlow Lite (LiteRT), ONNX Runtime, and Google ML Kit - to run simultaneously alongside Zebra&#x27;s native, built-in Zebra detectors. By wrapping third-party model implementations in the standard Zebra Detector interface, developers can pass them to the EntityTrackerAnalyzer and easily visualize results on-screen using EntityView.
+
+To support models and SDKs that detect objects and output bounding boxes, the SDK includes a ready-to-use base class called DetectionEntity. This base class can be used directly for standard detections or extended with custom fields to support specific business needs. By building on DetectionEntity, detection results gain automatic framework support for coordinate remapping and viewfinder overlay rendering.
+
+Key Capabilities:
+
+
+Pipeline Extensibility: Run user-defined detectors alongside SDK-native detectors such as BarcodeDecoder and TextOCR in a single EntityTrackerAnalyzer instance.
+
+Automatic Coordinate Remapping: Entities built on DetectionEntity have their bounding boxes and corners automatically remapped from analysis space to viewfinder space by EntityTrackerAnalyzer.
+
+cropRect Filtering Support: DetectionEntity-based results pass through the SDK&#x27;s built-in viewfinder region filter without any additional code.
+
+
+
+
+AI Model
+
+Any model or SDK that runs on Android (such as TensorFlow Lite, ONNX, or Google ML Kit) is fully supported. Developers retain complete control over model loading, configuration, and lifecycles using the framework&#x27;s native APIs.
+
+
+
+Developer Guide
+
+This guide provides two samples demonstrating how to integrate an external model,TensorFlow Lite, (TFLite) and an external SDK, Google ML Kit, using a CustomDetector.
+
+Step 1: Initialization
+
+Initialize the third-party model (TFLite):
+
+    // TFLite — wrap Interpreter in your own class and implement process(InputImage)
+    public class TFLiteModel implements AutoCloseable {
+
+        private final Interpreter interpreter;
+
+        public TFLiteModel(Context context) throws IOException {
+            interpreter = new Interpreter(FileUtil.loadMappedFile(context, &quot;models/mobilenet_ssd.tflite&quot;));
+        }
+
+        public Task&lt;List&lt;DetectionEntity&gt;&gt; process(InputImage image) {
+            // run inference on image.getBitmapInternal(), wrap results as DetectionEntity list
+            List&lt;DetectionEntity&gt; results = runInference(image.getBitmapInternal());
+            return Tasks.forResult(results);
+        }
+
+        @Override public void close() { interpreter.close(); }
+    }
+    TFLiteModel model = new TFLiteModel(context);
+
+Initialize the SDK (ML Kit):
+
+    TextRecognizer model = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
+
+Step 2: Create CustomDetector
+
+Create the CustomerDetector with the initialized model object by passing the model and an inference lambda to CustomDetector.create(). The SDK processes each ImageData frame on a background thread and returns a list of detected entities.
+
+    CustomDetector&lt;DetectionEntity&gt; detector = CustomDetector.create(
+           model,       // TFLite: Interpreter | ML Kit: TextRecognizer
+           MODEL_ID,    // Unique string to identify this detector (e.g. &quot;TFLite&quot; or &quot;MLKit&quot;)
+
+           // Lambda invoked per camera frame.
+           // &#x27;m&#x27; is the model instance; &#x27;imageData&#x27; is the current frame.
+           // - TFLite: Call the m.process() method implemented in Step 1.
+           // - ML Kit: Call the built-in TextRecognizer m.process() method.
+           // Tasks.await() blocks the lambda thread until the Task execution completes.
+           // NOTE: This lambda must run on a background thread; calling Tasks.await() on the UI thread can cause a crash.
+           (m, imageData) -&gt; {
+               return Tasks.await(
+                       m.process(InputImage.fromBitmap(imageData.getBitmap(), 0)));
+    });
+
+Step 3: Register with EntityTrackerAnalyzer
+
+Add the custom detector to the analyzer’s detector list, optionally alongside built-in detectors.
+
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    EntityTrackerAnalyzer analyzer = new EntityTrackerAnalyzer(
+        List.of(detector),                          // detector from Step 2
+        ImageAnalysis.COORDINATE_SYSTEM_ORIGINAL,
+        executor,
+        result -&gt; handleEntities(result)            // Step 4
+    );
+
+Step 4: Handle Results
+
+In the analyzer callback, retrieve entities with result.getValue(customDetector).
+
+    private void handleEntities(EntityTrackerAnalyzer.Result result) {
+
+        List&lt;? extends Entity&gt; entities = result.getValue(detector); // detector from Step 2
+        if (entities == null) return;
+
+        for (Entity e : entities) {
+            // TFLite: cast to DetectionEntity
+            if (e instanceof DetectionEntity) { ... }
+
+            // ML Kit: cast to CustomOcrTextEntity which extends from DetectionEntity
+            if (e instanceof CustomOcrTextEntity) { ... }
+        }
+    }
+
+Step 5: Release Resources
+
+Call close() on the custom detector when the activity or fragment is destroyed.
+
+    override fun onDestroy() {
+        super.onDestroy();
+        detector?.close();   // closes tfliteModel if it implements AutoCloseable
+    }
+
+
+
+Methods
+
+create (M modelInstance, String modelId, BiFunction processFn)
+
+    static &lt;M, E extends Entity&gt; CustomDetector&lt;E&gt; create(M modelInstance, String modelId,
+    BiFunction&lt;M, ImageData, List&lt;E&gt;&gt; processFn)
+
+Description: Wraps a third-party model and inference function for use with EntityTrackerAnalyzer.
+
+Parameters:
+
+
+M modelInstance - The initialized third-party model object.
+
+String modelId - Identifier used in SDK logging.
+
+BiFunction&lt;M, ImageData, List&lt;E&gt;&gt; processFn - Inference function invoked on the adapter&#x27;s worker thread. Receives the model and an ImageData frame; must return a list of entities.
+
+
+Return Value: A CustomDetector&lt;E&gt; ready for the detector list or direct process() calls.
+
+
+
+process(ImageData imageData)
+
+    CompletableFuture&lt;List&lt;E&gt;&gt; process(ImageData imageData) throws AIVisionSDKException
+
+Description: Submits a camera frame for asynchronous inference on the adapter&#x27;s worker thread.
+
+Parameters:
+
+
+ImageData image - The camera frame in analysis coordinates.
+
+
+Exceptions:
+
+
+AIVisionSDKException - Thrown if the frame submission fails.
+
+
+
+
+process(ImageData imageData, Executor callbackExecutor)
+
+    CompletableFuture&lt;List&lt;E&gt;&gt; process(ImageData imageData, Executor callbackExecutor)
+    throws AIVisionSDKException
+
+Description: Same as process(ImageData), with the completion callback routed through the supplied executor.
+
+Parameters:
+
+
+ImageData imageData - The camera frame in analysis coordinates.
+
+Executor callbackExecutor - The Executor on which the completion stage is invoked.
+
+
+Return Value: A CompletableFuture&lt;List&lt;E&gt;&gt; with detection results.
+
+Note: Inference always runs on the adapter&#x27;s internal worker thread regardless of callbackExecutor.
+
+
+
+close()
+
+    void close()
+
+Description: Shuts down the internal worker thread and releases resources. If the wrapped model implements AutoCloseable, its close() method is also invoked.
+
+Return Value: None
+
+
+
+Sample Apps
+
+Start building your first custom model integration with the QuickStart Sample application source.
+
+
+
+Related Guides
+
+
+About
+
+Setup
+
+Localizer
+
+
+
+Models: Barcode, Product &amp; Shelf
+
+
+Product Recognition - Model: Model
+
+
+
+Feature Extractor
+
+Feature Storage
+
+Recognizer
+
+
+Text OCR
+
+
+
+Model
+
+
+CameraX
+
+
+
+EntityTrackerAnalyzer
+
+Detectors
+
+EntityViewfinder
+
+
+Image Attributes Detector
+
+Entity
+
+Data Types
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

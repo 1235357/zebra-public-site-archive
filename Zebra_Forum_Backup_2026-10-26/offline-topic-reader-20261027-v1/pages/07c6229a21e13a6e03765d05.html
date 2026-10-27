@@ -1,0 +1,179 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>RFID_API_COMMAND_TIMEOUT when trying to reconnect</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>RFID_API_COMMAND_TIMEOUT when trying to reconnect</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/rfidapicommandtimeout-when-trying-reconnect; original snapshot: threads/00031.html; SHA-256: f65b13f6e267d51a57409c3c9c32322bd17fb2abcf9a6bb3c558d179652f4e93</small><pre id="topic">
+
+    
+        RFID_API_COMMAND_TIMEOUT when trying to reconnect
+
+
+        
+      
+                        
+                    
+            J
+          
+          Jordan Faucher
+          1 year 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            327
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m working to implement the version 2.0.4.192 of the Zebra SDK to scan RFID tags with RFD40 handheld and TC53 android phone.When testing the SampleApp provide with the SDK if I remove and reattach the device via USB then the sample can&#x27;t reconnect and I have to kill the application and relaunch it.The logs throw an execption OperationFailureException with the error code RFID_API_COMMAND_TIMEOUT when we call the function reader.connect() . The scan completely stop working and the trigger is not event recognized.I tried to up the reader timeout with reader.setTimeout(10000) before the connect but it is not working.Have anyone experience this issue and if so how did you solve the problem ?Edit : I forgot to ask my question, do anyone have found a solution to this problem ?2025-08-26 16:59:30.000 31235-31270 IRFIDinfo               com.zebra.rfid.demo.sdksample        D  GetResponseDataReceived GetCapabilities tm 2000
+2025-08-26 16:59:30.019 31235-31367 RFIDSerialIOMgr         com.zebra.rfid.demo.sdksample        I  Stopping mState=STOPPED
+2025-08-26 16:59:32.001 31235-31270 IRFIDError              com.zebra.rfid.demo.sdksample        D  RFIDPROTOAscii: GetStatus: RFID_API_COMMAND_TIMEOUTGetCapabilities size 0
+2025-08-26 16:59:32.001 31235-31270 IRFIDinfo               com.zebra.rfid.demo.sdksample        D  logError RFID_API_COMMAND_TIMEOUT Response timeout
+2025-08-26 16:59:32.002 31235-31270 IRFIDinfo               com.zebra.rfid.demo.sdksample        D  getLinkProfilesCaps results : RFID_API_COMMAND_TIMEOUT
+2025-08-26 16:59:32.002 31235-31270 IRFIDinfo               com.zebra.rfid.demo.sdksample        D  getLinkProfilesCaps results : RFID_API_COMMAND_TIMEOUT
+2025-08-26 16:59:32.007 31235-31270 System.err              com.zebra.rfid.demo.sdksample        W  com.zebra.rfid.api3.OperationFailureException
+2025-08-26 16:59:32.009 31235-31270 System.err              com.zebra.rfid.demo.sdksample        W  	at com.zebra.rfid.api3.ProcessErrorCode.ThrowException(ProcessErrorCode.java:16)
+2025-08-26 16:59:32.009 31235-31270 System.err              com.zebra.rfid.demo.sdksample        W  	at com.zebra.rfid.api3.RFIDReader.postConnectInitialize(RFIDReader.java:328)
+2025-08-26 16:59:32.010 31235-31270 System.err              com.zebra.rfid.demo.sdksample        W  	at com.zebra.rfid.api3.RFIDReader.connect(RFIDReader.java:686)
+2025-08-26 16:59:32.010 31235-31270 System.err              com.zebra.rfid.demo.sdksample        W  	at com.zebra.rfid.demo.sdksample.RFIDHandler.connect(RFIDHandler.java:834)
+2025-08-26 16:59:32.011 31235-31270 System.err              com.zebra.rfid.demo.sdksample        W  	at com.zebra.rfid.demo.sdksample.RFIDHandler.access$800(RFIDHandler.java:46)
+2025-08-26 16:59:32.011 31235-31270 System.err              com.zebra.rfid.demo.sdksample        W  	at com.zebra.rfid.demo.sdksample.RFIDHandler$ConnectionTask.doInBackground(RFIDHandler.java:767)
+2025-08-26 16:59:32.014 31235-31270 System.err              com.zebra.rfid.demo.sdksample        W  	at com.zebra.rfid.demo.sdksample.RFIDHandler$ConnectionTask.doInBackground(RFIDHandler.java:761)
+2025-08-26 16:59:32.015 31235-31270 System.err              com.zebra.rfid.demo.sdksample        W  	at android.os.AsyncTask$3.call(AsyncTask.java:394)
+2025-08-26 16:59:32.015 31235-31270 System.err              com.zebra.rfid.demo.sdksample        W  	at java.util.concurrent.FutureTask.run(FutureTask.java:317)
+2025-08-26 16:59:32.016 31235-31270 System.err              com.zebra.rfid.demo.sdksample        W  	at android.os.AsyncTask$SerialExecutor$1.run(AsyncTask.java:305)
+2025-08-26 16:59:32.016 31235-31270 System.err              com.zebra.rfid.demo.sdksample        W  	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1156)
+2025-08-26 16:59:32.017 31235-31270 System.err              com.zebra.rfid.demo.sdksample        W  	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:651)
+2025-08-26 16:59:32.017 31235-31270 System.err              com.zebra.rfid.demo.sdksample        W  	at java.lang.Thread.run(Thread.java:1119)
+2025-08-26 16:59:32.017 31235-31270 RFID_SAMPLE             com.zebra.rfid.demo.sdksample        D  OperationFailureException Response timeout
+2025-08-26 16:59:45.766 31235-31248 System                  com.zebra.rfid.demo.sdksample        W  A resource failed to call close. 
+2025-08-26 16:59:45.769 31235-31248 System                  com.zebra.rfid.demo.sdksample        W  A resource failed to call UsbRequest.close. 
+2025-08-26 16:59:45.769 31235-31248 UsbRequestJNI           com.zebra.rfid.demo.sdksample        D  close
+2025-08-26 16:59:45.770 31235-31248 System                  com.zebra.rfid.demo.sdksample        W  A resource failed to call UsbRequest.close. 
+2025-08-26 16:59:45.770 31235-31248 UsbRequestJNI           com.zebra.rfid.demo.sdksample        D  close
+              
+
+                    
+          
+      
+              
+ Before.png
+
+              
+ After.png
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            1 year 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The Default HHSampleApp - does not contain the &quot;Disconnect / Undock&quot; &amp;&amp; &quot;Connect / Re-Dock&quot; logic that you expect - the 123RFID Mobile app V2.0.4.192 contains a bit (Please note that it does not contain eConnex &lt;--&gt; Bluetooth connection transitions for PREMIUM/_PLUS RFD40 and RFD90 devices at this time.)Please contact the Zebra Help Desk and open a Help Desk case to assist you with your topic, if you find the 123RFID Mobile source code - not able to provide you insight.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

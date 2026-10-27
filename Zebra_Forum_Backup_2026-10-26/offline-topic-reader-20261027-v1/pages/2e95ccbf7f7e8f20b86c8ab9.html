@@ -1,0 +1,197 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>TC21 Android 10 - OEMInfo - can return SerialBuild but can&#x27;t WifiMac</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>TC21 Android 10 - OEMInfo - can return SerialBuild but can&#x27;t WifiMac</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/tc21-android-10-oeminfo-can-return-serialbuild-cant-wifimac; original snapshot: threads/00295.html; SHA-256: d9f79e426d87508cff5c5aaf673783e451817cea56b40dcf8b9684a91f419519</small><pre id="topic">
+
+    
+        TC21 Android 10 - OEMInfo - can return SerialBuild but can&#x27;t WifiMac
+
+
+        
+      
+                        
+                    
+            F
+          
+          Fran Turkovi?
+          2 years 7 months ago
+        
+        
+      
+        
+            
+                  
+            
+            203
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I have TC21 with Android 10 (level 29 API). I am using ProfileManager to retrieve some OEMInfo. I am able to retrieve SerialBuild but for some reason  WifiMac is never returned. I have same extraData for both cases, just uri modification.                                                 var callerSignature = string.Empty;                           foreach (Signature sig in PackageManager.GetPackageInfo(PackageName, PackageInfoFlags.Signatures).Signatures)                           {                               callerSignature = sig.ToCharsString();                           }                           callerSignature = Convert.ToBase64String(FormateHelpers.StringToByteArray(callerSignature));                           extraData[0] =                           &quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;utf-8\&quot;?&gt;&quot; +                           &quot;&lt;characteristic type=\&quot;Profile\&quot;&gt;&quot; +                               &quot;&lt;parm name=\&quot;ProfileName\&quot; value=\&quot;OEMService\&quot;/&gt;&quot; +                               &quot;&lt;parm name=\&quot;TargetSystemVersion\&quot; value=\&quot;10.4\&quot;/&gt;&quot; +                               &quot;&lt;characteristic type=\&quot;AccessMgr\&quot; version=\&quot;10.4\&quot;&gt;&quot; +                                   &quot;&lt;parm name = \&quot;emdk_name\&quot; value = \&quot;\&quot;/&gt;&quot; +                                   //&quot;&lt;parm name = \&quot;OperationMode\&quot; value = \&quot;1\&quot;/&gt;&quot; +                                   &quot;&lt;parm name = \&quot;ServiceAccessAction\&quot; value = \&quot;4\&quot;/&gt;&quot; +                                   &quot;&lt;parm name = \&quot;ServiceIdentifier\&quot; value = \&quot;content://oem_info/oem.zebra.secure/build_serial\&quot;/&gt;&quot; +                                   &quot;&lt;parm name = \&quot;CallerPackageName\&quot; value = \&quot;com.custom.custom.custom\&quot;/&gt;&quot; +                                   &quot;&lt;parm name = \&quot;CallerSignature\&quot; value = \&quot;&quot; + callerSignature + &quot;\&quot;/&gt;&quot; +                               &quot;&lt;/characteristic&gt;&quot; +                           &quot;&lt;/characteristic&gt;&quot;;                           results = profileManager.ProcessProfile(&quot;OEMService&quot;, ProfileManager.PROFILE_FLAG.Set, extraData);                           if (results.StatusCode != EMDKResults.STATUS_CODE.Success)                           {                               if (!CheckEMDKResultsXML(results.StatusString)) throw new Exception();                           }                           Settings.BuildSerial = Helper.RetrieveOEMInfo(this, Helper.OEMInfo.Serial);                           extraData[0] =                           &quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;utf-8\&quot;?&gt;&quot; +                           &quot;&lt;characteristic type=\&quot;Profile\&quot;&gt;&quot; +                               &quot;&lt;parm name=\&quot;ProfileName\&quot; value=\&quot;OEMService\&quot;/&gt;&quot; +                               &quot;&lt;parm name=\&quot;TargetSystemVersion\&quot; value=\&quot;10.4\&quot;/&gt;&quot; +                               &quot;&lt;characteristic type=\&quot;AccessMgr\&quot; version=\&quot;10.4\&quot;&gt;&quot; +                                   &quot;&lt;parm name = \&quot;emdk_name\&quot; value = \&quot;\&quot;/&gt;&quot; +                                   //&quot;&lt;parm name = \&quot;OperationMode\&quot; value = \&quot;1\&quot;/&gt;&quot; +                                   &quot;&lt;parm name = \&quot;ServiceAccessAction\&quot; value = \&quot;4\&quot;/&gt;&quot; +                                   &quot;&lt;parm name = \&quot;ServiceIdentifier\&quot; value = \&quot;content://oem_info/oem.zebra.secure/wifi_mac\&quot;/&gt;&quot; +                                   &quot;&lt;parm name = \&quot;CallerPackageName\&quot; value = \&quot;com.custom.custom.custom\&quot;/&gt;&quot; +                                   &quot;&lt;parm name = \&quot;CallerSignature\&quot; value = \&quot;&quot; + callerSignature + &quot;\&quot;/&gt;&quot; +                               &quot;&lt;/characteristic&gt;&quot; +                           &quot;&lt;/characteristic&gt;&quot;;                           results = profileManager.ProcessProfile(&quot;OEMService&quot;, ProfileManager.PROFILE_FLAG.Set, extraData);                           if (results.StatusCode != EMDKResults.STATUS_CODE.Success)                           {                               if (!CheckEMDKResultsXML(results.StatusString)) throw new Exception();                           }                           Settings.WifiMac = Helper.RetrieveOEMInfo(this, Helper.OEMInfo.WifiMac);
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              L
+            
+          
+                
+          
+            Luca Silingardi
+          
+          
+            2 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I have the same problem.Any solution?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              L
+            
+          
+                
+          
+            Luca Silingardi
+          
+          
+            2 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I have the same problem.Any solution?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

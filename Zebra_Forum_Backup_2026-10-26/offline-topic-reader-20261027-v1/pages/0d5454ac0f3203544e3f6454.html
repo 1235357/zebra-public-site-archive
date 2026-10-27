@@ -1,0 +1,161 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Printing from a webapp using WebBluetooth</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Printing from a webapp using WebBluetooth</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/printing-webapp-using-webbluetooth; original snapshot: threads/00848.html; SHA-256: 50a19bd83445687d6d7186d908293a45fdc3b7fbe1244b0e474392c413d6102a</small><pre id="topic">
+
+    
+        Printing from a webapp using WebBluetooth
+
+
+        
+      
+                        
+                    
+            J
+          
+          Joe Westcott
+          4 years 7 months ago
+        
+        
+      
+        
+            
+                  
+            
+            669
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi All,
+I&#x27;d like to use the WebBluetooth API available in chromium-based browsers to send a print job to Zebra BLE compatible printers. WebBluetooth allows reading and writing to GATT characteristics, but is *not* an environment where Bluetooth Classic is available, unfortunately!
+However, it appears printing to Zebra printers is possible via BLE alone, as described in this documentation [0].
+The file I wish to print is a ZPL document and averages around 50KB per label. I know bandwidth is limited with BLE, but with Bluetooth 5 and newer devices it appears possible to achieve around 400kbps [1]. This should result in about 1 second for a 50KB label if both devices support it, which is fine for my use case.
+My questions:
+1. Can zebra devices with Bluetooth 5 achieve BLE transfer speeds in the neighbourhood of 400kbps?
+2. The documentation [0] mentions a 512 byte characteristic maximum. Can jobs larger than 512 bytes be split into multiple 512 byte characteristic writes, or is 512 the job limit?
+3. Which Zebra printers support this functionality?
+Specifically I&#x27;m looking at the ZD621 series [2], but the specifications mention &quot;BLE is intended for use with Zebra printer setup mobile app only&quot;. Can I print to it via BLE?
+I appreciate any assistance!
+[0] https://www.zebra.com/content/dam/zebra/software/en/application-notes/A…
+[1] https://punchthrough.com/maximizing-ble-throughput-part-3-data-length-e…
+[2] https://www.zebra.com/gb/en/products/spec-sheets/printers/desktop/zd621…
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            1. The reference document [0] was written in 2014 prior to Bluetooth 4.0, when the printer models at that time were on Bluetooth 3 radio chipset. Nowadays, most of the newer printer models are already on Bluetooth 5.0 and should be able to achieve a higher data rate. The following SGD can be used to check the Bluetooth version on the printer
+! U1 getvar &quot;bluetooth.radio_version&quot;2. There is no job size limit per se. We can even use the BLE for the firmware update, though it could take a much longer time. It&#x27;s always recommended to break a large amount of data into small chunks and write one chunk of data one at a time. The 512 byte is the limit at the link layer for each packet of the characteristic. Usually, the Bluetooth stack would split the packet if the data is larger than 512 bytes. It&#x27;s not something to be concerned at the application layer.
+3. Any Zebra printers that have Bluetooth Low Energy equipped can be used for printing over the BLE. The ZD621 is on Bluetooth 5 and can be used for printing. In general the BLE is slower than the Bluetooth Classic (SPP). That&#x27;s why it is recommended to use SPP for printing and BLE for the printer configuration. If the application can tolerate the performance of the BLE, then the BLE is a right alternative for printing.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

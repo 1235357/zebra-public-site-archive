@@ -1,0 +1,158 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Connected Device is not showing in my devices in the dev portal</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/connected-device-not-showing-my-devices-dev-portal-0; snapshot threads/00205.html; SHA-256 b0cc950a489b926ddab02e1902997d95ddda53bca809e509a6322f6996d80224. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Connected Device is not showing in my devices in the dev portal</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            K
+          </div>
+          <div class="forum-topic__author-name">Krishna Zebra</div>
+          <div class="forum-topic__timestamp">2 years 2 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            142
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>We are using the ZQ521 printer and i'ts a Link-OS printer. We want to use the "Send File to Printer API", for that we are doing "Web link Printer Configuration" in the Printer setup app. We kept the Device Language as Zpl and tried with different Emulation options, getting "Communication error" (Error writing to connection: One or more errors occurred, broken Pipe). We restarted the printer, still it doesn't work, the added device is not showing in the portal.</p><p>We are sending the below JSON file into Printer Setup utilities using Android phone (Phone and Zebra printer are connected through Bluetooth).</p><p>{}{ "weblink.logging.max_entries":"500", "weblink.ip.conn1.location":"https://savanna-device.zpc.zebra.com/weblink/connect?r=XXXXXXXXXXXXXXXXXXXXXXXXXXXXX", "device.reset":"1" }</p><p>I am not sure what we are doing wrong.</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+      <div class="field field--name-field-attachment field--type-file field--label-hidden field__items">
+              <div class="field__item">
+<span class="file file--mime-image-png file--image"> <span data-original-href="/sites/default/files/user-uploads/2024/08/13/Zebra_Printer_error%20%281%29.png">Zebra_Printer_error (1).png</span></span>
+</div>
+          </div>
+  
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-53016" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 2 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Looks like your Android device may have issues with Bluetooth. If you have an iPhone, you can download the same app on an iPhone and give it a try. Alternatively, use the same app (Zebra Setup Utility) to configure the ZQ521 to use WiFi, then connect the iPhone or Android phone to the printer via WiFi to get a better connection. You need the WiFi connection for the printer anyway, if you want to use the SendFileToPrinter API.</p>
+<p>To connect the ZQ521 to Zebra cloud for using the SendFileToPrinter API, we need to do two things. The first thing is to send the enrollment string, i.e., the JSON string as you mentioned above to the printer. The second thing is to make sure that the RTC (Real-Time Clock) on the printer is current. If the RTC on the printer is off, the printer will not pass the SSL authentication check and will fail to connect to Zebra cloud. This might be the reason of not seeing the printer on My Devices page. To set the RTC on the printer to the current time, use the following JSON string.</p>
+<pre><code class="language-java">{}{
+"rtc.time":"13:53:00",
+"rtc.date":"08-23-2024"
+}</code></pre></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/connected-device-not-showing-my-devices-dev-portal-0%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/connected-device-not-showing-my-devices-dev-portal-0%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

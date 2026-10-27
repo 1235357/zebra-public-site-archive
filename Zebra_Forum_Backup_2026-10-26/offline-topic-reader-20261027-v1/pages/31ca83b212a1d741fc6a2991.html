@@ -1,0 +1,359 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Send Zebra Certificate through socket using ZPL command</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Send Zebra Certificate through socket using ZPL command</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/send-zebra-certificate-through-socket-using-zpl-command; original snapshot: threads/00612.html; SHA-256: bf93dad09df797cb7dad95c46c17d1d6bbe5e7dd6d8fc97c03aad9a5a9a81e24</small><pre id="topic">
+
+    
+        Send Zebra Certificate through socket using ZPL command
+
+
+        
+      
+                        
+                    
+            P
+          
+          Pedro Zapata
+          3 years 7 months ago
+        
+        
+      
+        
+            
+                  
+            
+            518
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi everyone, 
+
+I&#x27;m trying to send a certificate file .NRD using a Python Socket and ZPL commands. At this moment the printer (ZT411) receives the file but it&#x27;s not working. This certificate is used for weblink, i&#x27;m trying to send it to multiple devices to the same time. I think that my ZPL command is wrong or i skipped a step. Can anyone help me to understand if i need someting else?
+
+This is my code:
+
+import socket
+import os
+from _thread import *
+from flask import Flask, request
+import re
+import zebra
+
+
+def zebra (cert_test, hosts):
+    port = 9100
+    for host in hosts:
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.settimeout(1)
+            result = s.connect_ex((host, port))
+            print(result)
+            if result == 0:
+                s.send(str.encode(cert_test))
+                print (s.recv(1024)) #ACK
+                return (&quot;  [*] Port &quot; + str(port) + &quot; open!&quot; + host)
+                
+            else: return(&quot;[+] CLOSE HOST &quot; + host + &quot;:&quot; + str(port))
+        except:
+            pass
+
+hosts = [&#x27;10.XX.XX.XX&#x27;]
+
+#I&#x27;m sending the certificate in binary format Example: &quot;2D2D2D2D2D424&quot; 
+cert_test = cert_test = &quot;^XA~DYE:WEBLINK1_CA,A,NRD,2182,,A,&lt;My Cert in Binary&gt;^XZ&quot;
+
+
+zebra (cert_test,hosts)
+
+ 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Pedro Zapata
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+             
+
+Hi everyone, 
+
+Now i&#x27;m using another method, sending the whole file over a tcp socket with a .zpl file. But the result it&#x27;s the same, the printer don&#x27;t read the certificate. Can anyone help me?
+
+ 
+
+import socket
+import tqdm
+import os
+
+
+separator = &quot;&lt;SEPARATOR&gt;&quot;
+buffer_size = 4096
+
+
+host = &quot;10.27.XX.XX&quot;
+
+
+port = 9100
+
+filename = &quot;prueba.zpl&quot;
+
+filesize = os.path.getsize(filename)
+
+s = socket.socket()
+
+print (f&quot;[+] Conectando a la impresora {host}:{port}&quot;)
+s.connect((host, port))
+print (&quot;[+] Conectado.&quot;)
+
+s.send(f&quot;{filename}{separator}{filesize}&quot;.encode())
+#s.send(str.encode(filename))
+
+progress = tqdm.tqdm(range(filesize), f&quot;Sending {filename}&quot;, unit=&quot;B&quot;, unit_scale=True, unit_divisor=1024)
+
+with open(filename, &quot;rb&quot;) as f:
+    while True:
+        # read the bytes from the file
+        bytes_read = f.read(buffer_size)
+        if not bytes_read:
+            # file transmitting is done
+            break
+        # we use sendall to assure transimission in 
+        # busy networks
+        s.sendall(bytes_read)
+        # update the progress bar
+        progress.update(len(bytes_read))
+# close the socket
+s.close()
+
+! CISDFCRC16
+BA0B
+privkey.nrd
+0000037B
+E3AF
+-----BEGIN RSA PRIVATE KEY-----
+MIICXgIBAAKBgQDQXu/E9YuGlScfWQepZa8Qe/1mJRpmk8oPhPVvam/4M5/WaWQp
+3/p1f8J17/hDH8fFq5Dnx3/tHaU7A4SKO8GeghX5hnp/mt4tuQEvsXkCrcgS1puz
+z5dbO7ThhuzxYClnr7uiXPvSRXawgwDTPas+0q/6gHeUSXtA0EofuIyv7wIDAQAB
+AoGBAJPnf3wn6wT5pE59DJIyakRiLmkt1wKOzvObJfgS7i2Yv1EbeAy9PnPe3vKG
+Bovm6A+oi2/qTSTLUTiFc7QHXJPVxLmRiHMbf1Q8j+VJkGTpWt8EY/Px+HSM2HAP
+jqd+Im0IiE9RQPsxWQH9UaauF6nl5gIfMF74BIPsVzFXLFfxAkEA6zSrCKCycE/P
+14cjZibnLiWxdL3U3I9eWuhmIS37RB6UJF
+
+prueba.zpl file
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The printer needs a reset in order to read the cert file. Can you try to FTP the cert to the printer&#x27;s E: drive to see if the printer reads the cert file? If the printer still doesn&#x27;t read the cert file after the FTP, it might be the cert file is not valid.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Pedro Zapata
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks Steven i will try with other Cert. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

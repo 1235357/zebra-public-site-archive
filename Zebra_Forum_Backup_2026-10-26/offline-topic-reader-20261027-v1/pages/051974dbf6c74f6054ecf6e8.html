@@ -1,0 +1,620 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Has anyone started having issues with HTTP post printing lately?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Has anyone started having issues with HTTP post printing lately?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/has-anyone-started-having-issues-http-post-printing-lately; original snapshot: threads/00975.html; SHA-256: efa57593d2cf2e3d67a5bba1543b25c36767468cc1b96026b8b911aaf1779d2a</small><pre id="topic">
+
+    
+        Has anyone started having issues with HTTP post printing lately?
+
+
+        
+      
+                        
+                    
+            A
+          
+          Alex Skinner
+          5 years ago
+        
+        
+      
+        
+            
+                  
+            
+            849
+          
+                
+                  
+            
+            9
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Have had a web application successfully using http post method of printing to our Zebra 230&#x27;s for years now, but just recently started having issues. It seems any PC cannot print, but our android devices can. I&#x27;m guessing it is most likely due to browser issues, (perhaps after updates??). Have tried multiple browsers on the PC (chrome, ie, ff) though and none are working. Can successfully print to the printer through Zebradesigner from same PCs, so know it&#x27;s not a network/connection issue.
+Anyone else noticing this?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      9 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Do you see any specific error messages? Chrome debug mode can help to see what exact error is from the pstprnt request. The pstprnt may not have been kept up to date with the latest versions of the browsers. 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alex Skinner
+          
+          
+            4 years 12 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There are no thrown errors. 
+I checked in chrome debugger and only noticed a flag on the line -
+request.setRequestHeader(&quot;Content-Length&quot;, zpl.length);  *Refused to set unsafe header &quot;Content-length&quot;
+Researched and found that it shouldn&#x27;t be necessary to set content-length, so tried commenting out that line.
+Still not working from any PC on the network or from any browser (chrome, ie, ff) but works just fine from any android or ios device using chrome or safari.
+I am not extremely familiar with chrome debugger, let me know if there is something further I can explore with it, thanks for the input!
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 12 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            In general, browsers for desktop or PC are different from the browsers for mobile devices. A POST request for pstprnt is as simple as shown below. 
+curl -X POST http://192.168.1.100/pstprnt \
+     -d &quot;^XA^FO50,50^ADN,36,20^FDHello World-XFS^XZ&quot;Can you share the code around the pstprnt, so we can see what&#x27;s been put into the request?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alex Skinner
+          
+          
+            4 years 12 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I have not tried using curl but can give it a try. We have been using the provided javascript: 
+        var zpl = document.getElementById(&quot;zpl&quot;).value;
+        var url = &quot;http://&lt;?php echo $printerIP; ?&gt;/pstprnt&quot;;
+        var method = &quot;POST&quot;;
+        var async = true;
+        var request = new XMLHttpRequest();
+        
+        request.open(method, url, async);
+        request.setRequestHeader(&quot;Content-Length&quot;, zpl.length);
+ 
+        // Actually sends the request to the server.
+        request.send(zpl);
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Please comment out the Content-Length header and try again. The pstprnt does not use the Content-Length header.
+var zpl = document.getElementById(&quot;zpl&quot;).value;
+var url = &quot;http://&lt;?php echo $printerIP; ?&gt;/pstprnt&quot;;
+var method = &quot;POST&quot;;
+var async = true;
+var request = new XMLHttpRequest();
+
+request.open(method, url, async);
+// request.setRequestHeader(&quot;Content-Length&quot;, zpl.length);
+
+// Actually sends the request to the server.
+request.send(zpl); 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alex Skinner
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I had read that too  and tried with it commented out as well (noted in the post above) and it didn&#x27;t make a difference, it still only worked with mobile browsers and no PC browser.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Not sure what else could cause the failure in your case without additional exception trace or error msg. This HTTP Post example of pstprnt works just fine for me with Chrome on Mac and Windows. You can copy the link and paste it into the address box to download the zip file.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alex Skinner
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I finally came back to this issue, sorry have been away. I have resolved the issue and the script you provided helped.
+I had found that my script was throwing CORS errors due to &#x27;origin&#x27; and assumed it was the issue. Although identical, I ran your provided script and it too threw the same errors....but it actually printed! Only difference was it&#x27;s origin was &#x27;null&#x27;. This lead me to digging in a more precise area and found this:
+&quot;August 25, 2021: Chrome is deprecating access to private network endpoints from non-secure websites as part of the Private Network Access specification. &quot;
+https://developer.chrome.com/blog/private-network-access-update/
+.... which is when we started having issues. The whole fix....have to call it from within the same CORS origin -OR- have a valid SSL cert and must call via https. Thanks for the assistance!
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Marek Klimczuk
+          
+          
+            2 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Nice, thank you very much!__________________________Blog
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

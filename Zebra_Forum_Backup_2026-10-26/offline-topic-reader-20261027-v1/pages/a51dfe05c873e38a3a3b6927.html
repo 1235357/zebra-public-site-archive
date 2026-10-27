@@ -1,0 +1,593 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Multiple MC9063 lockups at Kroger</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Multiple MC9063 lockups at Kroger</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/22845; original snapshot: threads/01144.html; SHA-256: d026aea4560be89772a181e746a19fa3a28d6ecb568646b8b5741aef40eea586</small><pre id="topic">
+
+    
+        Multiple MC9063 lockups at Kroger
+
+
+        
+      
+                        
+                    
+            H
+          
+          Howard Laser
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            21
+          
+                
+                  
+            
+            9
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  1) 08:45/02-27-2009 2) ASAP 3) MC9063 4) WM03/DCP1.5 5) 1831481  I have attached a SymScript log sent to me by TA Kevin Horgan. His customer, Kroger, reports multiple lock-ups on MC9063/Verizon units within their application. They recently updated the terminals to DCP1.5 in an effort to resolve the issues. They are now beginning to report lock-ups occurring again. I am awaitng further details from Kevin, but he is requesting if someone can take a look at the attached log and reference the note below from Kroger personnel: Any assistance is greatly appreciated.
+Yesterday evening, after spending an hour plus in Stage, I did a cold boot, sync to Production and it froze while ‘Updating Channel’ 
+    PROCESSSNAPSHOT_5.TXT.GZ is the log when It froze. 
+    PROCESSSNAPSHOT_6.TXT.GZ and PROCESSSNAPSHOT_7.TXT.GZ were created after I warm booted it twice after it froze. (notes : Each warm boot create a new PROCESSSNAPSHOT_*.TXT.GZ file )
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      9 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Howard Laser
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you George.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            George Dellaratta
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Since this terminal has been around for quite some time, what has changed at this customer&#x27;s site?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Howard Laser
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks, George, I have asked Kevin to provide it.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Howard Laser
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I have posted the symscript log with the resource .csv.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            George Dellaratta
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I&#x27;m guessing that the lockup occurred at 6:13 PM.&amp;nbsp; Couple of interesting things.&amp;nbsp; The first is that there seems to be a memory leak in the application.&amp;nbsp; I notice that the memory load steadily decreased as the user navigated.&amp;nbsp; This should not have led to the lockup since there was still 9M available.&amp;nbsp; Also, I noticed the application pegged at 100% CPU utilization from time to time.&amp;nbsp; Especially at 6:13.&amp;nbsp; Unfortunately, the closest process snapshot was taken quite a while BEFORE 6:13PM.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Howard Laser
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            George, thanks for your response! Here is the response to you from the end user, BTW, does this appear to be the customers application issue? or a WAN networki issue?&amp;nbsp; It looks like the unit froze and then the backlight went off, when it was put in cradle? Any idea
+Yes, 
+&amp;nbsp;&amp;nbsp;When it froze, there were no key clicks when I pressed the keys. 
+  &amp;nbsp; 
+&amp;nbsp; My active sync is not working until now even though a few cold boots were attempted but Michael’s one is working fine. So I guess something wrong with my laptop active sync. 
+  &amp;nbsp; 
+Before Process snapshot 5 occurred, I was in Stage environment&amp;nbsp; kiwi.kroger.com for more than 30 mins, made a few transactions, it was working great. Then I performed a cold boot which took me to Process snapshot 5. 
+  &amp;nbsp; 
+Process snapshot 5 was taken immediately after a cold boot.&amp;nbsp;(Then I sync to Production environment grape.kroger.com)&amp;nbsp;. &amp;nbsp;Then an outgoing call was made to #777 and there were a couple of window focus changes.&amp;nbsp; Finally ending on a Synchronization window (This synchronization window froze while ‘Updating Channels’, &amp;nbsp;then I put it into the cradle)&amp;nbsp; . Oddly enough the backlight went off.&amp;nbsp; Then the terminal was warm booted (This warm boot was performed manually by me while It was in the cradle)&amp;nbsp; . 
+Snapshot 6 was created and the terminal was placed into a cradle and warm booted again. 
+(This warm boot was performed manually by me when It was in the cradle) 
+Snapshot 7 was created a bunch of window focus changes - a suspend/resume - finally ending on a copy file dialog box.&amp;nbsp; The terminal did not stop processing throughout the log that I can see.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Howard Laser
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            TA Kevin Horgan has sent another SymScript log, which I have attached here. This is a log from a &quot;good sync&quot; from custom application. Kevin asks if you can compare this to the previous &#x27;bad sync&#x27; logs which you analyzed previously, and see if you can pick something up that may be significant.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            George Dellaratta
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The Resource.csv file is missing from this ZIP
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            George Dellaratta
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Process snapshot 5 was taken immediately after a cold boot.&amp;nbsp; Then an outgoing call was made to #777 and there were a couple of window focus changes.&amp;nbsp; Finally ending on a Synchronization window.&amp;nbsp; Oddly enough the backlight went off.&amp;nbsp; Then the terminal was warm booted. Snapshot 6 was created and the terminal was placed into a cradle and warm booted again. Snapshot 7 was created a bunch of window focus changes - a suspend/resume - finally ending on a copy file dialog box.&amp;nbsp; The terminal did not stop processing throughout the log that I can see.  I agree that much more information is needed.&amp;nbsp; Reproduction steps, more precise time of failure, definition of &quot;lockup&quot; or rather a better definition of the failure.&amp;nbsp; Does activesync stop?&amp;nbsp; Do they hear key clicks when the press keys?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,185 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Need to get TID of the RFID Label using ZPL</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Need to get TID of the RFID Label using ZPL</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/need-get-tid-rfid-label-using-zpl; original snapshot: threads/00023.html; SHA-256: ae329ebeb1ae50715c5f2144eb6f144f0d39dcadc244e7c98dae3b5c0083281d</small><pre id="topic">
+
+    
+        Need to get TID of the RFID Label using ZPL
+
+
+        
+      
+                        
+                    
+            P
+          
+          Paras Buda
+          1 year 1 month ago
+        
+        
+      
+        
+            
+                  
+            
+            541
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello, Im trying to encode RFID label so that no one can replicate or clown the tag so im planning to use TID of the tag so that no one can clone the tag as TID of each tag is unique. so i m using react application for printing the tag using zpl and browser print but firstly i want to get the TID of the tag before printing so how can i get the TID using zpl and browser print in this scenario?Please help
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              L
+            
+          
+                
+          
+            Lavakush Verma
+          
+          
+            1 year 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Below is a step-by-step guide to achieve this using ZPL in your React application:1. Understanding the ProcessTo read the TID of an RFID tag using ZPL, the following steps are required:Send an RFID read command to the printer.The printer will interrogate the tag and return the TID.Parse the response to extract the TID.Use the TID in your application logic for encoding or authentication.2. ZPL Command for Reading TIDZebra printers support RFID tag operations via ZPL. The ^RF (Read RFID Data) command is used to read specific memory banks of the RFID tag, including the TID memory.Here is an example ZPL command to read the TID:^XA
+^RFR,H
+^XZ^RFR,H:R specifies the operation (Read).H indicates the memory bank to read from. For TID, you specify H because it refers to the TID memory bank.When this command is executed, the printer reads the TID from the RFID tag within the printer&#x27;s antenna range and responds with the TID value.After sending the ^RFR,H command, the printer might return a response like this:TID: E2801160600002083D9B1D3DJavaScript Code to Send ZPL and Retrieve the TIDHere’s how you can send the ^RF command to the printer and capture the response:// Function to send ZPL command and get TID
+const getRFIDTagTID = () =&gt; {
+  // Check if Browser Print is available
+  if (typeof BrowserPrint === &quot;undefined&quot;) {
+    console.error(&quot;Browser Print SDK is not available.&quot;);
+    return;
+  }
+
+  // Discover available printers
+  BrowserPrint.getDefaultDevice(&quot;printer&quot;, (device) =&gt; {
+    if (!device) {
+      console.error(&quot;No printer found.&quot;);
+      return;
+    }
+
+    // ZPL command to read TID
+    const zplCommand = &quot;^XA^RFR,H^XZ&quot;;
+
+    // Send ZPL command to printer
+    device.send(zplCommand, (response) =&gt; {
+      console.log(&quot;Printer Response: &quot;, response);
+
+      // Extract the TID from the response
+      const tidMatch = response.match(/TID:([0-9A-F]+)/i);
+      if (tidMatch &amp;&amp; tidMatch[1]) {
+        console.log(&quot;TID: &quot;, tidMatch[1]); // Output the TID
+      } else {
+        console.error(&quot;TID not found in the response.&quot;);
+      }
+    }, (error) =&gt; {
+      console.error(&quot;Error sending ZPL command: &quot;, error);
+    });
+  }, (error) =&gt; {
+    console.error(&quot;Error discovering printers: &quot;, error);
+  });
+};
+
+// Call the function to get TID
+getRFIDTagTID();
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

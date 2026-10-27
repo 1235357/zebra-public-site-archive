@@ -1,0 +1,189 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to send indication over SSI USB CDC to DS2278 scanner</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to send indication over SSI USB CDC to DS2278 scanner</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/how-send-indication-over-ssi-usb-cdc-ds2278-scanner; original snapshot: threads/00305.html; SHA-256: 0f6ed52a9243182e6c894fe10e96b528a88ba5727debcb896c5e2b7007171ed7</small><pre id="topic">
+
+    
+        How to send indication over SSI  USB CDC  to DS2278 scanner
+
+
+        
+      
+                        
+                    
+            O
+          
+          Oleksandr Lebediev
+          2 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            380
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello!Hello! I have several  DS2278 wireless scanners which connected in SSI over USB CDC mode (emulate serial port via usb).I need to send some signals from my software to scanner (BEEP, blink red or green leds etc) to indicate user about success \ fail recognitions of barcode.How can I do that?Option &quot;beep on bell&quot; is enabled.I tried send over serial BELL (07h) but reciev only ENQ (05h) from scanner and it not beep signal.I found an SSI manual https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/barcode-scanners/software/ssi-cordless-pg-en.pdf  and try to send Send Beep/LED Code Sequence to the Scanner 0x05 0xe6 0x04 0x00 0x01 0xff 0x10 (where 0x01 = high short beep) but nothing fires.import serial
+
+port = &quot;COM3&quot;  
+baudrate = 9600  
+
+ser = serial.Serial(port, baudrate=baudrate)
+
+
+command_beep = b&#x27;\x05 \xe6 \x04 \x00 \x01 \xff \x10&#x27;
+
+ser.write(command_beep)
+s = ser.read()
+
+print(s)
+
+ser.close()What correct way to send indication to user programaticaly?
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              O
+            
+          
+                
+          
+            Oleksandr Lebediev
+          
+          
+            2 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I`ve found solution for my problem.Below working example in python for beep the beeper scanner.import serial
+
+port = &quot;COM3&quot;  
+baudrate = 9600  
+ser = serial.Serial(port, baudrate=baudrate)
+
+
+
+
+def calculate_checksum(msg):
+    checksum = 0
+    for byte in msg:
+        checksum += byte
+    checksum = ~checksum + 1
+    return checksum &amp; 0xFFFF  # Ensure checksum is 16 bits
+
+# Add checksum to message
+def add_checksum(msg):
+    checksum = calculate_checksum(msg)
+    msg.append(checksum &gt;&gt; 8)
+    msg.append(checksum &amp; 0xFF)
+
+
+
+msg = [0x05, 0xe6, 0x04, 0x00, 0x05]
+add_checksum(msg)
+
+msg=bytes(msg)
+print(&quot;Message with checksum:&quot;, msg)
+ser.write(msg)
+ser.close()
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

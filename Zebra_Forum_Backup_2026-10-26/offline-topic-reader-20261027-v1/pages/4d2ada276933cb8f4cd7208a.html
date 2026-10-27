@@ -1,0 +1,423 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Use a built-in scanner (in TC56 model) on the home screen or even in lock mode</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Use a built-in scanner (in TC56 model) on the home screen or even in lock mode</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/use-built-scanner-tc56-model-home-screen-or-even-lock-mode; original snapshot: threads/00904.html; SHA-256: 2929396b7cbdf4b0e46ef56ae34e2e6a5996ffbece584c692af6d30e541b82d0</small><pre id="topic">
+
+    
+        Use a built-in scanner (in TC56 model) on the home screen or even in lock mode
+
+
+        
+      
+                        
+                    
+            D
+          
+          Default Default
+          4 years 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            123
+          
+                
+                  
+            
+            6
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Is it possible to use a built-in scanner (in TC56 model) on the home screen or even in lock mode and pass data to my app?
+Basically, all I want to do is this sequence:
+on the home screen, scanner buttons are pressed-&amp;gt;barcode getting scanned-&amp;gt;specific app receives scan result
+Are there any API methods I can use for this?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      6 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+One option would be to create a foreground service with a broadcast receiver which listens for scan intents broadcast from DataWedge - more info here: https://techdocs.zebra.com/datawedge/11-2/guide/about/
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Default Default
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for the reply. I&#x27;ve tried this option with foreground service, but even when the service is running and app is in the background, scanner buttons seems disabled and don&#x27;t actually turn on the scanner
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There is a default profile in DataWedge called &quot;Launcher&quot; which is what is active when the device is on the launcher screen - you may have to modify this profile to fit your needs, specifically enabling Barcode Input &amp; Intent Output and configuring Intent Output to send the data to your broadcast receiver.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Darryn Campbell
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+In addition to James&#x27; comment, I wrote two articles about scanning with DataWedge in the background which might help:
+https://developer.zebra.com/blog/datawedge-background-scanning-zebra-an…
+https://developer.zebra.com/blog/scan-datawedge-using-explicit-broadcas…
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Annata Evan
+          
+          
+            1 year 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I have looked through the information here, it is very helpful. https://techdocs.zebra.com/datawedge/11-2/guide/about/ Love Pawsona
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hannah Xu
+          
+          
+            1 year 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            It highlights the importance of DataWedge and proper profile setup for seamless data capture and application integration. &lt;a href=&quot;https://techdocs.zebra.com/datawedge/11-2/guide/about/&quot;&gt;https://techdocs.zebra.com/datawedge/11-2/guide/about/&lt;/a&gt; &lt;a href=&quot;https://limsimi.app/&quot;&gt;&lt;span&gt;Limsimi&lt;/span&gt;&lt;/a&gt;
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

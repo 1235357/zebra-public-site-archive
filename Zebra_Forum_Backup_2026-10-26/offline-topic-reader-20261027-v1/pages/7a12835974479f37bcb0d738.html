@@ -1,0 +1,391 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Filter out logging for [mot_LEConnectivityMgr] (iOS)</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Filter out logging for [mot_LEConnectivityMgr] (iOS)</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/35677; original snapshot: threads/resume-00243.html; SHA-256: a0d345402df1585b51250d19daac3db624da6e7dcbc0c80b360ba4f2d53973c3</small><pre id="topic">
+
+    
+        Filter out logging for [mot_LEConnectivityMgr] (iOS)
+
+
+        
+      
+                        
+                    
+            M
+          
+          Michael Wells
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            180
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m using the symbolbt-sdk (Zebra Scanner) iOS SDK. It works well, but when debugging in Xcode the debug console is flooded with messages from [mot_LEConnectivityMgr ...] which makes debugging difficult. Since there is so much output from that API, my app logging is hidden a bit.
+Is there some way to turn this logging off? I&#x27;m assuming it&#x27;s using NSLog, but since I don&#x27;t have the source code I can&#x27;t remove this logging myself. It would be ideal if there was a way on calling SbtSdkFactory.createSbtSdkApiInstance() that you could pass in an optional logging field? Or if there is better way?
+If I&#x27;m missing something obvious, any help is much appreciated.
+Thanks!
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Caleb Jones
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Yes, please, this is extremely annoying.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              L
+            
+          
+                
+          
+            Luke Carpenter
+          
+          
+            5 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Please can we get a setting to configure this? The logging is super excessive.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Older SDK versions prior to 1.4.30 will have this situation.
+Zebra Engineering updated this on the latest versions. found here:
+https://www.zebra.com/us/en/support-downloads/software/developer-tools/…
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            4 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Another issue you may encounter even with the newer SDK is if you have &quot;OPMODE_ALL&quot; configured, when &quot;OPMODE_MFI&quot; is used the Verbosity will be reduced.  (iOS solutions use MFi {Made for Iphone bluetooth} for iOS &amp;lt;-&amp;gt; RFD8500)
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              F
+            
+          
+                
+          
+            FirstName LastName
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The newest version 1.4.32 outputs different log messages, but the original problem is not really solved.
+Would it be possible to include a switch where developers can turn off logging?
+Or is this just debugging logs left in place in a production build?
+&lt;code&gt;
+2022-04-22 08:21:43.701945+0200 PISA[42566:1680720] -[mot_SDKHandler sbtSetOperationalMode:] Remove incompatible devices for new op mode
+2022-04-22 08:21:43.702061+0200 PISA[42566:1680720] -[mot_SDKHandler sbtEnableAvailableScannersDetection:] Perform discovering once option becomes enabled
+2022-04-22 08:21:43.702284+0200 PISA[42566:1680904] -[mot_LEConnectivityMgr startDiscovery] Discovery is not started due to incorrect central manager state
+2022-04-22 08:21:44.231347+0200 PISA[42566:1680906] -[mot_LEConnectivityMgr centralManager:didDiscoverPeripheral:advertisementData:RSSI:] Discovered CS6080 20304520100385
+2022-04-22 08:21:44.231562+0200 PISA[42566:1680906] -[mot_LEConnectivityMgr centralManager:didDiscoverPeripheral:advertisementData:RSSI:]  key kCBAdvDataManufacturerData value {length = 8, bytes = 0xf101435336303830}
+2022-04-22 08:21:44.231704+0200 PISA[42566:1680906] -[mot_LEConnectivityMgr centralManager:didDiscoverPeripheral:advertisementData:RSSI:]  key kCBAdvDataTimestamp value 672301304.229672
+2022-04-22 08:21:44.231822+0200 PISA[42566:1680906] -[mot_LEConnectivityMgr centralManager:didDiscoverPeripheral:advertisementData:RSSI:]  key kCBAdvDataIsConnectable value 1
+2022-04-22 08:21:44.231904+0200 PISA[42566:1680906] -[mot_LEConnectivityMgr centralManager:didDiscoverPeripheral:advertisementData:RSSI:]  key kCBAdvDataRxPrimaryPHY value 0
+2022-04-22 08:21:44.231985+0200 PISA[42566:1680906] -[mot_LEConnectivityMgr centralManager:didDiscoverPeripheral:advertisementData:RSSI:]  key kCBAdvDataRxSecondaryPHY value 0
+2022-04-22 08:21:44.232110+0200 PISA[42566:1680906] -[mot_LEConnectivityMgr centralManager:didDiscoverPeripheral:advertisementData:RSSI:]  key kCBAdvDataLocalName value CS6080 20304520100385
+2022-04-22 08:21:44.232794+0200 PISA[42566:1680906] -[mot_LEConnectivityMgr centralManager:didDiscoverPeripheral:advertisementData:RSSI:]  key kCBAdvDataServiceUUIDs
+2022-04-22 08:21:44.248991+0200 PISA[42566:1680911] -[mot_LEConnectivityMgr centralManager:didDiscoverPeripheral:advertisementData:RSSI:] Discovered (null)
+2022-04-22 08:21:44.249153+0200 PISA[42566:1680911] -[mot_LEConnectivityMgr centralManager:didDiscoverPeripheral:advertisementData:RSSI:]  key kCBAdvDataTimestamp value 672301304.2464809
+2022-04-22 08:21:44.249274+0200 PISA[42566:1680911] -[mot_LEConnectivityMgr centralManager:didDiscoverPeripheral:advertisementData:RSSI:]  key kCBAdvDataRxPrimaryPHY value 0
+2022-04-22 08:21:44.249354+0200 PISA[42566:1680911] -[mot_LEConnectivityMgr centralManager:didDiscoverPeripheral:advertisementData:RSSI:]  key kCBAdvDataRxSecondaryPHY value 0
+2022-04-22 08:21:44.249436+0200 PISA[42566:1680911] -[mot_LEConnectivityMgr centralManager:didDiscoverPeripheral:advertisementData:RSSI:]  key kCBAdvDataTxPowerLevel value 7
+2022-04-22 08:21:44.249507+0200 PISA[42566:1680911] -[mot_LEConnectivityMgr centralManager:didDiscoverPeripheral:advertisementData:RSSI:]  key kCBAdvDataIsConnectable value 1
+&lt;/code&gt;
+The last lines repeat every 20 seconds for every bluetooth device in the environment.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

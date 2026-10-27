@@ -1,0 +1,169 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Cisco Command LLDP - to power 7131 Tri-Radio</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Cisco Command LLDP - to power 7131 Tri-Radio</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/27569; original snapshot: threads/01744.html; SHA-256: ca064201302767797507a60f6990d8b75ae10bb78ba597fdbf2bca0712edaac1</small><pre id="topic">
+
+    
+        Cisco Command LLDP - to power 7131 Tri-Radio
+
+
+        
+      
+                        
+                    
+            M
+          
+          Marc Fluhrer
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            73
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Does anyone know the CLI commands to enable LLDP on a Cisco power plus switch, to allow it to send Full power to enable the third radio on an AP7131?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jack Burleson
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Marc,  Below is a section of a Cisco doc on a switch with 802.3af power.&amp;nbsp; The commands are the same on their 802.3at compatible switches.&amp;nbsp; The command &quot;power inline auto&quot; should work if power is available and you have the right AP7131 config/firmware.&amp;nbsp;   CAUTION: 2 items to note:  1. The AP7131 was not compatible (hardware or software - tri-radio especially ) with Cisco 802.3at power a year ago.&amp;nbsp; See SPR 19351.&amp;nbsp; A hardware ECO was made to the AP7131 and then software support was added in WiNG 5.x releases and in the WiNG 4.3.3.4 release (I think this is the 4.x version that supports it - you should check as I am using WiNG 5.x).&amp;nbsp;   2. Depending on model the Cisco switches cannot supply power to all ports simulataneously.&amp;nbsp; Thus, if a lot of powered devices are plugged into a Cisco switch, you may not get power if the power consumption max limit has been reached.
+Configure Inline Power Support
+Cisco offers a comprehensive range of Catalyst switches that support PoE with 802.3af compliant, which also supports Cisco pre-standard PoE implementation. IEEE 802.3af-2003 describes five power classes that a device can belong to. The default power classification within IEEE 802.3af delivers 15.4W per power device. Delivery of PoE that uses the IEEE 802.3af default classification can significantly increase the power requirements on both the Power Sourcing Equipment (PSE) switch and the power infrastructure. In order to provide PoE in a cost effective and efficient manner, Catalyst switches support intelligent power management in addition to IEEE 802.3af classification. This enables a powered device and PSE to negotiate their respective capabilities in order to explicitly manage how much power is required for the device, and also how the PSE-capable switch manages the allocation of power to individual powered devices.
+Issue this show power inline command in order to view the default power consumption a switch can supply:
+Switch#show power inline consumption default
+Default PD consumption : 15400 mW
+By default, all the switch ports are configured to automatically detect and power the PoE devices. Issue this show power inline command in order to view the power inline configuration status of any port:
+Switch#show power inline FastEthernet 2/5
+Interface Admin  Oper       Power   Device              Class Max
+                            (Watts)
+--------- ------ ---------- ------- ------------------- ----- ----
+Fa2/5     auto   on         7.0     IP Phone 7960       n/a   15.4
+!--- You can see the Admin status as auto. This is the default configuration.
+You can issue the power inline command in order to configure the inline power of an individual port. This shows the power inline configuration options:
+Switch(config-if)#power inline ?
+  auto         Automatically detect and power inline devices
+  consumption  Configure the inline device consumption
+  never        Never apply inline power
+  static       High priority inline power interface
+Auto—By default, PoE-capable ports are configured to auto. The powered devices are powered up on a first-come, first-serve basis. If not enough inline power is available from the power supplies for all the powered devices in auto mode, there is no guarantee which powered devices are powered up.
+Static—Static ports have a higher priority than auto ports in terms of power allocation and shutdown. The switch allocates power for a static port when it is configured. Power is then reserved for the port even when nothing is connected. The amount of power allocated can either use the default maximum value (15.4W) or can be specified when this option is used. This allocated amount is never adjusted by IEEE class or by CDP messages.
+Never—The supervisor engine does not direct the switching module to power up the port even if a non-powered phone is connected.
+With the static mode, the powered device is guaranteed to come online when plugged in. This is typically used for higher-priority users, such as corporate executives or wireless access points. However, if the IEEE class wattage of the powered device is greater than the maximum wattage of the static port, the powered device is not powered up. Similarly, in the case of a Cisco prestandard PoE, if the CDP message from the powered device indicates that the wattage required is greater than the maximum allocated on the static port, the port is powered down. In situations where the number of static ports desired exceeds the capabilities of the power supply, a newly designated static port is placed in an error-disable state, and 0W are allocated. If the switch needs to shut down powered devices because a power supply fails and there is insufficient power, auto-powered devices are shut before static-powered devices.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

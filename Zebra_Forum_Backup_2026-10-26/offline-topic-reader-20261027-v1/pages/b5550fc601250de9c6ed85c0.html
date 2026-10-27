@@ -1,0 +1,214 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>RFID_API_LOCK_ACQUIRE_FAILURE in GetAntennaConfig when changing modes frequently – Best Practices for Safe Command Execution</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>RFID_API_LOCK_ACQUIRE_FAILURE in GetAntennaConfig when changing modes frequently – Best Practices for Safe Command Execution</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/rfidapilockacquirefailure-getantennaconfig-when-changing-modes-frequently-best-practices-safe-command-execution; original snapshot: threads/00021.html; SHA-256: c7397e54a1898b1af878084fdbc479ff60a57b5c66b0646edb641bf587ed1029</small><pre id="topic">
+
+    
+        RFID_API_LOCK_ACQUIRE_FAILURE in GetAntennaConfig when changing modes frequently – Best Practices for Safe Command Execution
+
+
+        
+      
+                        
+                    
+            A
+          
+          Aravindhan K
+          1 year 1 month ago
+        
+        
+      
+        
+            
+                  
+            
+            171
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello Zebra Developer Community,I am experiencing an issue with the Zebra RFID Android SDK where I intermittently encounter the following error: D/IRFIDinfo(23408): logError RFID_API_LOCK_ACQUIRE_FAILURE LOCK_ACQUIRE_FAILURE in GetAntennaConfig 
+D/IRFIDError(31697): RFIDPROTOAscii: GetStatus: RFID_API_COMMAND_TIMEOUTSetAntennaConfiguration size 0 
+D/IRFIDinfo(31697): logError RFID_API_COMMAND_TIMEOUT Response timeoutContext:This occurs when changing RFID reader&#x27;s custom modes frequently, such as switching between a single-tag assignment mode and full inventory mode.The SDK throws a lock acquisition failure when multiple commands are sent to the reader without waiting for the previous operation to complete.Code Example:Below is a simplified snippet showing how mode changes are currently handled in Native Android / Kotlin.&quot;assignmentMode&quot; -&gt; {
+    if (reader != null &amp;&amp; reader!!.isConnected) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val antennaRfConfig = reader!!.Config.Antennas.getAntennaRfConfig(1)
+                antennaRfConfig.setrfModeTableIndex(22)
+                antennaRfConfig.transmitPowerIndex = 10
+                antennaRfConfig.tari = 18800
+                reader?.Actions?.Inventory?.stop()
+                reader!!.Config.Antennas.setAntennaRfConfig(1, antennaRfConfig)
+
+                val singulationControl = reader!!.Config.Antennas.getSingulationControl(1)
+                singulationControl.session = SESSION.SESSION_S1
+                singulationControl.tagPopulation = 1
+                val action = singulationControl.Action
+                action.setPerformStateAwareSingulationAction(true)
+                action.setInventoryState(INVENTORY_STATE.INVENTORY_STATE_A)
+                action.setSLFlag(SL_FLAG.SL_ALL)
+                reader!!.Config.Antennas.setSingulationControl(1, singulationControl)
+
+                withContext(Dispatchers.Main) {
+                    result.success(mapOf(&quot;status&quot; to &quot;success&quot;, &quot;message&quot; to &quot;Single tag read mode configured&quot;))
+                }
+            } catch (e: InvalidUsageException) {
+                withContext(Dispatchers.Main) { result.error(&quot;INVALID_USAGE&quot;, e.vendorMessage, null) }
+            } catch (e: OperationFailureException) {
+                withContext(Dispatchers.Main) { result.error(&quot;OPERATION_FAILED&quot;, e.vendorMessage, null) }
+            }
+        }
+    } else {
+        result.error(&quot;READER_NOT_CONNECTED&quot;, &quot;Reader not connected&quot;, null)
+    }
+}
+
+&quot;inventoryMode&quot; -&gt; {
+    if (reader != null &amp;&amp; reader!!.isConnected) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val antennaRfConfig = reader!!.Config.Antennas.getAntennaRfConfig(1)
+                antennaRfConfig.setrfModeTableIndex(0)
+                antennaRfConfig.tari = 25000
+                antennaRfConfig.transmitPowerIndex = getMaxAntennaPower()
+                reader?.Actions?.Inventory?.stop()
+                reader!!.Config.Antennas.setAntennaRfConfig(1, antennaRfConfig)
+
+                val singulationControl = reader!!.Config.Antennas.getSingulationControl(1)
+                singulationControl.session = SESSION.SESSION_S0
+                singulationControl.tagPopulation = 30
+                val action = singulationControl.Action
+                action.setPerformStateAwareSingulationAction(false)
+                action.setInventoryState(INVENTORY_STATE.INVENTORY_STATE_AB_FLIP)
+                action.setSLFlag(SL_FLAG.SL_ALL)
+                reader!!.Config.Antennas.setSingulationControl(1, singulationControl)
+
+                withContext(Dispatchers.Main) {
+                    result.success(mapOf(&quot;status&quot; to &quot;success&quot;, &quot;message&quot; to &quot;Reader restored to normal mode&quot;))
+                }
+            } catch (e: InvalidUsageException) {
+                withContext(Dispatchers.Main) { result.error(&quot;INVALID_USAGE&quot;, e.vendorMessage, null) }
+            } catch (e: OperationFailureException) {
+                withContext(Dispatchers.Main) { result.error(&quot;OPERATION_FAILED&quot;, e.vendorMessage, null) }
+            }
+        }
+    } else {
+        result.error(&quot;READER_NOT_CONNECTED&quot;, &quot;Reader not connected&quot;, null)
+    }
+}
+What I Want to Know:What is the recommended code structure / design pattern for handling all reader-related activities (mode switching, configuration, inventory start/stop) to avoid this LOCK_ACQUIRE_FAILURE?Are there best practices for queuing or serializing commands in Kotlin/Android when interacting with the Zebra RFID SDK?Any official guidance or sample code demonstrating safe handling of frequent mode changes and concurrent reader operations?
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            1 year ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            FYI :  123RFID Mobile app - has a Support Portal here:https://www.zebra.com/us/en/support-downloads/software/rfid-software/123rfid-mobile.htmlThe ZIP files found within - have the Android Studio Project and Source Code - which I would recommend as a suggestion to review on the methods that are highly successful. ( If you unpack the ZIP you will find the sideloadable APK as well as nother ZIP file with the Android Studio project and Source Code. The may explain the questions 1,2,3 for the RFID Operations  code.A quick mention - DO NOT USE 123RFID Mobile app for &quot;Normal&quot; Android Lifecycle RFID app demonstration.Rather the 123RFID Mobile app is a Demo and Diagnostic app - and the Connection to the RFID HH reader - is &quot;Sticky&quot; and once connected will retain this connection despite the app being put to the Background.The RFID SDK - for Android Studio - sample code  (HHSampleApp) - does provide the correct &quot;Android Lifecycle&quot; app methods when used with the RFID SDK and RFID Handheld Sleds.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

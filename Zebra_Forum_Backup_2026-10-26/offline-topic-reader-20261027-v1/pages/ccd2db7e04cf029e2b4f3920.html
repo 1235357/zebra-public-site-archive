@@ -1,0 +1,182 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Figuring out ezNFC for Apple Wallet passes (VAS)</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Figuring out ezNFC for Apple Wallet passes (VAS)</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/figuring-out-eznfc-apple-wallet-passes-vas; original snapshot: threads/00560.html; SHA-256: a2b5d59459cf29e8210afb5eb65bbfd14afe5fd39fcb44020d5a632860738702</small><pre id="topic">
+
+    
+        Figuring out ezNFC for Apple Wallet passes (VAS)
+
+
+        
+      
+                        
+                    
+            R
+          
+          Ray Deck
+          3 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            169
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hey, I&#x27;m trying to implement reading passes issued on apple wallet over NFC using a demo unit to get my proof-of-concept going. The unit is TC26AK-21A222-NA and it’s running Android 10. The other specs on the packing slip I received in the box are: ZEBRA EVM, TC26, WLAN AND DUAL WWAN, 1.8 GHZ, ANDROID GMS, 2D IMAGER.
+
+I am trying to read an Apple Contactless Pass using a custom web app in the enterprise browser. I am currently getting a read event, but not meaningful data from the pass. Have others been through this?
+
+I implemented the below code in a browser to test the NFC system, implemented in a &lt;script&gt; tag, and with the EBAPI already inserted in a prior script tag. I was able to confirm that it says &quot;no NFC&quot; if I don&#x27;t include the EBAPIs tag, so I think we are talking to the right system. 
+
+I then set the enableRead and a callback to throw a couple of alerts to see what it hears when it reads a card. It reads, and it throws the alerts with the id and json. 
+
+But the id is blank. And the JSON shows that the callback payload member doesn&#x27;t have data - it is blank too. The taghexa is different with every read. 
+
+I also used the stock HTML/JS demo code on this site to go at it a different way, which got me the same results: blank payload.  
+
+Is there a step I am missing to enable the reader properly? I would be so grateful for a point in the right direction. Excited to get this app going on the EB! 
+ 
+
+//let&#x27;s gooooo
+const sleep = (ms) =&gt; {
+  new Promise((r) =&gt; setTimeout(r, ms));
+};
+setTimeout(async () =&gt; {
+  const isSupported =
+    window.EB &amp;&amp; window.EB.EzNFC &amp;&amp; window.EB.EzNFC.isSupported;
+  //   alert(&quot;I is supported &quot; + isSupported);
+  if (isSupported) {
+    alert(&quot;this is supported&quot;);
+    const { EzNFC } = window.EB;
+    // EzNFC.enableAdapter();
+    await sleep(1000);
+    window.EB.EzNFC.enableRead((dat) =&gt; {
+      // const { id, type, tnf, payload, encodingformat, result, tagidhexa } = dat;
+      const id = dat.id;
+      alert(&quot;I got a dat with id of &quot; + id);
+      alert(JSON.stringify(dat));
+    });
+    alert(&quot;I allegedly activated reading here&quot;);
+  } else {
+    alert(&quot;Can&#x27;t use nfc here&quot;);
+  }
+}, 1000);
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            martin philip
+          
+          
+            2 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+             Figuring out EZNFC Apple Wallet passes VAS involves understanding how to utilize EZNFC, a library for NFC (Near Field Communication) functionality on iOS devices, Verizon Fios billing support to interact with Apple Wallet passes. This process typically includes integrating EZNFC into your iOS app, configuring the necessary permissions, and implementing functionality to read, write, or interact with Apple Wallet passes, such as Virtual Access Service (VAS) passes. By leveraging EZNFC&#x27;s capabilities, developers can create apps that offer enhanced NFC-based features, including support for Apple Wallet passes for various use cases like contactless payments, loyalty programs, or event tickets.     
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

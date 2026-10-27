@@ -1,0 +1,217 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Calibration Screen API</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Calibration Screen API</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/26985; original snapshot: threads/01665.html; SHA-256: 5e93a7e615569a7859e137433acceadba496d3900181c23e1c21eb5b4c6da551</small><pre id="topic">
+
+    
+        Calibration Screen API
+
+
+        
+      
+                        
+                    
+            C
+          
+          Charles Malm
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            20
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Is there an API for configuring the calibration screen? Do we have any documentation for it?   If nothing else, do we have code we can share with a customer to invoke the calibration screen?   I tried searching with little result.  Thanks in advance 
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Charles Malm
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for the quick reply, however my customer now states:
+We are already using ::TouchCalibrate() and have done so on MC50s , MC70s and now on MC75A0s. It works fine on MC50s and MC70s but on MC75A0s it has a bug and the prompts run off the screen and are not readable which is a bug. Your development team knows about this and has implemented a workaround for this bug in two places in the MC75A0:
+The Motorola \Windows\Welcome.EXE program runs after a CLEAN BOOT and shows a completely different Align screen than what you see by running ::TouchCalibrate(). The colors are completely different.
+The ‘Align’ command in the Control Panel System/Screen runs the same Align screen as (a).
+I am not sure what API function the Welcome.EXE is calling so I tried simply running the Welcome.EXE itself but ran into issues doing that. Sometimes it shows the Align screen and sometimes it doesn’t. Since that doesn’t work, I need to get a sample of the code that the Welcome.EXE runs so that I can invoke the same system Align screen shown elsewhere on the MC75A0. 
+Would you please have one of your developers extract a sample of that code and send it to me.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Charles Malm
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks again Maverick, however, the customer has once again thrown a wrench in things:
+I built my own too and when I changed the Linker option from ‘/subsystem:windowsce,4.2.0/machine:ARM /ARMPADCODE’ to ‘/subsystem:windowsce,5.2.0/machine:ARM /ARMPADCODE’ then it showed the same screen as Welcome.EXE. The problem with this approach is that this compiled .EXE may no longer work on MC50s which is unacceptable for us. 
+I tried linking the ::TouchCalibrate() dyncamically using ::GetProcAddress( ::LoadLibrary(_T(&quot;\\Windows\\CoreDll.DLL&quot;), _T(&quot;TouchCalibrate&quot;) ) and that also displayed the same screen as Welcome.EXE so that has solved my immediate problem.
+HOWEVER, I have another Align Screen problem which relates to translation:
+We are porting our application to run in French, German and Italian on the standard MC75A0 International English platform. The problem is that when you launch the Align Screen then it always displays its prompts in English.
+We would like to be able to display the Align Screen in English, French, German or Italian, all on the same standard MC75A0 platform but I don’t want to have to retest and re-certify our software on the various language versions of this platform.
+The ::TouchCalibrate() call must write directly to the display buffer because there is no window that can be accessed and overridden with translated content and there is no way to override its English UI on the English version of the platform.
+In order to be able to display translated strings on the Align Screen, I would need software that implements the same touch panel calls as the ::TouchCalibrate() function. Apparently, there is an code sample in the Microsoft DDK that does this but I have installed the Windows Mobile 6.5 SDK and it’s not there: 
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; 
+\WINCE600\PRIVATE\TEST\BASEOS\DRIVERS\TOUCH\API_FUNCTION\TOUCHTEST\winmain.cpp
+Can one of your engineers come up with this TouchTest DDK sample and forward it to me, or send me instructions on how I can retrieve this?&amp;nbsp;
+ Do we have any such thing for this customer?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

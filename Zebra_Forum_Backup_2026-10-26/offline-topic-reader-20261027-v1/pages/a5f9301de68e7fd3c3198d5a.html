@@ -1,0 +1,235 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Deploying StageNow profiles with a centralised FTP server</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Deploying StageNow profiles with a centralised FTP server</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/30488; original snapshot: threads/02155.html; SHA-256: 3404238ee0eb0bcc4410e1f7d0bc36fbba4a48df1c1f89bb0b01893a2479981a</small><pre id="topic">
+
+    
+        Deploying StageNow profiles with a centralised FTP server
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            1792
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  The method detailed below will allow a StageNow profile to be manually modified in order to allow the profile to be staged from any FTP server i.e. it is no longer dependent upon the StageNow server on the local subnet. This allows an internet/intranet-based FTP server to be used to deploy profiles e.g. the attached SN barcode (created using this method) will install Adobe PDF reader on any device which has a pre-configured Internet connection. This functionality is due to be added to a future release of the tool but this method will work on the current 2.2 or later release.
+ 
+StageNow 2.2 (or Later) Central Server Config
+ 
+Create profile to copy file from SN server to device and add any other required steps
+Export profile as XML using icon from main profile list
+Load XML into file editor and modify the file copy section e.g.
+ 
+Original:
+ 
+ 
+Modified:
+ 
+ 
+Where:                     username =  FTP username (NB: usernames in the format xxx@yyy.com are not supported!!!!)
+                               Password = FTP password
+                               ftp.ibackup.com = FTP server URL
+                               21 = default FTP port
+                               /android/utils/tunein.player.apk = path and filename of file on FTP server
+ 
+Make sure that file exists at the specified FTP server/path – it will not be deployed there by StageNow so has to be manually copied to the required location
+Make sure that each remote file included in the profile is in a separate folder on the FTP server
+Transfer the MD5 checksum to the FTP server sub-folder in which each file is located. The checksum can be generated via a tool such as the ones detailed in the subsequent posts on this thread. It can also be copied directly from the internal StageNow FTP folder structure which is located in the path C:\Users\\AppData\Roaming\StageNow\AST\FTP\SETTINGS. The sub-folders in this path contain the files to be deployed for each profile together with the MD5 checksum file. The screenshots below show two FTP folders containing the file to transfer and the associated MD5 checksum file
+ 
+ 
+ 
+ 
+     4.Rename the profile on import , generate barcode and test. Device will require an internet connection (either configured as part of the profile or pre-configured)
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Within Stagenow 2.5 I found a none documented feature (at least I cannot find it in the documents) about externalStagingServer
+Within the installation folder C:\Program Files (x86)\Symbol Technologies\Staging_Solution a file called Symbol.StageNow.V2Client.exe.config can be found
+Open this file into your editor and modify this section:
+&amp;nbsp;&amp;nbsp;&amp;nbsp;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;
+&amp;nbsp;&amp;nbsp;&amp;nbsp; 
+Restart your Stagenow application and the External Staging Server will be used.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Matt Dermody
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Is there any way to modify the StageNow server IP to a statically assigned public IP? I would like to create a central, cloud hosted StageNow server that I can share between multiple people. It seems like I am able to modify an individual Profile&#x27;s FTP location to the public IP using this technique, but I need a way to also change the StageNow server address to the same value. It seems to just query the local adapter list and provide me with a list of options from there. Devices that I&#x27;m attempting to stage are obviously unable to resolved to the private IP that it finds for my adapter.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

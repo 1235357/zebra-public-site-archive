@@ -1,0 +1,261 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Xamarin and DataWedge Intent API</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/forum/25873; snapshot threads/resume-00577.html; SHA-256 fb761468903c3d06b7e90b3b68adc35460f61f8f1d7aebba0d3494a173c3413e. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Xamarin and DataWedge Intent API</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            M
+          </div>
+          <div class="forum-topic__author-name">Mattia Durli</div>
+          <div class="forum-topic__timestamp">5 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            334
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            2
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello, I successfully managed to use the DataWedge intent API to scan barcode through this articles and samples:<br>
+<span data-original-href="https://developer.zebra.com/community/home/blog/2018/07/11/xamarinforms">https://developer.zebra.com/community/home/blog/2018/07/11/xamarinforms</span>-...<br>
+<span data-original-href="https://developer.zebra.com/community/home/blog/2018/07/24/tutorial-scan">https://developer.zebra.com/community/home/blog/2018/07/24/tutorial-scan</span>...<br>
+My problems are:<br>
+1) I want to use the MultiBarcode of NG Simulscan on a Zebra TC52.<br>
+If I set MultiBarcode and Instant Reporting manually in my DataWedge profile, it works and my app receives the multiple barcodes.<br>
+But I'm unable to set it programmatically.<br>
+I added the relevant code here, but scanning_mode and instant_reporting_enable doesn't seem to pass:<br>
+ZebraScannerConfig config = (ZebraScannerConfig)a_config;<br>
+            Bundle profileConfig = new Bundle();<br>
+            profileConfig.PutString("PROFILE_NAME", EXTRA_PROFILE_NAME);<br>
+            profileConfig.PutString("PROFILE_ENABLED", _bRegistered ? "true" : "false"); //  Seems these are all strings<br>
+            profileConfig.PutString("CONFIG_MODE", "UPDATE");<br>
+            Bundle barcodeConfig = new Bundle();<br>
+            barcodeConfig.PutString("PLUGIN_NAME", "BARCODE");<br>
+            barcodeConfig.PutString("RESET_CONFIG", "false"); //  This is the default but never hurts to specify<br>
+            Bundle barcodeProps = new Bundle();<br>
+            barcodeProps.PutString("scanner_input_enabled", "true");<br>
+            barcodeProps.PutString("scanner_selection", "auto"); //  Could also specify a number here, the id returned from ENUMERATE_SCANNERS.<br>
+            barcodeProps.PutString("scanning_mode", "3");<br>
+            barcodeProps.PutString("instant_reporting_enable", "true");<br>
+            barcodeConfig.PutBundle("PARAM_LIST", barcodeProps);<br>
+            profileConfig.PutBundle("PLUGIN_CONFIG", barcodeConfig);<br>
+            Bundle appConfig = new Bundle();<br>
+            appConfig.PutString("PACKAGE_NAME", Android.App.Application.Context.PackageName);      //  Associate the profile with this app<br>
+            appConfig.PutStringArray("ACTIVITY_LIST", new String[] { "*" });<br>
+            profileConfig.PutParcelableArray("APP_LIST", new Bundle[] { appConfig });<br>
+            SendDataWedgeIntentWithExtra(ACTION_DATAWEDGE_FROM_6_2, EXTRA_SET_CONFIG, profileConfig);<br>
+2) I want to enable the Scanner StatusChange notification API, that is present in the mentioned sample, but not implemented:<br>
+private void ScannedStatusChanged(object sender, string a_message)<br>
+        {<br>
+            string status = a_message;<br>
+        }<br>
+I tried to follow the API Documentation, but is all Java and samples are all in Java (some Xamarin Datawedge API samples ar really missing).<br>
+So I added this to the SetConfig:<br>
+            Bundle notificationConfig = new Bundle();<br>
+            notificationConfig.PutString("PACKAGE_NAME", Android.App.Application.Context.PackageName);<br>
+            notificationConfig.PutString("NOTIFICATION_TYPE", "SCANNER_STATUS");<br>
+            SendDataWedgeIntentWithExtra(ACTION_DATAWEDGE_FROM_6_2,"com.symbol.datawedge.api.REGISTER_FOR_NOTIFICATION", notificationConfig);<br>
+but then how do I register the intent? I tried to Register to the same broadcast receiver both the Scan Intent and the Status intent, is it the correct way? Or should I have two different Broadcast receivers, one for the scan and the other for status notification?<br>
+if ((null != _broadcastReceiver) &amp;&amp; (null != _context))<br>
+            {<br>
+                // Register the broadcast receiver<br>
+                IntentFilter filterScan = new IntentFilter(DataWedgeReceiver.IntentActionScan);<br>
+                filterScan.AddCategory(DataWedgeReceiver.IntentCategory);<br>
+                _context.RegisterReceiver(_broadcastReceiver, filterScan);<br>
+                IntentFilter filterStatus = new IntentFilter(DataWedgeReceiver.IntentActionStatus);<br>
+                filterStatus.AddCategory(DataWedgeReceiver.IntentCategory);<br>
+                _context.RegisterReceiver(_broadcastReceiver, filterStatus);<br>
+                _bRegistered = true;<br>
+            }<br>
+Essentially, using MultiBarcode, I need my app to be notified when the user releases th hard trigger.<br>
+Thanks,<br>
+Mattia</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      2 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-47516" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Darryn Campbell</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 9 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Are you extracting the com.symbol.datawedge.barcodes extra?<br>
+<span data-original-href="https://github.com/darryncampbell/DataWedge-MultiBarcode-Sample/blob/mas">https://github.com/darryncampbell/DataWedge-MultiBarcode-Sample/blob/mas</span>...<br>
+My sample casts this as a List so I double-checked the DataWedge source code and this is an ArrayList so you should be able to cast this to&amp;nbsp;<span data-original-href="https://docs.microsoft.com/en-us/dotnet/api/java.util.arraylist?view=xam...&amp;nbsp;&amp;nbsp">https://docs.microsoft.com/en-us/dotnet/api/java.util.arraylist?view=xa…</span>;</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-47514" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Darryn Campbell</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 9 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Please accept my apologies in advance but I do not have any Xamarin samples that specifically address your questions.<br>
+1.&amp;nbsp; I saw this myself and it stumped me for a while.&amp;nbsp; In the end I realised you need to specify which scanner you are using (you cannot use auto).&amp;nbsp; I am still unsure exactly why this is, I guess it was because not all scanners support&amp;nbsp;instant reporting.&amp;nbsp; Example is here:&amp;nbsp;<span data-original-href="https://github.com/darryncampbell/DataWedge-MultiBarcode-Sample/blob/mas">https://github.com/darryncampbell/DataWedge-MultiBarcode-Sample/blob/mas</span>...<br>
+2. There is a sample showing how to register for scanner notifications here:&amp;nbsp;<span data-original-href="https://github.com/darryncampbell/DataWedge-Quick-Suspend-Scanner/blob/m">https://github.com/darryncampbell/DataWedge-Quick-Suspend-Scanner/blob/m</span>...<br>
+Hope that helps,<br>
+Darryn.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/forum/25873%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/forum/25873%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

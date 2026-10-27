@@ -1,0 +1,319 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to locate tags by barcode (EAN) instead of EPC</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to locate tags by barcode (EAN) instead of EPC</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/24807; original snapshot: threads/resume-00369.html; SHA-256: 3c00c2c3285dd17a7d6f36c3786664fcd6acd25011fe0c8e403ffe1099e23498</small><pre id="topic">
+
+    
+        How to locate tags by barcode (EAN) instead of EPC
+
+
+        
+      
+                        
+                    
+            L
+          
+          Luciano Test
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            177
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+We are developing an app for a Zebra TC20 device in order to perform inventories (we use a handheld Zebra RFD8500 reader to read RFID tags).
+We are interested in locating tags with the RFD8500 using only the barcode of the tags instead of the full EPC.
+Example: suppose we have 3 tags:
+ - Tag 1 -&gt; Barcode: 8433594013132 // EPC: 843359401313200001723799
+ - Tag 2 -&gt; Barcode: 8433594013132 // EPC: 843359401313200001723158
+ - Tag 3 -&gt; Barcode: 8433594013300 // EPC: 843359401330000001832435
+As we can see, Tags 1 and 2 start with 8433594013132. We want the RFD8500 to beep when we approach it to the tags just using its EAN instead of the full EPC.
+In Zebra Docs (https://techdocs.zebra.com/dcs/rfid/android/2-15/apis/reference/com/zebr...), there is a method to make the RFD8500 beep when you are close to a tag using its EPC (tagID):
+public void Perform(java.lang.String tagID, java.lang.String epcMask, AntennaInfo antennaInfo)
+(Following the previous example -&gt; Perform(843359401313200001723799, null, null); will make the handheld device beep when we are close to the Tag 1, but it will not beep when we are close to Tag 2, because is a different EPC)
+Apparently, you could pass an EPC Mask as parameter in order to look for non-specific item from a group (as we can read in &quot;What&#x27;s Next&quot; section of https://techdocs.zebra.com/dcs/rfid/android/2-15/tutorials/locate/):
+Perform(843359401313200001723799, &quot;CERTAIN_MASK&quot;, null);
+The problem is that we can not find any information about the format of the &quot;String epcMask&quot; parameter. Can anyone give us a hint about the value we must pass to the Perform method as &quot;epcMask&quot; in order to do what we have explained?
+Thank you in advance.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Martin Carrabin
+          
+          
+            2 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi, have you figured out how to do this ? I am stuck with the same issue. Thank you in advance
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              L
+            
+          
+                
+          
+            Luciano Test
+          
+          
+            2 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Martin, Yes, the sent me the following email: The definitions of three parameters defined in RFIDReader.Actions.TagLocationing.Perform(String tagID, String epm, AntennaInfo antennaInfo) are explained below.tagID: EPC ID of the Tag to be locatedepm: Hex mask string to be applied to the provided EPC IDantennaInfo: specify the antenna on which the locationing operation is to be performedNote:epm parameter allows user to perform locationing based on the specified portion of provided tagID parameter. If you wants to locate a single tag, you do not need to supply this parameter (just set it to null and device will perform locationing on a tag whose EPC ID matches the provided tagID value)For the provided example, the code snippet below would perform locationing on tags whose EPC IDs start with 8433594013132.rfidReader.Actions.TagLocationing.Perform(&quot;843359401313200001723799&quot;,”FFFFFFFFFFFFF00000000000”,null);Regarding antennaInfo parameter, you can always set it to null as RFD8500 only has one antenna port. This parameter is defined for future usage purpose. I hope this info helps you too! Best regards,Luciano 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Martin Carrabin
+          
+          
+            2 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Luciano, Yes that is very helpfull, thank you very much ! On my side, I have found that to look for an ean, I first have to translate it to epc. I have been told that the how is on this website : https://www.gs1.org/. Have you figured it out ? 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Martin Carrabin
+          
+          
+            2 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi again, Do you know if the mask principle can be used for multitag locationing as well ? The use case is the following: the same article has more than one ean, so I need to locate every epc with the FFFFFFFFFFFFFF0000000000 mask. Thank you in advance,Regards, Martin
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

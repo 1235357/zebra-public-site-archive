@@ -1,0 +1,175 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Installing Ivanti Velocity Host profiles on Android 11 onwards</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Installing Ivanti Velocity Host profiles on Android 11 onwards</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/installing-ivanti-velocity-host-profiles-android-11-onwards; original snapshot: threads/00946.html; SHA-256: 73a4967e6e0b159186cc0890a6f9bf5b0264c64ca0b523b6a717bdc62c37f407</small><pre id="topic">
+
+    
+        Installing Ivanti Velocity Host profiles on Android 11 onwards
+
+
+        
+      
+                        
+                    
+            I
+          
+          Ian Hatton
+          4 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            4362
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Android 11 enforces scoped storage restrictions which prevent access to any application’s private folder under /sdcard/Android/data . This means that it is no longer possible to push Velocity host profiles (.wldep) files to the Velocity app folder in order to configure a Zebra device. Fortunately there is an alternative path for storing profiles which is the /enterprise/usr folder i.e. any WLDEP files stored at this location will be loaded and displayed in the Velocity profile select screen provided they have the correct file  attributes (which need to be set for global read/write ). There are several methods for copying the profile files and ensuring they have the file attributes configured correctly:
+
+
+ ADB – using ADB push to copy the files to the folder normally requires a cabled connection but will configure the file attributes correctly e.g.
+
+Adb push myhostprofile.wldep /enterprise/usr
+
+
+ StageNow/Mx – the FileMgr CSP will also copy the files and set the required attributes either via a StageNow profile or using an EMDK app or raw XML e.g. the XML below will copy the file from the root of the internal sdcard to /enterprise/usr
+
+&lt;!--FILECOPY--&gt;
+    &lt;characteristic version=&quot;0.6&quot; type=&quot;FileMgr&quot;&gt;
+    &lt;parm name=&quot;FileAction&quot; value=&quot;1&quot; /&gt;
+    &lt;characteristic type=&quot;file-details&quot;&gt;
+      &lt;parm name=&quot;TargetAccessMethod&quot; value=&quot;2&quot; /&gt;
+      &lt;parm name=&quot;TargetPathAndFileName&quot; value=&quot;/enterprise/usr/1_Migrate_Velocity_Dynamic.wldep&quot; /&gt;
+      &lt;parm name=&quot;SourceAccessMethod&quot; value=&quot;2&quot; /&gt;
+      &lt;parm name=&quot;SourcePathAndFileName&quot; value=&quot;/sdcard/1_Migrate_Velocity_Dynamic.wldep&quot; /&gt;
+    &lt;/characteristic&gt;
+  &lt;/characteristic&gt;
+
+
+EMM – Most EMM’s will support OEMConfig and the above XML can be processed using a Device Administrator step in an OEMConfig profile. For SOTI specifically it is also possible to use a script command to copy the file(s) to the /enterprise/usr folder and then the following script command to set the required file attributes (thanks to Radim Kadlec for this tip):
+
+
+__chmod 777 /enterprise/usr/profile.wldep
+ 
+ 
+ 
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              T
+            
+          
+                
+          
+            Tom Butler
+          
+          
+            2 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Another working example for you: This would be in an XML file that you would call with the StageNow &quot;Batch&quot; under the XpertMode. This assumes you used the File Mgr to get all the referenced files below into the /sdcard/ . This is just the correct xml setup that will help you. &lt;wap-provisioningdoc&gt;&lt;characteristic version=&quot;0.6&quot; type=&quot;FileMgr&quot;&gt;&lt;parm name=&quot;FileAction&quot; value=&quot;1&quot; /&gt;&lt;characteristic type=&quot;file-details&quot;&gt;&lt;parm name=&quot;TargetAccessMethod&quot; value=&quot;2&quot; /&gt;&lt;parm name=&quot;TargetPathAndFileName&quot; value=&quot;/enterprise/usr/1_GenericMigratePortrait.wldep&quot; /&gt;&lt;parm name=&quot;SourceAccessMethod&quot; value=&quot;2&quot; /&gt;&lt;parm name=&quot;SourcePathAndFileName&quot; value=&quot;/sdcard/1_GenericMigratePortrait.wldep&quot; /&gt;&lt;/characteristic&gt;&lt;/characteristic&gt;&lt;characteristic version=&quot;0.6&quot; type=&quot;FileMgr&quot;&gt;&lt;parm name=&quot;FileAction&quot; value=&quot;1&quot; /&gt;&lt;characteristic type=&quot;file-details&quot;&gt;&lt;parm name=&quot;TargetAccessMethod&quot; value=&quot;2&quot; /&gt;&lt;parm name=&quot;TargetPathAndFileName&quot; value=&quot;/enterprise/usr/2_GenericOptimizePortrait.wldep&quot; /&gt;&lt;parm name=&quot;SourceAccessMethod&quot; value=&quot;2&quot; /&gt;&lt;parm name=&quot;SourcePathAndFileName&quot; value=&quot;/sdcard/2_GenericOptimizePortrait.wldep&quot; /&gt;&lt;/characteristic&gt;&lt;/characteristic&gt;&lt;characteristic version=&quot;0.6&quot; type=&quot;FileMgr&quot;&gt;&lt;parm name=&quot;FileAction&quot; value=&quot;1&quot; /&gt;&lt;characteristic type=&quot;file-details&quot;&gt;&lt;parm name=&quot;TargetAccessMethod&quot; value=&quot;2&quot; /&gt;&lt;parm name=&quot;TargetPathAndFileName&quot; value=&quot;/enterprise/usr/3_GenericModernizePortrait.wldep&quot; /&gt;&lt;parm name=&quot;SourceAccessMethod&quot; value=&quot;2&quot; /&gt;&lt;parm name=&quot;SourcePathAndFileName&quot; value=&quot;/sdcard/3_GenericModernizePortrait.wldep&quot; /&gt;&lt;/characteristic&gt;&lt;/characteristic&gt;&lt;characteristic version=&quot;0.6&quot; type=&quot;FileMgr&quot;&gt;&lt;parm name=&quot;FileAction&quot; value=&quot;1&quot; /&gt;&lt;characteristic type=&quot;file-details&quot;&gt;&lt;parm name=&quot;TargetAccessMethod&quot; value=&quot;2&quot; /&gt;&lt;parm name=&quot;TargetPathAndFileName&quot; value=&quot;/enterprise/usr/6_GenericTouchGreenscreen.wldep&quot; /&gt;&lt;parm name=&quot;SourceAccessMethod&quot; value=&quot;2&quot; /&gt;&lt;parm name=&quot;SourcePathAndFileName&quot; value=&quot;/sdcard/6_GenericTouchGreenscreen.wldep&quot; /&gt;&lt;/characteristic&gt;&lt;/characteristic&gt;&lt;characteristic version=&quot;0.6&quot; type=&quot;FileMgr&quot;&gt;&lt;parm name=&quot;FileAction&quot; value=&quot;1&quot; /&gt;&lt;characteristic type=&quot;file-details&quot;&gt;&lt;parm name=&quot;TargetAccessMethod&quot; value=&quot;2&quot; /&gt;&lt;parm name=&quot;TargetPathAndFileName&quot; value=&quot;/enterprise/usr/7_GenericTransparentKeyboard.wldep&quot; /&gt;&lt;parm name=&quot;SourceAccessMethod&quot; value=&quot;2&quot; /&gt;&lt;parm name=&quot;SourcePathAndFileName&quot; value=&quot;/sdcard/7_GenericTransparentKeyboard.wldep&quot; /&gt;&lt;/characteristic&gt;&lt;/characteristic&gt;&lt;/wap-provisioningdoc&gt;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

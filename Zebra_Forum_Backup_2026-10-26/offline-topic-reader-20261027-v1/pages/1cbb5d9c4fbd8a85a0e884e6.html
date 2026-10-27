@@ -1,0 +1,272 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Reading RIL Driver Version programtically</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Reading RIL Driver Version programtically</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/25155; original snapshot: threads/01422.html; SHA-256: 26bee1bdc8f0e10bbb3dae15e526ffa7af2f0e690c916a6d8ca94599e8ea0fa7</small><pre id="topic">
+
+    
+        Reading RIL Driver Version programtically
+
+
+        
+      
+                        
+                    
+            H
+          
+          Horst Anderlohr
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            19
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello Team, I am looking for a function to read the RIL driver version programatically within a .NET application. Any idea how to get this done is very welcome.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You&#x27;ll need to use managed code.&amp;nbsp; See RIL_GetDriverVersion in MSDN for reference.&amp;nbsp; I&#x27;ve also attached a C# class which wraps this call.&amp;nbsp; In MSDN, the major,minor versions are returned in the Low and High Word of the return value.&amp;nbsp; Since the RIL version&#x27;s format&amp;nbsp;is xx.xx.xx.xx, it appears that each byte of the unsigned long which is returned contains a version number.   I&#x27;ve tested the code on a MC70 with a GPRS radio and it appears to work.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            One possible way (maybe) is to read the version from the RIL DLL - You can embedded version information in a DLL, so if its there you can read it.   SymScript has commands to read the info&amp;nbsp; - if embedded in the DLL.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Check out the &quot;WanState&quot; tool on the ECRT site.  http://compass.mot.com/go/332353468&amp;nbsp;  If you start this executable with a /w command line argument, it will write a bunch of radio info to the registry and a text file. You might want to try running this during each boot of the device, then your .net app would just need to read from the registry or the text file.&amp;nbsp; Below is a sample of the data provided. I&#x27;m sure the support position is similar to symscript. Probably not officially supported in a production environment, but it works.
+  &amp;nbsp; 
+[HKEY_CURRENT_USER\Software\Symbol\wan info] 
+&quot;BSP Version&quot;=&quot;90.34.01&quot; 
+&quot;Ntwk Conct Time&quot;=&quot;&quot; 
+&quot;Data Call Status&quot;=&quot;No Connection&quot; 
+&quot;Voice Call Status&quot;=&quot;&quot; 
+&quot;IMSI&quot;=&quot;&quot; 
+&quot;SIM Status&quot;=&quot;Not Available&quot; 
+&quot;RIL Version&quot;=&quot;01.01.05.05&quot; 
+&quot;Radio Config&quot;=&quot;Sun 27.04.2008&quot; 
+&quot;Radio FW&quot;=&quot;REVISION 02.050&quot; 
+&quot;IMEI&quot;=&quot;358355010005532&quot; 
+&quot;Radio Model&quot;=&quot;HC25&quot; 
+&quot;Radio Mfg&quot;=&quot;SIEMENS&quot; 
+&quot;Signal&quot;=&quot;0%&quot; 
+&quot;Network Status&quot;=&quot;Not registered&quot; 
+&quot;Network&quot;=&quot;&quot; 
+&quot;System Type&quot;=&quot;GSM&quot;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

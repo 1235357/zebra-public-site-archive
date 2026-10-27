@@ -1,0 +1,265 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Trying to read NFC using ZC350, but getting &#x27;Unknown printer language&#x27; exception</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Trying to read NFC using ZC350, but getting &#x27;Unknown printer language&#x27; exception</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/trying-read-nfc-using-zc350-getting-unknown-printer-language-exception; original snapshot: threads/01020.html; SHA-256: 7087c592b1f3a73f57d8ec038a026cbfd03eb48e3ba0f95af79b90e38a71cc52</small><pre id="topic">
+
+    
+        Trying to read NFC using ZC350, but getting &#x27;Unknown printer language&#x27; exception
+
+
+        
+      
+                        
+                    
+            K
+          
+          Kristian Thim
+          5 years 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            49
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello, I am REALLY trying to do a basic &quot;Read tag/id and print card&quot; proces to store the id of the NFC card, so that the ID card can be used for the door-lock system.
+I&#x27;ve concluded that NFC communication and ID card printing uses two different namespaces, or I don&#x27;t see the necessary methods for doing it otherwise.
+However, when I am trying to call my &lt;strong&gt;Zebra ZC350&lt;/strong&gt;, that has built-in NFC reader, I get the message: &lt;strong&gt;Zebra.Sdk.Printer.ZebraPrinterLanguageUnknownException: &#x27;Unknown printer language&#x27;&lt;/strong&gt; when I try to get an instance of the ZebraPrinter object
+&lt;code&gt;ZebraPrinter zebraPrinter = ZebraPrinterFactory.GetInstance(sczebraConnection);&lt;/code&gt;
+I&#x27;m guessing I am doing something I am not supposed to do, but there are not really many guidelines, or any, for using the NFC functionality on the ZC350.  What works, is that I can move the card to &quot;SmartCardEncode&quot;. I assume that is where it can read or program the card.
+I&#x27;ve also tried using my existing connection for the ZebraCardPrinter class but then I get a mismatch in the classes.
+&lt;strong&gt;cannot convert from &#x27;Zebra.Sdk.Card.Printer.ZebraCardPrinter&#x27; to &#x27;Zebra.Sdk.Printer.ZebraPrinter&#x27;&lt;/strong&gt;
+&lt;h2&gt;Connection&lt;/h2&gt;
+The connection in a TCP connection with the following details
+&lt;code&gt;
+ Address: &quot;192.168.1.68&quot;
+    Connected: true
+    ConnectionBuilderPrefix: &quot;TCP&quot;
+    Manufacturer: &quot;&quot;
+    MaxDataToWrite: 1024
+    MaxTimeoutForRead: 5000
+    MultipartTimeToWaitAfterSend: 250
+    PortNumber: &quot;9100&quot;
+    SimpleConnectionName: &quot;192.168.1.68&quot;
+    TimeToWaitForMoreData: 500
+    commLink: {Zebra.Sdk.Comm.Internal.ZebraNetworkSocket}
+    inputStream: {System.IO.BinaryReader}
+    isDeviceConnected: true
+    maxTimeoutForRead: 5000
+    multipartTimeToWaitAfterSend: 250
+    myWriteLogStream: null
+    outputStream: {System.IO.BinaryWriter}
+    timeToWaitForMoreData: 500
+    zebraConnector: {Zebra.Sdk.Comm.TcpZebraConnectorImpl}
+    timeToWaitForMoreData: 500
+&lt;/code&gt;
+... Should I use USB instead?
+&lt;h2&gt; Full print method&lt;/h2&gt;
+&lt;strong&gt;In this method I am simply removing the card instead of printing on it, for the ease of testing.&lt;/strong&gt;
+&lt;code&gt;
+public void Print(int copies)
+        {
+            try
+            {
+                OpenConnection();
+                GetPrinter();
+                SetJobSetting(&quot;smart_card.contactless&quot;, &quot;hf&quot;);
+                var jobid = zebraCardPrinter.SmartCardEncode(1);
+                JobStatusInfo status = zebraCardPrinter.GetJobStatus(jobid);
+                var sczebraConnection = new TcpConnection(this.Connection.IPAddress, this.Connection.Port);
+                sczebraConnection.Open();
+                ZebraPrinter zebraPrinter = ZebraPrinterFactory.GetInstance(sczebraConnection);
+                SmartcardReader reader = SmartcardReaderFactory.Create(zebraPrinter);
+                var ATR = reader.GetATR();
+                GraphicsInfo graphicsInfo = new GraphicsInfo();
+                zebraCardPrinter.Resume();
+               // var printJobNumber = zebraCardPrinter.Print(copies, graphicsInfos);
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                CloseQuietly(localConnection, zebraCardPrinter);
+            }
+        }
+&lt;/code&gt;
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Stephen Troup
+          
+          
+            5 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I think the SmartcardReaderFactory is for label printers. and I don&#x27;t think the Elatec reader is accessible in the method you&#x27;re attempting via ethernet. The reader has a PCSC firmware installed, atleast the ones I have access to, and you&#x27;ll need to use a usb over ethernet connection that will then allow a PCSC connection to then be used to connect to the card. I use SX virtual link as a way to control this from a desktop app but there it&#x27;s also possible from code in Windows.
+I&#x27;d suggest working with a usb connection at first to get the smartcard code working and then wrapping it in code to connect and disconnect via ethernet. The sdk for encoding over ethernet is called the EOE sdk which has the manual on how to it to establish a connection to the reader.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alfred Teixeira
+          
+          
+            4 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The code you show is for a link-os printer; despite the printer&#x27;s branding on the Support and Downloads webpage, the ZC-series card printer is not a Link-OS printer. I would recommend you download the Multi-platform SDK for this printer and review the appropriate Developer Demo for how to build/send jobs to the printer for purposes of positioning the card for smart card encoding. However, please be aware that the developer demos do not demonstrate how to communicate with the smart card reader; this is accomplished through the PC/SC API.
+As was posted earlier, you will need the EoE SDK as well if you wish to encode your NFC card over Ethernet. However, my recommendation is to use USB connectivity first and then move to encoding the card over an Ethernet connection.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

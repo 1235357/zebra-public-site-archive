@@ -1,0 +1,337 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Printer connectivity issues on iOS 14 devices</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/forum/25732; snapshot threads/resume-00550.html; SHA-256 d31d55fbbee880d8ab2d8e3a83d31f94a50b1bb656d61406312fe9cf77ff0fc8. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Printer connectivity issues on iOS 14 devices</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            J
+          </div>
+          <div class="forum-topic__author-name">Jules Robichaud-Gagnon</div>
+          <div class="forum-topic__timestamp">5 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            133
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            3
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>There is a racing condition between the initialization of MfiBtPrinterConnection and ZebraPrinterFactory's getInstance that occurs on recent iOS devices.<br>
+        connection = [[[MfiBtPrinterConnection alloc] initWithSerialNumber:self.connectivityViewController.bluetoothPrinterLabel.text] autorelease];<br>
+        BOOL didOpen = [connection open];<br>
+        if(didOpen == YES) {<br>
+                // A VERY SHORT DELAY IS NEEDED HERE TO WORK<br>
+                NSError *error = nil;<br>
+                id printer = [ZebraPrinterFactory getInstance:connection error:&amp;error];<br>
+        }<br>
+If we wait long enough the error will be "Unable to determine printer language"<br>
+The bug may not occur if there are NSLog or other code causing delays. Sometimes the connection seems to stop and a log like this appear:<br>
+        2020-10-29 15:13:37.733311-0400 ZSDKDeveloperDemos[2200:457464] CoreAccessories accessoryInfo for departure = {<br>
+                ACCExternalAccessoryPPIDKey = "";<br>
+                ACCExternalAccessoryPrimaryUUID = "232DDB75-5A99-4076-A1B2-0F58538A0884";<br>
+                ACCExternalAccessoryProtocolDetailsKey =     {<br>
+                        "com.zebra.rawport" =         {<br>
+                                ACCExternalAccessoryMatchAction = 2;<br>
+                                ACCExternalAccessoryProtocolEndpointUUID = "232DDB75-5A99-4076-A1B2-0F58538A0884";<br>
+                                ACCExternalAccessoryProtocolIndex = 90;<br>
+                                ACCExternalAccessoryProtocolType = 0;<br>
+                                ACCExternalAccessorySessionUsesSocketInterfaceKey = 1;<br>
+                        };<br>
+                };<br>
+                IAPAppAccessoryCapabilitiesKey = 1;<br>
+                IAPAppAccessoryDockTypeKey = "";<br>
+                IAPAppAccessoryFirmwareRevisionKey = 001;<br>
+                IAPAppAccessoryFirmwareRevisionPendingKey = "";<br>
+                IAPAppAccessoryHardwareRevisionKey = 001;<br>
+                IAPAppAccessoryMacAddressKey = "48:A4:93:4F:F7:DF";<br>
+                IAPAppAccessoryManufacturerKey = "Zebra Technologies";<br>
+                IAPAppAccessoryModelNumberKey = ZQ521;<br>
+                IAPAppAccessoryNameKey = XX_HID_SERIAL_NUMBER;<br>
+                IAPAppAccessoryProtocolsKey =     {<br>
+                        "com.zebra.rawport" = 90;<br>
+                };<br>
+                IAPAppAccessorySerialNumberKey = XX_HID_SERIAL_NUMBER;<br>
+                IAPAppAccessoryTransportType = 2;<br>
+                IAPAppAccessoryVehicleInfoInitialDataKey =     {<br>
+                };<br>
+                IAPAppConnectionIDKey = 49928821;<br>
+        }<br>
+== Workaround for the racing condition ==<br>
+Add a sleep:<br>
+        connection = [[[MfiBtPrinterConnection alloc] initWithSerialNumber:self.connectivityViewController.bluetoothPrinterLabel.text] autorelease];<br>
+        BOOL didOpen = [connection open];<br>
+        if(didOpen == YES) {<br>
+                [NSThread sleepForTimeInterval:0.01f]; // Very short sleep is needed otherwise the printer is not really ready on faster iOS devices<br>
+                NSError *error = nil;<br>
+                id printer = [ZebraPrinterFactory getInstance:connection error:&amp;error];<br>
+        }<br>
+But it does not fix the problem, sometimes it will get stuck in                 id printer = [ZebraPrinterFactory getInstance:connection error:&amp;error];.<br>
+== Printer ==<br>
+- Model: ZQ521<br>
+- Firmware: V91.21.05Z<br>
+- PDFDirect: v206<br>
+- Configurations:<br>
+        - apl.enable "pdf"<br>
+        - ezpl.media_type "continuous"<br>
+== SDK ==<br>
+SDK: iOS v1.5.1049<br>
+== iOS models ==<br>
+- iPhone 12 PRO iOS 14.1<br>
+- iPad Air 4 with iOS 14.1<br>
+== Steps to reproduce ==<br>
+1. Pair printer with iOS device.<br>
+2. Open iOS demo<br>
+3. In StatusViewController.mm comment lines 97 and 99. Ex:<br>
+‎‎        // [self.connectivityViewController setStatus:@"Connected..." withColor:[UIColor greenColor]];<br>
+        // [self.connectivityViewController setStatus:@"Determining Printer Language..." withColor:[UIColor yellowColor]];<br>
+4. Start app using debugger<br>
+5. Press "Start" button<br>
+6. Press "Printer Status"<br>
+7. Select "Bluetooth"<br>
+8. Select printer<br>
+9. Press "Check Status"<br>
+10. Thread get stuck at line "id printer = [ZebraPrinterFactory getInstance:connection error:&amp;error];" for a while and fail after a while</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      3 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-47314" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thanks for sharing the findings. I don't have iPhone 12 Pro to reproduce the issue. This might be something related to iPhone 12 Pro specifically, though I am not 100% sure.<br>
+With iPhone 11 Pro &amp;amp; iOS 14.1, we have observed that Bluetooth connection is a little flaky. The Bluetooth connection gets disconnected periodically every 30 to 50 seconds for no reason. Since I don't have iPhone 12 Pro,&amp;nbsp;I cannot be 100% sure if the same iOS bug gets&amp;nbsp;carried over from iPhone 11 Pro. You can simply verify this with your iPhone 12 Pro by opening Settings-&amp;gt;Bluetooth and watch if the Bluetooth status radio button along with the entire page blinks roughly every 30 to 50 seconds. When it blinks, it means the iPhone is trying to reestablish the connection, which cause the&amp;nbsp;disconnection briefly. This might be the root cause of the problem you reported above. If this blink&amp;nbsp;happens with iPhone 12 Pro, then we cannot do anything about it on the SDK side.<br>
+Below is the screenshot I had with iPhone 11&amp;nbsp;Pro. I had a number of Bluetooth devices connected. The Bluetooth setting page blinks every 30 or 50 sec.</p>
+<p>&amp;nbsp;<br>
+&amp;nbsp;</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-47276" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Jules Robichau…</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 12 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I found this issue: <span data-original-href="https://developer.zebra.com/community/home/blog/2017/11/01/ios-11-blueto">https://developer.zebra.com/community/home/blog/2017/11/01/ios-11-blueto</span>...<br>
+The proposed solution on the closure of the the connection did not change anything.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-49525" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>James Cullis</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>We have the same issue with both an 11 Pro and 12, but we have an iPhone 8 that works perfectly.<br>
+All three are running 14.8</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/forum/25732%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/forum/25732%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

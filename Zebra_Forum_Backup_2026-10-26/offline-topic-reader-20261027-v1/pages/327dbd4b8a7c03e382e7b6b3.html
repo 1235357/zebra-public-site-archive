@@ -1,0 +1,159 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>TC22R: TagAccess.writeWait() returns TIME OUT on EPC write (SDK 2.0.5.297)</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>TC22R: TagAccess.writeWait() returns TIME OUT on EPC write (SDK 2.0.5.297)</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/tc22r-tagaccesswritewait-returns-time-out-epc-write-sdk-205297; original snapshot: threads/00003.html; SHA-256: fb0e20573c6375e35b975c21beab5d715ea499bca8ac19be6017930def6bf258</small><pre id="topic">
+
+    
+        TC22R: TagAccess.writeWait() returns TIME OUT on EPC write (SDK 2.0.5.297)
+
+
+        
+      
+                        
+                    
+            B
+          
+          Bhuvana Gunasekaran
+          3 days 19 hours ago
+        
+        
+      
+        
+            
+                  
+            
+            31
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi all,We are trying to write EPC tags from our Android store application on the Zebra TC22R, and the write fails with an OperationFailureException. getVendorMessage() returns TIME OUT. The same SDK version and the same tag write successfully on a TC52.EnvironmentDevice: TC22R (model TC2205-0G1250SS-US)(sled)Android OS version: 14RFID SDK: 2.0.5.297Current EPC length and format: SGTIN-96 (Example -303802CCC0E19A400000160D)What we are trying to doWe select the tag by its current EPC and write a new EPC.Codeprivate void writeToTag(String oldEpc, String newEpc, String password) throws InvalidUsageException, OperationFailureException {
+    TagData tagData = null;
+    TagAccess tagAccess = new TagAccess();
+    TagAccess.WriteAccessParams writeAccessParams = tagAccess.new WriteAccessParams();
+    if (writeAccessParams != null) {
+        writeAccessParams.setAccessPassword(Long.decode(password));
+        writeAccessParams.setMemoryBank(MEMORY_BANK.MEMORY_BANK_EPC);
+        writeAccessParams.setOffset(2);
+        writeAccessParams.setWriteData(newEpc);
+        writeAccessParams.setWriteDataLength(newEpc.length() / 4);
+        if (reader != null &amp;&amp; reader.Actions != null &amp;&amp; reader.Actions.TagAccess != null) {
+            reader.Actions.TagAccess.writeWait(oldEpc, writeAccessParams, null, tagData);
+        }
+    }
+}Observed behaviorwriteWait throws OperationFailureException.getVendorMessage() returns TIME OUT.Access password: &quot;0&quot;(null)QuestionsIs this approach (TagAccess.writeWait with WriteAccessParams on the EPC bank) still the recommended approach on the TC22R with SDK 2.0.5.297, or is there a different method or setting for this device?Are the parameters passed to writeWait correct? Are there TC22R-specific RFID settings (power, session, sled firmware, or a minimum SDK or firmware level) that could cause TIME OUT where the TC52 succeeds?Any pointers or sample code for TC22R would be appreciated. Thanks in advance.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 days 13 hours ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            My Best Suggestion is to review the Code in the 123RFID Mobile App starting here:https://www.zebra.com/us/en/support-downloads/software/rfid-software/123rfid-mobile.html( Open the subtree &quot;123RFID Mobile for Android Download&quot;  - the ZIP files - contain both the Sideload Installable APK as well as the Android Studio Source tree.)If the TC22R running 123RFID Mobile V2.0.5.297 - finds a tag and then using the 3-dot menu (Inventory menu not &quot;rapid read&quot; UI menu.) and Tag Write - if the write succeeds with the app - then the code for it is in the Fragments the Tag-Write menu/UI uses - to write words to the Tag.Please Note:The TC22R is not the same as the TC52AX connected via eConnex / Bluetooth to the RFD4x platform.The TC22R is one of the &quot;Embedded&quot; RFID Solutions - and the RFID SDK - will reflect that. ( The EM45, TC53E-RFID, and MC3300XR are also different. ) 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

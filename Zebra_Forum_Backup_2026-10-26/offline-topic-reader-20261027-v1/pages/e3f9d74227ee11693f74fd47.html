@@ -1,0 +1,166 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Does ZQ320 support a QR Code in CPCL?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Does ZQ320 support a QR Code in CPCL?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/26014; original snapshot: threads/resume-00608.html; SHA-256: e714d51c985774cbfd2b8423c6106a0a2bf82f1372153059ded030bd261b6250</small><pre id="topic">
+
+    
+        Does ZQ320 support a QR Code in CPCL?
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            164
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+I tried unsuccessfully to print a QR Code with the CPCL template provided in this documentation at page 85 https://support.zebra.com/cpws/docs/comtec/PROMAN-CPCL_RevY.pdf
+!0 200 200 500 1
+B QR 10 100 M 2 U 10
+MA,QR code ABC123
+ENDQR
+T 4 0 10 400 QR code ABC123
+FORM
+PRINT
+However when using the mobile application made by my team I&#x27;m unable to successfully print a QR Code. I am able to use the same application to print other template which doesn&#x27;t include a QR code. However, whenever we use a QR Code, the Zebra doesn&#x27;t do anything or sometime become unresponsive (we lose connection and have to remove the battery).
+For information I&#x27;m using the latest version of the ZSDK_ANDROID_API sdk in java. We have a zebra model ZQ320 with firmware V81.20.21Z.
+Has anyone been able to print a QR code with the CPCL language and java sdk?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            To print CPCL on ZQ320 printers, you need to set the device.languages to line_print mode on the printer first via the following SGD command.
+! U1 setvar &quot;device.languages&quot; &quot;line_print&quot;When you send the CPCL to the printer, make sure that each CPCL line is ended with , i.e. &quot;\r\n&quot;. This is the syntax requirement for CPCL. The first line of the quoted CPCL above is missing a space between &quot;!&quot; and &quot;0&quot;. The correct string of the above CPCL should be like this below. Hope this helps.
+! 0 200 200 500 1
+B QR 10 100 M 2 U 10
+MA,QR code ABC123
+ENDQR
+T 4 0 10 400 QR code ABC123
+FORM
+PRINT&amp;nbsp;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

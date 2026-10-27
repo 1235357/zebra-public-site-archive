@@ -1,0 +1,145 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>RFID Gate Solution for Erasing User Memory on Returned Reusable Containers</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>RFID Gate Solution for Erasing User Memory on Returned Reusable Containers</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/rfid-gate-solution-erasing-user-memory-returned-reusable-containers; original snapshot: threads/00008.html; SHA-256: c6f59c9d2373ca2ed176e7d8ed220abdeb87c70320c02f973cca59ec018f0343</small><pre id="topic">
+
+    
+        RFID Gate Solution for Erasing User Memory on Returned Reusable Containers
+
+
+        
+      
+                        
+                    
+            K
+          
+          Khunakon Lerdsrisampan
+          1 month 1 week ago
+        
+        
+      
+        
+            
+                  
+            
+            110
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                   Hi everyone,I have a question regarding the use of Zebra ZBR4001 RFID tags attached to reusable boxes in our factory.During production, once finished goods are packed into a box, we write the job/order information into the User Memory Bank of the RFID tag.After the products are shipped to customers, the empty boxes are returned to our factory for reuse. However, the RFID tags still contain the previous job data stored in the User Memory Bank.What I would like to achieve is a process that can erase the User Memory Bank data from multiple RFID tags at the same time, ideally around 30 boxes per batch.The concept I have in mind is to use an RFID gate/portal, where all returned boxes pass through the gate and the system automatically clears the User Memory Bank on every detected tag.Has anyone implemented a similar solution, or can anyone recommend Zebra hardware, software, or best practices for this use case?Any suggestions or guidance would be greatly appreciated.Thank you!
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            2 weeks 5 days ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi KhunakonI do not provide a specific solution to your question, but recommend as a guide one option that can be done via Fixed readers - that are properly integrated into Infrastructure for IOT connected RFID Fixed Readers.There are a few predicate conditions where ZIOTC being used ( I am going to use MQTT as my driving example here )You know the first 3 words of the MEMORY_BANK_TID  In my example I know the tags I am seeking are &quot;e280 6f12 2000&quot; .You know the EXACT Word Count you need to deal with.  ( In my Case - the USER mem bank is only 4 words long and no offset. )Using ZIOTC you could Scan ( A TagAccess Inventory ) for a specific series of tags as follows:&lt;snip&gt; //SMK MQTT Example set_mode API to Read a specific TID for USER by wordpointer and wordcount.{ &quot;command&quot;: &quot;set_mode&quot;, &quot;command_id&quot;: &quot;abcd1234&quot;, &quot;payload&quot;: {   &quot;type&quot;: &quot;CUSTOM&quot;,   &quot;query&quot;: {       &quot;tagpopulation&quot;: 100,       &quot;sel&quot;: &quot;ALL&quot;,       &quot;session&quot;: &quot;S0&quot;,       &quot;target&quot;: &quot;B&quot;   },   &quot;selects&quot;: [       {           &quot;target&quot;: &quot;S0&quot;,           &quot;action&quot;: &quot;INVB_INVA&quot;,           &quot;membank&quot;: &quot;TID&quot;,           &quot;pointer&quot;: 0,           &quot;length&quot;: 48,           &quot;mask&quot;: &quot;e2806f122000&quot;       }   ],   &quot;accesses&quot;: [             {           &quot;type&quot;: &quot;READ&quot;,           &quot;config&quot;: {               &quot;membank&quot;: &quot;USER&quot;,               &quot;wordPointer&quot;: 0,               &quot;wordCount&quot;: 4           }       }   ],   &quot;radioStopConditions&quot;: {       &quot;antennaCycles&quot;: 3   }}}&lt;/snip&gt;If you use the result set from the above you can address the &quot;idHex&quot; for each result where USER is non-zero above (Recommended) -AND-  You may notice in the above - that I am not using any Passwording - since using the &quot;Access Password&quot; may be assumed - but implementing that - is not in scope to your question ( Yet SHOULD be something you should have thought to implement to protect your tags.)  So...  I have left that out of this response - to allow you to begin this journey of looking at what code you can implement for what you seek.I will provide the following Three Document portals:  1) from Zebra techdocs : https://techdocs.zebra.com/dcs/rfid/fxr-api-docs/   ( This contains two Domains )2) And if using ZIOTC on the FX-Series ZIOTC platform this documentation portal : https://zebradevs.github.io/rfid-ziotc-docs/
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

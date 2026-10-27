@@ -1,0 +1,312 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Browser Print PDF</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Browser Print PDF</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/browser-print-pdf; original snapshot: threads/00201.html; SHA-256: b1d4fb07d50efe3fd68dfbbe50fc7e27e4425e58b7c2b28434656c3fdf7a4acc</small><pre id="topic">
+
+    
+        Browser Print PDF
+
+
+        
+      
+                        
+                    
+            K
+          
+          Keith Hall
+          2 years 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            1109
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,I am trying to use BrowserPrint to remotely print API-based shipping labels to label printer, they are PDF labels, and according to docs I&#x27;m sure I read it will convert and print various formats, JPG, PNG etc and PDF.When trying to print, am getting &quot;Error: The format conversion attempted requires a licensing key and none was provided.&quot; Where is this provided and how do we fix it?I&#x27;ve also tried converting PDF to PNG server-side using pdftoppm but it aliases/interpolates the 2D barcode which makes it unreadable, tried various options there to, so I&#x27;m stuck with PDF format I think. The printers don&#x27;t accept PDF files directly (they just lock up and refuse to print further until powered off and on!).Also there&#x27;s an existing web application that uses BrowserPrint to another Zebra printer used on the same computer (also shipping labels but a different printer and media size combination), so that is set up as a default &#x27;printer&#x27; device... How do we set up a 2nd &#x27;default&#x27; device (perhaps named &#x27;printer2&#x27;) that can be used by the application I&#x27;m developing, please? At the moment I&#x27;ve just hacked the device list to index the 2nd printer (there are 3) as a workaround but fear that could change if the order of the printer list changes.I&#x27;m on a tight timeframe here to get a solution in the next few days so am hoping experts around here will be able to offer some pointers in the right direction, and would be most grateful! 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            What&#x27;s the printer model you are using? Most Zebra printer models support the PDF Direct (See Announcement | Printers Include Free PDF Direct with Link-OS 6.3 for details). With a PDF Direct enabled printer, there is no need to use the convertAndSendFile(), which is a legacy API in the Browser Print. Instead, you simply call the sendFile() API in the Browser Print, which directly sends the PDF content to the printer to print. It saves development effort and ensures the readability.
+The Browser Print only allows one default printer to be set. You can always call the BrowserPrint.getLocalDevices() to get the printers that are available to the local host. 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              K
+            
+          
+                
+          
+            Keith Hall
+          
+          
+            2 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks, however PDF Direct doesn&#x27;t work as the printers are older and not included on supported models list (e.g. GK420d). As mentioned sendFile() causes the printers to lock up and refuse to do anything further.Need the PDF convert function to work as mentioned in the documentation? How do we fix this error please?Understood on the default printer, however getLocalDevices does take some time to return, and is what has ben done but it feels like a hack. Who is actively developing BrowserPrint - can this additional saved printer idea be added as a future enhancement request please?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Keith,
+For the PDF license key used in the Browser Print for the PDF print, you can find the license key in the zebra_test.html file on our test site - https://cagdemo.com/BrowserPrint/test/external/zebra_test.html. Open the Inspector of the browser and look for the feature_keys variable. You can also refer to the code in the zebra_test.html for the details on how to convert a PDF file.
+Regarding your feedback about expanding the default printer from one printer to a list of printers, we will pass the feedback to the engineering team to make an assessment.
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              K
+            
+          
+                
+          
+            Keith Hall
+          
+          
+            2 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks, will give this a try.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

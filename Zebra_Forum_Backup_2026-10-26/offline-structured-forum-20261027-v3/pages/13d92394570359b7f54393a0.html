@@ -1,0 +1,182 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Using the Zebra RFID API SDK with RFD8500</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/forum/25979; snapshot threads/resume-00350.html; SHA-256 c1d27ce4d145298b2c73b87536ac2b2d5f36a1a338ea78c94f21d54b232e035e. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Using the Zebra RFID API SDK with RFD8500</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            D
+          </div>
+          <div class="forum-topic__author-name">Dave Westerman</div>
+          <div class="forum-topic__timestamp">5 years 4 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            72
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>I'm trying to look at some of the information in the different config objects for a Zebra RFD8500 using the RFID API 3 SDK (2.0.1.34). But the data I'm trying to log has me puzzled.<br>
+Here's a snippet of my code (the `debugLog()` log method just does an `ObjectMapper.writeValueAsString(object)` call to show the object as JSON):<br>
+```<br>
+Readers readers = new Readers();<br>
+debugLog(METHOD_NAME, "readers", readers);       // NOTE 1<br>
+try {<br>
+    ArrayList readerDevices = readers.GetAvailableRFIDReaderList();   // NOTE 2<br>
+    for (ReaderDevice readerDevice : readerDevices) {<br>
+        debugLog(METHOD_NAME, "readerDevice", readerDevice);<br>
+        RFIDReader rfidReader = readerDevice.getRFIDReader();<br>
+        debugLog(METHOD_NAME, "rfidReader", rfidReader);<br>
+        Config config = rfidReader.Config;       // NOTE 3<br>
+        debugLog(METHOD_NAME, "config", config);<br>
+        Antennas antennas = config.Antennas;     // NOTE 4<br>
+```<br>
+ NOTE 1: `readers` is always displayed as a `null`.<br>
+ NOTE 2: However, this line never gets an NPE, it works, and I can see the `readerDevice` and `rfidFReader` in the log!<br>
+ NOTE 3: `config` is always null.<br>
+ NOTE 4: This line usually throws an NPE. However, I've seen it work on occasion, even though `config` is always null!<br>
+ Here is my log:<br>
+ ```<br>
+D/Rfd8500Module: .showRfd8500Info(): readers = null<br>
+D/Rfd8500Module: .showRfd8500Info(): readerDevice = {"address":"60:77:71:BA:C5:62","name":"RFD850020281520100269","password":null,"rfidreader":{"Actions":null,"Config":null,"Events":null,"ReaderCapabilities":null,"SecureConnectionInfo":null,"hostName":"RFD850020281520100269","password":null,"port":0,"timeout":0,"capabilitiesReceived":true,"connected":false}}<br>
+D/Rfd8500Module: .showRfd8500Info(): rfidReader = {"Actions":null,"Config":null,"Events":null,"ReaderCapabilities":null,"SecureConnectionInfo":null,"hostName":"RFD850020281520100269","password":null,"port":0,"timeout":0,"capabilitiesReceived":true,"connected":false}<br>
+D/Rfd8500Module: .showRfd8500Info(): config = null<br>
+E/Rfd8500Module: .showRfd8500Info(): exception encountered - Attempt to read from field 'com.zebra.rfid.api3.Antennas com.zebra.rfid.api3.Config.Antennas' on a null object reference<br>
+ ```<br>
+Is all this stuff async? Is there something I need to do to make sure I've got the data before I continue to the next step?</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-47727" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>James Swinton-Bland</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 7 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Dave,</p>
+<p>I would recommend trying the quick-start sample in our RFID Developers Guide - you can find the sample on Page 53: <span data-original-href="https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/barcode-scanners/sdk-for-android-dg-en.pdf">https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/barcode-sca...</span></p>
+<p>From a quick glance, to answer your notes:</p>
+<p>Note 1 &amp; 2: Perhaps ObjectMapper.writeValueAsString(object) can't convert the Reader object to JSON, and so returns null?</p>
+<p>Note 3: You need to connect to the reader before performing any configuration</p>
+<p>Note 4: Again, I would question if ObjectMapper API is causing a red-herring here.</p>
+<p>As you will see in our Developer Guide the GetAvailableRFIDReaderList() API and subsequent calls are Async, so this will need to be performed on a background thread. </p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/forum/25979%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/forum/25979%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

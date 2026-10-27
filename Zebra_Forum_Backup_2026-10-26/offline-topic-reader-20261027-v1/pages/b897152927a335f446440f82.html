@@ -1,0 +1,213 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>LinkOS SDK DiscoveryDataMap properties missing for Bluetooth discovery</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>LinkOS SDK DiscoveryDataMap properties missing for Bluetooth discovery</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/linkos-sdk-discoverydatamap-properties-missing-bluetooth-discovery; original snapshot: threads/00828.html; SHA-256: 62cec039811184ba77a401165f2d39511b97919ab3d43feb87e2bb4ccb4fa937</small><pre id="topic">
+
+    
+        LinkOS SDK DiscoveryDataMap properties missing for Bluetooth discovery
+
+
+        
+      
+                        
+                    
+            D
+          
+          Daniel Jackson
+          4 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            85
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+We are building a Xamarin Android application using the Zebra.Printer.SDK nuget package. And also following the Zebra XamarinDevDemo project on github.
+When discovering a printer over Ethernet (NetworkDiscoverer.FindPrinters(discoveryHandler)), the DiscoveryDataMap property for the discovered printer (i.e. Zebra.Sdk.Printer.Discovery.DiscoveredPrinter) includes the following properties:
+LABEL_LENGTH
+LABEL_WIDTH
+This is very useful since these properties can be used as default properties for the printable media size. They are accurate and always reflect the media in the printer.
+However when discovering a printer over Bluetooth (i.e. Zebra.Sdk.Printer.Discovery.BluetoothDiscoverer.FindPrinters), the LABEL_LENGTH and LABEL_WIDTH properties are NOT returned in the DiscoveryDataMap property. Only MAC_ADDRESS and FRIENDLY_NAME are returned - nothing else.
+Is this expected? Is there any way to read the LABEL_LENGTH and LABEL_WIDTH properties for a printer discovered over Bluetooth?
+Thanks
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            When using the network discovery, the printer responds to the probe of the network discovery packet with a lot more printer settings, including the label length and width. Unlike the network discovery, the Bluetooth discovery is done by scanning the Bluetooth broadcast message from the printer, of which the message is limited to the Bluetooth&#x27;s friendly name and MAC address, due to the specification limitation of the Bluetooth broadcast message.
+Once the application has the Bluetooth friendly name or the MAC address, the application can open the Bluetooth connection to the printer. Then it can retrieve the printer settings or configurations through the SDG.GET() API. For example, to retrieve the settings of the label length and width, we can use the code below. With the SGD.GET() API, we can retrieve many other printer settings and configurations.
+string labelLength = SGD.GET(&quot;zpl.label_length&quot;, connection);
+string labelWidth = SGD.GET(&quot;ezpl.print_width&quot;, connection); 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Daniel Jackson
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you SSi1, your solution worked perfectly.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,153 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Roaming issues with AP6532s</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Roaming issues with AP6532s</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/28904; original snapshot: threads/01962.html; SHA-256: 2fee25aad22875f0b75127d3dee676cd82a29fc3eb1a48ad37c6ce7a540e2839</small><pre id="topic">
+
+    
+        Roaming issues with AP6532s
+
+
+        
+      
+                        
+                    
+            I
+          
+          Ian Jobson
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            18
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  All,   I need some help with a customer issue that I just can&#x27;t crack.   We have deployed TEAM into a number of the customer&#x27;s sites over the last couple of years, these sites have been using either WS5100s + AP300 or AP5131s. We&#x27;ve had teething problems but the sites are running ok.   We have recently deployed another 3 sites with AP6532s as part of a competitive trial and we seem to be seeing issues with devices roaming. Two of the sites have are using a centralised RFS7000 for their config, the other site just has one of the APs set as a virtual controller. In all cases they are using 5.4.1.   The mobile devices are MC75s and EWP3100s, all have the latest wireless drivers and both device types are experiencing the same issues.   The basic issue is that calls are dropping mid flow, seemingly as the users roam around the store.   We are not doing anything special on the wireless, but I see what I could be missing.   Does anyone know of anything with the 5.4.1 that could cause roaming problems or think of anything obvious that we might have missed.   I&#x27;ve attached the config from one of the stores on the off chance that anyone can see anything that I can&#x27;t   Thanks   IJ   Thanks 
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              I
+            
+          
+                
+          
+            Ian Jobson
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Jared   Thanks for the answer, I think I caqn probably kill off most of your points;   
+SVP (SpectraLink Voice Priority) is not enabled by default in the WLAN QoS policy. &amp;nbsp;I see a WLAN with description &quot;Spectralink&quot;, so if you&#x27;re running these legacy VoWLAN devices you need to enable this feature. - The Spectralink devices have been removed and swapped for the TEAM kit, I just haven&#x27;t turned of the WLAN yet
+Always map a voice WLAN to the primary BSS (bss1). &amp;nbsp;Your TEAM SSID is on bss2. - I think the other site is on BSS1 but I&#x27;ll get it changed it for this site as well
+Your channel list is limited. &amp;nbsp;If operating in the US, you should also enable channels 149-165 in your smart-rf policy. - We are limited on our channel choices in the EU at the moment with the AP6532, I can only use 36 - 48 on the 5GHz
+This one is what&#x27;s probably causing you most of your problems- you need to define the control vlan in the rf-domain config for level 2 mint architectures with centralized controllers. &amp;nbsp;This defines the vlan APs use within the rf-domain to establish the control plane from AP to AP, over which roam notifications, smart-rf and stats coordination, etc. occurs. - I think this is in place for the sites with centralised controllers, is there anything that needs to be done in this respect for the site just using a local Virtual Controller?
+As a best practice, you should be designing a VoWLAN solution with enough AP density to support the device application RSSI requirements, and this also means that you won&#x27;t need to support the lowest 802.11b data rates. &amp;nbsp;I see your config has WEP WLANs, so if you have .11b devices, try at least eliminating the 1Mbps and 2Mbps data rates. - We no longer have any 802.11b only clients, the WEP WLAN is in there to support some legacy devices but they are running 11g, however, I will kill off the lower data rates. AP density is good, we have signal strength of -65dbm or better everywhere. We&#x27;ve been following principles that I helped defined 7 or 8 years ago when they first deployed Spectralink and they have worked perfectly with WS5100s and AP300s for years.
+I&#x27;ll try making those tweaks but if you have any other ideas in the mean time I&#x27;d really appreciate it.  IJ
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

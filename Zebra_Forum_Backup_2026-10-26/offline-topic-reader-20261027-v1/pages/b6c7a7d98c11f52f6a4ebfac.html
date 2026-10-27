@@ -1,0 +1,379 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>ZQ310 printer printed using PrintConnect app first time, not working thereafter</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>ZQ310 printer printed using PrintConnect app first time, not working thereafter</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zq310-printer-printed-using-printconnect-app-first-time-not-working-thereafter; original snapshot: threads/00866.html; SHA-256: d144a1dbdb23a45ab014dc45932fa05b7cf4afe88471eb625e65710fff7515c3</small><pre id="topic">
+
+    
+        ZQ310 printer printed using PrintConnect app first time, not working thereafter
+
+
+        
+      
+                        
+                    
+            F
+          
+          Faiz Waghoo
+          4 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            61
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I connected my ZQ310 printer with PrintConnect app using NFC and it got paired successfully. I was also able to print a receipt using Zebra&#x27;s TestConnect app. I was doing so following the documentation - https://www.zebra.com/content/dam/zebra_new_ia/en-us/solutions-vertical…
+Later on I downloaded Zebra Designer tool for windows and created my custom label to try custom label printing. I transferred the file to my Android device and changed PrintConnect settings to read PRN files from Android&#x27;s local folder. In the meanwhile printer got disconnected and turned off. So I turned it on and connected with PrintConnect app. Although the printer is connected, it shows a red minus icon (screenshot attached) which means &quot;unable to print&quot; according the docs mentioned above.
+So I don&#x27;t really know what&#x27;s wrong since the printer was able to print the first time. Now it won&#x27;t even print Zebra&#x27;s template like it did the first time. Basically the printer connection stays red and doesn&#x27;t become green.
+Note: I tried restarting both the Android device and printer, tried unpairing and pairing. Nothing worked.
+
+              
+
+                    
+          
+      
+              
+ screenshot-1646054594426.png
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The red minus icon indicates that somehow the PrintConnect app is not able to connect to the ZQ310 printer. If the PrintConnect app is not able to connect to the printer, then we will not be able to print. Make sure that the printer&#x27;s Bluetooth is turned on, i.e. the LED icon for Bluetooth lights up when it is connecting to the PrintConnect app.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              F
+            
+          
+                
+          
+            Faiz Waghoo
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Apparently the problem is not with PrintConnect app, rather the printer status is out of paper for some reason (even though the paper in installed in printer). I verified this by adding a different roll and status was changed to green (ready to print). No idea why it isn&#x27;t accepting my previous roll.
+Also I don&#x27;t find any documentation on understanding ZPL, that is if we want to learn ZPL commands ourselves and make use of those commands to print receipts instead of creating a PRN file in Zebra designer.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Please refer to the ZPL Programming Guide, which is the current and complete document about the ZPL. It has all the information related to ZPL formatting commands, printer configuration commands (Set-Get-Do, i.e. SGD), etc. It&#x27;s the bible book for all Zebra Link-OS printers.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              F
+            
+          
+                
+          
+            Faiz Waghoo
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Wow, thanks a lot!
+One last question, is ZPL driver open source? Or are there any Java based implementation of ZPL conversion to and from other standard formats like PDF or HTML?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There is no ZPL driver per se. There are a few API in the Link-OS SDK that convert image files (PNG, JPEG, etc.) to ZPL in the background, which means the applications simply call these API to print images. There is no API to convert PDF or HTML to ZPL. But you can convert the PDF and the webview (HTML) into image first and then call the print image API to print.
+For PDF, there is a PDF emulator on all Link-OS printers. Once the PDF emulator is enabled (it&#x27;s disabled by default), you can send the PDF via sendFileConnect() API in the Link-OS SDK to print. See this article for the more details about the PDF emulator: Announcement | Printers Include Free PDF Direct with Link-OS 6.3
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

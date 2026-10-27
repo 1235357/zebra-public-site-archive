@@ -1,0 +1,793 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Control Access to DataWedge Intent APIs - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/datawedge/latest/guide/programmers-guides/secure-intent-apis</code><br>Observed final URL: <code>https://techdocs.zebra.com/datawedge/latest/guide/programmers-guides/secure-intent-apis/</code><br>Raw source: <code>raw/62c7d13c7b4cb8050d5d63fb.html</code><br>Raw SHA-256: <code>66dcf56d4ecd898de7d01840cd348e6710af3da24db1e47319ce95fc1ce7f8fd</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs Home
+                        
+                                            DataWedge
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Get Started
+                            
+                        
+                        
+                            
+                                    Profiles
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Feature Matrix
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            US - English
+                          
+                          
+                                 CN - 普通话
+                                 JP - 日本語
+                          
+                                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Control Access to DataWedge Intent APIs
+                        
+                    OverviewControl Access1. Whitelist Approved App2. Restrict DataWedge Intent APIs3. Acquire a Token4. Accessing the APIsUsage Notes
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Control Access to DataWedge Intent APIs
+                                    
+                                            DataWedge
+                                            15.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+DataWedge provides an option for admins to control access to DataWedge intent APIs, allowing only approved apps to configure DataWedge. DataWedge intent APIs are categorized, allowing the administrator to grant DataWedge API access to specific apps based on category. By default, DataWedge accepts any intent API to avoid impact to existing applications.
+
+Previously, any application on the device could configure DataWedge parameters and receive information such as configurations and status notifications via DataWedge APIs. This led to a potential security risk where a malicious application can configure DataWedge profiles used by other applications and leverage it for its own advantage, for example a malicious app could modify the destination URI of IP Output plugin to divert data delivery to a different address.
+
+
+  MX version 10.1.1 or above is required on the device.
+
+
+Video demonstration about securing access to DataWedge intent APIs:
+
+
+
+Control Access
+
+Process to control access to DataWedge intent APIs:
+
+
+Whitelist approved app using AccessMgr CSP from MX.
+
+Specify the intent API category to restrict intent API access via DataWedgeMgr CSP from MX.
+
+Acquire the app token from AccessMgr using EMDK.
+
+Access the API by including the token in the DataWedge intent.
+
+
+Details are provided in the sections that follow.
+
+1. Whitelist Approved App
+
+For DataWedge 11.3 and later:
+
+The first step to control access to DataWedge Intent APIs is for the admin to whitelist the app using AccessMgr CSP from Zebra Device Manager (ZDM). Whitelisting allows only the apps specified on a list to run, restricting use of apps not on the approved whitelist. Use StageNow to deploy the configuration to whitelist the app. Set the following parameters:
+
+
+Operation Mode: &quot;Single User without Whitelist&quot;
+
+Service Access Action: &quot;Allow Caller to Call Service&quot;
+
+Service Identifier: &lt;delegation scope of the API category&gt;
+
+Specify Caller Package Name: &lt;enter app package name, e.g.: com.company.appname&gt;
+
+Caller Signature: &lt;select signature file that contains the app certificate&gt;
+
+
+Delegation scopes for each intent API category:
+
+
+  
+    Intent API Category
+    Delegation Scope
+  
+
+  
+    Query APIs
+    delegation_scope_datawedge_query_api
+  
+
+  
+    Runtime APIs
+    delegation_scope_datawedge_control_api
+  
+
+  
+    Notification APIs
+    delegation_scope_datawedge_notification_api
+  
+  
+    Configuration APIs
+    delegation_scope_datawedge_config_api
+  
+
+
+For DataWedge 11.2 and earlier:
+
+The first step to control access to DataWedge Intent APIs is for the admin to whitelist the app using AccessMgr CSP from MX. Whitelisting allows only the apps specified on a list to run, restricting use of apps not on the approved whitelist. Use StageNow or EMDK Profile Manager (Android or Xamarin) to deploy the configuration to whitelist the app. Set the following parameters:
+
+
+Operation Mode: &quot;Single User without Whitelist&quot;
+
+Service Access Action: &quot;Allow Caller to Call Service&quot;
+
+Service Identifier: com.symbol.datawedge.api
+
+Specify Caller Package Name: &lt;enter app package name, e.g.: com.company.appname&gt;
+
+Caller Signature: &lt;select signature file that contains the app certificate&gt;
+
+
+2. Restrict DataWedge Intent APIs
+
+By default, all DataWedge APIs are in uncontrolled mode - any application can access all DataWedge APIs. An admin can place a DataWedge API category into controlled/uncontrolled mode using DataWedgeMgr CSP via StageNow to restrict access to a particular API category. Refer to Control Access to Intent APIs in DataWedgeMgr CSP.
+Note: 
+     •  For DataWedge 8.1, DataWedge 8.1.61 or higher is required. 
+     •  For DataWedge 8.2, DataWedge 8.2.62 or higher is required.
+
+
+  
+    Intent API Category
+    Control Modes
+  
+
+  
+    Configuration APIs
+    UncontrolledControlled
+  
+
+  
+    Notification APIs
+    UncontrolledControlled
+  
+
+  
+    Query APIs
+    UncontrolledControlled
+  
+  
+    Runtime APIs
+    UncontrolledControlled
+  
+
+
+Uncontrolled – All apps have access to APIs; this the default setting.
+Controlled – This restricts API access. Only the admin can whitelist apps to access the APIs using AccessMgr CSP.
+
+DataWedge APIs are categorized into 4 types:
+
+
+Configuration APIs - APIs related to actions taken on configurations
+
+Notification APIs - APIs related to retrieving status for scanner, profile, or configuration
+
+Query API - APIs that retrieve information or enumerate scanners
+
+Runtime APIs - APIs that can change functionality at runtime
+
+
+Administrators can designate which categories are protected using DataWedgeMgr CSP. By default, all the API categories are in unprotected mode.
+
+
+  
+    Intent API category
+    Intent APIs
+  
+
+  
+    Configuration APIs
+    Get ConfigGet Disabled App ListClone ProfileCreate ProfileDelete ProfileRename ProfileSet ConfigSet Ignore Disabled ProfilesSet Disabled App listRestore ConfigImport Config
+    
+  
+
+  
+    Notification APIs
+    Profile Switching (from Register/Unregister for Notification)Scanner Status (from Register/Unregister for Notification)Configuration Change (from Register/Unregister for Notification)
+  
+
+  
+    Query API
+    Enumerate ScannersGet Active ProfileGet DataWedge StatusGet Version InfoGet Scanner StatusGet Profiles ListGet Ignore Disabled Profiles
+  
+
+  
+    Runtime APIs
+    Enable/Disable DataWedgeEnable/Disable Scanner Input Plug-inSwitch Scanner ParamsSwitch SimulScan ParamsSoft Scan TriggerSoft RFID TriggerSwitch to ProfileSet Default ProfileReset Default ProfileSwitch ScannerSet Reporting Options
+  
+
+
+See DataWedge APIs.
+
+3. Acquire a Token
+
+For DataWedge 11.3 and later:
+
+Only whitelisted applications are allowed to call DataWedge service identifier/delegation scopes to generate tokens. The applications must use ZDM Content Provider to generate a token by passing the required delegation.
+
+To generate a token:
+
+
+Add the following to the Android manifest:
+
+
+ZDM read permission:
+
+&lt;uses-permission android:name=&quot;com.zebra.devicemanager.provider.READ_PERMISSION&quot;/&gt;
+
+Queries permission:
+
+&lt;queries&gt;
+    &lt;package android:name=&quot;com.zebra.devicemanager&quot;/&gt;
+&lt;/queries&gt;
+
+Access the ZDM content provider. Sample code:
+
+static final Uri AUTHORITY_URI = Uri.parse(&quot;content://com.zebra.devicemanager.zdmcontentprovider&quot;);
+Uri ACQUIRE_TOKEN_URI = Uri.withAppendedPath(AUTHORITY_URI, &quot;AcquireToken&quot;);
+
+public static final String COLUMN_QUERY_RESULT = &quot;query_result&quot;;
+
+public String acquireToken(String delegation_scope) {
+    String token = &quot;&quot;;
+    try {
+        Cursor cursor = mContext.getContentResolver().query(ACQUIRE_TOKEN_URI, (String[])null,
+                &quot;delegation_scope=?&quot;, new String[]{delegation_scope}, (String)null);
+        if (cursor != null &amp;&amp; cursor.getCount() &gt; 0) {
+            cursor.moveToFirst();
+            token = cursor.getString(cursor.getColumnIndex(COLUMN_QUERY_RESULT));
+            cursor.close();
+        }
+    } catch (Exception var3) {
+        if (var3 instanceof SecurityException) {
+            Log.e(&quot;BroadcastProtection&quot;, &quot;Invalid Token/Caller&quot;);
+        } else {
+            Log.e(&quot;BroadcastProtection&quot;, &quot;Unknown Caller to acquire token&quot;);
+        }
+    }
+
+return token;
+
+
+}
+
+
+For DataWedge 11.2 and earlier:
+
+Only whitelisted applications are allowed to call DataWedge service identifier to generate tokens.
+The applications must use EMDK ProfileManager APIs to acquire a token from AccessMgr CSP.
+
+To generate a token, use EMDK Profile Manager to create a profile:
+
+
+Open EMDK Profile Manager (Android or Xamarin).
+
+Create a new profile using MX 10.1 or above and provide a name, such as RequestToken.
+
+In the “Available Features” list, select and add “Access Manager” as a feature.
+
+Access Manager is listed under “Selected Features”.
+
+In the Access Manager parameters section, set/enter the following:
+
+
+
+Service Access Action: “Request Token”
+
+Service Identfier: com.symbol.datawedge.api
+
+
+
+Sample generated EMDKConfig.xml from EMDK Profile Manager:
+
+    &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;!--This is an auto generated document. Changes to this document may cause incorrect behavior.--&gt;&lt;wap-provisioningdoc&gt;
+    &lt;characteristic type=&quot;ProfileInfo&quot;&gt;
+        &lt;parm name=&quot;created_wizard_version&quot; value=&quot;7.3.2&quot;/&gt;
+    &lt;/characteristic&gt;
+    &lt;characteristic type=&quot;Profile&quot;&gt;
+        &lt;parm name=&quot;ProfileName&quot; value=&quot;RequestToken&quot;/&gt;
+        &lt;parm name=&quot;ModifiedDate&quot; value=&quot;2020-03-23 20:01:24&quot;/&gt;
+        &lt;parm name=&quot;TargetSystemVersion&quot; value=&quot;9.1&quot;/&gt;
+        &lt;characteristic type=&quot;AccessMgr&quot; version=&quot;8.3&quot;&gt;
+        &lt;parm name=&quot;emdk_name&quot; value=&quot;&quot;/&gt;
+        &lt;parm name=&quot;ServiceAccessAction&quot; value=&quot;7&quot;/&gt;
+        &lt;parm name=&quot;ServiceIdentifier&quot; value=&quot;com.symbol.datawedge.api&quot;/&gt;
+        &lt;/characteristic&gt;
+    &lt;/characteristic&gt;
+    &lt;/wap-provisioningdoc&gt;
+
+Use ProcessProfile API from EMDK to generate the token to be passed to the desired DataWedge API intent for secure access. Sample code to generate the token:
+
+    import android.content.Context;
+    import android.os.AsyncTask;
+    import android.text.TextUtils;
+    import android.util.Xml;
+
+    import com.symbol.emdk.EMDKManager;
+    import com.symbol.emdk.EMDKResults;
+    import com.symbol.emdk.ProfileManager;
+
+    import org.xmlpull.v1.XmlPullParser;
+    import org.xmlpull.v1.XmlPullParserException;
+
+    import java.io.StringReader;
+
+    public class TokenOperations implements EMDKManager.EMDKListener {
+
+        static Object syncObj = new Object();
+        Context mContext;
+        // Provides the error type for characteristic-error
+        private String errorType = &quot;&quot;;
+        // Provides the parm name for parm-error
+        private String parmName = &quot;&quot;;
+        // Provides error description
+        private String errorDescription = &quot;&quot;;
+        // Provides error string with type/name + description
+        private String errorString = &quot;&quot;;
+        private String mToken = &quot;&quot;;
+        //Assign the profile name used in EMDKConfig.xml
+        private String profileName = &quot;&quot;;
+        //Declare a variable to store ProfileManager object
+        private ProfileManager profileManager = null;
+        //Declare a variable to store EMDKManager object
+        private EMDKManager emdkManager = null;
+
+
+        public TokenOperations(Context context)
+        {
+            this.mContext = context;
+        }
+
+        public String getErrorDescription()
+        {
+            return errorDescription;
+        }
+
+        public String generateToken()
+        {
+            EMDKResults results = EMDKManager.getEMDKManager(mContext, this);
+
+            //Check the return status of EMDKManager object creation.
+            if(results.statusCode == EMDKResults.STATUS_CODE.SUCCESS) {
+                //EMDKManager object creation success
+            }else {
+                //EMDKManager object creation failed
+            }
+
+
+            try {
+                synchronized (syncObj) {
+                    syncObj.wait();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            if (emdkManager != null) {
+                emdkManager.release();
+                emdkManager = null;
+            }
+
+            return mToken;
+
+        }
+
+        @Override
+        public void onOpened(EMDKManager emdkManager) {
+
+            this.emdkManager = emdkManager;
+            //Get the ProfileManager object to process the profiles
+            profileManager = (ProfileManager) emdkManager.getInstance(EMDKManager.FEATURE_TYPE.PROFILE);
+            profileName = &quot;RequestToken&quot;;
+            new ProcessProfileTask().execute(&quot;&quot;);
+        }
+
+        @Override
+        public void onClosed() {
+
+            //This callback will be issued when the EMDK closes unexpectedly.
+            if (emdkManager != null) {
+                emdkManager.release();
+                emdkManager = null;
+            }
+        }
+
+        private void parseXML(XmlPullParser myParser) {
+            int event;
+            try {
+                // Retrieve error details if parm-error/characteristic-error in the response XML
+                event = myParser.getEventType();
+                while (event != XmlPullParser.END_DOCUMENT) {
+                    String name = myParser.getName();
+                    switch (event) {
+                        case XmlPullParser.START_TAG:
+                            if (name.equals(&quot;parm-error&quot;)) {
+                                parmName = myParser.getAttributeValue(null, &quot;name&quot;);
+                                errorDescription = myParser.getAttributeValue(null, &quot;desc&quot;);
+                                errorString = &quot; (Name: &quot; + parmName + &quot;, Error Description: &quot; + errorDescription + &quot;)&quot;;
+                                return;
+                            }
+                            else if (name.equals(&quot;parm&quot;)) {
+                                String parmName = myParser.getAttributeValue(null, &quot;name&quot;);
+                                if(parmName.equalsIgnoreCase(&quot;ServiceAccessToken&quot;))
+                                {
+                                    //Retrieved Token will be saved to a variable
+                                    mToken = myParser.getAttributeValue(null, &quot;value&quot;);
+
+                                    return;
+                                }
+
+                            }
+                            break;
+                        case XmlPullParser.END_TAG:
+
+                            break;
+                    }
+                    event = myParser.next();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        private class ProcessProfileTask extends AsyncTask&lt;String, Void, EMDKResults&gt; {
+
+            @Override
+            protected EMDKResults doInBackground(String... params) {
+
+                parmName = &quot;&quot;;
+                errorDescription = &quot;&quot;;
+                errorType = &quot;&quot;;
+                mToken = &quot;&quot;;
+
+                EMDKResults resultsReset = profileManager.processProfile(profileName, ProfileManager.PROFILE_FLAG.RESET, params);
+                EMDKResults results = profileManager.processProfile(profileName, ProfileManager.PROFILE_FLAG.SET, params);
+
+                return results;
+            }
+
+            @Override
+            protected void onPostExecute(EMDKResults results) {
+
+                super.onPostExecute(results);
+
+                String resultString = &quot;&quot;;
+
+                //Check the return status of processProfile
+                if(results.statusCode == EMDKResults.STATUS_CODE.CHECK_XML) {
+
+                    // Get XML response as a String
+                    String statusXMLResponse = results.getStatusString();
+
+                    try {
+                        // Create instance of XML Pull Parser to parse the response
+                        XmlPullParser parser = Xml.newPullParser();
+                        // Provide the string response to the String Reader that reads
+                        // for the parser
+                        parser.setInput(new StringReader(statusXMLResponse));
+                        // Call method to parse the response
+                        parseXML(parser);
+
+                        if (TextUtils.isEmpty(parmName) &amp;&amp; TextUtils.isEmpty(errorType) &amp;&amp; TextUtils.isEmpty(errorDescription) ) {
+
+                            resultString = &quot;Profile update success.&quot;;
+                            if(!TextUtils.isEmpty(mToken))
+                            {
+                                resultString = &quot;&quot;;
+                            }
+                        }
+                        else {
+
+                            resultString = &quot;Profile update failed.&quot; + errorString;
+                        }
+
+                        synchronized (syncObj) {
+                            syncObj.notify();
+                        }
+
+                    } catch (XmlPullParserException e) {
+                        resultString =  e.getMessage();
+                    }
+                }
+            }
+        }
+    }
+
+4. Accessing the APIs
+
+Once the token is generated, it needs to be included in the intent API call along with the calling application’s package name being sent to DataWedge. When the intent is received by DataWedge, DataWedge verifies if the token is valid for the given application. If the token is valid, DataWedge processes the intent. If the token is not valid, one of the following error codes occur:
+
+
+Main error code: APPLICATION_NOT_AUTHORIZED
+
+Sub error codes:
+
+
+
+TOKEN_EXPIRED: The token is expired; applications are required to acquire a new token.
+
+MX_NOT_INITIALIZED: MX is not initialized. This can usually occur right after a reboot.
+
+FAILED_TO_VERIFY_APPLICATION: Unable to verify the calling application (i.e token is invalid or application is not whitelisted).
+
+
+
+Source code samples are provided for multiple APIs:
+
+Example 1: Get Config
+
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.setPackage(&quot;com.symbol.datawedge&quot;);
+    i.putExtra(&quot;APPLICATION_PACKAGE&quot;, getPackageName());
+    i.putExtra(&quot;TOKEN&quot;, &quot;291f7f7c-1479-4813-9639-2d4ab31e37b9&quot;);
+    i.putExtra(&quot;com.symbol.datawedge.api.GET_CONFIG&quot;, &quot;Profile0 (default)&quot;);
+    this.sendBroadcast(i);
+
+Example 2: Enable/Disable DataWedge
+
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.setPackage(&quot;com.symbol.datawedge&quot;);
+    i.putExtra(&quot;APPLICATION_PACKAGE&quot;, getPackageName());
+    i.putExtra(&quot;TOKEN&quot;, &quot;&lt;token here&gt;&quot;););
+    i.putExtra(&quot;SEND_RESULT&quot;,&quot;LAST_RESULT&quot;);
+    i.putExtra(&quot;com.symbol.datawedge.api.ENABLE_DATAWEDGE&quot;, true);
+    sendBroadcast(i);
+
+Example 3: Set Config
+
+    Bundle bMain = new Bundle();
+    bMain.putString(&quot;PROFILE_NAME&quot;, &quot;Profile009&quot;);
+    bMain.putString(&quot;PROFILE_ENABLED&quot;, &quot;true&quot;);
+    bMain.putString(&quot;CONFIG_MODE&quot;, &quot;CREATE_IF_NOT_EXIST&quot;);
+
+    Bundle bConfig = new Bundle();
+    bConfig.putString(&quot;PLUGIN_NAME&quot;,&quot;BARCODE&quot;);
+    bConfig.putString(&quot;RESET_CONFIG&quot;,&quot;true&quot;);
+
+
+    Bundle paramList = new Bundle();
+    paramList.putString(&quot;scanner_selection&quot;,&quot;auto&quot;);
+    paramList.putString(&quot;decoder_code11&quot;, &quot;true&quot;);
+
+    bConfig.putBundle(&quot;PARAM_LIST&quot;, paramList);
+
+    bMain.putBundle(&quot;PLUGIN_CONFIG&quot;, bConfig);
+
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.setPackage(&quot;com.symbol.datawedge&quot;);
+    i.putExtra(&quot;APPLICATION_PACKAGE&quot;, getPackageName());
+    i.putExtra(&quot;TOKEN&quot;, &quot;&lt;token here&gt;&quot;););
+    i.putExtra(&quot;com.symbol.datawedge.api.SET_CONFIG&quot;, bMain);
+    i.putExtra(&quot;SEND_RESULT&quot;,&quot;LAST_RESULT&quot;);
+    i.putExtra(&quot;COMMAND_IDENTIFIER&quot;, &quot;SET_CONFIG&quot;);
+    this.sendBroadcast(i);
+
+Usage Notes
+
+
+When DataWedge APIs are set as &quot;Controlled&quot; and when the device restarts, sending an intent API to the &quot;Controlled&quot; group from a whitelisted application may return an error. Since MX framework did not complete initialization, allow some time to elapse after reboot before sending the intent to avoid this error.
+
+The token expires in the following situations:
+
+
+
+Device date or time is set prior to the timestamp on the token.
+
+24 Hours passed in the device clock after generating the token.
+
+Automatic time updates caused the device time to go backward or move forward more than 24 hours.
+
+
+If intent APIs are placed in protected mode, existing Zebra apps that use DataWedge may not work as expected. E.g. If Runtime APIs are placed in protected mode, the scan button of the Enterprise Keyboard does not work on Enterprise Keyboard versions 4.0 or lower.
+
+For DataWedge 11.3 and later:
+
+
+
+When devices are using both MX and ZDM, ZDM becomes the preferred option.
+
+If ZDM is present in the device, tokens acquired using MX via EMDK Profile Manager cannot be used.
+
+
+
+
+
+Related Guides:
+
+
+DataWedge APIs
+
+EMDK ProfileManager
+
+AccessMgr CSP
+
+DataWedgeMgr CSP
+
+DataWedge Get Started guide
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2024 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+      
+
+
+
+Back to Top</pre></body></html>

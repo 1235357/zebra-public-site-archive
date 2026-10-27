@@ -1,0 +1,175 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra ZQ520 Printer - Update Firmware - Using LinkOS SDK iOS</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Zebra ZQ520 Printer - Update Firmware - Using LinkOS SDK iOS</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zebra-zq520-printer-update-firmware-using-linkos-sdk-ios-0; original snapshot: threads/01056.html; SHA-256: 5b0c99688a0c4929e234f9e9a66d4e402b289d585a794c270d682e29d25f87ee</small><pre id="topic">
+
+    
+        Zebra ZQ520 Printer - Update Firmware - Using LinkOS SDK iOS
+
+
+        
+      
+                        
+                    
+            S
+          
+          System Admin
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            52
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We are having issues with the Zebra printer disconnecting when we send the firmware update to the iOS device. When we push the firmware to the device, the printer changes its text to &quot;Downloading Firmware&quot; but never finishes.
+Here is a code snippet
+id conn = [self getPrinterConnection:reject];
+    if (conn != nil) {
+        // Get the printer
+        NSError* printerError = nil;
+        [conn open];
+        [NSThread sleepForTimeInterval:1.0];
+        // Fetch the printer and file objects for file manipulation
+        if (printerError == nil) {
+            // Get the firmware file from app resources
+            NSURL* filePath = [[NSBundle mainBundle] URLForResource:@&quot;SP76-005093A&quot; withExtension:@&quot;.zpl&quot;];
+            NSData* firmwareData = [NSData dataWithContentsOfURL:filePath];
+            @try {
+                // Send the file to the printer
+                BOOL didSend = [conn write:firmwareData error:&amp;printerError];
+            } @catch (NSException* e) {
+                NSLog(@&quot;%@&quot;, [e reason]);
+                reject(@&quot;print_error&quot;, [e reason], [self getError:[e reason]]);
+            } @finally {
+                [conn close];
+            }
+        } else {
+            NSLog(@&quot;%@&quot;, [printerError localizedDescription]);
+        }
+        resolve(@&quot;Done!&quot;);
+    } else {
+        reject(@&quot;print_error&quot;, @&quot;Error connecting to printer&quot;, [self getError:@&quot;Error connecting to printer&quot;]);
+    }
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            7 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Refer to&amp;nbsp;Zebra ZQ520 Printer - Update Firmware - Using LinkOS SDK iOS
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

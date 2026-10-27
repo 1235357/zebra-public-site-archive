@@ -1,0 +1,202 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Problem printing labels on my Zebra ZD420</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/forum/25961; snapshot threads/resume-00346.html; SHA-256 64afeeeffd0dfc957338cb31491a1a2ba36d6eea3040051469cbb521cbf2e2cf. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Problem printing labels on my Zebra ZD420</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            S
+          </div>
+          <div class="forum-topic__author-name">Sinan Redzheb</div>
+          <div class="forum-topic__timestamp">5 years 4 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            137
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello,<br>
+I have developed a test application for printing labels.<br>
+Sometimes it prints like a charm, sometimes it doesn't print anything and<br>
+ just throws exceptions like "Malformed Multipart Form Data" and "Malformed status response - unable to determine printer status".<br>
+Can you please help me with these errors?<br>
+I am using the latest Zebra.SDK nuget package (2.15.2634), Firmware version is V84.20.22Z.<br>
+Here is my sample code:<br>
+ZPL Format :<br>
+ZPL_String = "^XA" +<br>
+                      "^DFE:FORMAT2.ZPL" +<br>
+                      "^FS" +<br>
+                      "^FT26,243^A0N,56,55^FH\\^FN12\"First Name\"^FS" +<br>
+                      "^FT26,296^A0N,56,55^FH\\^FN11\"Last Name\"^FS" +<br>
+                      "^FT258,73^A0N,39,38^FH\\^FDVisitor^FS" +<br>
+                      "^FO100,100^XG^FN13,1,1^FS" +<br>
+                      "^FO5,17^GB601,379,8^FS" +<br>
+                      "^XZ";<br>
+Variables for printing:<br>
+ Dictionary variables = new Dictionary<br>
+                    {<br>
+                        {12,"Sinan" },<br>
+                        {11,"Redzheb" },<br>
+                        {13,"Something" }<br>
+                    };<br>
+ public void Print(Dictionary variables)<br>
+        {<br>
+            Connection conn = new UsbConnection(_printer.Address); // DiscoveredUsbPrinter<br>
+            try<br>
+            {<br>
+                conn.Open();<br>
+                ZebraPrinter _genericPrinter = ZebraPrinterFactory.GetInstance(PrinterLanguage.ZPL, conn);<br>
+                ZebraPrinterLinkOs _linkOsPrinter = ZebraPrinterFactory.CreateLinkOsPrinter(_genericPrinter, PrinterLanguage.ZPL);<br>
+                PrinterStatus printerStatus = _genericPrinter.GetCurrentStatus();<br>
+                if (CanPrint(printerStatus) == false)  return;<br>
+                if (_linkOsPrinter != null)<br>
+                {<br>
+                    //I have already successfully stored format on the printer<br>
+                    _linkOsPrinter.PrintStoredFormatWithVarGraphics("E:FORMAT2.ZPL", variables);<br>
+                }<br>
+            }<br>
+            catch (ConnectionException ex)<br>
+            {<br>
+                ErrorLog = "***** ERROR " + ex.Message.ToString() + Environment.NewLine;<br>
+            }<br>
+            catch (ZebraPrinterLanguageUnknownException ex)<br>
+            {<br>
+                ErrorLog = "***** ERROR " + ex.Message.ToString() + Environment.NewLine;<br>
+            }<br>
+            finally<br>
+            {<br>
+                conn.Close();<br>
+            }<br>
+        }</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-47683" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 7 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>For ZPL, each line of ZPL should be ended with carriage return and new line, i.e. "\r\n". I'd suggest to add "\r\n" to the end of each ZPL line. What is this line? The ^FN13 should not be used as parameter to ^XG. If you want to print the stored graphics, you can put the name of the image file directly after ^XG.&amp;nbsp;</p>
+<p>"^FO100,100^XG^FN13,1,1^FS" +&amp;nbsp;</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/forum/25961%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/forum/25961%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

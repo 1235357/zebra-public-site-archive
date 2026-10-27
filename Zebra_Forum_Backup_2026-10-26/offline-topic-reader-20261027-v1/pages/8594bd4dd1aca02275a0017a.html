@@ -1,0 +1,146 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Getting print job status using BrowserPrint&#x27;s JavaScript API</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Getting print job status using BrowserPrint&#x27;s JavaScript API</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/getting-print-job-status-using-browserprints-javascript-api; original snapshot: threads/00294.html; SHA-256: db5c656477cd9876a2cbd9ba1cd7a89166c5e6e66b8d58e888b27b1552aefd2c</small><pre id="topic">
+
+    
+        Getting print job status using BrowserPrint&#x27;s JavaScript API
+
+
+        
+      
+                        
+                    
+            R
+          
+          Rio Sevilla
+          2 years 7 months ago
+        
+        
+      
+        
+            
+                  
+            
+            639
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We have a web application written in React that uses an ES wrapper of the BrowserPrint API here https://github.com/brianzinn/browserprint-es. Our objective is to get a running print job&#x27;s status but there are no methods in BrowserPrint&#x27;s documentation that seem to achieve this. Currently, we are only able to get the printer&#x27;s status using the getStatus method from the Printer class. We have also tried checking finishedCallback and errorCallback from the send method, but after doing a test print with insufficient paper, we are unable to get a &quot;media out&quot; response from the errorCallback and only finishedCallback is called.Any help would be greatly appreciated.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The Browser Print JavaScript API communicates with the mini webserver created by the Browser Print local client app on the device. The callbacks from the send() method only indicate whether the HTTP request being sent out successfully to the mini webserver or not. The Browser Print doesn&#x27;t have the ability to notify the caller whether the print job is completed or not. Therefore, we cannot monitor the print job status at runtime. It&#x27;s recommended to check the printer status with the getStatus() prior to sending out any print job each time, so that we only send out a print job when the printer is ready to print. The insufficient paper will be detected after the getStatus() is called again.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

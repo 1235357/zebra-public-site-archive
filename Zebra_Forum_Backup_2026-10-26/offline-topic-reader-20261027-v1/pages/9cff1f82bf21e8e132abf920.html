@@ -1,0 +1,221 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Get the decoded barcode in a barcode event instead of hex values</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Get the decoded barcode in a barcode event instead of hex values</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/get-decoded-barcode-barcode-event-instead-hex-values; original snapshot: threads/00832.html; SHA-256: e207901460e63e8d43beb4e76d26b40047a0ac3511f306cb300858ef09648a64</small><pre id="topic">
+
+    
+        Get the decoded barcode in a barcode event instead of hex values
+
+
+        
+      
+                        
+                    
+            T
+          
+          Thomas Grosche
+          4 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            484
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello, I am using the ZEBRA barcode scanner CS8060 and developing an application which uses the software developing kit provided by zebra. 
+I read the developers guide and used the provided examples for catching the barcode event.
+The provided examples worked fine but the resulting xml file from the scanner does not has the decoded barcode but hex values that need to be converted to chars.
+Example:
+If I scan the data matrix barcode with the value &quot;5932-880-20-10-004&quot;, I get a barcode event and the following xml file. I can find the part datalabel with the hex values of the barcode (see picture).
+I can extract these values and convert them myself but I think it would be better to use the decoding function of the scanner if possible.
+Is there any way to tell the scanner that it should give the decoded barcode value back instead of the hex values in the datalabel part?
+I searched for any option like this in the developers guide but maybe I just did not find it.
+If there is no such option, does the corescanner interface of the sdk provide any decoding function that could be used?
+Thanks for any help in advance.
+
+              
+
+                    
+          
+      
+              
+ barcodePicture_0.jpg
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+According to our docs, the sample application we created parses the XML to extract the barcode data &amp; symbology, which suggests to me that the SDK doesn&#x27;t not contain built-in functions to parse this for you, however, I&#x27;m not a Scanner SDK expert and there may be other members of the community who have some more info for you.
+Thanks,
+James
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Riad
+          
+          
+            4 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            James is correct , the scanner sends raw data in hex since it contains additional prefix or suffix information depending on protocol used ( for example it contains length of data , code type identifier  and ASCII encoded decode data ) .. Other feature of SDK using these protocol follow specifications where the packets exchanged between host and scanner will be in hex too .
+So unfortunately the host application needs to parse the Barcode decoded data that is coming in hex ascii format
+HID mode will allow you to get what you look for but you lose the control of the scanner with SDK . Another option is to use simulated HID pump feature in corescanner . the scanner will be in SNAPI controlled by your app and you will get  barcode events but at the same time the barcode decoded data will be sent to foreground application as HID data ( char format ) by the corescanner but I believe this is not something you want to pursue
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

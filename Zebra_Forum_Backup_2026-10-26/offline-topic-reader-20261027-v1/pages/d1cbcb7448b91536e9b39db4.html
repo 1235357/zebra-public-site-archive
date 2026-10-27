@@ -1,0 +1,191 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Printing RTL and LTR text on Label</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Printing RTL and LTR text on Label</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/34642; original snapshot: supplement/threads/c375ba609b6bbfe9d2b1b2b0.html; SHA-256: 35224df94e638f43b91f96f763c8555de598b4e2ed63655720784a3ebe4859c7</small><pre id="topic">
+
+    
+        Printing RTL and LTR text on Label
+
+
+        
+      
+                        
+                    
+            Z
+          
+          Zolf Jafari
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            525
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello there,
+ 
+I have a situation where I need to print English text (LTR) and Persian text(RTL) on a label. I set my ^LH0,0 which is set from left of the label(my label is 4x4 inch) and I have no issue when it prints the first section that is English text. In the second half of my label I print the English translated text in Persian which need to start from right side of the label. Now my problem is when my Persian text is long for some values then it cannot print it as it goes outside the label. Is there some command where I can reset the LH again from the right of the label after I finish my English text and am about to start the Persian text. I have copied my ZPL2 command below.Please help!!
+ 
+cheers
+Zolf
+ 
+^XA
+^LH0,0
+^FO50,50
+^BXN,4,200,26,26
+^FD${fnc}^FS
+^FO168,50^AE,18,10^FPH\^FDGTIN:^FS
+^FO265,50^AEN,18,10^FPH\^FD12345678901234^FS
+^FO168,80^AEN,18,10^FPH\^FDUID:^FS
+^FO265,80^AEN,18,10^FPH\^FD$8888888888888888888^FS
+^FO168,110^AEN,18,10^FPH\^FDEXP:^FS
+^FO265,110^AEN,18,10^FPH\^FD2017-08-07^FS
+^FO168,140^AEN,18,10^FPH\^FDLOT:^FS
+^FO265,140^AEN,18,10^FPH\^FD$888^FS
+^FO50,180^GB730,1,3^FS
+^FO50,190^AEN,20,20^FPH\^FD English Text ^FS
+^FO50,220^AEN,20,20^FPH\^FD Some English Text ^FS
+^FO50,250^AEN,20,20^FPH\^FD Some English Text Text^FS
+^FO50,410^ARN,10,10^FPH\^FD Some English Text Text^FS
+^FO50,470^ADN,18,10^FPH\^FDManufactured By:^FS
+^FO560,190^XGE:FRAGILE.GRF^FS
+^FO680,190^XGE:HANDLE.GRF^FS
+^FO50,520^GB730,1,3^FS
+^PA1,1,1,1^FS
+^FO400,550^A@N,35,35,E:RA000.TTF^FPH\^FH^FDSome Persian Text^FS
+^FO400,580^A@N,35,35,E:RA000.TTF^FPH\^FH^FDSome Persian Text^FS
+^FO400,610^A@N,35,35,E:RA000.TTF^FPH\^FH^FDSome Persian Text^FS
+^FO400,655^A@N,30,30,E:RA001.TTF^FPH\^FH^FDSome Persian Text^FS
+^FO350,700^A@N,25,25,E:RA000.TTF^FPH\^FH^FDSome Persian Text^FS
+^FO485,730^A@N,25,25,E:RA000.TTF^FPH\^FH^FDSome Persian Text^FS
+^FS
+^XZ
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Zolf,
+You don&#x27;t need to change the origin point.&amp;nbsp; You might find this page of the ZPL manual useful.
+In essence, you can adjust the origin point of each field, or you can create a field block (^FB) and justify the text as it makes sense for your use case.
+^XA
+^LH0,0^FS
+^PA1,1,1,1^FS
+^FO600,50^A0N,35,35^FPR^FB550,,,R^FDSome Persian Text^FS
+^FS
+^XZ
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

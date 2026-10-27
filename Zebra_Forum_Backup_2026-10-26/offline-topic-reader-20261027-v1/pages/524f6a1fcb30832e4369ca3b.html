@@ -1,0 +1,193 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra FX9600 Fixed Reader SDK Problem</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Zebra FX9600 Fixed Reader SDK Problem</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zebra-fx9600-fixed-reader-sdk-problem; original snapshot: threads/00994.html; SHA-256: ce4e2cd85027d63242694bf6e1dd1f93502c8937a0b9f5642b5b136fe2dfa6c6</small><pre id="topic">
+
+    
+        Zebra FX9600 Fixed Reader SDK Problem
+
+
+        
+      
+                        
+                    
+            D
+          
+          Damen Hui
+          5 years ago
+        
+        
+      
+        
+            
+                  
+            
+            251
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  We are using the C# to call the Reader API and C# codes about setting the Prefilter are extracted as below:
+            Symbol.RFID3.TagData[] tagData = new Symbol.RFID3.TagData[10000];
+            tagData = null;
+            String filter_initial = &quot;48415345&quot;;
+            if (request.RfidReader.IsConnected)
+            {
+                try
+                {
+                    request.RfidReader.Actions.PreFilters.DeleteAll();
+                    request.RfidReader.Events.AttachTagDataWithReadEvent = false;
+                    PreFilters.PreFilter filter = new PreFilters.PreFilter();
+                    int filterMaskLength = (filter_initial.Length / 2);
+                    byte[] filterMask = new byte[filterMaskLength];
+                    for (int index = 0; index &amp;lt; filterMaskLength; index++)
+                    {
+                        filterMask[index] = byte.Parse(filter_initial.Substring(index * 2, 2),
+                            System.Globalization.NumberStyles.HexNumber);
+                    }
+                    filter.TagPattern = filterMask;
+                    filter.TagPatternBitCount = (uint)filterMaskLength * 8;
+                    filter.AntennaID = 0; //Set filter to all antenna
+                    filter.BitOffset = 32;
+                    filter.FilterAction = FILTER_ACTION.FILTER_ACTION_DEFAULT;
+                    filter.StateUnawareAction.Action = STATE_UNAWARE_ACTION.STATE_UNAWARE_ACTION_UNSELECT;
+                    request.RfidReader.Actions.PreFilters.Add(filter);
+                    m_TagTable = new Hashtable();
+                    request.RfidReader.Actions.PurgeTags();
+                    request.RfidReader.Actions.Inventory.Perform(null, null, null);
+                    Thread.Sleep(1000);
+                    request.RfidReader.Actions.Inventory.Stop();
+                    tagData = request.RfidReader.Actions.GetReadTags(1000);
+                }
+                catch (OperationFailureException operationException)
+                {
+                    request.FixedReader.ExceptionCode = operationException.Result.ToString();
+                }
+                catch (Exception ex)
+                {
+                    request.FixedReader.ExceptionCode = ex.HResult.ToString();
+                    request.FixedReader.ExceptionMsg = ex.Message;
+                }
+            }
+            else
+            {
+                request.FixedReader.ExceptionCode = &quot;NO_CONNECT_READER&quot;;
+                request.FixedReader.ExceptionMsg = &quot;Reader is not connected&quot;;
+            }
+The above codes can be run successfully without error but it results the reader does not filter out the tags with ID which is not started with &quot;48415345&quot;.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Damen Hui
+          
+          
+            5 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            It seems the prefilter does not work. Anyone encountered the same probleam and care to share the resolution?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

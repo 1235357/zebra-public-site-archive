@@ -1,0 +1,214 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Unable to Contact Printer(ZQ630) Within a Short Time on Android Devices</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Unable to Contact Printer(ZQ630) Within a Short Time on Android Devices</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/unable-contact-printerzq630-within-short-time-android-devices; original snapshot: threads/00223.html; SHA-256: ed56a05cfd7ffa87649c8cfd73a7ea3f095efa86d0e821f982b336173981c66c</small><pre id="topic">
+
+    
+        Unable to Contact Printer(ZQ630) Within a Short Time on Android Devices
+
+
+        
+      
+                        
+                    
+            A
+          
+          Andy Kang
+          2 years 3 months ago
+        
+        
+      
+        
+            
+                  
+            
+            126
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  When applying the SDK to connect to the ZQ630 printer for label printing on an Android device, I encountered an issue where printing fails if consecutive print commands are sent within 1 second.However, if the interval between print commands exceeds 2 seconds, printing occurs without any issues and works normally.Android 8.1Bluetooth®Class I, V4.2, BLE, dual mode, V2.1 with Enhanced Data Rate (EDR)Android 12Bluetooth® Class II, V5.1 dual mode, V2.1 with Enhanced Data Rate (EDR)The SDK used is from Zebra&#x27;s official resources, and an exception screenshot is provided below:Android Device: CipherLab RS51 Series https://www.cipherlab.com/en/product-271788/Rugged-Touch-Mobile-Computer-RS51-Series.htmlSDK Used: Zebra LinkOS Android Samples https://github.com/ZebraDevs/LinkOS-Android-Samples?tab=readme-ov-fileAnyone could help, please?
+              
+
+                    
+          
+      
+              
+ Zebra ZQ630.jpg
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Andy Kang
+          
+          
+            2 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            However, if the interval between print commands exceeds 2 seconds, printing occurs without any issues and works normally.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Without seeing the code, we cannot be sure about the cause of the issue. In general, we should keep in mind that we don&#x27;t overflow the Bluetooth buffer by transmitting a large amount of data in one shot. Secondly, we don&#x27;t want to overflow the receiving buffer on the printer. The recommended workflow is to check the printer status before sending data to the printer.
+
+Open a connection
+Check the printer status to see if it&#x27;s ready.
+If the printer is ready to print, then send the print data to the printer to print. If the printer is not ready, the wait for sometime and check the status again.
+Check the printer status again, before we close the connection. We don&#x27;t want to close the Bluetooth connection prematurely, as there could be some un-transmitted data in the Bluetooth buffer waiting to be transmitted.
+
+Please note, by default, there is a 5 sec delay when calling the connection.close() API in the SDK on a Bluetooth connection on Android.
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

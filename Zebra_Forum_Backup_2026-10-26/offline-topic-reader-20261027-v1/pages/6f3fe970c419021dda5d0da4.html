@@ -1,0 +1,323 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Problem with receiving broadcast intent on TC21 and DataWedge 13</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Problem with receiving broadcast intent on TC21 and DataWedge 13</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/problem-receiving-broadcast-intent-tc21-and-datawedge-13; original snapshot: threads/00062.html; SHA-256: 821d4c63c70ab0bc18b1ab61f6bcb8da3fb13616d258a73630c6e8b25b0a309a</small><pre id="topic">
+
+    
+        Problem with receiving broadcast intent on TC21 and DataWedge 13
+
+
+        
+      
+                        
+                    
+            D
+          
+          Damian Dorocicz
+          1 year 7 months ago
+        
+        
+      
+        
+            
+                  
+            
+            255
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi, I maintain application in React Native using barcode scanining in few scenarios. Application is installed on TC21 devices. Some time ago, the company decided to buy some new pieces. Unfortunately, application don&#x27;t receive broadcast intent on new ones with the same profiles setup (imported from working older device). I also added functionality to add/update dedicated profile programaticaly to avoid any typos during my reaserch. Thats why i guess the problem is DataWedge version but i didn&#x27;t found any threads solving backward compatibility topic. New devices use DataWedge 13+ but mine is using 8.2.60. To implement scan functionality we use this package: react-native-datawedge-intents - npm.Code:export const enableZebraScan = () =&gt; {    DataWedgeIntents.registerBroadcastReceiver({        filterActions: [            &#x27;com.zebra.xyz.internal.ACTION&#x27;,            &#x27;com.symbol.datawedge.api.RESULT_ACTION&#x27;        ],        filterCategories: [            &#x27;android.intent.category.DEFAULT&#x27;        ]    });    createOrUpdateDataWedgeProfile();}const profileConfig = {    PROFILE_NAME: &quot;XYZ&quot;,    PROFILE_ENABLED: &quot;true&quot;,    CONFIG_MODE: &quot;CREATE_IF_NOT_EXIST&quot;,    PLUGIN_CONFIG: {        PLUGIN_NAME: &quot;BARCODE&quot;,        RESET_CONFIG: &quot;true&quot;,        PARAM_LIST: {            scanner_selection: &quot;auto&quot;,            scanner_input_enabled: &quot;true&quot;,            decoder_code128: &quot;true&quot;,        },    },    APP_LIST: [{PACKAGE_NAME: &quot;com.company.xyz.internal&quot;, ACTIVITY_LIST: [&quot;*&quot;]}],};const profileKeystrokeConfig = {    PROFILE_NAME: &quot;XYZ&quot;,    CONFIG_MODE: &quot;UPDATE&quot;,    PROFILE_ENABLED: &quot;true&quot;,    PLUGIN_CONFIG: {        PLUGIN_NAME: &quot;KEYSTROKE&quot;,        RESET_CONFIG: &quot;true&quot;,        PARAM_LIST: {            keystroke_output_enabled: &quot;false&quot;,        }    }}const profileIntentPluginConfig = {    PROFILE_NAME: &quot;XYZ&quot;,    CONFIG_MODE: &quot;UPDATE&quot;,    PROFILE_ENABLED: &quot;true&quot;,    PLUGIN_CONFIG: {        PLUGIN_NAME: &quot;INTENT&quot;,        RESET_CONFIG: &quot;true&quot;,        PARAM_LIST: {            intent_output_enabled: &quot;true&quot;,            intent_input_enabled: &quot;true&quot;,            intent_action: &quot;com.zebra.xyz.internal.ACTION&quot;,            intent_delivery: &quot;2&quot;,        },    },};I would be greateful if someone could provide me some guidance to solve my problem.Thank you.   
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              N
+            
+          
+                
+          
+            Nicola De Zolt
+          
+          
+            1 year 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Damian, unfortunately that component was developed a long time ago outside of Zebra coverage. 
+One thing you could do is to 
+
+export your profile from an older device 
+on the new device, restore datawegde (it factory-resets DW)
+import the exported profile into the newer device
+
+Double-check that all the plugins are well-defined. Specifically, check the barcode input plugin and the Intent Output one: the intent action, category, and send method must match those in your code.
+Finally, to understand if your app running on newer devices is receiving intents as expected, send that intent manually from adb following the usual schemaadb shell am broadcast -a &lt;action&gt; -d &lt;data_uri&gt; -t &lt;mime_type&gt; -c &lt;category&gt; -e &lt;extra_key&gt; &lt;extra_value&gt; -n &lt;component&gt;
+The two actions above should at least tell you if your problem sits with DW or with your app, so suggesting where investigate farther.
+
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Damian Dorocicz
+          
+          
+            1 year 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi, we noticed that library is kinda &quot;old&quot; and out of support. I tried all listed possible solutions before i wrote this post. To avoid misspell  i decided generate config programaticaly (before that our IT team was aplying them manualy. I also checked generated config comparing with older manual and seems correct). My guess its maybe library problem so i will check if there is something still supported. I will also try debug intent using adb.I hope it will solve the problem.Big thanks for answer. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Phạm Đạt
+          
+          
+            1 year 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Dear Team,    &quot;react-native-datawedge-intents&quot;: &quot;^0.1.8&quot;, I hope you&#x27;re doing well.We are currently using your library in our React Native project to integrate with Zebra DataWedge, and it has been working well on older Android versions. However, after upgrading our devices to Android 13 (API 33), we encountered a critical issue: the app crashes on startup due to missing android:exported attributes in the manifest receivers.This is due to a change in Android 12+ where all exported components (such as BroadcastReceivers with intent-filters)  Unfortunately, it appears that react-native-datawedge-intents has not been updated recently to reflect this requirement. As a result, the library is no longer compatible with Android 13 and prevents our application from functioning on newer devices.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Daniel Neamtu
+          
+          
+            1 year 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            HI there,
+As previously mentioned by my colleague, this library is not an official one maintained by us so unfortunately it&#x27;s outside of our reach...
+You can have a look at the original source code on GitHub, fork the repository and make the required compatibility changes:
+https://github.com/darryncampbell/react-native-datawedge-intents
+ 
+Dan
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

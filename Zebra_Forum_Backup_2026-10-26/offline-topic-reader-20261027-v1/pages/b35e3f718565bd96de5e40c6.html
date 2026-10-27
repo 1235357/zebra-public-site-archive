@@ -1,0 +1,642 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Activity Not Found Exception for Camera App</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Activity Not Found Exception for Camera App</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/activity-not-found-exception-camera-app; original snapshot: threads/00567.html; SHA-256: 68d67a482792cde241cda372784b6d30a916b692cc43e28d8b25dea4ae3f9e03</small><pre id="topic">
+
+    
+        Activity Not Found Exception for Camera App
+
+
+        
+      
+                        
+                    
+            C
+          
+          Christoforos Vlachos
+          3 years 5 months ago
+        
+        
+      
+        
+            
+                  
+            
+            277
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                          //Solved
+        
+  
+
+    
+    
+        
+      
+            
+                  Hi everyone,
+
+I have developed an industrial android app using kotlin. The app needs to launch the camera multiple times, it does so using this code :
+
+ 
+
+val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+    putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
+}
+startActivityForResult(
+    cameraIntent,
+    this@ExtraDieukrinhseisDeltiou.REQUEST_CODE_CAMERA
+)
+
+I have also installed the &quot;Enterprise Home Screen&quot; (version 4.2.40) on the devices. The devices are MC2700 &amp; TC26 and the OS is Android 11.  Everything works as expected in the beginning but, after 2-3weeks of the application running in the field I found out (using the RxLogger) that I get an &quot;ActivityNotFound&quot; exception when I try to launch the camera using the above code. 
+
+I also noticed from the devices in the field that they were unlocked and the  &quot;Enterprise Home Screen&quot; app was misbehaving. 
+
+If I uninstall and re-install the &quot;Enterprise Home Screen&quot; then the camera app is launched successfully again. But after 2-3 weeks the same thing happens again. 
+
+I know this is a very weird behavior and I cannot understand why this happens. Is this some known issue by now ? What do you think I should check to identify and solve this problem. Any help or idea is greatly appreciated since I am stuck.
+
+Thank you in advance,
+
+Chris
+
+ 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+        
+      
+        ✓ Accepted Solution
+      
+      
+          
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Christoforos Vlachos
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Daniel,
+
+Your initial assumption was indeed accurate. I&#x27;m unsure of the exact cause of the issue, but I managed to resolve it by modifying my configuration in the EHS. The problem seemed to stem from the fact that I had disabled certain Google applications within my configuration, as listed below:
+
+&lt;apps_disabled&gt;
+&lt;application package=&quot;com.android.contacts&quot;/&gt;
+&lt;application package=&quot;com.android.mms&quot;/&gt;
+&lt;application package=&quot;com.android.soundrecorder&quot;/&gt;
+&lt;application package=&quot;org.codeaurora.dialer&quot;/&gt;
+&lt;application package=&quot;com.google.android.apps.photos&quot;/&gt;
+&lt;application package=&quot;com.google.android.apps.maps&quot;/&gt;
+&lt;application package=&quot;com.android.chrome&quot;/&gt;
+&lt;application package=&quot;com.google.android.gm&quot;/&gt;
+&lt;application package=&quot;com.google.android.apps.docs&quot;/&gt;
+&lt;application package=&quot;com.android.vending&quot;/&gt;
+&lt;application package=&quot;com.google.android.videos&quot;/&gt;
+&lt;application package=&quot;com.google.android.apps.tachyon&quot;/&gt;
+&lt;application package=&quot;com.google.android.apps.messaging&quot;/&gt;
+&lt;application package=&quot;com.google.android.youtube&quot;/&gt;
+&lt;application package=&quot;com.google.android.apps.youtube.music&quot;/&gt;
+&lt;application package=&quot;com.google.android.calendar&quot;/&gt;
+&lt;/apps_disabled&gt;
+
+Upon re-enabling all of these applications, the issue was successfully resolved.
+
+Best regards,
+
+Chris
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+      
+    
+  
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Daniel Neamtu
+          
+          
+            3 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Chris,
+Are the devices under an EMM?
+You should check whether someone plays with the EHS and if the camera app has been mistakenly disabled.
+This is not something coming from us, it&#x27;s purely a misconfiguration here.
+Daniel
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Christoforos Vlachos
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Daniel, 
+
+Thank you very much for your response. The devices are not under an EMM and also they do not have wifi or mobile data enabled (this is a request from our client).  The only way for someone to play with the EHS is if they have the administrator code which I am pretty sure they do not. 
+
+Below I provide link which demostrates this behavior. 
+
+https://drive.google.com/file/d/1Y2gvtBnX8nonp_Wo8J6wpnqe-xyugnjj/view?usp=sharing
+
+The device that you see in the video is one of our test devices (not a client&#x27;s device). This specific device was stored and was inactivefor about one month. Today I re-opened the device to perform some tests and, as you can see in the video, the EHS was not automatically launched and also the camera app was disabled (observe that there is no icon of the camera app at 0:15 of the video). 
+
+Afterwards, in the video, I open our application and when I try to launch the camera the app crashes (0:36 in video - this is the ActivityNotFound exception that I saw using the RxLogger).
+
+At 0:42 I relaunch the EHS and after that everything works fine - the camera was re-enabled and our application was working as expected. 
+
+For your reference, I am also sharing the contents of the EHS configuration file. Please review it and let me know if you notice anything unusual.
+
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;config&gt;
+  &lt;kiosk&gt;
+    &lt;application label=&quot;Καταμέτρηση&quot; package=&quot;com.chris.mciydro&quot; activity=&quot;com.chris.mciydro.MainActivity&quot;/&gt;
+  &lt;/kiosk&gt;
+  &lt;applications&gt;
+    &lt;application label=&quot;Καταμέτρηση&quot; package=&quot;com.chris.mciydro&quot; activity=&quot;com.chris.mciydro.MainActivity&quot;/&gt;
+  &lt;/applications&gt;
+  &lt;tools&gt;
+    &lt;application label=&quot;Καταμέτρηση&quot; package=&quot;com.chris.mciydro&quot; activity=&quot;com.chris.mciydro.MainActivity&quot;/&gt;
+  &lt;/tools&gt;
+  &lt;passwords&gt;
+    &lt;admin attempts=&quot;1&quot;&gt;jDt1n+SY4UQozA9FygYPKcthE5/KOnTivNFi8GY/mls=aQhEJJCJuYrijkdAvLoPhFeP2KbHa1qcGPKzycozE/M=&lt;/admin&gt;
+  &lt;/passwords&gt;
+  &lt;user_options&gt;
+    &lt;icon_settings&gt;
+      &lt;app_icon_size&gt;M&lt;/app_icon_size&gt;
+    &lt;/icon_settings&gt;
+  &lt;/user_options&gt;
+  &lt;preferences&gt;
+    &lt;admin_inactivity_timeout&gt;120&lt;/admin_inactivity_timeout&gt;
+    &lt;orientation&gt;portrait&lt;/orientation&gt;
+    &lt;wallpaper/&gt;
+    &lt;usb_debugging_disabled&gt;0&lt;/usb_debugging_disabled&gt;
+    &lt;icon_label_text_color&gt;#FFFFFFFF&lt;/icon_label_text_color&gt;
+    &lt;auto_launch_enable&gt;0&lt;/auto_launch_enable&gt;
+    &lt;service_auto_launch_enable&gt;0&lt;/service_auto_launch_enable&gt;
+    &lt;keyguard_search_disabled&gt;1&lt;/keyguard_search_disabled&gt;
+    &lt;admin_max_attempts&gt;20&lt;/admin_max_attempts&gt;
+    &lt;system_settings_restricted&gt;1&lt;/system_settings_restricted&gt;
+    &lt;icon_label_background_color&gt;#00FFFFFF&lt;/icon_label_background_color&gt;
+    &lt;fullscreen&gt;0&lt;/fullscreen&gt;
+    &lt;keyguard_camera_disabled&gt;1&lt;/keyguard_camera_disabled&gt;
+    &lt;kiosk_mode_enabled&gt;0&lt;/kiosk_mode_enabled&gt;
+    &lt;title&gt;
+      &lt;value&gt;[serial_number]&lt;/value&gt;
+    &lt;/title&gt;
+    &lt;title_bar_icon&gt;
+      &lt;title_bar_icon_disabled&gt;0&lt;/title_bar_icon_disabled&gt;
+    &lt;/title_bar_icon&gt;
+    &lt;configurable_user_options&gt;
+      &lt;app_icon_settings_disabled&gt;1&lt;/app_icon_settings_disabled&gt;
+    &lt;/configurable_user_options&gt;
+    &lt;admin_lock_out&gt;
+      &lt;recovery_enabled&gt;0&lt;/recovery_enabled&gt;
+    &lt;/admin_lock_out&gt;
+    &lt;screen_blanking&gt;
+      &lt;blanking_enabled&gt;0&lt;/blanking_enabled&gt;
+      &lt;speed_threshold&gt;10&lt;/speed_threshold&gt;
+      &lt;blanking_mode&gt;1&lt;/blanking_mode&gt;
+    &lt;/screen_blanking&gt;
+    &lt;apps_disabled&gt;
+      &lt;application package=&quot;com.android.contacts&quot;/&gt;
+      &lt;application package=&quot;com.android.mms&quot;/&gt;
+      &lt;application package=&quot;com.android.soundrecorder&quot;/&gt;
+      &lt;application package=&quot;org.codeaurora.dialer&quot;/&gt;
+      &lt;application package=&quot;com.google.android.apps.photos&quot;/&gt;
+      &lt;application package=&quot;com.google.android.apps.maps&quot;/&gt;
+      &lt;application package=&quot;com.android.chrome&quot;/&gt;
+      &lt;application package=&quot;com.google.android.gm&quot;/&gt;
+      &lt;application package=&quot;com.google.android.apps.docs&quot;/&gt;
+      &lt;application package=&quot;com.android.vending&quot;/&gt;
+      &lt;application package=&quot;com.google.android.videos&quot;/&gt;
+      &lt;application package=&quot;com.google.android.apps.tachyon&quot;/&gt;
+      &lt;application package=&quot;com.google.android.apps.messaging&quot;/&gt;
+      &lt;application package=&quot;com.google.android.youtube&quot;/&gt;
+      &lt;application package=&quot;com.google.android.apps.youtube.music&quot;/&gt;
+      &lt;application package=&quot;com.google.android.calendar&quot;/&gt;
+    &lt;/apps_disabled&gt;
+    &lt;apps_enabled&gt;
+      &lt;application package=&quot;com.android.documentsui&quot;/&gt;
+      &lt;application package=&quot;com.mci.ergolavia&quot;/&gt;
+      &lt;application package=&quot;com.android.deskclock&quot;/&gt;
+      &lt;application package=&quot;com.android.settings&quot;/&gt;
+      &lt;application package=&quot;com.zebra.bluetooth.settings&quot;/&gt;
+      &lt;application package=&quot;com.symbol.dataanalytics&quot;/&gt;
+      &lt;application package=&quot;com.symbol.zebravolumecontrol&quot;/&gt;
+      &lt;application package=&quot;com.zebra.smartmu.app&quot;/&gt;
+      &lt;application package=&quot;com.symbol.vod&quot;/&gt;
+      &lt;application package=&quot;com.symbol.tool.stagenow&quot;/&gt;
+      &lt;application package=&quot;com.symbol.rxlogger&quot;/&gt;
+      &lt;application package=&quot;com.symbol.pttexpress&quot;/&gt;
+      &lt;application package=&quot;com.zebra.ppcclient&quot;/&gt;
+      &lt;application package=&quot;com.google.android.googlequicksearchbox&quot;/&gt;
+      &lt;application package=&quot;com.zebra.devicetracker&quot;/&gt;
+      &lt;application package=&quot;com.symbol.datawedge&quot;/&gt;
+      &lt;application package=&quot;com.symbol.fusionlogger&quot;/&gt;
+      &lt;application package=&quot;org.codeaurora.snapcam&quot;/&gt;
+      &lt;application package=&quot;com.symbol.batterymanager&quot;/&gt;
+      &lt;application package=&quot;com.symbol.fusionsettings&quot;/&gt;
+      &lt;application package=&quot;com.google.android.keep&quot;/&gt;
+      &lt;application package=&quot;com.android.inputmethod.latin&quot;/&gt;
+      &lt;application package=&quot;com.android.traceur&quot;/&gt;
+      &lt;application package=&quot;com.google.android.calculator&quot;/&gt;
+      &lt;application package=&quot;com.symbol.btapp&quot;/&gt;
+      &lt;application package=&quot;com.displaylink.presenter&quot;/&gt;
+      &lt;application package=&quot;com.symbol.mxmf.csp.enterprisekeyboard&quot;/&gt;
+      &lt;application package=&quot;com.zebra.licenseuiapp&quot;/&gt;
+      &lt;application package=&quot;com.qualcomm.qti.qms.service.telemetry&quot;/&gt;
+    &lt;/apps_enabled&gt;
+  &lt;/preferences&gt;
+&lt;/config&gt;
+
+
+Any suggestion is greatly appreciated. Thank you in advance.
+
+Chris
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Daniel Neamtu
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Chris,
+I see you&#x27;ve registered for our DevKitchen event which will be next week in Athene.
+I&#x27;ll be there because I&#x27;m among the presenters and I think it would be great if you could bring the device with you so we can better check the issue!
+I&#x27;ve also tested your configuration on my device but as much as I tried with different configurations I couldn&#x27;t reproduce the issue where the camera app was disappearing from the list of apps.
+Maybe on-site we can figure it out something :)
+Regards,
+Daniel 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Christoforos Vlachos
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Daniel,
+
+I hope you&#x27;re having a good morning. I wanted to let you know that I think your idea is fantastic, and I appreciate it very much. I&#x27;ll make an effort to replicate the issue myself, or I&#x27;ll try to obtain a device from our client that exhibits this problem (unfortunately, the device shown in the video is now functioning properly). I look forward to meeting you at the DevKitchen event.
+
+Bestregards,
+
+Chris
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Christoforos Vlachos
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Daniel,
+
+Your initial assumption was indeed accurate. I&#x27;m unsure of the exact cause of the issue, but I managed to resolve it by modifying my configuration in the EHS. The problem seemed to stem from the fact that I had disabled certain Google applications within my configuration, as listed below:
+
+&lt;apps_disabled&gt;
+&lt;application package=&quot;com.android.contacts&quot;/&gt;
+&lt;application package=&quot;com.android.mms&quot;/&gt;
+&lt;application package=&quot;com.android.soundrecorder&quot;/&gt;
+&lt;application package=&quot;org.codeaurora.dialer&quot;/&gt;
+&lt;application package=&quot;com.google.android.apps.photos&quot;/&gt;
+&lt;application package=&quot;com.google.android.apps.maps&quot;/&gt;
+&lt;application package=&quot;com.android.chrome&quot;/&gt;
+&lt;application package=&quot;com.google.android.gm&quot;/&gt;
+&lt;application package=&quot;com.google.android.apps.docs&quot;/&gt;
+&lt;application package=&quot;com.android.vending&quot;/&gt;
+&lt;application package=&quot;com.google.android.videos&quot;/&gt;
+&lt;application package=&quot;com.google.android.apps.tachyon&quot;/&gt;
+&lt;application package=&quot;com.google.android.apps.messaging&quot;/&gt;
+&lt;application package=&quot;com.google.android.youtube&quot;/&gt;
+&lt;application package=&quot;com.google.android.apps.youtube.music&quot;/&gt;
+&lt;application package=&quot;com.google.android.calendar&quot;/&gt;
+&lt;/apps_disabled&gt;
+
+Upon re-enabling all of these applications, the issue was successfully resolved.
+
+Best regards,
+
+Chris
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,222 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How To Print Images from Android(java) to Zq220 zebra printer using CPCL language</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How To Print Images from Android(java) to Zq220 zebra printer using CPCL language</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/how-print-images-androidjava-zq220-zebra-printer-using-cpcl-language; original snapshot: threads/00684.html; SHA-256: 9f98fae0eb093b75854730735e629b17e465ab553f628bb9ec5e53f9867738e2</small><pre id="topic">
+
+    
+        How To Print Images from Android(java) to Zq220 zebra printer using CPCL language
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          3 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            758
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;ve been printing to a ZQ200 printer using Android (Java), but I want to print an image. But the GitHub demo program only works with ZPL Command, and I can&#x27;t seem to find any resources to print a picture from CPCL Command. One thing that occurs to me is altering the printer language, but I am unable to do so. I called the Zebra Support team, who informed me that I cannot do so because the printer only supports ZPL. I&#x27;m stuck as a result; if you could, would you?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Use the Link-OS SDK for Android, which provides a GraphicsUtil class where you can find the printImage() API that converts the image file into bitmap data wrapped around with the CPCL commands and sends to the printer. To print on the ZQ220 printer, you would need to specify the printer language as CPCL when getting the printer instance. Without specifying the printer language as CPCL, the printImage() API would send the data as ZPL to the ZQ220. This wouldn&#x27;t work, as the ZQ220 is a CPCL printer.
+Here is the code snippet
+private void sendImage2Printer( String imageFilePath) {
+    new Thread(new Runnable() {
+        public void run() {
+            try {
+                Connection connection = new BluetoothConnection(getMacAddressFieldText());
+                connection.open();
+                ZebraPrinter printer = ZebraPrinterFactory.getInstance(PrinterLanguage.CPCL, connection);
+                printer.printImage(imageFilePath, 0, 0, 550, 412, false);
+
+                connection.close();
+
+            } catch (ConnectionException e) {
+                // Do something
+            } finally {
+                // Do something
+            }
+        }
+    }).start();
+}
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            solomon mulatu
+          
+          
+            3 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I appreciate your help a lot, it saved me time
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

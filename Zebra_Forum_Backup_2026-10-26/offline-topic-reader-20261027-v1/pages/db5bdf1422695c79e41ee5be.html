@@ -1,0 +1,168 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to print custom tag ID data via Zebra ZT410</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to print custom tag ID data via Zebra ZT410</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/how-print-custom-tag-id-data-zebra-zt410; original snapshot: threads/00057.html; SHA-256: 8785a8ebaafba1c0174b7fc800042c2f5856ac97139ce692ee16c454c93306e6</small><pre id="topic">
+
+    
+        How to print custom tag ID data via Zebra ZT410
+
+
+        
+      
+                        
+                    
+            M
+          
+          Muhammad Azal
+          1 year 7 months ago
+        
+        
+      
+        
+            
+                  
+            
+            460
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Currently I&#x27;m using ZT410 printer and I&#x27;ve got issue where i need to print 16 characters on the RFID label, but when I&#x27;m trying to print using ZPL it will add additional padding &#x27;0&#x27; at the back after 16 characters. Expectation: C1234567890876AResult: c601146010001462a000ffffAlready done my research, seems like it is because of my EPC is 96-bit and to print 16 characters, had been tried change the EPC to 64 bit it would&#x27;nt working. Also tried to convert ASCII(C1234567890876A) into hexadecimal but the result is like this c601146010001462a000ffff and not as expected.Below is my code 
+
+BrowserPrint.getDefaultDevice(&quot;printer&quot;, function(device) {
+   if (!device) {
+       console.error(&quot;No printer found.&quot;);
+       return;
+   }
+   const testZPL = `
+     ^XA
+     ^RFW,H,0,8,0,4331323334353637^FS
+     ^RFR,H,0,8,0^FS
+     ^FO20,20^A0N,30,30
+     ^FD{R:9.16}^FS
+     ^XZ
+   `;
+   device.send(testZPL, function() {
+       console.log(&quot;ZPL sent!&quot;);
+       device.read(function(response) {
+           console.log(&quot;Printer Response:&quot;, response);
+       });
+   });
+});
+
+ 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            1 year 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Not a Printer-Specific response:   ( An EPC E2G2 spec compliant possible solution )Some RFID options is to setup the &quot;PC&quot; {Protocol Control} word on the TAG to show only 4-words of EPC data.In that manner if you are only writing the EPC with 64-bit data - the PC word when called on an inventory will only show the 64-bits (4-words) -- You could try setting the PC value (if you read it as &quot;3000&quot; hex,  and setup to &quot;2000&quot; hex for the PC word. { If the PC value is 3400 -- then try setting &quot;2400&quot; to see if this works too. }  Please Test this with Handheld RFID Readers just to confirm if this may work for you. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

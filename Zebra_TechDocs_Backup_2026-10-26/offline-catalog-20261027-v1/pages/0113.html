@@ -1,0 +1,404 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Using SSM with Zebra Apps - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/ssm/latest/guide/deploy/</code><br>Observed final URL: <code>https://techdocs.zebra.com/ssm/latest/guide/deploy/</code><br>Raw source: <code>raw/f8bf6734a4fbaf7ce711547e.html</code><br>Raw SHA-256: <code>31d1a3b624f10da9b8d05c959e43b20484532b43e48f9025430149140051ed69</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            Secure Storage Manager
+                                            1.1
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Data Sharing
+                            
+                        
+                        
+                            
+                                    File Sharing
+                            
+                        
+                        
+                            
+                                    Deploy a File
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Using SSM with Zebra Apps
+                        
+                    OverviewRequirementsProcess SummaryAlso SeeDeploy via ApplicationZebra App Deployment FilesAlso See
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Using SSM with Zebra Apps
+                                    
+                                            Secure Storage Manager
+                                            1.1
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+This guide describes how to use Secure Storage Manager (SSM) for secure deployment of files for configuring Zebra apps and/or sharing data. Files can be deployed for use by other apps (or by the originating app itself) either through Zebra OEMConfig and StageNow, a company&#x27;s own EMM or programmatically from within an application.
+
+Requirements
+
+
+Zebra device(s) running Android 11 (or later)
+
+Zebra MX 11.3 (or later) on device (Which version is present?)
+
+A staging tool (e.g. DNA Cloud, OEMConfig, StageNow, etc.)
+
+
+Process Summary
+
+
+Create a Profile in the staging tool for deploying a file. 
+
+Set the Profile to deploy using File Manager &quot;Deploy a file for an application&quot; File Action or the equivalent function.
+
+Enter the &quot;Target Application File Definition&quot; from the Zebra App Deployment Files table (below) corresponding to the file&#x27;s Source* app.   
+
+Enter the name of the signature file for the Source app (optional for StageNow deployment).
+ Zebra recommends using Step 4 for added security. Learn more. 
+
+Source Access Method: &quot;File in the Device File System&quot; 
+
+Select Media type on a local Device: &quot;Others&quot;
+
+Enter File Name: Enter the &quot;Source Path and File Name&quot; for the app from the Zebra App Deployment Files table (below).†
+
+
+ * The &quot;Source&quot; app is the Zebra app originating the file for sharing with others. Note: The source app can be the same app as the one consuming the shared file. For example, this is usually the case when deploying app-configuration files. 
+
+ † Where appropriate, replace the example file name with the chosen file name.
+
+Also See
+
+
+SSM and DataWedge | Secure deployment of files for DataWedge configuration and Profiles
+
+SSM and WorkStation Connect | Secure deployment of files for Zebra Workstation Connect configuration and shortcuts
+
+SSM and Wireless WorkStation Connect | Secure deployment of files for Zebra Wireless Workstation Connect configuration and shortcuts
+
+
+
+
+
+
+Deploy via Application
+
+This section describes how to use SSM to securely deploy a file to a device. A DataWedge Profile is used as an example. 
+
+In the app&#x27;s AndroidManifest.xml file:
+
+
+Add the following permissions:
+
+&lt;uses-permission android:name=&quot;com.zebra.securestoragemanager.securecontentprovider.PERMISSION.WRITE&quot; /&gt;
+&lt;uses-permission android:name=&quot;com.zebra.securestoragemanager.securecontentprovider.PERMISSION.READ&quot; /&gt;
+
+Add the following queries to allow the app to interact with SSM:
+
+&lt;queries&gt;
+    &lt;package android:name=&quot;com.zebra.securestoragemanager&quot; /&gt;
+    &lt;provider android:authorities=&quot;com.zebra.securestoragemanager.securecontentprovider&quot;/&gt;
+&lt;/queries&gt;
+
+Add the following code to define a FileProvider that allows the app to grant read permissions to files. Replace com.app.package.name with the package name of the app.
+
+&lt;provider
+    android:name=&quot;androidx.core.content.FileProvider&quot;
+    android:authorities=&quot;com.your.package.name.provider&quot;
+    android:exported=&quot;false&quot;
+    android:grantUriPermissions=&quot;true&quot;&gt;
+    &lt;meta-data
+        android:name=&quot;android.support.FILE_PROVIDER_PATHS&quot;
+        android:resource=&quot;@xml/provider_paths&quot;/&gt;
+&lt;/provider&gt;
+
+
+In the app&#x27;s project:
+
+
+In the &quot;xml&quot; subfolder under the &quot;res&quot; parent folder, add a file named provider_paths.xml with the following content:
+
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+    &lt;paths xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+    &lt;root-path path=&quot;/data/tmp/public&quot; name=&quot;public&quot;/&gt;
+    &lt;root-path path=&quot;/enterprise/usr&quot;  name=&quot;user&quot;/&gt;
+    &lt;external-path path=&quot;.&quot; name=&quot;external_files&quot;/&gt;
+    &lt;files-path path=&quot;.&quot; name=&quot;template&quot;/&gt;
+&lt;/paths&gt;
+
+Create a directory (e.g. ConfigDBs) inside the &quot;assets&quot; folder and copy the DataWedge Profile and/or config file within this folder:
+ 
+
+In the app, add a function called uploadTemplates(), which copies files from the &quot;assets&quot; directory and uploads them via the copy function copyFileViaSSM().
+
+
+public void uploadConfigDB(boolean isFullDB) {
+
+AssetManager assetManager = getAssets();
+String[] files = null;
+
+try {
+    files = assetManager.list(ASSET_DB_DIR);
+} 
+catch (IOException e) {
+    Log.e(TAG, &quot;Failed to get asset file list: &quot; + e.getMessage());
+}
+
+if (files != null) {
+
+    for (String filename : files) {
+
+        if (isFullDB &amp;amp;&amp;amp; filename.equals(&quot;datawedge.db&quot;))
+        {
+            integrateFile(assetManager, filename);
+        } 
+        else if (!isFullDB &amp;amp;&amp;amp; filename.startsWith(&quot;dwprofile_&quot;))
+        {
+            integrateFile(assetManager, filename);
+        }
+    }
+} 
+else {
+    Log.d(TAG, &quot;asset file list is null&quot;);
+}
+
+
+}
+
+private void integrateFile(AssetManager assetManager, String filename) {
+    InputStream in = null;
+    OutputStream out = null;
+
+try {
+    in = assetManager.open(ASSET_DB_DIR + &quot;/&quot; + filename);
+
+    String outDir = getFilesDir().getAbsolutePath() + &quot;/&quot;;
+    File outFile = new File(outDir, filename);
+
+    out = new FileOutputStream(outFile);
+
+    copyFile(in, out);
+    in.close();
+    out.flush();
+    out.close();
+
+    copyFileViaSSM(outFile.getAbsolutePath(), &quot;config&quot;);
+
+} 
+catch (IOException e) {
+    Log.e(&quot;tag&quot;, &quot;Failed to copy asset file: &quot; + filename, e);
+}
+
+
+}
+
+private void copyFile(InputStream in, OutputStream out) throws IOException {
+    byte[] buffer = new byte[1024];
+    int read;
+    while ((read = in.read(buffer)) != -1) {
+        out.write(buffer, 0, read);
+    }
+}
+
+public void copyFileViaSSM(String sourcePath, String type) {
+
+File file = new File(sourcePath);
+
+Uri contentUri = FileProvider.getUriForFile(this, this.getPackageName() + &quot;.provider&quot;, file);
+
+this.getApplicationContext().grantUriPermission(&quot;com.zebra.securestoragemanager&quot;, contentUri, Intent.FLAG_GRANT_READ_URI_PERMISSION); // Needed to grant permission for SSM to read the uri
+
+Uri cpUriQuery = Uri.parse(AUTHORITY_FILE + this.getPackageName());
+
+try {
+    ContentValues values = new ContentValues();
+    values.put(&quot;target_app_package&quot;, String.format(&quot;{\&quot;pkgs_sigs\&quot;: [{\&quot;pkg\&quot;:\&quot;%s\&quot;,\&quot;sig\&quot;:\&quot;%s\&quot;}]}&quot;, &quot;com.symbol.datawedge&quot;, signature));
+    values.put(&quot;data_name&quot;, String.valueOf(contentUri)); // Passes the content uri as a input source
+    values.put(&quot;data_type&quot;, &quot;3&quot;);
+    values.put(&quot;data_value&quot;, &quot;com.symbol.datawedge/&quot; + type + &quot;/&quot; + file.getName()); // Replace “targetPath” with the package name of the target app that is accessing the deployed file (or retrieve the app package using context.getPackageName()) followed by &quot;/&quot; and the full path of the file, e.g. &quot;context.getPackageName()/A.txt&quot;
+
+    values.put(&quot;data_persist_required&quot;, false);
+    Uri createdRow = this.getContentResolver().insert(cpUriQuery, values);
+    Log.i(TAG, &quot;SSM Insert File: &quot; + createdRow.toString());
+
+} 
+catch (Exception e) {
+    Log.e(TAG, &quot;SSM Insert File - error: &quot; + e.getMessage() + &quot;\n\n&quot;);
+}
+
+
+}
+
+Call the method uploadConfigDB(boolean isFullDB) to upload the configuration DB files from the asset folder to DataWedge.
+
+
+If uploading a full configuration DB, pass &quot;true&quot; for the &quot;isFullDB&quot; parameter 
+
+If uploading a profile DB, pass &quot;false&quot; for the &quot;isFullDB&quot; parameter
+
+
+
+
+Zebra App Deployment Files
+
+Use the values below to deploy, share or consume files between and among Zebra apps on a device. 
+
+ 
+
+
+
+
+
+Also See
+
+
+File Sharing with SSM
+
+Data Sharing with SSM
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2026 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

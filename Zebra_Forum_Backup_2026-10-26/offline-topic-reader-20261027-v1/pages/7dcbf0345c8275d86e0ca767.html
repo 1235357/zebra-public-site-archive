@@ -1,0 +1,190 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Connection with printer in iOS Application.</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Connection with printer in iOS Application.</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25857; original snapshot: threads/resume-00572.html; SHA-256: 011a60b02e6ca2692535377290860e1a9e2e920a333b443fdacd73ec18280c43</small><pre id="topic">
+
+    
+        Connection with printer in iOS Application.
+
+
+        
+      
+                        
+                    
+            O
+          
+          Oleh Podluzhnyi
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            51
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello guys.
+I have got some problem.
+My App works with printer Zebra ZQ520. I connected with BLE. When I send some command like
+    private func writeZebraScript(zpl: String) {
+        guard let bytes = zpl.data(using: .utf8), let chars = self.discoverWriteCharacteristic
+        else {
+            let error = &quot;Problem with data for zebra script.\nBytes =&quot; +
+                &quot;\(zpl.data(using: .utf8) ?? Data())\nCharacteristic = &quot; +
+                &quot;\(String(describing: self.discoverWriteCharacteristic))\n&quot;
+            logMessage(error, in: #function, from: &quot;\(Self.self)&quot;)
+            return
+        }
+        self.selectedPrinter?.writeValue(bytes, for: chars, type: .withResponse)
+    }
+   func sendToPrint(text: String) {
+        let str = &quot;^XA^FO20,20^BY3^B3N,N,150,Y,N^FD\(text)^FS^XZ&quot;
+        let zpl: String = str + &quot;\r\n&quot;
+        self.writeZebraScript(zpl: zpl)
+    }
+    func calibrate() {
+        let zpl = &quot;~jc^xa^jus^xz +\r\n&quot;
+        self.writeZebraScript(zpl: zpl)
+    }
+    func initialSettings() {
+        let zpl = &quot;! U1 setvar \&quot;media.type\&quot; \&quot;label\&quot;&quot; +
+            &quot;! U1 setvar \&quot;media.sense_mode\&quot; \&quot;gap\&quot;&quot; + &quot;~jc^xa^jus^xz&quot; + &quot;~SD30&quot;
+        self.writeZebraScript(zpl: zpl)
+    }
+It works amazing.
+But when I try to do
+guard let serialNumber = self.receivedDataFromDISCharacteristic[
+                ZebraKeysLib().zPrinteDisSerialNumber
+        ] else {
+            logMessage(&quot;serialNumber is nil&quot;, in: #function, from: &quot;\(Self.self)&quot;)
+            return
+        }
+        self.connection = MfiBtPrinterConnection(serialNumber: serialNumber)
+        self.connection?.open()
+My self.connection?.isConnected is always false. And I`m not able to do my next work. Why do I have this problem?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Looks like you are using BLE to obtain the printer&#x27;s serial number. Then switch to use Bluetooth Classic. Before you do the following, you would need to make sure that the printer&#x27;s Bluetooth is paired with the iOS device first.
+    self.connection = MfiBtPrinterConnection(serialNumber: serialNumber)
+    self.connection?.open()
+You also need to make sure that you have the following in your info.plist, as the printer uses com.zebra.rawport as the protocol string to communicate with the iOS device.
+Lastly, iOS uses the name of the Bluetooth accessory to establish the connection. By default, the Bluetooth name of Zebra printer is the serial number. User can change the Bluetooth name (a.k.a. friendly_name) of the printer. If you have ever changed the friendly_name (! U1 setvar &quot;device.friendly_name&quot; &quot;NewName&quot;), then you need to use the NewName instead of the serial number.
+Check out the documentation about&amp;nbsp;MfiBtPrinterConnection.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

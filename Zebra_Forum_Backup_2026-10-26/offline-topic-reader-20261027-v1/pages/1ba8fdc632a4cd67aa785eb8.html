@@ -1,0 +1,147 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>EMDK Support for USB and BT</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>EMDK Support for USB and BT</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/emdk-support-usb-and-bt; original snapshot: threads/00346.html; SHA-256: 29346430217970cc0f815d77129ef4a3c438fc14ec5a50f0a89b62cb20f33612</small><pre id="topic">
+
+    
+        EMDK Support for USB and BT 
+
+
+        
+      
+                        
+                    
+            M
+          
+          Marshall Ellis
+          9 months 2 weeks ago
+        
+        
+      
+        
+            
+                  
+            
+            111
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello all:We currently support the RFD90 through a hardware (USB/NGE?) but need to add BlueTooth connectivity.When trying to implement this it looks like we cannot connect to the reader any longer???(Running on TC78 Android 14)Now getting an error when trying to connect and Co Pilot is telling me: &quot;Cause: Android (API level enforced on your device) requires callers to specify receiver export flags when registering non-system BroadcastReceivers. The Zebra Readers constructor calls registerReceiver(...) without the new flags and triggers the SecurityException.Two safe fixes (brief):Correct fix: update the Zebra RFID SDK to a version that supports the device Android API (preferred).Workaround: wrap the Context you pass into Readers with a ContextWrapper that supplies the required flag when the platform requires it.Below is the workaround implementation. It overrides registerReceiver(...) and uses RECEIVER_NOT_EXPORTED on newer Android versions, then shows how to pass the wrapper into the Zebra Readers constructor.Explanation: ReceiverSafeContext delegates to the real Context but, on Android API levels that require flags, calls the registerReceiver overload that includes the export flag so the library call succeeds.&quot; I cannot see where the release notes mention this anywhere so do we need to update?We are running 2.0.0.2AI also mentioned that it is recommended by Zebra that you create different APKs for each connection type so it&#x27;s saying that we need to create a different flavor for each connection type??? Surely this is not the case???I&#x27;m not naive enough to think AI is right all the time but I figure you guys in this community would know better...  Thank you Marshall Ellis
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              N
+            
+          
+                
+          
+            Nicola De Zolt
+          
+          
+            9 months 1 week ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi - I&#x27;m from the mobile computing team, and I recently supported a customer with the same issue. Try using the latest RFID SDK found here Zebra RFID Reader SDK for Android | Zebra  (2.0.5.238 as of today, Jan. 19 2026). Should you need additional help, we&#x27;ll pull in the RFID folks.
+Nicola dzl
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

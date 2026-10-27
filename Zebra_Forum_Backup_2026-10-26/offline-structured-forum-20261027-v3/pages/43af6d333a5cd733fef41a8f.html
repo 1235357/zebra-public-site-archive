@@ -1,0 +1,201 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>How to set Pre-Filter for my MC3300?</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/forum/25996; snapshot supplement/threads/f1733142b55e76613b12d662.html; SHA-256 59d9dbbdbf85e884e936df3d24d0a64429361b712bde5e626be39d17d142bf55. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">How to set Pre-Filter for my MC3300?</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            A
+          </div>
+          <div class="forum-topic__author-name">Anonymous</div>
+          <div class="forum-topic__timestamp">5 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            197
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>This is my current config for RFID :<br>
+---------------------------------------------<br>
+// set trigger mode as rfid so scanner beam will not come<br>
+reader.Config.setTriggerMode(ENUM_TRIGGER_MODE.RFID_MODE, true);<br>
+// set start and stop triggers<br>
+reader.Config.setStartTrigger(triggerInfo.StartTrigger);<br>
+reader.Config.setStopTrigger(triggerInfo.StopTrigger);<br>
+// power levels are index based so maximum power supported get the last one<br>
+// general<br>
+MAX_POWER = reader.ReaderCapabilities.getTransmitPowerLevelValues().length - 1;<br>
+// set antenna configurations<br>
+Antennas.AntennaRfConfig config = reader.Config.Antennas.getAntennaRfConfig(1);<br>
+config.setTransmitPowerIndex(MAX_POWER);<br>
+config.setrfModeTableIndex(0);<br>
+config.setTari(0);<br>
+reader.Config.Antennas.setAntennaRfConfig(1, config);<br>
+// Set the singulation control<br>
+Antennas.SingulationControl s1_singulationControl = reader.Config.Antennas.getSingulationControl(1);<br>
+s1_singulationControl.setSession(SESSION.SESSION_S0);<br>
+s1_singulationControl.Action.setInventoryState(INVENTORY_STATE.INVENTORY_STATE_A);<br>
+s1_singulationControl.Action.setSLFlag(SL_FLAG.SL_ALL);<br>
+reader.Config.Antennas.setSingulationControl(1, s1_singulationControl);<br>
+// delete any prefilters<br>
+reader.Actions.PreFilters.deleteAll();<br>
+------------------------------------------------------<br>
+ With above config, my reader is scan tag successfully.<br>
+Now I want to set pre-filter to scan only tag (GRAI96) which start with "E2801160600002", others are reject by machine.<br>
+--------------------------------------<br>
+I've tried using this code :<br>
+String tag = "E2801160600002";<br>
+// Add state aware pre-filter<br>
+PreFilters filters = new PreFilters();<br>
+PreFilters.PreFilter filter = filters.new PreFilter();<br>
+filter.setAntennaID((short) 1);// Set this filter for Antenna ID 1<br>
+// hex value tag<br>
+filter.setTagPattern(tag);// Tags which starts with passed pattern<br>
+filter.setTagPatternBitCount(tag.length() * 4);<br>
+filter.setBitOffset(32); // skip PC bits (always it should be in bit length)<br>
+filter.setMemoryBank(MEMORY_BANK.MEMORY_BANK_EPC);<br>
+filter.setFilterAction(FILTER_ACTION.FILTER_ACTION_STATE_AWARE); // use state aware singulation<br>
+filter.StateAwareAction.setTarget(TARGET.TARGET_INVENTORIED_STATE_S0); // inventoried flag of session S1 of matching tags to B<br>
+filter.StateAwareAction.setStateAwareAction(STATE_AWARE_ACTION.STATE_AWARE_ACTION_NOT_INV_B); // NOT INV B OR NOT DSRT SL<br>
+// not to select tags that match the criteria<br>
+try {<br>
+	reader.Actions.PreFilters.add(filter);<br>
+} catch (InvalidUsageException e) {<br>
+	e.printStackTrace();<br>
+} catch (OperationFailureException e) {<br>
+	e.printStackTrace();<br>
+}<br>
+------------------------------------------<br>
+But this seem not working, reader allow every tags. I think there's a problem in my filter config because I don't understand about filter action or state aware, etc...<br>
+So how I config pre-filter with above setting?</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-47829" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              I
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Ian Hatton</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            5 years 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Please refer to the latest version of 123RFID Mobile posted here :&amp;nbsp;<span data-original-href="https://www.zebra.com/us/en/support-downloads/software/demo/123rfid-mobi">https://www.zebra.com/us/en/support-downloads/software/demo/123rfid-mobi</span>... . The source code of this demo app includes tag pre-filtering and should provide a working reference for your own code.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/forum/25996%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/forum/25996%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

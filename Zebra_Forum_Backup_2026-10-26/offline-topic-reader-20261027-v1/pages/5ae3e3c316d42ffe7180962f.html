@@ -1,0 +1,247 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MSP 3.3.1: Check in on AC power?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MSP 3.3.1: Check in on AC power?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/26600; original snapshot: threads/01598.html; SHA-256: cc01e06cd7c61ac97a68ba546bf1b8aa698a26a354cf705a14ac2b9982ae0688</small><pre id="topic">
+
+    
+        MSP 3.3.1: Check in on AC power?
+
+
+        
+      
+                        
+                    
+            H
+          
+          Hunter Bradshaw
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            19
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Team,
+ 
+Other MDM’s (eg Avalanche) have the option that as soon as the device gets onto AC power, it will force a check in.  I was looking for a similar setting in Agent.30.setting.xml but didn’t find anything.
+ 
+Please advise if I’m missing something, or there’s a work-around/package/registry key/etc that can do the trick.  cheers, Daniel
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              K
+            
+          
+                
+          
+            Kjell Lloyd
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Possible work arounds if this is a show stopper vs Avalanche (maybe someone knows better solutions).    Symscript:    ... OnPower AC GOSUB OnACPower SLEEP INFINITE :END   :OnACPower &amp;nbsp;&amp;nbsp; &amp;nbsp;RUN &quot;\windows\30agent.exe&quot; &quot;-R1&quot; RETURN      Optional in C (not fully tested):     myapp1.exe could contain:     CeRunAppAtEvent(&quot;myapp2.exe&quot;, NOTIFICATION_EVENT_ON_AC_POWER);     myapp2.exe then launches the 30agent.exe with a parameter to do a force check-in (probably need to full-fill the conditions also).      PROCESS_INFORMATION pinfo;  DWORD dwExitCode = 0;  if (CreateProcess(_T(&quot;\\windows\\30agent.exe&quot;), _T(&quot;-R1&quot;), NULL, NULL, FALSE, 0, NULL, NULL, NULL, &amp;amp;pinfo))  {    //uncomment below line to wait for the process to exit  //WaitForSingleObject(pinfo.hProcess, INFINITE); &amp;nbsp;  Sleep(10); //wait for the process to initilize  CloseHandle(pinfo.hProcess);  CloseHandle(pinfo.hThread);  } else  {  //something went wrong....  }    the above could merged into one exe... and consider using the RequestPowerNotifications(..) for power notification but requires more code.   For more info of the parameters for the MSP client can be found in the MSP documentation.   The  -R1 parameter will do a full regDoc.   Hope this helps.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hunter Bradshaw
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for the responses.
+I tried the C code... with the CeRunAppAtEvent but it appears Motorola don’t actually pass on the AC event – I get other events, for instance I can register for “NOTIFICATION_EVENT_WAKEUP” and the notification comes up properly when the device wakes up, but if I register for “NOTIFICATION_EVENT_ON_AC_POWER” I never actually receive the event.
+&amp;nbsp;
+Test code below...
+&amp;nbsp;
+#include &quot;stdafx.h&quot;
+#include &quot;notify.h&quot;
+&amp;nbsp;
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
+{
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; if(!*lpCmdLine)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // if no command line, register AC power event
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; TCHAR exepath[MAX_PATH];
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; if(!GetModuleFileName(0, exepath, MAX_PATH) != ERROR_SUCCESS)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return E_FAIL; // can&#x27;t determine EXE name :(
+&amp;nbsp;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; if(CeRunAppAtEvent(exepath, NOTIFICATION_EVENT_ON_AC_POWER) == TRUE)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; MessageBox(NULL, L&quot;ac registered&quot;, L&quot;foo&quot;, MB_OK);
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; else
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; MessageBox(NULL, L&quot;couldn&#x27;t register ac&quot;, L&quot;foo&quot;, MB_OK);
+&amp;nbsp;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; if(CeRunAppAtEvent(exepath, NOTIFICATION_EVENT_WAKEUP) == TRUE)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; MessageBox(NULL, L&quot;wakeup registered&quot;, L&quot;foo&quot;, MB_OK);
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; else
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; MessageBox(NULL, L&quot;couldn&#x27;t register wakeup&quot;, L&quot;foo&quot;, MB_OK);
+&amp;nbsp;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return ERROR_SUCCESS;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; else
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; // if command line, means it was launched by the notifications system and the event is passed as the parameter...
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; MessageBox(NULL, lpCmdLine, L&quot;got event&quot;, 0);
+&amp;nbsp;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; PROCESS_INFORMATION pi;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ZeroMemory( &amp;amp;pi, sizeof( pi ) );
+&amp;nbsp;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; return CreateProcess( L&quot;\\windows\\30agent.exe&quot;, L&quot;-R1 -C -J&quot;, NULL, NULL, false, 0, NULL, NULL, NULL, &amp;amp;pi );
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+}
+&amp;nbsp;
+&amp;nbsp;
+Do you have an example for using RequestPowerNotifications() instead? &amp;nbsp;Won’t that be less efficient, since the .exe will have to stay running all the time? cheers, Daniel
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

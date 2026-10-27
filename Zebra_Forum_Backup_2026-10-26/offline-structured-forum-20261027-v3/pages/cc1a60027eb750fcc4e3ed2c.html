@@ -1,0 +1,483 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Intent not being sent</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/intent-not-being-sent; snapshot threads/00538.html; SHA-256 e8f3f88128050673cac759fc63af023b8e14f17de396a50f108e8c6c2197d5be. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Intent not being sent</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            D
+          </div>
+          <div class="forum-topic__author-name">Dave Hon</div>
+          <div class="forum-topic__timestamp">3 years 4 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            598
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            4
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>I'm trying to send barcode data using dataWedge on a WS50. I'm working on an app in Kotlin.<br>
+<br>
+My receiver is registered, but the intent isn't being delivered. The logCat I placed in the receiver have never been triggered, even after I scan a barcode. Below are some code snippets and screenshots of my profile. The profile is loading because I am able to change device settings (screen brightness, for example.)</p>
+
+<p> </p>
+
+<p>Barcode Receiver</p>
+
+<pre><code>class BarcodeReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        Log.d("BarcodeReceiver", "onReceive triggered")
+        val action = intent.action
+        if (action != null &amp;&amp; action == "com.example.zonepick.SCAN") {
+            val extras = intent.extras
+            if (extras != null &amp;&amp; extras.containsKey("com.symbol.datawedge.data_string")) {
+                val barcodeData = extras.getString("com.symbol.datawedge.data_string")
+                Log.d("BarcodeReceiver", barcodeData.toString())
+            }
+        }
+    }
+}</code></pre>
+
+<p>Android Manifest<br>
+ </p>
+
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"&gt;
+    &lt;queries&gt;
+        &lt;package android:name="com.symbol.emdk.emdkservice" /&gt;
+    &lt;/queries&gt;
+    &lt;uses-permission android:name="com.symbol.emdk.permission.EMDK" /&gt;
+    &lt;uses-permission android:name="android.permission.BLUETOOTH" /&gt;
+    &lt;uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /&gt;
+    &lt;uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation" tools:targetApi="s" /&gt;
+    &lt;uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" /&gt;
+    &lt;uses-permission android:name="android.permission.BLUETOOTH_CONNECT" /&gt;
+    &lt;uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" tools:ignore="CoarseFineLocation" /&gt;
+    &lt;uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /&gt;
+    &lt;uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /&gt;
+    &lt;uses-permission android:name="android.permission.INTERNET"/&gt;
+    &lt;uses-feature android:name="android.hardware.type.watch"/&gt;
+    &lt;application
+        android:launchMode="singleTop"
+        android:name=".ZonePickApplication"
+        android:usesCleartextTraffic="true"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ZonePick"
+        tools:targetApi="31"&gt;
+        &lt;uses-library android:name="com.symbol.emdk"/&gt;
+        &lt;activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.ZonePick"
+            android:screenOrientation="portrait" &gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name="android.intent.action.MAIN" /&gt;
+
+                &lt;category android:name="android.intent.category.LAUNCHER" /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+        &lt;receiver
+            android:name=".BarcodeReceiver"
+            android:enabled="true"
+            android:exported="true"&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name="com.example.zonepick.SCAN" /&gt;
+                &lt;category android:name="android.intent.category.DEFAULT" /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/receiver&gt;
+
+    &lt;/application&gt;
+
+&lt;/manifest&gt;</code></pre>
+
+<p>Registering the receiver (This is in a composable loaded in the MainActivity<br>
+ </p>
+
+<pre><code>    DisposableEffect(Unit) {
+
+        val barcodeReceiver = BarcodeReceiver()
+
+        val intentFilter = IntentFilter("com.example.zonepick.SCAN")
+        Log.d("Home", "Registering receiver")
+        context.registerReceiver(barcodeReceiver, intentFilter)
+
+        onDispose {
+            context.unregisterReceiver(barcodeReceiver)
+            Log.d("Home", "Unregistering receiver")
+        }
+    }</code></pre>
+
+<p>The Profile:<br>
+<span data-image-source="https://developer.zebra.com/sites/default/files/inline-images/ProfileMain.png">[Image unavailable locally: https://developer.zebra.com/sites/default/files/inline-images/ProfileMain.png]</span><span data-image-source="https://developer.zebra.com/sites/default/files/inline-images/ProfileActvity.png">[Image unavailable locally: https://developer.zebra.com/sites/default/files/inline-images/ProfileActvity.png]</span><span data-image-source="https://developer.zebra.com/sites/default/files/inline-images/ProfileBarcode.png">[Image unavailable locally: https://developer.zebra.com/sites/default/files/inline-images/ProfileBarcode.png]</span><span data-image-source="https://developer.zebra.com/sites/default/files/inline-images/ProfileIntent.png">[Image unavailable locally: https://developer.zebra.com/sites/default/files/inline-images/ProfileIntent.png]</span></p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      4 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-52243" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              K
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Kyle Falconer</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I'm having the same issue with trying to get the WS50 to output barcode data. The same application and broadcast receiver is working on the TC52, but not the WS50. The scan button works, and I have a camera preview showing up, which beeps when a barcode is seen, but no data is ever sent.<br><br>Dave, what application are you using to view the profile in those last 4 screenshots? I've been trying to verify that my profile is correct, but the WS50 doesn't allow me to see the profile details within the DataWedge app, and the StageNow application on Windows doesn't  seem to be able to open the exported datawedge.db file (it's only able to open .zip and .xml).</p><p> </p><p>When I create the profile, I get "SUCCESS", so I assume everything is fine.</p><pre><code class="language-plaintext"> Command:      com.symbol.datawedge.api.SET_CONFIG
+ Result:       SUCCESS
+ Result Info:  PROFILE_NAME: ProfileDemo
+ CID:          SET_INTENT_OUTPUT</code></pre><p> </p><p>This is how I'm building my profile Bundle:</p><pre><code class="language-java">class DataWedgeProfileBuilder @Inject constructor(
+    @ActivityContext context: Context,
+    private val signatureProvider: SignatureProvider
+){
+    
+    private val profileIntentAction = context.resources.getString(R.string.activity_intent_filter_action)
+
+    fun buildProfileBundle() : Bundle {
+
+        val profileBundle = createProfile()
+
+        val bundlePluginConfig = mutableListOf&lt;Bundle&gt;()
+        bundlePluginConfig.add(configureScannerPlugin())
+        bundlePluginConfig.add(configureIntentPlugin())
+
+
+        profileBundle.putParcelableArray("PLUGIN_CONFIG", bundlePluginConfig.toTypedArray())
+        return profileBundle
+    }
+
+    private fun createProfile(profileName:String = "ProfileDemo") : Bundle {
+        val bMain = Bundle()
+        bMain.putString("PROFILE_NAME", profileName)
+        bMain.putString("PROFILE_ENABLED", "true")
+        bMain.putString("CONFIG_MODE", "CREATE_IF_NOT_EXIST")
+        return bMain
+    }
+
+    private fun configureScannerPlugin() :Bundle {
+        val barcodePluginBundle = Bundle()
+        barcodePluginBundle.putString("PLUGIN_NAME", "BARCODE")
+        barcodePluginBundle.putString("RESET_CONFIG", "true")
+
+        val barcodeParamsBundle = Bundle()
+        barcodeParamsBundle.putString("decoder_code39", "true")
+        barcodeParamsBundle.putString("decoder_upca", "true")
+        barcodeParamsBundle.putString("scanner_selection", "auto")
+        barcodeParamsBundle.putString("scanner_input_enabled", "true")
+        barcodeParamsBundle.putStringArray("scanner_trigger_resource", arrayOf("LEFT", "RIGHT"))
+        barcodeParamsBundle.putString("picklist", "1");
+        barcodePluginBundle.putParcelableArrayList("PARAM_LIST", arrayListOf(barcodeParamsBundle))
+        return barcodePluginBundle
+    }
+
+
+    private fun configureIntentPlugin() : Bundle {
+        val bConfigIntent = Bundle()
+        bConfigIntent.putString("PLUGIN_NAME", "INTENT")
+        bConfigIntent.putString("RESET_CONFIG", "true")
+
+        val intentParams = Bundle()
+        intentParams.putString("intent_output_enabled", "true")
+        intentParams.putString("intent_action", profileIntentAction)
+        intentParams.putString("intent_category", "android.intent.category.DEFAULT")
+        intentParams.putInt("intent_delivery", 2)
+
+        val component0 = Bundle()
+        signatureProvider.getSignatures().firstOrNull()?.let { sig -&gt;
+            component0.putString("PACKAGE_NAME", sig.packageName)
+            component0.putStringArray("ACTIVITY_LIST", listOf("*").toTypedArray());
+            component0.putString("SIGNATURE", sig.sigSha1)
+        }
+        intentParams.putParcelableArray("intent_component_info", listOf(component0).toTypedArray())
+        bConfigIntent.putBundle("PARAM_LIST", intentParams)
+
+        return bConfigIntent
+    }
+}
+</code></pre><p> </p><p>And I'm creating the Intent in another class:</p><pre><code class="language-java">        val bMain = profileBuilder.buildProfileBundle()
+
+        val iSetConfig = Intent()
+        iSetConfig.action = "com.symbol.datawedge.api.ACTION"
+        iSetConfig.putExtra("com.symbol.datawedge.api.SET_CONFIG", bMain)
+        iSetConfig.putExtra("SEND_RESULT", "LAST_RESULT")
+        iSetConfig.putExtra("COMMAND_IDENTIFIER", "SET_INTENT_OUTPUT")</code></pre><p> </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-52244" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>A Quick Question:</p><p>Have you referred to the TechDoc Datawedge article regarding the WS50?</p><p><span data-original-href="https://techdocs.zebra.com/datawedge/13-0/guide/programmers-guides/ws50/">https://techdocs.zebra.com/datawedge/13-0/guide/programmers-guides/ws50/</span></p><p>There is also a Demo that goes with that for the WS50 (Truck Loading Demo) here:</p><p><span data-original-href="https://techdocs.zebra.com/ws50/guide/demo/truck-loading/">https://techdocs.zebra.com/ws50/guide/demo/truck-loading/</span><br><br>I would expect that with the cut down version of Android that the WS50 operates with - that EMDK may not function as expected.<br>( EDMK has been suggested to developers to migrate to Datawedge.)</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-52245" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              K
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Kyle Falconer</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thanks for the response Sean. The truck loading demo does work for me on the WS50, but the code provided does not include the profile creation step.<br><br>How can I compare my configuration with <span>dwprofile_truckloadingdemo.db or validate that my configuration is setting the required values correctly? I noticed that I can open dwprofile_truckloadingdemo.db in an SQLite viewer, but that's really cumbersome.</span></p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-52247" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Kyle.</p><p>As much as SQLite viewer allows you to see the data, Try to use Datawedge to view the config instead if you have a Zebra Android device (Like a TC52 or an MC33.)</p><p>You can import the "truckloading_demo" profile onto these platforms and use Datawedge to look at the config.</p><p>Similarly - when you make a change to your profile "programmatically" - you can check on this with Datawedge.</p><p>*(A good example of this is using DataCapture1 on a Zebra Android Device - uncheck all 4 barcode decoders, set the setting, and quit the app, go into Datawedge app, and open the "DWDatacapture1" profile and look at the scanner settings - and the "Decoders" menu and see the 4 types that are now disabled. )*</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/intent-not-being-sent%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/intent-not-being-sent%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

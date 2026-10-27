@@ -1,0 +1,225 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Enterprise Browser on CC600 fails to enable scanner</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Enterprise Browser on CC600 fails to enable scanner</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/enterprise-browser-cc600-fails-enable-scanner; original snapshot: threads/00643.html; SHA-256: 363dc712b5b45e4c6f15b7289c08948a8c216bc4b804bda6c993755f02e3d275</small><pre id="topic">
+
+    
+        Enterprise Browser on CC600 fails to enable scanner
+
+
+        
+      
+                        
+                    
+            C
+          
+          Christopher Barnes
+          3 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            419
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Working on a CC600 Android 10 device using the JS ebapi code in Enterprise Browser 3.3.2.1, I was able to develop a simple scanning interface that worked; I enabled the scanner and set a callback function that is used on scan. But now that I am trying to roll it out, the devices I have for rollout are loaded with Android 11, and the same code that worked in 10 does not enable the scanner in 11. It shows my page just fine, so I know the config.xml is discovered, but no scanner. The same happens with the included feature-demo page - it also will not allow scanning on the A11 devices. I can enumerate, enable, and start but the scanner does not activate. However, the DWDemo on the device enables it just fine, and allows scans in that app. 
+
+Any thoughts? I am trying to determine whether I have done something different to the A10 device that I have forgotten in the setup of the A11 devices, but I am coming up empty.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            3 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Christopher,
+There are a number of changes in A11 &amp; E.B 3.3 which may cause this issue, such as Scoped Storage &amp; the updated package name of EB.
+Please take a look at these 3.3 notes on TechDocs, which may point you in the right direction.
+Thanks,
+James
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Christopher Barnes
+          
+          
+            3 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi James,
+
+I appreciate the response and the link, thank you. I looked it over and tested some changes, and my results are a bit mixed.
+
+1) Package name change
+
+The good news is I have no references in my Config.xml or code that refer to the old package name, since all my development has been on version 3.3+.
+
+2) Config.xml files must be redeployed to /enterprise/device/enterprisebrowser
+
+I did this and EB behaved as if it had no Config.xml, created a default file and placed it in the package dir of com.zebra.mdna.enterprisebrowser. It ignores my copy in the designated location. Therefore I continue to place my Config.xml in the package dir.
+
+3) All references in existing Config.xml files to restricted storage locations must be modified to reflect the path above
+
+I changed all the %INSTALLDIR% references in the Config.xml to /enterprise/device/enterprisebrowser and got bad links for my index.html that was moved. However, the log file, whose designated location was also changed, was created in /enterprise/device/enterprisebrowser. That is cool, but did not help with functionality of the scanner. And my solution is hosted off-device, so if the Config.xml needs to be in the package dir despite documentation to the contrary, I am not seeing the relevance. 
+
+4) Prior to changing these things, I did some more reading and testing, and found that what was failing for me was specifically the EB.Barcode.Enable. When I invoke the enable followed by the EB.Barcode.start() function it fails because the enable failed first. But after looking at the documentation, I decided to try the EB.Barcode.take() call. I used the same parameters and same callback function as I did for the enable call, and &quot;take&quot; worked, though not as seamlessly as I would prefer for my use case. But, it is usable if nothing else will work.
+
+So if the enable function fails due to something related to the Android 11 storage restrictions, why would &quot;take&quot; work with no other changes? And if it&#x27;s unrelated to the storage restrictions, what happened? And is there a way to make it work?
+
+Appreciate any thoughts. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

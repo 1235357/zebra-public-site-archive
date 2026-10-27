@@ -1,0 +1,318 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Ribbon and Media usage tracking on Zebra Printers</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Ribbon and Media usage tracking on Zebra Printers</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/ribbon-and-media-usage-tracking-zebra-printers; original snapshot: threads/00490.html; SHA-256: 4cdb3b143acc1042649695d47d93c67cf0901f04701aab1d0cc1aece7d7dde47</small><pre id="topic">
+
+    
+        Ribbon and Media usage tracking on Zebra Printers
+
+
+        
+      
+                        
+                    
+            S
+          
+          SDK NDD
+          3 years 1 month ago
+        
+        
+      
+        
+            
+                  
+            
+            318
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                          //Solved
+        
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+
+ 
+
+We are developing a solution for monitoring Zebra devices, especially Zebra Printers.
+
+We are using the Zebra Link-OS SDK and SGD Commands to retrieve data from the printer and monitor its status, and for now, the connection method is USB.
+
+Right now we are testing how much data we can retrieve about the Ribbon and Media of the devices, and we are looking if there is any way to retrieve data related to the current usage of the Ribbon and the Media, more specifically:
+
+Initial size (original size of the ribbon/media) and Remaining size (how much is left to print of the ribbon/media).
+
+The goal is to monitor the usage status of Ribbon and Media, in the same way we track Toner and Ink usage in traditional MFP Printers.
+
+ 
+
+ 
+
+Currently, we have a ZD230T and a ZT231 here in the lab to test, and looking at the documentation, I found some SGD commands that looks like what we need, they are in the &quot;media.cartridge&quot; and &quot;ribbon.cartridge&quot; part.
+
+ 
+
+&quot;media.cartridge.total_label_cnt&quot;
+
+&quot;media.cartridge.labels_remaining&quot;
+
+ 
+
+&quot;ribbon.cartridge.length&quot;
+
+&quot;ribbon.cartridge.length_remaining&quot;
+
+
+So here are the questions:
+
+As I understood, this data is only available when the printer is using a cartridge, and it looks like when the printer is using standard ribbon/media, there is no usage data available to get, is that correct?
+
+If yes, for the printers that use standard ribbon/media, there is any other way to get this information via SDK or SGD ? or even other methods that we could do via code?
+
+And about Zebra Ribbon/Media Cartridges, do you have a list of the Zebra printers that are compatible with ribbon/media cartridges?
+
+ 
+
+ 
+
+Best regards.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+        
+      
+        ✓ Accepted Solution
+      
+      
+          
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Your understanding is correct. The cartridge SGD is only applicable to printers that use the label cartridge and/or ribbon cartridge. For printers that do not use cartridges, we can use the odometer SGDs to derive the media usage. There are a number of odometers on the printer. Run the odometer SGD, you will get a list of the odometers.
+### odometer SGD
+! U1 getvar &quot;odometer&quot;
+
+### Output
+Received:848 bytes 
+odometer.
+odometer.user_label_count : 0 , Choices: 0-4294967295
+odometer.user_label_count1 : 348 
+odometer.user_label_count2 : 348 
+odometer.total_label_count : 348 
+odometer.total_print_length : 925 INCHES, 2352 CENTIMETERS 
+odometer.net_media_length : 193 INCHES, 491 CENTIMETERS 
+odometer.net_ribbon_length : 587 INCHES, 1492 CENTIMETERS 
+odometer.latch_open_count : 58 , Choices: 0-4294967295
+odometer.label_dot_length : 0 
+odometer.media_marker_count : 226 
+odometer.media_marker_count1 : 925 INCHES, 2352 CENTIMETERS 
+odometer.media_marker_count2 : 925 INCHES, 2352 CENTIMETERS 
+odometer.headclean : 925 INCHES, 2352 CENTIMETERS 
+odometer.headnew : 925 INCHES, 2352 CENTIMETERS 
+odometer.total_cuts : 0 
+odometer.user_total_cuts : 0 
+odometer.rfid.
+odometer.rfid.valid_resettable : 81 
+odometer.rfid.void_resettable : 27 
+
+### odometer.user_label_count1 SGD
+! U1 getvar &quot;odometer.user_label_count1&quot;
+
+### Output
+Received:5 bytes 
+&quot;348&quot; 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+      
+    
+  
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Your understanding is correct. The cartridge SGD is only applicable to printers that use the label cartridge and/or ribbon cartridge. For printers that do not use cartridges, we can use the odometer SGDs to derive the media usage. There are a number of odometers on the printer. Run the odometer SGD, you will get a list of the odometers.
+### odometer SGD
+! U1 getvar &quot;odometer&quot;
+
+### Output
+Received:848 bytes 
+odometer.
+odometer.user_label_count : 0 , Choices: 0-4294967295
+odometer.user_label_count1 : 348 
+odometer.user_label_count2 : 348 
+odometer.total_label_count : 348 
+odometer.total_print_length : 925 INCHES, 2352 CENTIMETERS 
+odometer.net_media_length : 193 INCHES, 491 CENTIMETERS 
+odometer.net_ribbon_length : 587 INCHES, 1492 CENTIMETERS 
+odometer.latch_open_count : 58 , Choices: 0-4294967295
+odometer.label_dot_length : 0 
+odometer.media_marker_count : 226 
+odometer.media_marker_count1 : 925 INCHES, 2352 CENTIMETERS 
+odometer.media_marker_count2 : 925 INCHES, 2352 CENTIMETERS 
+odometer.headclean : 925 INCHES, 2352 CENTIMETERS 
+odometer.headnew : 925 INCHES, 2352 CENTIMETERS 
+odometer.total_cuts : 0 
+odometer.user_total_cuts : 0 
+odometer.rfid.
+odometer.rfid.valid_resettable : 81 
+odometer.rfid.void_resettable : 27 
+
+### odometer.user_label_count1 SGD
+! U1 getvar &quot;odometer.user_label_count1&quot;
+
+### Output
+Received:5 bytes 
+&quot;348&quot; 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

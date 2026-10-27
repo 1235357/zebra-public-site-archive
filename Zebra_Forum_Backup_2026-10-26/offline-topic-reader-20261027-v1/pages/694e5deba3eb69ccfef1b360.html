@@ -1,0 +1,171 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Error connecting to printer ZD620 through bluetooth from Android devices</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Error connecting to printer ZD620 through bluetooth from Android devices</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25609; original snapshot: threads/resume-00518.html; SHA-256: 5aea0b404f7e4a48e478e97ea2c2b24113864113bf070d7329a541537c7c6592</small><pre id="topic">
+
+    
+        Error connecting to printer ZD620 through bluetooth from Android devices
+
+
+        
+      
+                        
+                    
+            S
+          
+          Shiyam SS
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            135
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+We have built a Xamarin app that can print some labels. We run this app in Android 8.x and use bluetooth connectivity for sending print jobs. Randomly, the connection creation is failing with below exception. I&#x27;m not sure what exactly is causing this exception when trying to connect as its very random. Any help in this highly appreciated.
+Zebra.Sdk.Comm.ConnectionException: Could not connect to device: read failed, socket might closed or timeout, read ret: -1 ---&gt; Zebra.Sdk.Comm.ConnectionException: read failed, socket might closed or timeout, read ret: -1
+   --- End of inner exception stack trace ---
+  at Java.Interop.JniEnvironment+InstanceMethods.CallVoidMethod (Java.Interop.JniObjectReference instance, Java.Interop.JniMethodInfo method) [0x00068] in :0
+  at Android.Runtime.JNIEnv.CallVoidMethod (System.IntPtr jobject, System.IntPtr jmethod) [0x0000e] in :0
+  at Zebra.Sdk.Comm.ConnectionA.Open () [0x0004a] in :0
+  at LinkOS.Plugin.ConnectionImplementation.Open () [0x00001] in :0
+  at MACHe.Implementations.Services.Printing.Label.ZebraPrinterConnectionService.ConnectToZebraPrinter (MACHe.Implementations.Services.Printing.Library.Printer printer) [0x0004c] in :0
+  --- End of managed Zebra.Sdk.Comm.ConnectionException stack trace ---
+com.zebra.sdk.comm.ConnectionException: Could not connect to device: read failed, socket might closed or timeout, read ret: -1
+                at com.zebra.sdk.comm.ConnectionA.throwAsConnectionException(Unknown Source:40)
+                at com.zebra.sdk.comm.ConnectionA.open(Unknown Source:37)
+                at com.zebra.sdk.comm.BluetoothConnection.open(Unknown Source:3)
+Caused by: com.zebra.sdk.comm.ConnectionException: read failed, socket might closed or timeout, read ret: -1
+                at com.zebra.sdk.comm.internal.BluetoothZebraConnectorImpl.open(Unknown Source:36)
+                at com.zebra.sdk.comm.ConnectionA.open(Unknown Source:7)
+                ... 1 more
+SDK: LinkOs Xamarin SDK 1.2.0
+Connection creation Code
+var connection = ConnectionBuilder.Current.Build($&quot;BT:{printer.macAddr}&quot;);
+connection.Open(); // This is where we get Exception
+Printer Model: ZD620
+Cheers,
+Shiyam
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            6 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Before calling connection.Open(), make sure the connection closing is not in progress. For example, it takes 5 seconds (by default) to completely close a BT connection. If the BT connect was in the middle of closing, we would get an exception if we called connection.Open(). Make sure the open() and close() are not interleaved, which is a common cause of this type of exceptions randomly.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

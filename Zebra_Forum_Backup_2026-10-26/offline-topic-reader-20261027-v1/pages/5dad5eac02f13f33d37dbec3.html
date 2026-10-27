@@ -1,0 +1,379 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Receive a response to sending a job to a printer via TCP</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Receive a response to sending a job to a printer via TCP</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/receive-response-sending-job-printer-tcp; original snapshot: threads/00163.html; SHA-256: 0f0c875c35e2eba25cdbc7c22ec2945b9f130b78526d4fb80e9d62d14a4578a9</small><pre id="topic">
+
+    
+        Receive a response to sending a job to a printer via TCP
+
+
+        
+      
+                        
+                    
+            C
+          
+          C B
+          2 years ago
+        
+        
+      
+        
+            
+                  
+            
+            420
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m using PowerShell to send ZPL to a ZD421.  Sending the ZPL works correctly, but I&#x27;m unable to get a response ($reader.ReadToEnd() line).Here&#x27;s the code:function Out-ZplPrinter {
+    param (
+        [Parameter(Mandatory,ValueFromPipeline)]
+        [string]$Command,
+        
+        [Parameter(Mandatory)]
+        [string]$IpAddress,
+        
+        [int]$Port = 9100
+    )
+    
+    try {
+    
+        [System.Net.Sockets.TcpClient]$client = [System.Net.Sockets.TcpClient]::new()
+        $client.Connect($IpAddress, $Port)
+    
+        [System.IO.StreamWriter]$writer = [System.IO.StreamWriter]::new($client.GetStream())
+        [System.IO.StreamReader]$reader = [System.IO.StreamReader]::new($client.GetStream())
+    
+        # send the ZPL
+        $writer.Write($Command)
+        $writer.Flush()
+    
+        # read the response
+        $response = $reader.ReadToEnd() # &lt;--- hangs here
+        return $response
+    
+    } 
+    catch {
+        Write-Host &quot;ERROR: $( $_.Exception.Message )&quot; -ForegroundColor Red
+    }
+    finally {
+        if ($null -ne $reader) {
+            $reader.Close()
+            $reader.Dispose()
+        }
+    
+        if ($null -ne $writer)
+        {
+            $writer.Close()
+            $writer.Dispose()    
+        }
+    
+        if ($null -ne $client)
+        {
+            $client.Close()
+            $client.Dispose()    
+        }
+    }
+}
+# send a label to the ZD421
+&quot;^XA^FO235,25,0^FDFIRST LAST^FS^XZ&quot; | Out-ZplPrinter &#x27;192.168.19.112&#x27;What am I missing?
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            If the ZPL is just to print a label, then there is no response. Printers do not respond to label printings. They only respond to the status query related ZPL commands. The ZPL shown in your post is a pure label formatting ZPL for printing the label and it doesn&#x27;t trigger a response. Try the other ZPL commands for response, for example:
+### Return printer model and firmware version
+~hi
+
+### Query printer status
+~HS
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            C B
+          
+          
+            2 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Is there a way to determine if the printer&#x27;s labels or ink need to be changed?  Does the HTTP POST method give more details?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            C B
+          
+          
+            2 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I tried sending ~HS to the printer, using the code (above), and it hangs at the same spot.  What am I missing?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            C B
+          
+          
+            2 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I found a solution.  I made two modifications to the code:I added a timeout:[System.Net.Sockets.TcpClient]$client = [System.Net.Sockets.TcpClient]::new()
+$client.SendTimeout = 500 # milliseconds
+$client.ReceiveTimeout = 500 # milliseconds
+$client.Connect($IpAddress, 9100)Replaced ReadToEnd() with this:$Response = $null
+[char[]]$buffer = [char[]]::new(1024)
+
+do
+{
+	try {
+		# hangs when ReceiveTimeout is 0 and no additional data is present
+		$size = $reader.Read($buffer, 0, $buffer.Length) 
+		$Response += -join $buffer[0..($size - 1)]
+	}
+	catch [System.IO.IOException] {
+		break
+	}
+} while ( $size -gt 0 )
+
+$Response ? $Response.Trim() : $null 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

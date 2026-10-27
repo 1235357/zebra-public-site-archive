@@ -1,0 +1,254 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Intermediate NDIS driver issue</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Intermediate NDIS driver issue</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/25911; original snapshot: threads/01505.html; SHA-256: 20c2452458518e66fe43420b82186ab77d14d2191ccda8c2517cd05206857192</small><pre id="topic">
+
+    
+        Intermediate NDIS driver issue
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            31
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Team,   We have a project with Russian Railroads (mobile ticketing) where one of the requirements is that the WiFi connection must be protected by a software called VipNet - VPN-like package certified by Russian state authorities. The problem is that it does not work on our devices with Fusion driver (they&#x27;ve tested MC75 and MC55 and both freeze after post-installation reboot) while it works fine on the rest of the world :) using WZC.   The developer says that VipNet uses own intermediate NDIS driver which does data encryption and does not assume that there are other intermediate drivers in the stack. They claim that in the case of Fusion there actually 3 drivers: JEDI10_1, miniport driver NPME\JEDI10_1, WLANPOWERDRV1.  They&#x27;re ready to adapt their SW to our WLAN stack but for this purpose they&#x27;re asking for the possibility to debug it in the kernel mode (which I believe requires special OS images, am I right?).  So my questions are 1. Is the kernel debug mode the only option here? Can we provide the developer with the tools and images required? 2. Can we provide technical documentation on Fusion which is deep enough to help the developer to adapt their intermediate driver to WLAN stack? 3. If both answers on the above is No then - do we have WZC-enable images of OS for MC75/55? 4. Any other advices are welcome as well  Thanks, Valery   
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            They&#x27;ve removed the following branches:  HKLM\Comm\JEDI10, HKLM\Comm\JEDI10_1 HKLM\Comm\WLANPOWERDRV HKLM\Comm\WLANPOWERDRV1  This was done after switching the unit to WZC mode.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            they&#x27;ve removed the registartion entries for these drivers from registry.  Does this disable the drivers?   Note that they&#x27;re using MC65 switched to Windows Zero Config mode per User Guide.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The partner has tested MC65 switched to WZC mode. There are still three drivers in the stack but they&#x27;ve managed to disable all but HORNET10 e.g. they&#x27;ve removed registration for NPME.dll (NPME protocol) and NDUMMY.dll (WLANPOWERDRV protocol). The device remains operational e.g. WLAN module can be started/stopped and is able co connect to AP. And their VIPNET sowftware works fine. after this &quot;customization&quot;.   My questions:  1. What has been disabled exactly and how it affects or may affect the functionality and/or performance?  2. What other OS/SW components of the standard image depend on the disabled drivers if any?  3. Assuming the effect is not too much bad and customer can leave with it - can we as a vendor permit such customization from the legal and technical support points of view?   Thanks,  Valery
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

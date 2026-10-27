@@ -1,0 +1,313 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Weblink over Win32 based C++ server</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Weblink over Win32 based C++ server</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/weblink-over-win32-based-c-server; original snapshot: threads/00264.html; SHA-256: 524f9d3a482ad8d26557baf6f0742daf67217101dd34e934b01c4f28481a0275</small><pre id="topic">
+
+    
+        Weblink over Win32 based C++ server
+
+
+        
+      
+                        
+                    
+            H
+          
+          Hayden Yates
+          2 years 5 months ago
+        
+        
+      
+        
+            
+                  
+            
+            267
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                          //Solved
+        
+  
+
+    
+    
+        
+      
+            
+                  Hi, we are trying to create a print server with Zebra&#x27;s Weblink protocol using a C++ server and any relevant APIs and were wanting to see if there is any other documentation/resources to assist in this.So far I have attempted this using HTTP Server API and have been able to accept the initial upgrade request and complete the handshake but after that I start running into two main issues. First issue being that even though the Zebra printer says the connection was successful, it then proceeds to ping pong on the network as expected but after three minutes the client closes the connection with code 1002 and error of &quot;Read failed with an unexpected error&quot; despite nothing being sent or received programmatically with the server since the handshake. Also, even though the connection was successful I do not receive any follow-up discovery packet with the printer info like we are supposed to - or at least I&#x27;m not having anything hit HttpReceiveHttpRequest to even try to decode as a discovery packet.The next major issue is that I am not finding any way to push data to the printer at this point; the HTTP Server API just doesn&#x27;t seem built for this sort of nonstandard approach and I have tried the WebSocket Protocol Component API as well but with no luck. I tried piggybacking off of the initial handshake request ID as well as ID of 0 to send the JSON command to open the raw channel but the printer seems to ignore it completely without any sort of error being logged on the printer or anything thrown by the HttpSendHttpResponse call. When trying to use WebSocket Protocol Component API instead, I only get exit code 0x8000000E &quot;A method was called at an unexpected time&quot; when attempting anything using that API so I am not sure what exactly is missing from that approach since I&#x27;m finding even less documentation for standalone server programming with that API.I have been able to get a solution to work using the .NET WebSocket API but we would like to have it handled on our Win32 C++ side so that we can utilize other components of our solution, so I have been trying to replicate my approach into C++ as closely as possible but I am now blocked by those two issues and would appreciate any help or direction with where to go from here.Environment info:- Running C++ server on Windows 10 Pro- Testing against Zebra ZD621
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+        
+      
+        ✓ Accepted Solution
+      
+      
+          
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hayden Yates
+          
+          
+            2 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            This has been resolved after following a demo app located at https://www.codeproject.com/Articles/5331019/Web-Controlling-a-Win32-App-using-WebSockets. The main takeaway was to use WinSock function calls to establish the initial HTTP connection all the way through TLS negotiation+HTTP handshake headers and only after that can you use Websocket.h to call WebSocketBeginServerHandshake with the received headers and then continue everything using the websocket handle and function calls. Thanks again Ethel for the pointers.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+      
+    
+  
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              E
+            
+          
+                
+          
+            Ethel Lara
+          
+          
+            2 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            HTTP Server API: Since you&#x27;ve already attempted to use the HTTP Server API and encountered issues, it&#x27;s worth revisiting your implementation to ensure that you&#x27;re handling the WebSocket upgrade request correctly and maintaining the WebSocket connection according to the protocol specifications. Check that you&#x27;re sending appropriate WebSocket frames and handling timeouts properly.Discovery Packets: If you&#x27;re not receiving the expected discovery packets from the printer, double-check that your server is listening on the correct network interface and port, and that it&#x27;s able to receive UDP broadcast packets from the printer. Ensure that your server is not being blocked by any firewalls or network settings that might prevent it from receiving these packets.Pushing Data to the Printer: To push data to the printer after establishing the WebSocket connection, ensure that you&#x27;re sending the correct JSON commands formatted according to the Weblink protocol specifications. Check that your server is properly encoding the JSON payload and sending it over the WebSocket connection.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hayden Yates
+          
+          
+            2 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you for the reply Ethel, and after going back over the &quot;Weblink/WebSocket Endpoint Configuration&quot; document I believe you are right regarding the timeouts not being handled properly since it describes that it will disconnect after three failed ping-pongs which would give that three minute interval I described. Issue here is that again the HTTP Server API seems too limited for this usage then since none of the printer&#x27;s PING messages are received over the HTTP request handle which leads me to believe that it needs to be handled on the network layer instead over sockets or something else with access to it. Otherwise the upgrade process is working perfectly fine and handles connections from Postman without issue so it is the Weblink specifics that are causing trouble for this part. But really all of this feedback points back to the main issue, which is not knowing what APIs or libraries to accomplish this programmatically or what others have used to do this over Windows applications. Just the HTTP Server API is clearly not sufficient if it can only complete the handshake but then still needs:   1) network layer handling for sending the PONG messages back   2) UDP handling if the discovery packet is indeed coming over as a broadcast? This part confuses me as the .NET approach received that packet over its WebSocket&#x27;s ReceiveAsync call which I assumed is still over TCP   3) some way to send the JSON commands to the printer without first receiving a request since the API is assuming purely client driven request-response messaging. Since this all works using System.Net.WebSockets in C# perfectly fine then there has to be some way to do this reasonably over C++ as well, but I am still at a loss as to what others have used and where to go from here. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hayden Yates
+          
+          
+            2 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            This has been resolved after following a demo app located at https://www.codeproject.com/Articles/5331019/Web-Controlling-a-Win32-App-using-WebSockets. The main takeaway was to use WinSock function calls to establish the initial HTTP connection all the way through TLS negotiation+HTTP handshake headers and only after that can you use Websocket.h to call WebSocketBeginServerHandshake with the received headers and then continue everything using the websocket handle and function calls. Thanks again Ethel for the pointers.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,185 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Keep open connections to printers with ZSDK</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Keep open connections to printers with ZSDK</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/keep-open-connections-printers-zsdk; original snapshot: threads/00266.html; SHA-256: 6453607f6307b8ff67b9bed903cd539063942647a1f6dda5cf6da5e5b79adf0c</small><pre id="topic">
+
+    
+        Keep open connections to printers with ZSDK
+
+
+        
+      
+                        
+                    
+            D
+          
+          Daniel Gato
+          2 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            91
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We are trying to do something simple in essence but we keep running into ZSDK / Switch crashing.We would like on our global AppViewModel to open 2 connections to 2 different printers connected via bluetooth. Then, we would like to display the status of the printers on our App header and on demand, open a connection, send a command, and finally close the connection.We are working with this code:        DispatchQueue.global(qos: .userInitiated).async {
+            EAAccessoryManager.shared().registerForLocalNotifications()
+            
+            let connectedAccessories = EAAccessoryManager.shared().connectedAccessories
+            connectedAccessories.forEach { accessory in
+                autoreleasepool {
+                    var printerConnection: MfiBtPrinterConnection?;
+                    
+                    if accessory.name.starts(with: &quot;KR L&quot;) &amp;&amp; type == .label {
+                        print(&quot;KR L&quot;)
+                        printerConnection = MfiBtPrinterConnection(serialNumber: accessory.serialNumber)
+                    } else if accessory.name.starts(with: &quot;KR T&quot;) &amp;&amp; type == .tag {
+                        print(&quot;KR T&quot;)
+                        printerConnection = MfiBtPrinterConnection(serialNumber: accessory.serialNumber)
+                    } else {
+                        print(&quot;looking for \(type), got \(accessory.name)&quot;)
+                        return
+                    }
+                    
+                    if let printerConnection = printerConnection {
+                        
+                        let open = printerConnection.open()
+                        if open {
+                            do {
+                                let printer = ZebraPrinterFactory.getInstance(printerConnection, with: PRINTER_LANGUAGE_ZPL)
+                                if let tool = printer?.getToolsUtil() {
+                                    try tool.sendCommand(command)
+                                }
+                            } catch {
+                                MessageManager.shared.handleError(error)
+                            }
+                            printerConnection.close()
+                        } else {
+                            MessageManager.shared.handleError(&quot;Failed to open printer connection&quot;)
+                        }
+                    } else {
+                        return
+                    }
+                }
+            }Is it possible to your knowledge to store printerConnection in a global state and then call ZebraPrinterFactory.getInstance(printerConnection, with: PRINTER_LANGUAGE_ZPL) on a need bases or is this the wrong approach?Currently, if we queue too many printings in a serie the whole thing crashes and the iPad looses the connection
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            For best practice, we would not recommended keeping the Bluetooth connection open all the time, because the connection object (i.e., MfiBtPrinterConnection) can become invalid if the printer is out of the Bluetooth range of the iPad. It&#x27;s ok to show the printer&#x27;s Bluetooth connection status based on the return of EAAccessoryManager.shared().connectedAccessories. Keep in mind that the connection status may change at any given time, because of the distance dynamics between the printer and the iPad. It&#x27;s wise to subscribe to the notifications for the connect/disconnect of the printer Bluetooth via the EAAccessoryDelegate, so that we don&#x27;t have to poll the result from the EAAccessoryManager.shared().connectedAccessories periodically.Once the labels are ready for print, we call the MfiBtPrinterConnection() to create a connection. After the labels are printed, we close the connection. Please keep in mind that there is a limit of the Bluetooth buffer size. The buffer may overflow if we keep sending the data (labels) over the connection. Depending on the data size of each label, we may need to pause for 1 or 2 seconds between labels. If there is a lot of data in a ZPL label (such as a label that contains a lot of graphics), we may have to break the data into chunks and send one chunk of data at a time.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

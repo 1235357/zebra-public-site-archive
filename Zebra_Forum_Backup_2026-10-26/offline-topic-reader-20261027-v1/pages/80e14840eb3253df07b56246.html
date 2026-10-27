@@ -1,0 +1,296 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Android Datawedge: Enable barcode Datawedge Command takes 2 seconds</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Android Datawedge: Enable barcode Datawedge Command takes 2 seconds</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/android-datawedge-enable-barcode-datawedge-command-takes-2-seconds; original snapshot: threads/00554.html; SHA-256: 6d90bb529b92ba23e76e468fbca1718e614bfd1ce39476b05c0dbc6c99d6f05e</small><pre id="topic">
+
+    
+        Android Datawedge: Enable barcode Datawedge Command takes 2 seconds
+
+
+        
+      
+                        
+                    
+            M
+          
+          Martin Eberl
+          3 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            219
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                          //Solved
+        
+  
+
+    
+    
+        
+      
+            
+                  Datawege send enable barcode command takes 2 seconds, which is too long for us.
+
+TC21 (Android 11) + RFD4030
+
+What are we doing:
+
+When a user comes on a screen, where a barcode needs to be scanned, we active it with this command:
+
+private fun sendDataWedgeIntentWithExtra(
+    action: String = DATAWEDGE_ACTION,
+    extraKey: String, //&quot;com.symbol.datawedge.api.SCANNER_INPUT_PLUGIN&quot;
+    extraValue: String //&quot;ENABLE_PLUGIN&quot;
+) {
+    val intent = Intent().apply {
+        setAction(action)
+        putExtra(extraKey, extraValue)
+    }
+    app().applicationContext.sendBroadcast(intent)
+
+}
+
+ 
+
+This takes up to 2 seconds. After this 2 seconds with the trigger of the RDF4030 the barcode scanner can be activated.
+
+I know Intents are native Android codes, but can you improve this?
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+        
+      
+        ✓ Accepted Solution
+      
+      
+          
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Martin Eberl
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Ok, it seems that with the DataWedge and Android, we can&#x27;t increase the speed of enabling and disabling barcode scanner. However with suspend and resume we are able to. So at the very beginning of showing the reading fragment, we send the enable command and at the end of the fragment, we send the disable command. And in the meanwhile we use the suspend and resume functionality.
+Btw this was also reproduced in the Zebra&#x27;s DataWedge App
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+      
+    
+  
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Martin Eberl
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Ok, it seems that with the DataWedge and Android, we can&#x27;t increase the speed of enabling and disabling barcode scanner. However with suspend and resume we are able to. So at the very beginning of showing the reading fragment, we send the enable command and at the end of the fragment, we send the disable command. And in the meanwhile we use the suspend and resume functionality.
+Btw this was also reproduced in the Zebra&#x27;s DataWedge App
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Suspending and Resuming the Scanning capability is the preferred method.
+Enabling and Disabling the Scanning framework is kind of an heavyweight load /unload.
+
+* snip * from the Techdoc: https://techdocs.zebra.com/datawedge/11-0/guide/programmers-guides/dw-programming/
+
+
+	Enable/disable or temporarily suspend/resume barcode scanning during runtime: Dynamically control the integrated barcode scanner (laser, imager, internal camera) to enable/disable the trigger in certain areas of the application workflow or suspend/resume scanning to temporarily activate/de-activate the scanner using Scanner Input Plugin. Status change notifications include the active profile name, which permits an app to use the enable/disable scanner calls only when status changes affect a relevant profile. This can be useful to change the scanner state in quick succession, for example when there are multiple text fields and it is desired for scanning to suspend when a particular text field is in focus, use Scanner Input Plugin to suspend the scanner in that particular text field.
+
+
+*/snip *
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

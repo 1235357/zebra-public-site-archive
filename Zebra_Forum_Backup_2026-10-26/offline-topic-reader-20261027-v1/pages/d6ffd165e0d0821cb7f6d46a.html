@@ -1,0 +1,274 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Is it possible to use USB HOST port in ZBI program</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Is it possible to use USB HOST port in ZBI program</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/it-possible-use-usb-host-port-zbi-program; original snapshot: threads/01060.html; SHA-256: ce8fd69a484542064d9581be53196416171fbd5345d9c0082c7f8ce95e87fe1e</small><pre id="topic">
+
+    
+        Is it possible to use USB HOST port in ZBI program
+
+
+        
+      
+                        
+                    
+            S
+          
+          System Admin
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            329
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+I developed a ZBI program to print labels that depend on information retrieved via TCP port.
+In case of network issue, I need to be able to connect a barcode scanner to the Usb Host port and retrieve the data to replace the normal TCP data.
+But I can&#x27;t find the correct port... I try USB_HOST which is used on SGD printer command but it doesn&#x27;t work.
+If you have any ideas???
+Thanks in advance for your help !
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              N
+            
+          
+                
+          
+            Nicolas Gingreau
+          
+          
+            5 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Unfortunately the USB Host port can&#x27;t be opened in the ZBI. This port is reserved for USB-Mirror and Print Station functionalities.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Matthew Twyman
+          
+          
+            6 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I have ZBI program to print labels that depend on barcode data from the USB Host.
+I realize I can use ZPL to capture USB Host input, however, I need the data inside a ZBI program in order to further process to network resources.
+I can&#x27;t determine the correct port name or syntax... Please help!
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              E
+            
+          
+                
+          
+            Elton Saunders
+          
+          
+            5 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I received the following from Zebra Tech Support and thought it made sense to post here to save other from the trouble of trying this:
+The USB Host is not a port that can be used with ZBI (6/22/2018) Most ports are, by default, connected to the ZPL processor. When a port is opened in ZBI, the port will bedisconnected from ZPL and connected into the interpreter. Depending on the type of connection, there are two methods you may use to start the connection. For the static connections, the OPEN command should be used. These are the connections that you openwhen starting your program and leave open for the duration of your program. For dynamic connections, servers and clients are set up following the &quot;Sockets&quot; model. On servers, the actual connections are started upon successful calls to ACCEPT. Below are the available connections that can be made and the preferred accessors.
+Serial &quot;SER&quot;
+Parallel &quot;PAR&quot;
+USB &quot;USB&quot;
+              &quot;USB&quot; is NOT using the USB Host port on the printer. It is utilizing the USB port used for printing.
+ZPL parser &quot;ZPL&quot;
+TCP Server &quot;TCP&quot;, &quot;TCPX&quot;
+TCP Client &quot;TCP&quot;
+UDP Server &quot;UDP&quot;
+UDP Client &quot;UDP&quot;
+Email Sender &quot;EML&quot;
+Bluetooth &quot;BLU&quot;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

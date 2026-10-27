@@ -1,0 +1,375 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Enumerate Scanners - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/enumeratescanners</code><br>Observed final URL: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/enumeratescanners/</code><br>Raw source: <code>raw/a7441e1e0cb69110a0786ce4.html</code><br>Raw SHA-256: <code>37da80747f2434cb42d6a6ca4150533896c3fb9cf1c4a6be985cf7fe871b4c53</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs Home
+                        
+                                            DataWedge
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Get Started
+                            
+                        
+                        
+                            
+                                    Profiles
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Feature Matrix
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            US - English
+                          
+                          
+                                 CN - 普通话
+                                 JP - 日本語
+                          
+                                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Enumerate Scanners
+                        
+                    ENUMERATE_SCANNERSFunction PrototypeParametersReturn ValuesBundle ExtrasExample CodeEnumerate scannersGet scanner details
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Enumerate Scanners
+                                    
+                                            DataWedge
+                                            15.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        ENUMERATE_SCANNERS
+
+Generates a numbered list (index) of scanners available on the device. The scanner and its parameters are set based on the currently active Profile.
+
+ IMPORTANT: The scanner index is not fixed for all devices. It varies depending on the number of supported internal and/or external scanners installed and/or connected to the device at the time the index is generated.
+
+Function Prototype
+
+Intent i = new Intent();
+i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+i.putExtra(&quot;com.symbol.datawedge.api.ENUMERATE_SCANNERS&quot;, &quot;&quot;);
+
+Parameters
+
+ACTION [String]: &quot;com.symbol.datawedge.api.ENUMERATE_SCANNERS&quot;
+
+Return Values
+
+The enumerated list of scanners is returned via the broadcast intent com.symbol.datawedge.api.ACTION_ENUMERATEDSCANNERLIST. The list of scanners is returned as a string array (see below).
+
+Bundle Extras
+
+SCANNER_NAME [String]:
+
+SCANNER_INDEX [String]:
+
+SCANNER_CONNECTION_STATE [String]:
+
+SCANNER_IDENTIFIER [String]: in each scanner info bundle for each scanner supported in the device (introduced in DataWedge 6.5). Both parameters are supported in DataWedge 6.6 and higher; the scanner identifier value takes precedence if an index also is referenced in the code.
+
+Possible values:
+
+
+AUTO - Automatic scanner selection
+
+INTERNAL_IMAGER - Built-in imager scanner
+
+INTERNAL_LASER - Built-in laser scanner
+
+INTERNAL_CAMERA - Built-in camera scanner
+
+SERIAL_SSI - Pluggable Z-back scanner for ET50/ET55
+
+BLUETOOTH_SSI - RS507 Bluetooth scanner
+
+BLUETOOTH_RS5100 - RS5100 Bluetooth scanner
+
+BLUETOOTH_RS6000 - RS6000 Bluetooth scanner
+
+BLUETOOTH_DS2278 - DS2278 Bluetooth scanner – does not apply to select devices, see Scanner Selection
+
+BLUETOOTH_DS3678 - DS3678 Bluetooth scanner – does not apply to select devices, see Scanner Selection
+
+BLUETOOTH_DS8178 – DS8178 Bluetooth scanner – does not apply to select devices, see Scanner Selection
+
+BLUETOOTH_LI3678 – LI3678 Bluetooth scanner – does not apply to select devices, see Scanner Selection
+
+BLUETOOTH_ZEBRA - generic term for Zebra Bluetooth handheld scanner (such as DS3678, LI3678, DS8178)
+
+PLUGABLE_SSI - Serial SSI scanner RS429 (for use with WT6000)
+
+PLUGABLE_SSI_RS5000 - Serial SSI scanner RS5000 (for use with WT6000)
+
+USB_SSI_DS3608 - DS3608 pluggable USB scanner
+
+USB_TGCS_MP7000 – MP7000 grocery scanner scale
+
+USB_ZEBRA - Generic Zebra USB scanner
+
+
+Example Code
+
+Enumerate scanners
+
+//
+//  Call before sending the enumeration query
+//
+public void registerReciever(){
+    IntentFilter filter = new IntentFilter();
+    filter.addAction(&quot;com.symbol.datawedge.api.RESULT_ACTION&quot;);//RESULT_ACTION
+    filter.addCategory(Intent.CATEGORY_DEFAULT);
+    registerReceiver(enumeratingBroadcastReceiver, filter);
+}
+//
+// Send the enumeration command to DataWedge
+//
+public void enumerateScanners(){
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.putExtra(&quot;com.symbol.datawedge.api.ENUMERATE_SCANNERS&quot;, &quot;&quot;);
+    this.sendBroadcast(i);
+}
+
+public void unRegisterReciever(){
+    unregisterReceiver(enumeratingBroadcastReceiver);
+}
+
+//
+// Create broadcast receiver to receive the enumeration result
+//
+private BroadcastReceiver enumeratingBroadcastReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String action = intent.getAction();
+        Log.d(TAG, &quot;Action: &quot; + action);
+        if(action.equals(&quot;com.symbol.datawedge.api.RESULT_ACTION&quot;)){
+            //
+            // enumerate scanners
+            //
+            if(intent.hasExtra(&quot;com.symbol.datawedge.api.RESULT_ENUMERATE_SCANNERS&quot;)) {
+            ArrayList&lt;Bundle&gt; scannerList = (ArrayList&lt;Bundle&gt;) intent.getSerializableExtra(&quot;com.symbol.datawedge.api.RESULT_ENUMERATE_SCANNERS&quot;);
+            if((scannerList != null) &amp;&amp; (scannerList.size() &gt; 0)) {
+                for (Bundle bunb : scannerList){
+                    String[] entry = new String[4];
+                    entry[0] = bunb.getString(&quot;SCANNER_NAME&quot;);
+                    entry[1] = bunb.getBoolean(&quot;SCANNER_CONNECTION_STATE&quot;)+&quot;&quot;;
+                    entry[2] = bunb.getInt(&quot;SCANNER_INDEX&quot;)+&quot;&quot;;
+
+                    entry[3] = bunb.getString(&quot;SCANNER_IDENTIFIER&quot;);
+
+                    Log.d(TAG, &quot;Scanner:&quot; + entry[0]  + &quot; Connection:&quot; + entry[1] + &quot; Index:&quot; + entry[2] + &quot; ID:&quot; + entry[3]);
+                    }
+                }
+            }
+        }
+    }
+};
+
+Get scanner details
+
+// RESULT_ACTION_EXTRA_ENUMERATE_SCANNERS
+
+if(intent.hasExtra(&quot;com.symbol.datawedge.api.RESULT_ENUMERATE_SCANNERS&quot;)) {
+    Log.d(TAG, &quot;&gt;&gt;&gt; RESULT_ACTION_EXTRA_ENUMERATE_SCANNERS &lt;&lt;&lt;&quot;);
+    ArrayList&lt;Bundle&gt; scannerList = (ArrayList&lt;Bundle&gt;) intent.getSerializableExtra(&quot;com.symbol.datawedge.api.RESULT_ENUMERATE_SCANNERS&quot;);
+    if((scannerList != null) &amp;&amp; (scannerList.size() &gt; 0)) {
+        for ( Bundle bunb: scannerList) {
+
+            String ScannerName = bunb.getString(&quot;SCANNER_NAME&quot;);
+            int ScannerIndex = bunb.getInt(&quot;SCANNER_INDEX&quot;));
+            Boolean ScannerConnectionState = bunb.getBoolean(&quot;SCANNER_CONNECTION_STATE&quot;);
+            String ScannerId = bunb.getString(&quot;SCANNER_IDENTIFIER&quot;);
+
+        }
+    }
+}
+
+
+
+
+
+
+
+SEE ALSO:
+
+Zebra Support Central | Integrator Guides, Product Manuals, Software Downloads and Support
+
+LaunchPad | Zebra Developer Community
+
+Intent | Android Developers
+
+Intents and Intent Filters | Android Developers
+
+Android Intents | Tutorial
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2024 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+      
+
+
+
+Back to Top</pre></body></html>

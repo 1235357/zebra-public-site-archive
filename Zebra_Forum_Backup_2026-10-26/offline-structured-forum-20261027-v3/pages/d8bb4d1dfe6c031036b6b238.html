@@ -1,0 +1,311 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Implementing Continuous Barcode Scanning with Zebra MC220J and Business Central App</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/implementing-continuous-barcode-scanning-zebra-mc220j-and-business-central-app; snapshot threads/00204.html; SHA-256 1bfc5f2b949422dfd85a78a0d1866114001d8af25651fa2d0632d20c8f64ad8e. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Implementing Continuous Barcode Scanning with Zebra MC220J and Business Central App</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            F
+          </div>
+          <div class="forum-topic__author-name">Federico Pappalardo</div>
+          <div class="forum-topic__timestamp">2 years 2 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            599
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            4
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Good morning,</p><p>I am working on implementing Scenario 3 as described in the <span data-original-href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-mobile-app-barcode-scanning">official Microsoft documentation on adding barcode scanning to the mobile app</span>. My objective is to enable continuous scanning using a Zebra MC220J device with the Business Central App installed. I want to intercept scanned barcodes for processing via custom code, without requiring any UI interaction from the warehouse operator.</p><p>According to Microsoft's documentation:</p><blockquote><p>With some barcode scanner devices, such as Zebra, you can't modify the intent configuration. In this case, you can pass the intent data strings via AL.</p></blockquote><p>To achieve this, I attempted to implement the code by calling the `<strong>RequestBarcodeScannerAsync</strong>` function:</p><pre><code class="language-plaintext">                    if IsSupported then
+                        CurrPage.BarcodeControl.RequestBarcodeScannerAsync('com.businesscentral.barcode.receive_barcode',
+                                                                           'com.businesscentral.barcode.receive_category',
+                                                                           'com.businesscentral.receive_barcode.barcode_string',
+                                                                           'com.businesscentral.receive_barcode.barcode_format'); // Step 3</code></pre><p>Additionally, I configured a new profile on the Zebra DataWedge app, setting the "Intent delivery mode" to "broadcast intent". However, the result has been that the `BarcodeReceived(Barcode: Text; Format: Text)` trigger is never raised, and the scanned barcode is not passed to the app.</p><p>I have received support on other forum and basically they are telling me the solution would be to pass just the Data Action = <code>'com.businesscentral.barcode.receive_barcode'</code> and the Data Extra = <code>'com.businesscentral.receive_barcode.barcode_string'</code>.</p><p>Unfortunately, it seems there is no way to pass the Data Extra anywhere inside the DataWedge app, so the only way should be to write a specific Android App for the Zebra Scanner. Is there a way in the Data Wedge setup to pass the Data Extra?</p><p>I am probably looking for something like this:<br><br>Intent i = new Intent();<br>i.setAction("com.businesscentral.barcode.receive_barcode");<br>i.putExtra("com.businesscentral.receive_barcode.barcode_string", &lt;mainbundle&gt;);</p><p>But enabled directly from the DataWedge app.</p><p>Thank you for any insight.</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      4 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-53144" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Sergio Montanari</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Ciao Federico, ho lo stesso identico problema... tu hai risolto, per caso? :)</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-53428" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              H
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Humberto Mcfarland</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>This already functions similarly to the application's default configuration. If it doesn't work, look at other barcode scanner apps. <br><br>For more information, here is the link to visit: <span data-original-href="https://developer.zebra.com/latest-discussions">https://developer.zebra.com/latest-discussions</span> <span data-original-href="https://slope-ball.io/"><span>slope game</span></span></p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-53818" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Dekean Loinse</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 8 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>It seems this link does not provide the useful information I am looking for. <span data-original-href="https://developer.zebra.com/latest-discussions">https://developer.zebra.com/latest-discussions</span>/<span data-original-href="https://subwaysurfersgame.io">subway surfers</span></p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-53982" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>salim nl</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thanks</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div></div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/implementing-continuous-barcode-scanning-zebra-mc220j-and-business-central-app%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/implementing-continuous-barcode-scanning-zebra-mc220j-and-business-central-app%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

@@ -1,0 +1,340 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Basic scanner app&#x27;s onData function doesn&#x27;t called (Kotlin)</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/basic-scanner-apps-ondata-function-doesnt-called-kotlin; snapshot supplement/threads/d311f313c89b5657df744065.html; SHA-256 ab1ff6c2f95c9aa130cd23912e6d468c548093aa668fec19ac885098dac59701. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Basic scanner app's onData function doesn't called (Kotlin)</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            S
+          </div>
+          <div class="forum-topic__author-name">System Admin</div>
+          <div class="forum-topic__timestamp">5 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            205
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello,<br>
+I made a basic scanner application for the TC200J Zebra in Kotlin. I followed the tutorial step by step but the onData function does not triggerd by the hardware scan button on the right and left side of the phone. I downloaded the emdk plugin for android studio too. I am sure that i do it something in wrong way but i don't know what. It scans the ean13 code and write into a input field but i cannot catch the event in the onData. My CvLoggerClass logs only when the app in debug mode (i'm trying it in debug mode). I could use some help. If everything is true i don't need to install anything on the device, because the gradle dependency do it for me above 7.0.0.<br>
+My AndroidManifest file:</p>
+<p>My gradle file:<br>
+minSdk: 21<br>
+targetSdk: 28<br>
+dependencies {<br>
+  compileOnly 'com.symbol:emdk:7.0.0'<br>
+}<br>
+My activity (the initializeEmdkManager called in onCreate(savedInstanceState: Bundle?)):<br>
+   // Declare a variable to store EMDKManager object<br>
+    private var emdkManager: EMDKManager? = null<br>
+    // Declare a variable to store Barcode Manager object<br>
+    private var barcodeManager: BarcodeManager? = null<br>
+    // Declare a variable to hold scanner device to scan<br>
+    private var scanner: Scanner? = null<br>
+    // boolean flag to start scanning after scanner initialization<br>
+    // Used in OnStatus callback to ensure scanner is idle before read() method is called<br>
+    private var startRead = false<br>
+    // Method to initialize and enable Scanner and its listeners<br>
+    @Throws(ScannerException::class)<br>
+    private fun initializeScanner() {<br>
+        if (scanner == null) {<br>
+            // Get the Barcode Manager object<br>
+            barcodeManager = this.emdkManager!!.getInstance(FEATURE_TYPE.BARCODE) as BarcodeManager<br>
+            // Get default scanner defined on the device<br>
+            scanner = barcodeManager!!.getDevice(BarcodeManager.DeviceIdentifier.DEFAULT)<br>
+            // Add data and status listeners<br>
+            scanner!!.addDataListener(this)<br>
+            scanner!!.addStatusListener(this)<br>
+            // Hard trigger. When this mode is set, the user has to manually<br>
+            // press the trigger on the device after issuing the read call.<br>
+            scanner!!.triggerType = Scanner.TriggerType.HARD<br>
+            // Enable the scanner<br>
+            scanner!!.enable()<br>
+            //set startRead flag to true. this flag will be used in the OnStatus callback to insure<br>
+            //the scanner is at an IDLE state and a read is not pending before calling scanner.read()<br>
+            startRead = true<br>
+        }<br>
+    }<br>
+    @Throws(ScannerException::class)<br>
+    private fun deInitializeScanner() {<br>
+        if (scanner != null) {<br>
+            try {<br>
+                if (scanner!!.isReadPending) {<br>
+                    scanner!!.cancelRead()<br>
+                }<br>
+                scanner!!.disable()<br>
+            } catch (e: Exception) {<br>
+                e.printStackTrace()<br>
+            }<br>
+            try {<br>
+                scanner!!.removeDataListener(this)<br>
+                scanner!!.removeStatusListener(this)<br>
+            } catch (e: Exception) {<br>
+                e.printStackTrace()<br>
+            }<br>
+            try {<br>
+                scanner!!.release()<br>
+            } catch (e: Exception) {<br>
+                e.printStackTrace()<br>
+            }<br>
+            scanner = null<br>
+        }<br>
+    }<br>
+    private fun initializeEmdkManager() {<br>
+        val results = EMDKManager.getEMDKManager(applicationContext, this)<br>
+        // Check the return status of getEMDKManager and update the status Text<br>
+        // View accordingly<br>
+        if (results.statusCode != EMDKResults.STATUS_CODE.SUCCESS) CvLogger.log("Scan: EMDKManager Request Failed")<br>
+    }<br>
+    // AsyncTask that configures the scanned data on background<br>
+    // thread and updated the result on UI thread with scanned data and type of<br>
+    // label<br>
+    private class AsyncDataUpdate(val scanner: Scanner) : AsyncTask() {<br>
+        override fun doInBackground(vararg params: ScanDataCollection?): String {<br>
+            // Status string that contains both barcode data and type of barcode<br>
+            // that is being scanned<br>
+            var statusStr = ""<br>
+            try {<br>
+                // Starts an asynchronous Scan. The method will NOT turn ON the<br>
+                // scanner, but puts it in a state in which the scanner can be turned<br>
+                // on automatically or by pressing a hardware trigger<br>
+                scanner.read()<br>
+                val scanDataCollection = params[0]<br>
+                // The ScanDataCollection object gives scanning result and the<br>
+                // collection of ScanData. So check the data and its status<br>
+                if (scanDataCollection != null &amp;&amp; scanDataCollection.result == ScannerResults.SUCCESS) {<br>
+                    val scanData = scanDataCollection.scanData<br>
+                    // Iterate through scanned data and prepare the statusStr<br>
+                    scanData.forEach {<br>
+                        // Get the scanned data<br>
+                        val barcodeData = it.data<br>
+                        // Get the type of label being scanned<br>
+                        val labelType = it.labelType<br>
+                        // Concatenate barcode data and label type<br>
+                        statusStr = "$barcodeData $labelType"<br>
+                    }<br>
+                }<br>
+            } catch (e: ScannerException) {<br>
+                e.printStackTrace()<br>
+            }<br>
+            // Return result to populate on UI thread<br>
+            return statusStr<br>
+        }<br>
+        override fun onPostExecute(result: String?) {<br>
+            CvLogger.log("Scan data: $result + \n")<br>
+        }<br>
+        override fun onPreExecute() {<br>
+        }<br>
+        override fun onProgressUpdate(vararg values: Void?) {<br>
+        }<br>
+    }<br>
+    // AsyncTask that configures the current state of scanner on background<br>
+    // thread and updates the result on UI thread<br>
+    @SuppressLint("StaticFieldLeak")<br>
+    private inner class AsyncStatusUpdate : AsyncTask() {<br>
+        override fun doInBackground(vararg params: StatusData): String {<br>
+            var statusStr = ""<br>
+            // Get the current state of scanner in background<br>
+            val statusData = params[0]<br>
+            // Different states of Scanner<br>
+            when (statusData.state) {<br>
+                // Scanner is IDLE<br>
+                StatusData.ScannerStates.IDLE -&gt; statusStr = "The scanner enabled and its idle"<br>
+                // Scanner is SCANNING<br>
+                StatusData.ScannerStates.SCANNING -&gt; statusStr = "Scanning.."<br>
+                // Scanner is waiting for trigger press<br>
+                StatusData.ScannerStates.WAITING -&gt; statusStr = "Waiting for trigger press.."<br>
+                // Scanner is not enabled<br>
+                StatusData.ScannerStates.DISABLED -&gt; statusStr = "Scanner is not enabled"<br>
+                else -&gt; {<br>
+                }<br>
+            }<br>
+            // Return result to populate on UI thread<br>
+            return statusStr<br>
+        }<br>
+        override fun onPostExecute(result: String) {<br>
+            // Update the status text view on UI thread with current scanner<br>
+            // state<br>
+            CvLogger.log("Scan status: $result")<br>
+        }<br>
+        override fun onPreExecute() {}<br>
+        override fun onProgressUpdate(vararg values: Void) {}<br>
+    }<br>
+    override fun onDestroy() {<br>
+        super.onDestroy()<br>
+        if (emdkManager != null) {<br>
+            // Clean up the objects created by EMDK manager<br>
+            emdkManager!!.release()<br>
+            emdkManager = null<br>
+        }<br>
+    }<br>
+    override fun onStop() {<br>
+        super.onStop()<br>
+        try {<br>
+            if (scanner != null) {<br>
+                // Releases the scanner hardware resources for other application<br>
+                // to use. Must be called as soon as scanning is done.<br>
+                scanner!!.removeDataListener(this)<br>
+                scanner!!.removeStatusListener(this)<br>
+                scanner!!.disable()<br>
+                scanner = null<br>
+            }<br>
+        } catch (e: ScannerException) {<br>
+            e.printStackTrace()<br>
+        }<br>
+    }<br>
+    //some lines of code omitted for clarity<br>
+    override fun onClosed() {<br>
+        if (this.emdkManager != null) {<br>
+            this.emdkManager!!.release()<br>
+            this.emdkManager = null<br>
+        }<br>
+    }<br>
+    override fun onOpened(emdkManager: EMDKManager) {<br>
+        this.emdkManager = emdkManager<br>
+        try {<br>
+            // Call this method to enable Scanner and its listeners<br>
+            initializeScanner()<br>
+        } catch (e: ScannerException) {<br>
+            e.printStackTrace()<br>
+        }<br>
+    }<br>
+    override fun onData(scanDataCollection: ScanDataCollection) {<br>
+        // Use the scanned data, process it on background thread using AsyncTask<br>
+        // and update the UI thread with the scanned results<br>
+        AsyncDataUpdate(scanner!!).execute(scanDataCollection)<br>
+    }<br>
+    override fun onStatus(statusData: StatusData) {<br>
+        AsyncStatusUpdate().execute(statusData)<br>
+    }</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-46114" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Darryn Campbell</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 3 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi, I tried this a little while back with EMDK 6.9 and it seemed to work OK, the sample app is at&amp;nbsp;<span data-original-href="https://github.com/darryncampbell/samples-emdkforandroid-6_9/tree/BarcodeSample1-Kotlin/BarcodeSample1&amp;nbsp;and">https://github.com/darryncampbell/samples-emdkforandroid-6_9/tree/Barco…</span> the original forum post is at&amp;nbsp;<span data-original-href="https://developer.zebra.com/community/home/blog/2018/11/19/kotlin-and-developing-kotlin-applications-for-zebra-devices">https://developer.zebra.com/community/home/blog/2018/11/19/kotlin-and-d…</span>.<br>
+Can you&amp;nbsp;try the sample app I listed above to see if that works?</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/basic-scanner-apps-ondata-function-doesnt-called-kotlin%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/basic-scanner-apps-ondata-function-doesnt-called-kotlin%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

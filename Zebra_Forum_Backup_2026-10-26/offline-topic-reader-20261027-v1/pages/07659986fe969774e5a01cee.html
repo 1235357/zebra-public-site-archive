@@ -1,0 +1,166 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to extract bitmap image from ~DG command?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to extract bitmap image from ~DG command?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/how-extract-bitmap-image-dg-command; original snapshot: threads/01013.html; SHA-256: 6538374f351942d875e116a45e8acb819a907f395742f1365fe29f36f27f5655</small><pre id="topic">
+
+    
+        How to extract bitmap image from ~DG command?
+
+
+        
+      
+                        
+                    
+            K
+          
+          Kiho Lee
+          5 years 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            218
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi all.
+I tried to make ZPL preview program.
+Using free web service, like labelary, it is very easy to get a preview image.
+However there is some limitation like usage under offline, commercial issue etc.
+So, I trying to make ZPL preview program and there is something problems.
+Our Database has image data using ZPL, especially ~DG command.
+For example, here&#x27;s sample of our image data.
+~DGlsel.GRF,01792,028,,T07FIFC,U03FHF8,V03FC0,V01F80,03FF80J07FIFE1C,03FF80I03FJFE38, .....
+In this case, how can I extract bitmap image from that commands?
+I&#x27;m using C# for this program.
+thanks in advance for your advice.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The image data in the ~DG command is an ASCII Hex representation of a graphic image. Based on the parameters in the ~DG command, we can derive the image height, the width and the image data. Let&#x27;s take the following example, which can be found in the ~DG command section in the ZPL User Guide.
+~DGR:SAMPLE.GRF,00080,010,
+FFFFFFFFFFFFFFFFFFFF
+8000FFFF0000FFFF0001
+8000FFFF0000FFFF0001
+8000FFFF0000FFFF0001
+FFFF0000FFFF0000FFFF
+FFFF0000FFFF0000FFFF
+FFFF0000FFFF0000FFFF
+FFFFFFFFFFFFFFFFFFFFBased on the total number of bytes (0080, i.e. 80 bytes), the number of bytes per row (010, i.e. 10 bytes per row) and the print density (usually, it is 8 dots/mm), you should be able to determine the height and the width of the bitmap in mm. Then, you can use the image data in the ~DG command to populate each bit in the bitmap object based on the platform is used. The .NET has bitmap library API for this purpose.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

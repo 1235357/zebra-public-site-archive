@@ -1,0 +1,176 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>How to add RS, GS, EOT to QRcode</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/thread/34760; snapshot threads/resume-00209.html; SHA-256 4f12382171dc15f95b1b4adcd2337581f7c6ce326995708472d3edabf7e5ee17. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">How to add RS, GS, EOT to QRcode</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            A
+          </div>
+          <div class="forum-topic__author-name">Anonymous</div>
+          <div class="forum-topic__timestamp">5 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            339
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>! 0 200 200 240 1<br>
+PW 480<br>
+TONE 50<br>
+SPEED 2<br>
+SETFF 0 5<br>
+ON-FEED FEED<br>
+NO-PACE<br>
+GAP-SENSE<br>
+B QR 330 30 M 2 U 2<br>
+HA,RS GS 109100857 GS 10287360 GS R1707061 GS 170706 GS 180705 GS 10120501 GS 20 GS GS GS EOT<br>
+ENDQR<br>
+PRINT<br>
+ <br>
+I can't do this in this way.<br>
+HM,B001E,AQRcode,B001D0123456789012345,A,B0004<br>
+ </p>
+<p>With ZPL, I know it's done, but CPCL doesn't know how to achieve this effect.<br>
+ <br>
+ <br>
+ Data: qrcode<br>
+ The {data} field presentation:<br>
+LM,AQRcode,N0123456789012345,AQRCODE,B0006qrcode<br>
+ <br>
+The above example：The special character is a space, in the example, B 0006<br>
+The ASCII of the space is 32, and the BCD is: 00110010, how do you get 0006?</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-41937" class="comment forum-topic__reply js-comment by-anonymous forum-topic__reply--comment by-viewer">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              A
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Anonymous (not verified)</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>For sure, we can use CPCL to encode these printable special characters listed on the ASCII table. To do so, the Data Input Mode has to be in manual mode. Then the special character (the printable special characters, such as ~ _@^()[]{}, including white space) can be encoded with B. For example, the following CPCL encode the "123456789123456789AABCDEFGHIJKLM ~ _@^()[]{}abcdefg" string in QR code</p>
+<p>! 0 200 200 240 1PW 480TONE 50SPEED 2SETFF 0 5ON-FEED FEEDNO-PACEGAP-SENSEB QR 330 30 M 2 U 5LM,N123456789123456789,AABCDEFGHIJKLM,B0019 ~ _@^()[]{}abcdefgENDQRPRINT<br>
+If we want to encode "B 0006" in QR code as you've asked, we can use the following CPCL. Please pay attention to "B0001 ," (with a space in between).<br>
+! 0 200 200 240 1PW 480TONE 50SPEED 2SETFF 0 5ON-FEED FEEDNO-PACEGAP-SENSEB QR 330 30 M 2 U 5LM,AB,B0001 ,N0006ENDQRPRINT<br>
+Hope this helps.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/thread/34760%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/thread/34760%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

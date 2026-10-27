@@ -1,0 +1,185 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Printing label from browser using BrowserPrint-Zebra.1.0.216</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Printing label from browser using BrowserPrint-Zebra.1.0.216</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25736; original snapshot: threads/resume-00551.html; SHA-256: a7c99377ef2dcd92ce3d9d6cc2f0120fb095a5b07db7a9cdf7fe5bca985ce690</small><pre id="topic">
+
+    
+        Printing label from browser using BrowserPrint-Zebra.1.0.216
+
+
+        
+      
+                        
+                    
+            J
+          
+          Jonas Groenbek
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            212
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  So, I have designed a label and exported it to my printer which is a ZD410. I can succesfully print the label with it&#x27;s keyboard inputs from Zebra Utilities - Direct Communication with the following command:
+LABEL.ZPL^XA
+^XFE:LABEL.ZPL^FS
+^FN11^FD343434343434^FS
+^FN12^FD012^FS
+^FN13^FD345,-^FS
+^FN14^FDW32 L30^FS
+^FN15^FD000213^FS
+^XZ
+However when sending it with the BrowserPrint library, the printers data indicator flashes briefly but it does not print anything. The response code from the ZPL payload returns a 200.
+zebraPrinter
+            .isPrinterReady()
+            .then(() =&gt; {
+              let zpl =
+                &#x27;LABEL.ZPL^XA\n&#x27; +
+                &#x27;^XFE:LABEL.ZPL^FS\n&#x27; +
+                &#x27;^FN11^FD343434343434^FS\n&#x27; +
+                &#x27;^FN12^FD012^FS\n&#x27; +
+                &#x27;^FN13^FD345,-^FS\n&#x27; +
+                &#x27;^FN14^FDW32 L30^FS\n&#x27; +
+                &#x27;^FN15^FD000213^FS\n&#x27; +
+                &#x27;^XZ\n&#x27;
+              zebraPrinter.send(zpl)
+            })
+            .catch(() =&gt; {
+              console.error(&#x27;printer is not ready&#x27;)
+            })
+I have also tried
+let zpl = &#x27;LABEL.ZPL^XA ^XFE:LABEL.ZPL^FS ^FN11^FD&quot;343434343434&quot;^FS ^FN12^FD012^FS ^FN13^FD345,-^FS ^FN14^FDW32 L30^FS ^FN15^FD000213^FS ^XZ &#x27;
+I am not sure how to resolve this, since I am runnig out of ways to narrow down the problem.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            It&#x27;s incorrect to put the filename (LABEL.ZPL) of the stored format at the beginning of the ZPL string. Since you have already had the LABEL.ZPL downloaded to the printer&#x27;s E: drive, you only need to send the following ZPL recall format to the printer via Browser Print. Please add \r there, as \r\n indicates the end of a ZPL statement. Hope this helps.
+let zpl =
+&#x27;^XA\r\n&#x27; +
+&#x27;^XFE:LABEL.ZPL^FS\r\n&#x27; +
+&#x27;^FN11^FD343434343434^FS\r\n&#x27; +
+&#x27;^FN12^FD012^FS\r\n&#x27; +
+&#x27;^FN13^FD345,-^FS\r\n&#x27; +
+&#x27;^FN14^FDW32 L30^FS\r\n&#x27; +
+&#x27;^FN15^FD000213^FS\r\n&#x27; +
+&#x27;^XZ\r\n&#x27;&amp;nbsp;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,197 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Unable to setup detection of connection loss of RFD40</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Unable to setup detection of connection loss of RFD40</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/unable-setup-detection-connection-loss-rfd40; original snapshot: threads/00240.html; SHA-256: cbdc2f718adfddb081b1b85a193e37a48bdfdb644c29b49026a09e06f163a1ef</small><pre id="topic">
+
+    
+        Unable to setup detection of connection loss of RFD40
+
+
+        
+      
+                        
+                    
+            P
+          
+          Philippe Hacquin
+          2 years 3 months ago
+        
+        
+      
+        
+            
+                  
+            
+            236
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  HelloI am following this guide to understand how to detect, from an Android 10 application running on a TC26, a possible connection loss with the RFID reader (an RFD4030):https://techdocs.zebra.com/dcs/rfid/android/2-0-2-124/guide/connection/Actually I am using the Zebra API in version 2.0.2.125 (api3-ascii, api3-cmn, api3-interface, api3-reader, and api3-transport libraries).When physically disconnecting for test purposes the RFID reader, or even programmatically using reader.disconnect(), the eventStatusNotify() method of my RfidEventsListener is not called  at all with a status event type of DISCONNECTION_EVENT. Although I have initialized the reader with reader.Events.setReaderDisconnectEvent(true) as instructed by the guide mentioned earlier, and checked the status of the reader with reader.Events.isReaderDisconnectEventSet.The only event reported during disconnection is an informative message displayed in Logcat saying &quot;Stopping mState=STOPPED&quot; with tag &quot;RFIDSerialIOMgr&quot;.Any idea on how to make this work ?I have been testing all day long, checking different parameters or changing the order of the instructions at initialization, and no success at all so far.Thank you for any piece of advice
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Philippe Hacquin
+          
+          
+            2 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            BTW, RFIDReader.isConnected() returns true even when the battery of the RFD40 has been removed. I cannot even poll the RFD state at regular intervals with this method.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Philippe Hacquin
+          
+          
+            2 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            OK, problem solved; the page I was looking at gives instructions that are maybe obsolete or not correct for an RFD40. Instructions in https://techdocs.zebra.com/dcs/rfid/android/2-0-2-124/tutorials/reader-appeared-disppeared/ seem to be correct even if they are not complete (I had to create Readers with enum_transport ENUM_TRANSPORT.ALL, call Readers.attach() with a custom class implementing Readers.RFIDReaderEventHandler, adding permission android.permission.BLUETOOTH)Hope this can be useful to someone
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

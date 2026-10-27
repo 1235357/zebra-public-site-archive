@@ -1,0 +1,147 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>RFID Gate Solution for Erasing User Memory on Returned Reusable Containers</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/rfid-gate-solution-erasing-user-memory-returned-reusable-containers; snapshot threads/00008.html; SHA-256 c6f59c9d2373ca2ed176e7d8ed220abdeb87c70320c02f973cca59ec018f0343. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">RFID Gate Solution for Erasing User Memory on Returned Reusable Containers</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            K
+          </div>
+          <div class="forum-topic__author-name">Khunakon Lerdsrisampan</div>
+          <div class="forum-topic__timestamp">1 month 1 week ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            110
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p> </p><p>Hi everyone,</p><p>I have a question regarding the use of <strong>Zebra ZBR4001 RFID tags</strong> attached to reusable boxes in our factory.</p><p>During production, once finished goods are packed into a box, we write the job/order information into the <strong>User Memory Bank</strong> of the RFID tag.</p><p>After the products are shipped to customers, the empty boxes are returned to our factory for reuse. However, the RFID tags still contain the previous job data stored in the User Memory Bank.</p><p>What I would like to achieve is a process that can <strong>erase the User Memory Bank data from multiple RFID tags at the same time</strong>, ideally around <strong>30 boxes per batch</strong>.</p><p>The concept I have in mind is to use an <strong>RFID gate/portal</strong>, where all returned boxes pass through the gate and the system automatically clears the User Memory Bank on every detected tag.</p><p>Has anyone implemented a similar solution, or can anyone recommend Zebra hardware, software, or best practices for this use case?</p><p>Any suggestions or guidance would be greatly appreciated.</p><p>Thank you!</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-54542" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 weeks 5 days ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Khunakon</p><p>I do not provide a specific solution to your question, but recommend as a guide one option that can be done via Fixed readers - that are properly integrated into Infrastructure for IOT connected RFID Fixed Readers.</p><p>There are a few predicate conditions where ZIOTC being used ( I am going to use MQTT as my driving example here )</p><ol><li>You know the first 3 words of the MEMORY_BANK_TID  In my example I know the tags I am seeking are "e280 6f12 2000" .</li><li>You know the EXACT Word Count you need to deal with.  ( In my Case - the USER mem bank is only 4 words long and no offset. )</li></ol><p>Using ZIOTC you could Scan ( A TagAccess Inventory ) for a specific series of tags as follows:<br>&lt;snip&gt; //SMK MQTT Example set_mode API to Read a specific TID for USER by wordpointer and wordcount.<br>{<br> "command": "set_mode",<br> "command_id": "abcd1234",<br> "payload": {<br>   "type": "CUSTOM",<br>   "query": {<br>       "tagpopulation": 100,<br>       "sel": "ALL",<br>       "session": "S0",<br>       "target": "B"<br>   },<br>   "selects": [<br>       {<br>           "target": "S0",<br>           "action": "INVB_INVA",<br>           "membank": "TID",<br>           "pointer": 0,<br>           "length": 48,<br>           "mask": "e2806f122000"<br>       }<br>   ],<br>   "accesses": [      <br>       {<br>           "type": "READ",<br>           "config": {<br>               "membank": "USER",<br>               "wordPointer": 0,<br>               "wordCount": 4<br>           }<br>       }<br>   ],<br>   "radioStopConditions": {<br>       "antennaCycles": 3<br>   }<br>}<br>}</p><p>&lt;/snip&gt;<br><br>If you use the result set from the above you can address the "idHex" for each result where USER is non-zero above (Recommended) </p><p><br>-AND-  </p><p>You may notice in the above - that I am not using any Passwording - since using the "Access Password" may be assumed - but implementing that - is not in scope to your question ( Yet SHOULD be something you should have thought to implement to protect your tags.)  So...  I have left that out of this response - to allow you to begin this journey of looking at what code you can implement for what you seek.<br><br>I will provide the following Three Document portals:  1) from Zebra techdocs : <span data-original-href="https://techdocs.zebra.com/dcs/rfid/fxr-api-docs/">https://techdocs.zebra.com/dcs/rfid/fxr-api-docs/</span>   ( This contains two Domains )<br>2) And if using ZIOTC on the FX-Series ZIOTC platform this documentation portal : <span data-original-href="https://zebradevs.github.io/rfid-ziotc-docs/">https://zebradevs.github.io/rfid-ziotc-docs/</span></p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/rfid-gate-solution-erasing-user-memory-returned-reusable-containers%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/rfid-gate-solution-erasing-user-memory-returned-reusable-containers%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

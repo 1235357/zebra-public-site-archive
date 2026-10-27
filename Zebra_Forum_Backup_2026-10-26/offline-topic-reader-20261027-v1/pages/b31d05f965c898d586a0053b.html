@@ -1,0 +1,164 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Datawedge Listener not reacting</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Datawedge Listener not reacting</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/datawedge-listener-not-reacting; original snapshot: threads/00458.html; SHA-256: a83c9b67372e3681d0ddfa53796d89ed70139cc14765cf15d160eac9f5e8b6f9</small><pre id="topic">
+
+    
+        Datawedge Listener not reacting
+
+
+        
+      
+                        
+                    
+            F
+          
+          Filip Huysmans
+          3 years ago
+        
+        
+      
+        
+            
+                  
+            
+            194
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hallo,we are trying to get scanned barcodes information into a webapplication.We are using:Zebra MC930BEnterpriseBrowser: 3.0.6.0Chrome version: 118.0.5993.80 (it seems that this version has impact on the version and capabilities of the Enterprise Browser)Android : 8.1.0DataWedge: 8.2.48We have a webappliction running in the EnterpriseBrowser.We are using the following javascript code:function log (message)
+{
+   document.getElementById(&quot;logging&quot;).innerHTML = document.getElementById(&quot;logging&quot;).innerHTML + &quot;&lt;br&gt;&quot; + message;
+}
+function myIntentListenerCallback(myIntentData) 
+{
+   log(&#x27;action : &#x27; + myIntentData.action);
+   apex.item( &quot;P1_SCAN_DATA&quot; ).setValue( &quot;action: &quot;+myIntentData.action );
+   if ((myIntentData != null) &amp;&amp; (myIntentData.action == &quot;com.symbol.dw.action&quot;)) 
+    {
+       let l_data = dataWedgeScannedData[&quot;com.symbol.datawedge.data_string&quot;];
+        log(&quot;data scanned: &quot; + l_data);
+       apex.item( &quot;P1_SCAN_DATA&quot; ).setValue( l_data );
+   }
+}
+function startListener() 
+{
+   log(&quot;start listener&quot;);
+   EB.Intent.startListening(myIntentListenerCallback);
+   log(&quot;started startIntentListener&quot;);
+}We see the &quot;start listener&quot; message, but not the &quot;started startIntentListener&quot;.When we perform a scan, we hear the beep, but do not see the &quot;action : &quot; message, assuming the myIntentListenerCallback method is not called.What are we missing? Kind regards Filip Huysmans  
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              F
+            
+          
+                
+          
+            Filip Huysmans
+          
+          
+            3 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I found the issue.  I was missing ebapi-modules.js file. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

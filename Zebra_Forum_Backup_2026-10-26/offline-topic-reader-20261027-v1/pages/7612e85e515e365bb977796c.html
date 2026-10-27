@@ -1,0 +1,286 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Writing to Serial port with my byte in my .net application does nothing?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Writing to Serial port with my byte in my .net application does nothing?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/writing-serial-port-my-byte-my-net-application-does-nothing; original snapshot: threads/00514.html; SHA-256: 02487997bfcfa2482e4f426f92eb100b3c6c71965823b4883169685e42282140</small><pre id="topic">
+
+    
+        Writing to Serial port with my byte in my .net application does nothing?
+
+
+        
+      
+                        
+                    
+            M
+          
+          mike chang
+          3 years 3 months ago
+        
+        
+      
+        
+            
+                  
+            
+            184
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                          //Solved
+        
+  
+
+    
+    
+        
+      
+            
+                  Hello I am new to working on zebra and my question is very similar to the following:
+https://developer.zebra.com/content/scanner-programmatically-make-beep-sound-c.
+
+The main difference is that I am using the zebra ds9308. I read the documentation for SSI and I see that the OpCode is 0xE6.
+
+When I do something like                    
+
+byte[] buffer = { 0xE6 };
+
+ _comPort.Write(buffer, 0, buffer.Length);
+
+ 
+
+nothing occurs and no errors are thrown but I also do not receive a beep noise.  Am I not understanding something?  The beep worked on putty when I did control + g.
+
+For reference, I am looking also looking at 
+https://www.bsr.at/mediafiles/Handbuch/Zebra/DS3600_Simple-Serial-Interface-Programmer-Guide.pdf 
+page 34.
+
+I have a feeling it is because perhaps I am not following the packet format correctly? Would really appreciate an example.
+
+Thank you for your help!
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+        
+      
+        ✓ Accepted Solution
+      
+      
+          
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Example of beep action SSI command based SSI documentation is 05 E6 04 00 00 FF 11 which generate high short beep .
+
+Your scanner needs to be set to RS232 SSI if using serial cable or SSI over USB CDC if using USB cable 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+      
+    
+  
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Example of beep action SSI command based SSI documentation is 05 E6 04 00 00 FF 11 which generate high short beep .
+
+Your scanner needs to be set to RS232 SSI if using serial cable or SSI over USB CDC if using USB cable 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            mike chang
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you very much! Scanning the barcode for SSI over USB CDC in the manual and updating my code to send the correct bytes in the format worked.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

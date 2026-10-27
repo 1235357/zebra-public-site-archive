@@ -1,0 +1,144 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>EMDK Crashing On MC18</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>EMDK Crashing On MC18</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/emdk-crashing-mc18; original snapshot: threads/00402.html; SHA-256: 2b71eed0d28cbd4450b045ac3a517564271e0b4049f01b2deb363ee4a785f60a</small><pre id="topic">
+
+    
+        EMDK Crashing On MC18
+
+
+        
+      
+                        
+                    
+            O
+          
+          Oliver Hardman
+          2 years 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            114
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi all, EMDK newbie here.I have an MC18 running Lollipop. I am trying to use EMDK 6.9.16 (apparently the latest supported version for Android 5).Have retrieved the EMDKManager and implemented the onOpened method which is being successfully called. However, when I try to get my PersonalShopper object, EMDK crashes. Here&#x27;s the logcat: --------- beginning of crashE/AndroidRuntime( 3781): FATAL EXCEPTION: Binder_1E/AndroidRuntime( 3781): Process: com.symbol.emdk.emdkservice, PID: 3781E/AndroidRuntime( 3781): java.lang.NoSuchFieldError: No static field SCANNER_BLUETOOTH_RS5100 of type Lcom/symbol/scanning/Scanner$ScannerInfo$ScannerType; in class Lcom/symbol/scanning/Scanner$ScannerInfo$ScannerType; or its superclasses (declaration of &#x27;com.symbol.scanning.Scanner$ScannerInfo$ScannerType&#x27; appears in /system/framework/com.symbol.scanner.jar)E/AndroidRuntime( 3781):        at com.symbol.emdk.emdkservice.notification.SvcDeviceUtils.getSupportedDevices(SvcDeviceUtils.java:67)E/AndroidRuntime( 3781):        at com.symbol.emdk.emdkservice.notification.SvcNotificationManager.&lt;init&gt;(SvcNotificationManager.java:38)E/AndroidRuntime( 3781):        at com.symbol.emdk.emdkservice.SvcEMDKManager.nfnInitialize(SvcEMDKManager.java:1460)E/AndroidRuntime( 3781):        at com.symbol.emdk.emdkservice.ProfileService.nfnInitialize(ProfileService.java:1061)E/AndroidRuntime( 3781):        at com.symbol.emdk.emdkservice.IEMDKService$Stub.onTransact(IEMDKService.java:1955)E/AndroidRuntime( 3781):        at android.os.Binder.execTransact(Binder.java:446)W/ResourcesManager(  640): Asset path &#x27;/system/framework/com.symbol.scanner.jar&#x27; does not exist or contains no resources.W/ResourcesManager(  640): Asset path &#x27;/system/framework/com.symbol.diagnostic.jar&#x27; does not exist or contains no resources.W/ResourcesManager(  640): Asset path &#x27;/system/framework/com.symbol.cradle.jar&#x27; does not exist or contains no resources. The code causing the crash is:this.personalShopper = (PersonalShopper) this.emdkManager.getInstance(EMDKManager.FEATURE_TYPE.PERSONALSHOPPER); Any ideas why this is happening? This is a freshly wiped MC18 with the latest OS package.Also, does anyone know where I can find the JARs for each EMDK release now that JCenter is gone? Many thanks for any help!
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              O
+            
+          
+                
+          
+            Oliver Hardman
+          
+          
+            2 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Just in case anyone stumbles across this: it was because I was using &quot;implementation&quot; in my build.gradle instead of &quot;compileOnly!&quot;
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

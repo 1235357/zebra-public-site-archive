@@ -1,0 +1,324 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MC75 SMS to Email Gateway</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MC75 SMS to Email Gateway</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/24161; original snapshot: threads/01310.html; SHA-256: 2dac72c16db4e8ae00cb567dc8fb9da06dabcf99e8879170cea4d08b9bb47ed9</small><pre id="topic">
+
+    
+        MC75 SMS to Email Gateway
+
+
+        
+      
+                        
+                    
+            B
+          
+          Brian Safran
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            25
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I have a customer that has AT&amp;T, Sprint and Verizon MC75&#x27;s deployed. THey want to be able to send a text message to an email address directly. In both the Sprint and Verizon, they can put the email address in the TO field and send the text message.   In the AT&amp;T unit, they have to put the SUMS to Email gateway address (111) in the TO field and then the email address in the body of the text message.   I have tested this with another WM 6 AT&amp;T Device (Blackjack) and you do not have to do this. You can put the email address directly in to the TO Field.   THe customer does not want separate applications running for the 3 carriers. I have been told by support that the Operator implemented SMS to EMail Gateway is part of WM6 and this is how it works with AT&amp;T. THey also mentioned that a 3rd party application that utilizes SMPP (Short Message Peer-to-Peer) could help.   Any suggestions?  Thanks.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Brian Safran
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Got the answer (Customer made it more complicated than it needed to be).   
+To send a Text message to an email address from the carriers, you might need to use the following codes. The format is: &amp;nbsp;&amp;nbsp; CODE as the text message address
+ Within the message:   &amp;nbsp; Text Message 
+   Codes are: 
+&amp;nbsp;&amp;nbsp; AT&amp;amp;T&amp;nbsp; 36245&amp;nbsp; (Spells EMAIL on telephone Pad) &amp;nbsp;&amp;nbsp;Sprint and Verizon&amp;nbsp; 6245&amp;nbsp; (Spells Mail on telephone pad)
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Brian Safran
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            We are still having issues trying to get this to work. The developer says it works fine on their cell phone. Motorola, AT&amp;amp;T and Verizon have all tried to get this to work. Here is some details on the issue. I am at a road block. I have the test programs if you want. Email me at brian.safran@motorola.com for them. -------------------------------------------------------------------------------------------------------------------------------------------------------- Very simply &quot;I want to send an SMS Text message to an email address&quot;.&amp;nbsp; This simple function apparently differs between the carriers.&amp;nbsp; The AT&amp;amp;T implementation that we have been using so far is as follows:
+  &amp;nbsp; 
+How to Send Text Messages from a Wireless Phone to an E-mail Address
+Follow these steps to send a text message from a wireless phone to an e-mail address using the phone&#x27;s Write Message function:
+1.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Access the Text Message screen on your phone1.
+2.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Select Create New Message or Create E-mail option on your phone1.&amp;nbsp;
+3.&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Follow prompts to create and send message.&amp;nbsp; If handset does not allow you to enter an e-mail address in &quot;To&quot; field, follow instructions below:
+·&amp;nbsp; Type the message using the following format: (recipient&#x27;s e-mail address) (subject optional) (body of message).
+·&amp;nbsp; Send message to 36245 (e-mail gateway address). Customers in certain markets may see 121 pre-populated.&amp;nbsp; If so, do not change.
+·&amp;nbsp; For example: name@yahoo.com Hey...are we still on for lunch today?&amp;nbsp; 
+  &amp;nbsp; 
+ From this description and what we have been doing programmatically AT&amp;amp;T is using a short code to receive SMS messages and convert them to email via a gateway.&amp;nbsp; The registry entries that you sent us previously are meant to insulate the user of the standard Mail/Inbox application of having to key in the short code in the application.&amp;nbsp; Verizon and Sprint apparently have no short code to send to and according to them you can just enter an email address and it will work.&amp;nbsp; I wrote a bare minimum application to send SMS messages and intercept all incoming SMS to test this and eliminate all other considerations.&amp;nbsp; The code of this application is listed below and you can download and install it from&amp;nbsp;&amp;nbsp;XXX. &amp;nbsp;(I can also provide you the Visual Studio project if required).&amp;nbsp; When I execute this application on each of the carriers with a phone# as the to: (SMS destination) in the application it works in every case.&amp;nbsp; To send email on AT&amp;amp;T we enter the short code in the to: and start the message with the email address and it works with no problems.&amp;nbsp; When we enter an email address on a Sprint MC75 the function returns with a non specific error &quot;Error sending SMS Text&quot;&amp;nbsp; it does not give me any other type of information.&amp;nbsp;&amp;nbsp;The Verizon device appears to have the same&amp;nbsp;issue except it does not give me an error on the send but does not appear to actually send the message.&amp;nbsp; I can participate in as many conference calls as you like but I am not sure what more I can contribute since the problem is either that what we are trying to do is not possible (which I find hard to believe since I can do it on my cell phone) or there is an issue somewhere between Motorola, the carriers and Microsoft.&amp;nbsp; In a nutshell if you can get my test program to work sending an SMS message to an email address on all three carriers then the problem is solved.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Brian Safran
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Worked Great. Thanks.  You don&#x27;t need this on Sprint and Verizon. Only AT&amp;amp;T needs the SMS-Email Gateway.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Brian Safran
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Well I answered to quickly. The reg setting works great when you try to do it manually (Send text message from phone screen). It does not seem to work when they try to send a text message programmatically from within their .net application. I&#x27;m trying to get the code from the developer, but he is saying he doesn&#x27;t have to do anything with Sprint and Verizon, only AT&amp;amp;T is giving him the issue.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

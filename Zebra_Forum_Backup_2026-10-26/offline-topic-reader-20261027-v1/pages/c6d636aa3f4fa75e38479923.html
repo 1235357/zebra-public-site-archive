@@ -1,0 +1,517 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to detect EMDK barcode manager scanner beamtime timeouts in the android application?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to detect EMDK barcode manager scanner beamtime timeouts in the android application?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/how-detect-emdk-barcode-manager-scanner-beamtime-timeouts-android-application; original snapshot: threads/00806.html; SHA-256: 4a24fe066f24c7b4ee2a5b1b5d39114891bb95c083f6d0f0b5673d2c698a3224</small><pre id="topic">
+
+    
+        How to detect EMDK barcode manager scanner beamtime timeouts in the android application?
+
+
+        
+      
+                        
+                    
+            S
+          
+          Sheetal Sharma
+          4 years 5 months ago
+        
+        
+      
+        
+            
+                  
+            
+            141
+          
+                
+                  
+            
+            7
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi Team,
+I am using a mobile computer zebra TC52x device to scan barcodes in the android application. In order to use the barcode scanner, I am using the zebra SDK Symbol.XamarinEMDK(7.0.0.14). I am selecting the 2D barcode imager scanner when we initialize the scanner with trigger type SOFTALWAYS and put it on IDLE state then after a few seconds it auto turns off the scanner beam laser light on the device and the application does not notify this anything in this case.
+So we want to notify our app when the scanner beam light turns off automatically.
+Please let us know how we can achieve this in our Android application.
+Thanks
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      7 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+You&#x27;d need to use the IStatusListener interface to be notified of changes in the scanner status: https://techdocs.zebra.com/emdk-for-xamarin/latest/api/barcode/Scanner_…
+We have a diagram of our scanner states available here: https://techdocs.zebra.com/emdk-for-android/4-2/guide/scanner/
+You can also configure the timeout of the scanner beam using our API: https://techdocs.zebra.com/emdk-for-android/6-7/api/reference/com/symbo…
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sheetal Sharma
+          
+          
+            4 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Team,
+Thanks for the response.
+I have tried to configure the beam timeout using the below code snippet as per the suggested API documentation. Initially, the default value of this variable is 0 and then we set it to 15 seconds but the scanner beam turns off exactly after 5 seconds irrespective of whether the value is 0 or 15 seconds. So it does not have any effect on the scanner.
+ScannerConfig config = scanner.GetConfig();
+config.ReaderParams.ReaderSpecific.LaserSpecific.BeamTimer = 15000;
+Also as per the API documentation if the value is 0 then it will indefinitely stay ON but actually, it is not.
+I am using the EMDK barcode manager for scanning in Zebra TC52x mobile device
+Scanner - 2D barcode imager
+Trigger type - Soft Always
+Use case -  we start the scanner and do not scan any barcode(Standby mode) then after 5 seconds scanner beam turns off automatically and for this we did not get any state change in the Status changed listener.
+So please let me know if we are missing anything.
+Thanks
+Sheetal
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+Are you calling setConfig after adjusting the beamtimer to apply the setting to the scanner?
+Additionally, you&#x27;ll need to call .addStatusListener() on an instance of the scanner object to receive status notifications in your app.
+Thanks,
+James
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sheetal Sharma
+          
+          
+            4 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+Yes, I am calling setConfig after adjusting the beamtimer to apply the settings to the scanner. Please find the below snippet that we have implemented in our app.
+ScannerConfig config = scanner.GetConfig();
+....
+config.ReaderParams.ReaderSpecific.LaserSpecific.BeamTimer = 15000;
+scanner.SetConfig(config);
+Yes, I have already called the .addStatusListener() as per the Xamarin.Android implementation as I am developing it in Xamarin technology. Also, the status listener is already calling for other cases except when the scanner auto-off the beam after 5 seconds.
+Please let me know if we are missing anything.
+Thank
+Sheetal
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sheetal Sharma
+          
+          
+            4 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+Yes, I am calling setConfig after adjusting the beamtimer to apply the settings to the scanner. Please find the below snippet that we have implemented in our app.
+ScannerConfig config = scanner.GetConfig();
+....
+config.ReaderParams.ReaderSpecific.LaserSpecific.BeamTimer = 15000;
+scanner.SetConfig(config);
+Yes, I have already called the .addStatusListener() as per the Xamarin.Android implementation as I am developing it in Xamarin technology. Also, the status listener is already calling for other cases except when the scanner auto-off the beam after 5 seconds.
+Please let me know if we are missing anything.
+Thank
+Sheetal
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+For the beam-timer, if you&#x27;re using the built-in scanner on the device you&#x27;ll need to call 
+config.ReaderParams.ReaderSpecific.imagerSpecific.BeamTimer = 15000;instead of 
+config.ReaderParams.ReaderSpecific.laserSpecific.BeamTimer = 15000;I&#x27;m not sure why the status listener call back isn&#x27;t working for you - when I test here the scanner goes from SCANNING -&gt; IDLE -&gt; WAITING when the beamer times out. I&#x27;d recommend double checking the docs to make sure you&#x27;re registering the status listener correctly &amp; also check that you&#x27;re catching the WAITING &amp; IDLE states.  You can also use this repo to test the status listener functionality.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Susy Duckworth
+          
+          
+            2 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Here are some solutions:1. Using EMDK Broadcast Intents:EMDK Broadcast Intents allows you to monitor scanner events, including backlighting.Add an EMDK Broadcast Receiver to your project and register for EMDK_SCANNER_STATUS_CHANGED events.Handle EMDK_SCANNER_STATUS_CHANGED events and check the status parameter.When EMDK_SCANNER_STATUS_DISABLED is set, the scanner backlight is turned off.2. Using the ScannerDataCaptureDevice class:The ScannerDataCaptureDevice class allows you to access information about the scanner, including the backlight state.Create an instance of the ScannerDataCaptureDevice class.Use the getScannerInfo() method to get scanner information.Check the scannerStatus field in the resulting ScannerInfo object.When set to ScannerStatus.DISABLED, the scanner backlight is turned off.3. Using NDK:NDK allows you to directly interact with the scanner driver.Use the NDK features to obtain scanner status information.Handle scanner backlight off events.If you are unable to solve the problem yourself, then I recommend contacting Cogniteq, because they can troubleshoot the problem with your application, and in case of trouble, develop an application in Flutter (https://www.cogniteq.com/blog/flutter-pros-and-cons-it-good-choice-your-app) that will work on the Zebra TC52x and other devices.Good luck!
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

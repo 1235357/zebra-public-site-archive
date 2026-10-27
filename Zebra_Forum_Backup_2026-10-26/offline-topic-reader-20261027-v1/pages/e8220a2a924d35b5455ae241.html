@@ -1,0 +1,147 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>SDK malformed status reponse error</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>SDK malformed status reponse error</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/sdk-malformed-status-reponse-error; original snapshot: threads/00098.html; SHA-256: 27b32135ac445c159a861fb68ae4117d5ef8c654881a592e2c89aecae939e978</small><pre id="topic">
+
+    
+        SDK malformed status reponse error
+
+
+        
+      
+                        
+                    
+            M
+          
+          Mike Donnan
+          1 year 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            160
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello Forum peopleHas anyone experienced the &quot;malformed response&quot; error from printer status checking as per the code below..?ZebraPrinter printer = ZebraPrinterFactory.getLinkOsPrinter(connection);PrinterStatus printerStatus = printer.getCurrentStatus();I have seen multiple hits on this on the forum ....  but no resolution.Anyone got any insights..?Thanks 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            1 year 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            What&#x27;s the printer model on which the malformed error happens?
+Most common cause of the malformed error is due to the mismatch of the setting of device.languages on the printer. By default, the ZebraPrinterFactory.getLinkOsPrinter(connection) returns an instance of a ZPL printer. If the device.languages setting on the printer is CPCL or line_print mode, however, calling the printer.getCurrentStatus() likely triggers the malformed error. To get around this, we can query the device.languages setting on the printer first via the SGD API. Then we obtain the proper instance of the printer through ZebraPrinterFactory.getLinkOsPrinter(language, connection) with the language type returned from the device.languages SGD.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

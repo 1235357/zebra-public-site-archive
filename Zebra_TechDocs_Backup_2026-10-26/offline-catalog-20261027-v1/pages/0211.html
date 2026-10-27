@@ -1,0 +1,332 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>EKB Deployment - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/enterprise-keyboard/latest/guide/deploy/</code><br>Observed final URL: <code>https://techdocs.zebra.com/enterprise-keyboard/latest/guide/deploy/</code><br>Raw source: <code>raw/3d70b326c9dc1c9718943fa3.html</code><br>Raw SHA-256: <code>c983440585769dea61f25a09b3bbeac41878334a39eeb4035753c1702882a032</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            Enterprise Keyboard
+                                            6.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Setup
+                            
+                        
+                        
+                            
+                                    Customize
+                            
+                        
+                        
+                            
+                                    Deploy
+                            
+                        
+                        
+                            
+                                    Managed Configs
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    EKB Designer
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            EKB Deployment
+                        
+                    OverviewRequirementsAbout EKD Files Before Installing EKB 4.0 (or later)Mass DeploymentTo Mass-deploy EKB/EKD filesAlso See
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    EKB Deployment
+                                    
+                                            Enterprise Keyboard
+                                            6.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+The Enterprise Keyboard (EKB) 4.0 (and later) .apk file can be downloaded from Google Play or the Zebra support portal and deployed to compatible devices. 
+
+EKB can be configured using Zebra StageNow and the UI Manager service or through a company&#x27;s own enterprise mobility management (EMM) system (if supported by that system). This guide covers the basic procedures for mass-deployment of the Enterprise Keyboard apk file and layouts made with Enterprise Keyboard Designer (EKB Designer or EKD), Zebra&#x27;s Windows-based tool for creating custom EKB key layouts. 
+
+
+  Zebra strongly recommends testing apps, configuration files and deployment settings on a working device before general deployment.
+
+
+Requirements
+
+
+EKB installation package (.apk)
+
+StageNow or a compatible EMM system
+
+EKD layout definition file (optional)
+
+Signature file (optional, for secure deployment)
+
+
+About EKD Files
+
+Data for custom key layout(s) is stored in the custom key-layout definition file, an encrypted file generated by EKD that contains information about key locations, key-value assignments, etc. for each key layout created. This single file can contain as many as 20 layout groups, each of which defines one custom key layout. 
+
+
+
+
+
+ Before Installing EKB 4.0 (or later)
+
+
+New package name (4.0 and later): com.zebra.mdna.enterprisekeyboard
+
+Previous package name(3.9 and earlier): com.symbol.mxmf.csp.enterprisekeyboard
+
+New package name requires that any previous EKB version be uninstalled. This removes EKB fixed keyboard layouts and any previously deployed custom layout file.
+
+Custom layout files from prior versions (if used) ARE compatible with EKB 4.0+, but MUST be re-deployed.
+
+EKB 4.0 (and later) targets Android API level 30 (or later), enforcing the following storage restrictions: 
+
+
+
+External storage is no longer accessible, including any path to an SD Card.
+
+The custom layout file [LayoutProjectName.encrypted] (if used) must be re-deployed to:/enterprise/device/settings/ekb/config/
+
+
+If using secure deployment, download signature file provided by Zebra for convenience.  Double-click file to unzip before using.  
+
+Optionally, organizations can generate their own signature file using Zebra Sig Tools or a comparable solution. 
+
+
+ OTHER IMPORTANT EKB NOTES:
+
+
+Enterprise Keyboard 3.2 (or later) must be installed and set as the default input method on the device to display layouts made with EKD. 
+
+Apps on the device can access only a single EKD project file; all layouts required for a device MUST be stored in that single file.  
+
+Only one keyboard or custom key layout can be displayed on the device screen at a time. When a custom key layout is displayed, all other keyboards are hidden, including the standard Enterprise Keyboard alpha-numeric layout. 
+
+To display an EKD layout, it must be called by an app using intents (see EKB APIs section).
+
+EKD project files can be decrypted on the device only by Enterprise Keyboard and Enterprise Browser. 
+
+The layout definition file must be stored in the /enterprise/device/settings/ekb/config/ folder on the device. 
+
+Do NOT deploy empty key layout files; they can cause Enterprise Keyboard to behave unpredictably.
+
+The &quot;Switch-Scan&quot; Press Action sometimes displays a layout other than the expected EKB &quot;scan&quot; layout. 
+
+When using DataWedge to switch layouts, the EKB fixed layout is sometimes shown briefly or until the focus changes again. 
+
+On TC21/TC26 devices, DataWedge Profiles cannot be used to select or switch between custom layouts. Zebra recommends using EKB intents instead.  
+
+When custom layouts are displayed, all EKB settings, preferences and functions are suspended.
+
+
+
+
+
+Mass Deployment
+
+The basic process for mass deployment of Enterprise Keyboard and/or an accompanying keyboard layout file is shown below. 
+
+
+
+ IMPORTANT CHANGES; ACTION REQUIRED
+
+BEFORE PROCEEDING: Please read Before Installing EKB 4.0 (or later) section above. 
+
+To Mass-deploy EKB/EKD files
+
+After downloading the latest EKB .apk and downloading (or generating) a sig file for secure deployments:
+
+
+Uninstall any prior version of Enterprise Keyboard, if present. 
+
+In StageNow or a compatible EMM, create an installation package containing EKB .apk and/or EKD layout definition file(s). 
+By default, EKD layout definition files are saved in the \Downloads directory of the host-computer user on the system on which they were created.For example: 
+c:\Users\[userName]\Downloads\[LayoutProjectName].encrypted
+
+Deploy EKB to target device(s).
+
+If included, deploy layout definition file to: 
+/enterprise/device/settings/ekb/config/†
+For secure deployment of layout files (EKB 4.2 or later only):
+    a. Using MX File Manager (or the equivalent EMM function), select the File Action &quot;Deploy file for an application.&quot;
+    b. In the TargetApplicationAndFileName parameter, enter: com.zebra.mdna.enterprisekeyboard/config/&lt;yourLayoutFileName&gt;.encrypted.
+    c. Specify the signature file (see &quot;Before Installing...&quot; section, above).
+
+After all device downloads have completed, launch EKB.
+
+Configure EKB as the default input source.  
+
+Restart the device. 
+
+
+† If custom layouts are to be accessed by Enterprise Browser and/or DataWedge, layout files copied to /enterprise/device/settings/ekb/config/ must grant full (&quot;777&quot;) read, write, and execute permissions for all users.
+
+ Upon restart, EKB is the default keyboard and custom key layouts are available for use.
+
+
+
+Also See
+
+
+DataWedge Configuration | Using key layouts with DataWedge 
+
+Enterprise Keyboard APIs | Switching key layouts programmatically
+
+
+
+
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2025 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

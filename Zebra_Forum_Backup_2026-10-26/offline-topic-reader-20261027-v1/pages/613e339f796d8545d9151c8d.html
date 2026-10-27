@@ -1,0 +1,268 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>RFID Input parameter tag reporting for DataWedge profile</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>RFID Input parameter tag reporting for DataWedge profile</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/rfid-input-parameter-tag-reporting-datawedge-profile; original snapshot: threads/00022.html; SHA-256: ac8b2553ae7f599eeb87829d11ef4f999dccc46fb179d2db081a2f95cb980d29</small><pre id="topic">
+
+    
+        RFID Input parameter tag reporting for DataWedge profile
+
+
+        
+      
+                        
+                    
+            P
+          
+          Petra P�hlmann
+          1 year 1 month ago
+        
+        
+      
+        
+            
+                  
+            
+            218
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I am working with TC53e-RFID and create a RFID DataWedge profile programmatically via SetConfig API. On https://techdocs.zebra.com/datawedge/15-0/guide/api/setconfig/#rfidinputparameters .I didn&#x27;t find no parameter listed for the feature &quot;Tag Reporting&quot;-&gt;&quot;RSSI Enable or disable RSSI for Tags&quot;. Is it possible to set this config parameter and how?
+              
+
+                    
+          
+      
+              
+ Screenshot 2025-09-19 164751.png
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            1 year ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello.I may recommend lookin at the Datawedge Techdoc for RFID Plug-in here:https://techdocs.zebra.com/datawedge/latest/guide/input/rfid/Samples that use the same actions to programmatically change &quot;Config/settings&quot; in a DW Profile:https://techdocs.zebra.com/datawedge/15-0/guide/samples/barcode1/  ( Datacapture1) GitHub Repo for Datawedge Sample code:https://github.com/ZebraDevs/DataWedge-Android-SamplesFYI - there is no specific sample that demonstrates the RSSI setting = true / = false - sorry.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            David Corsalini
+          
+          
+            11 months 3 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            In the PARAM_LIST bundle for the RFID plugin add this pair:&quot;tag_RSSI&quot; to &quot;true&quot;I&#x27;m a poor soul trying to use the RFID scanner, did you manage to receive tag scans? Did you do it with the intent output?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Petra P�hlmann
+          
+          
+            11 months 3 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hey David,many thanks! That&#x27;s what I&#x27;ve been looking for.Yes, receiving tag scans is working by intent output. On TC53e-RFID I receive barcode and rfid tags with one profile by using the right yellow scan key on the device. First: in your receiver for the intent data differ between rfid and barcode capture as follows: //Source is scanner
+ if(&quot;scanner&quot;.equalsIgnoreCase(intent.getStringExtra(&quot;com.symbol.datawedge.source&quot;))) {
+ 	String barcode = intent.getStringExtra(&quot;com.symbol.datawedge.data_string&quot;);
+ 	//do anything with it
+ }
+ //Source is RFID reader
+ if(&quot;rfid&quot;.equalsIgnoreCase(intent.getStringExtra(&quot;com.symbol.datawedge.source&quot;))) {
+ 	//Multiple rfidTags are splitted by &quot;\n&quot;
+ 	//RSSI values are coming with &quot; -65&quot; (for example)
+ 	String rfidTags = intent.getStringExtra(&quot;com.symbol.datawedge.data_string&quot;);
+	//do anything with it
+  }Second (for TC53e-RFID):Configure settings--&gt;Key Programmer https://techdocs.zebra.com/datawedge/latest/guide/input/rfid/#keymappingMapping RIGHT_TRIGGER_1 to SYMBOL_TRIGGER_3 causes RFID and barcode scan with the right scan button: And as I&#x27;am a pour soul too: make sure that your USB-cable isn&#x27;t plugged. I fall for that 3 times a day. ;-)I hope this will help you. If you need further help, let me know.    
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

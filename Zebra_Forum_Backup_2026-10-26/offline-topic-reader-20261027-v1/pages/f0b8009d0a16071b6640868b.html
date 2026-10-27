@@ -1,0 +1,244 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Need some assistance with using StageNow to set some Android 11 settings for the cc600</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Need some assistance with using StageNow to set some Android 11 settings for the cc600</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/need-some-assistance-using-stagenow-set-some-android-11-settings-cc600; original snapshot: threads/00743.html; SHA-256: dda5465e1cc4ab49d779eb125f7c2b0fcfd4d579359c536c6e5478e8e2577dd8</small><pre id="topic">
+
+    
+        Need some assistance with using StageNow to set some Android 11 settings for the cc600
+
+
+        
+      
+                        
+                    
+            A
+          
+          Adrian Brown
+          4 years 1 month ago
+        
+        
+      
+        
+            
+                  
+            
+            868
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Greetings,
+I’ve been tasked with preparing a CC600 device with our company’s security policies so that it can be moved to our general development networks. Until then, it’s been designated to live in an isolated network segment that prohibits almost all forms of access. I’ve been given only StageNow to make the necessary security updates, but have been running into some issue doing so in that it seems that StageNow doesn’t have the options to make the updates that I need. So I’m posting some of my roadblocks, hoping that someone may be able to give some guidance regarding what I need to do, or even if it&#x27;s something that&#x27;s not possible to do with StageNow. For the record, I’m fairly new to Android in general.
+1) I need to update/limit the device’s application installation policy to prevent installation of applications from unknown sources or through unauthorized applications. For example, the check for this policy on the device is:
+On the Zebra device, do the following:
+1. Open Settings &amp;gt;&amp;gt; Apps and notifications &amp;gt;&amp;gt; Advanced &amp;gt;&amp;gt; Special app access.
+2. Open Install unknown apps.
+3. Ensure the list of apps is blank or if an app is on the list, &quot;Disabled by admin&quot; is listed under the app name.
+In the Unknown Sources section in StageNow, I’ve got the ‘Install App from Unknown Sources’ option set to ‘Turn Off’, but that doesn’t seem to have accomplished what I need it to. Is there somewhere else within StageNow that I could set the kind of setting that I need to above?
+2) Our security policies require us to manage the authorized use Google Play. However, unless I’m simply not seeing it, I’m not seeing any profiles in StageNow that allow for management of what Google Play is permitted to do on the device. Is this something that I’m just not seeing, or is this a limitation of StageNow? Is there a way to simply disable the installation of anything from Google Play by default, except for what might be in a created whitelist? I’ve found Whitelist options in StageNow that require the actual App names, but I haven’t found any ‘Prohibit anything that isn’t in the whitelist’ option.
+3) We have a requirement the requires us to disable the use of third-party keyboards. Is this something that can actually be explicitly configured in StageNow, or would it instead be something that we would use include in an application allow list?
+4) Our security policies require us to disable multi-user modes or the ability to modify accounts from the device. In a real MDM, it would be under “Set User Restrictions -&amp;gt; Disallow modify accounts”, but I haven’t seen anything like this in StageNow. Again, might simply be missing the screen/option where it’s done.
+5) Our security policies require security logging on the device to be turned on. I’m not seeing any option for this in StageNow, nor do I even know where to check on the device to verify whether or not it already is. Can this be done in StageNow?
+6) Is there a way to disable the ability of device users to remove User certs? System certs don’t appear to be able to be removed by users (although it looks like they can be disabled), but it looks like User certs can. Can StageNow create a config that prevents device users from being able to remove User certs, or even disable System certs?
+7) Can StageNow be used to disable autocomplete/autofill in the installed Chrome browser?
+8) I’ve found in StageNow screens for configuring Date/Time formats, as well as whether to use an NTP server, but is there a way to disable a device user from being able to update those settings with StageNow? So that the option for it is grayed out. Ie, 
+On the Zebra Android 11 device, do the following:
+1. Open &quot;Settings&quot;.
+2. Tap &quot;System&quot;.
+3. Tap &quot;Date &amp;amp; time&quot;.
+4. Validate that &quot;Use network-provided time&quot; is grayed out.
+9) Our security policy requires us to enable Common Criteria Mode (CC Mode). I haven’t seen anything with this name in any of the StageNow profile screens that I’ve looked through. Is this something that StageNow can configure, or is it something that we need to look into a full MDM solution for?
+Thanks in advance for your time, especially if you read through all of this. It&#x27;s much appreciated.
+-Adrian
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+Let me try &amp; answer your questions:
+1) The default setting on Android is to disallow installations from unknown sources, though our StageNow API for changing this is unsupported on Android versions later than Oreo 8.1. You can reference this list of StageNow APIs to see all of the options we offer &amp; any caveats, such as depreciation or OS dependencies.
+2) I think this depends on what exactly you want to do.. Some links that may be helpful are:
+GMS Restricted Mode
+Prevent PlayStore from updating apps
+Disable Apps by Package Name
+Realistically, you&#x27;d probably be better of using something like Enterprise Home Screen to specify what apps should be available to the user, or perhaps an EMM.
+3) I think you&#x27;re on the right track here; you would disable the unwanted keyboard packages via StageNow which would prevent their usage
+4) We have a disable multi-user option in StageNow UI Manager. You need an SD660 device for this.
+5) We offer RxLogger but this is mostly for debugging &amp; isn&#x27;t typically used for security logging. I&#x27;m not aware of anything else we offer, though there may be solutions in our Partner Community.
+6) I&#x27;m not really familiar with this area. We have a CertMgr in StageNow but I don&#x27;t think it has the functionality you&#x27;re looking for.
+7) Application settings are typically managed by something called &#x27;Managed Configs&#x27; which are configuration options that applications expose to EMMs (or any DO app) on the device. StageNow doesn&#x27;t have this functionality currently.
+8) Usually you&#x27;d achieve this by blocking physical access to the specific settings by disabling those pages entirely. You could use Enterprise Home Screen as suggested above, or use StageNow to disable the specific packages you want to block.
+9) Not sure on this one, though I did find this doc from Google: https://www.niap-ccevs.org/MMO/Product/st_vid11232-agd.pdf
+Hope this helps,
+Thanks,
+James
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              E
+            
+          
+                
+          
+            Edward Correia
+          
+          
+            4 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Adrian- 
+Many of your company&#x27;s security policies can be implemented by limiting or eliminating user access to the Android Settings panel. This can be done through Access Manager (to limit access to a group of settings) or Settings Manager  for more granular control. To eliminate access altogether, use App Manager and prohibit the Settings panel (and unwanted keyboards)  by package name. We also offer UI Manager, which can control virtually any aspect of the Android user interface.
+However, (as previously noted) it might be faster and easier to simply install Zebra&#x27;s Enterprise Home Screen, a free and simple-to-use tool that locks down all device functions except those specifically allowed by the admin. 
+Best,
+Eddie Correia
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

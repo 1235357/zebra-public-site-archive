@@ -1,0 +1,303 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>DataWedge – Speed Up profile updating</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>DataWedge – Speed Up profile updating</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/datawedge-speed-profile-updating; original snapshot: threads/00627.html; SHA-256: 58b57ebd52d5fb563858ef018813b69d01b951e06cc043aa24138020eeb7f0d4</small><pre id="topic">
+
+    
+        DataWedge – Speed Up profile updating
+
+
+        
+      
+                        
+                    
+            S
+          
+          Stefan Karabin
+          3 years 7 months ago
+        
+        
+      
+        
+            
+                  
+            
+            144
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                          //Solved
+        
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+
+I am using DataWedge with my app and updating its profile using intents. However, I have observed that the profile update process takes up to 2 seconds, which is not suitable for my app&#x27;s needs. Since my app only has one activity, creating additional profiles is not a viable solution.
+
+Are there any strategies to optimize the profile updating process and reduce its duration? For example,  I need to frequently enable and disable multi-scanning.
+
+Thank you for your assistance.
+
+
+Any suggestions or insights would be greatly appreciated. Thank you.
+
+fun configureBarcodeScanning(
+    enableMultiScan: Boolean,
+    context: Context
+) {
+
+    val profileConfig = Bundle()
+    profileConfig.putString(&quot;PROFILE_NAME&quot;, DATAWEDGE_PROFILE_NAME)
+    profileConfig.putString(&quot;PROFILE_ENABLED&quot;, &quot;true&quot;)s
+    profileConfig.putString(&quot;CONFIG_MODE&quot;, &quot;UPDATE&quot;)
+
+    val barcodeConfig = Bundle()
+    barcodeConfig.putString(&quot;PLUGIN_NAME&quot;, &quot;BARCODE&quot;)
+    barcodeConfig.putString(&quot;RESET_CONFIG&quot;, &quot;false&quot;)
+
+    val barcodeProps = Bundle()
+    barcodeProps.putString(&quot;scanner_selection_by_identifier&quot;, &quot;INTERNAL_IMAGER&quot;)
+
+    if (enableMultiScan) {
+        barcodeProps.putString(&quot;scanning_mode&quot;, &quot;3&quot;)
+        barcodeProps.putString(&quot;instant_reporting_enable&quot;, &quot;true&quot;);
+    } else {
+        barcodeProps.putString(&quot;scanning_mode&quot;, &quot;1&quot;)
+        barcodeProps.putString(&quot;instant_reporting_enable&quot;, &quot;false&quot;);
+    }
+
+    barcodeConfig.putBundle(&quot;PARAM_LIST&quot;, barcodeProps)
+    profileConfig.putBundle(&quot;PLUGIN_CONFIG&quot;, barcodeConfig)
+
+    sendCommandBundle(context, DWInterface.DATAWEDGE_SEND_SET_CONFIG, profileConfig)
+}
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+        
+      
+        ✓ Accepted Solution
+      
+      
+          
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You could try the SWITCH_PROFILE API instead to hop between two profiles with the relevant configurations: https://techdocs.zebra.com/datawedge/latest/guide/api/switchtoprofile/
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+      
+    
+  
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You could try the SWITCH_PROFILE API instead to hop between two profiles with the relevant configurations: https://techdocs.zebra.com/datawedge/latest/guide/api/switchtoprofile/
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Stefan Karabin
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for your advice; it is much better.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

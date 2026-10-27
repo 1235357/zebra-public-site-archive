@@ -1,0 +1,448 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Custom Bluetooth Scanner Notifications - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/customnotify</code><br>Observed final URL: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/customnotify/</code><br>Raw source: <code>raw/4e76f129337f3df21a21c976.html</code><br>Raw SHA-256: <code>c19e20cb67104965b5b9b1164be8f167c553dcada3baed56ddcb368e483f1ad5</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs Home
+                        
+                                            DataWedge
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Get Started
+                            
+                        
+                        
+                            
+                                    Profiles
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Feature Matrix
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            US - English
+                          
+                          
+                                 CN - 普通话
+                                 JP - 日本語
+                          
+                                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Custom Bluetooth Scanner Notifications
+                        
+                    NOTIFY (Custom)Configuration SettingsFunction PrototypeParametersResult CodesProcedureExample Code
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Custom Bluetooth Scanner Notifications
+                                    
+                                            DataWedge
+                                            15.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        NOTIFY (Custom)
+
+Custom Bluetooth Scanner Notifications offer enhanced flexibility and control over how notifications are presented on supported Bluetooth scanners. This feature allows for the customization of LED patterns, beep sounds, and vibration sequences after a scan from a Bluetooth scanner using Remote Scanner Management (RSM). These customizations enable various notification experiences tailored to an application’s requirements. This custom notifications API provides more refined control compared to the standard Notify (Bluetooth Scanner Notifications) API.
+
+Custom notification functionality is available starting with the following DataWedge versions:
+
+
+Android 13: DataWedge v14.3.4 or later
+
+Android 14: DataWedge v15.0.28 or later
+
+
+Supported Bluetooth Scanners with Device Identifiers:
+
+
+  
+    Bluetooth Scanner
+    Device Identifier
+  
+  
+    DS3678
+    BLUETOOTH_DS3678
+  
+  
+    RS5100
+    BLUETOOTH_RS5100
+  
+   
+    RS6000
+    BLUETOOTH_RS6000
+  
+  
+    RS6100
+    BLUETOOTH_GENERIC
+  
+
+
+Configuration Settings
+
+Configurable settings for LED, beep, and vibration notifications:
+
+
+LED Settings:
+
+
+
+Color - Specify using RGB format (e.g., 0xFF0000 for red).
+
+On/Off Time - Define activation and deactivation times in milliseconds.
+
+Repeat Count - Set the number of times the LED pattern repeats.
+
+
+Beep Settings:
+
+
+
+Frequency - Set in Hertz.
+
+On/Off Time - Define durations for each beep and pause in milliseconds.
+
+Repeat Count - Specify the number beep cycles.
+
+
+Vibration Settings:
+
+
+
+On/Off Time - Set durations for vibration and pause in milliseconds.
+
+Repeat Count - Specify the number of vibration repetitions.
+
+
+
+Function Prototype
+
+Create sub-bundles for LED, beep, and vibration settings. For example:
+
+
+LED Settings:
+
+Bundle ledSettings = new Bundle();
+ledSettings.putInt(&quot;COLOR&quot;, 0xFF0000); // Red color
+ledSettings.putInt(&quot;ON_TIME&quot;, 500);    // LED on for 500ms
+ledSettings.putInt(&quot;OFF_TIME&quot;, 500);   // LED off for 500ms
+ledSettings.putInt(&quot;REPEAT_COUNT&quot;, 3); // Number of repetitions
+notificationSettings.putBundle(&quot;LED_SETTINGS&quot;, ledSettings);
+
+Beep Settings:
+
+Bundle beepSetting = new Bundle();
+beepSetting.putInt(&quot;BEEP_FREQUENCY&quot;, 1000); // 1000Hz frequency
+beepSetting.putInt(&quot;ON_TIME&quot;, 500);         // 500ms on
+beepSetting.putInt(&quot;OFF_TIME&quot;, 500);        // 500ms off
+beepSetting.putInt(&quot;REPEAT_COUNT&quot;, 3);      // Number of repetitions
+Parcelable[] beepSettings = new Parcelable[]{beepSetting};
+notificationSettings.putParcelableArray(&quot;BEEP_SETTINGS&quot;, beepSettings);    
+
+Vibration Settings:
+
+Bundle vibratorSetting = new Bundle();
+vibratorSetting.putInt(&quot;ON_TIME&quot;, 500);     // Vibration on for 500ms
+vibratorSetting.putInt(&quot;OFF_TIME&quot;, 500);    // Vibration off for 500ms
+vibratorSetting.putInt(&quot;REPEAT_COUNT&quot;, 3);  // Number of repetitions
+Parcelable[] vibratorSettings = new Parcelable[]{vibratorSetting};
+notificationSettings.putParcelableArray(&quot;VIBRATOR_SETTINGS&quot;, vibratorSettings);
+
+
+Parameters
+
+ACTION [string]: &quot;com.symbol.datawedge.api.ACTION&quot;
+The intent action used to communicate with the DataWedge API.
+
+EXTRA_DATA [string]: &quot;com.symbol.datawedge.api.notification.NOTIFY&quot;
+The extra data key used in the intent to pass the notification configuration.
+
+DEVICE IDENTIFIER [string]: Device identifier of the supported Bluetooth scanner.
+Specifies the unique identifier for the Bluetooth scanner, such as &quot;BLUETOOTH_RS6000&quot;.
+
+NOTIFICATION_SETTINGS [Bundle]: A bundle containing notification configurations.
+Includes settings for LED, beep, and vibration notifications, each defined with specific parameters like color, frequency, on/off time, and repeat count.
+
+Result Codes
+
+DataWedge returns the following error codes if the app includes the intent extras SEND_RESULT and COMMAND_IDENTIFIER to enable the app to receive results using the DataWedge result intent mechanism. See Example, below.
+
+
+DATAWEDGE_DISABLED - DataWedge is disabled
+
+DEVICE_NOT_SUPPORTED - Device does not support notifications
+
+PARAMETER_INVALID - No values are specified in the RSM attribute array
+
+DEVICE_NOT_CONNECTED - Scanner is not connected
+
+
+
+
+Procedure
+
+Follow these instructions to configure custom notifications:
+
+
+Initialize the Main Bundle - Create a Bundle to store all custom notification settings.
+
+Specify the Device Identifier - Use the DEVICE_IDENTIFIER key to assign a unique identifier for the Bluetooth scanner.
+
+Set Up Notification Details - Create sub-bundles for LED, beep, and vibration settings; see Function Prototype.    
+
+Send the Notification: 
+     a. Add notificationSettings to the deviceBundle.
+     b. Use a broadcast intent to apply these settings.
+
+deviceBundle.putBundle(&quot;NOTIFICATION_SETTINGS&quot;, notificationSettings);
+
+
+
+
+Example Code
+
+This sample code demonstrates how to configure a notification with a red LED, a 1000Hz beep, and a vibration pattern:
+
+    import android.content.Intent;
+    import android.os.Bundle;
+    import android.os.Parcelable;
+
+    // Initialize the main bundle for settings
+    Bundle deviceBundle = new Bundle();
+
+    // Assign the device identifier
+    deviceBundle.putString(&quot;DEVICE_IDENTIFIER&quot;, &quot;BLUETOOTH_RS6000&quot;);
+
+    // Bundle for notification settings
+    Bundle notificationSettings = new Bundle();
+
+    // LED Settings
+    Bundle ledSettings = new Bundle();
+    ledSettings.putInt(&quot;COLOR&quot;, 0xFF0000); // Red color
+    ledSettings.putInt(&quot;ON_TIME&quot;, 500);    // LED on for 500ms
+    ledSettings.putInt(&quot;OFF_TIME&quot;, 500);   // LED off for 500ms
+    ledSettings.putInt(&quot;REPEAT_COUNT&quot;, 3); // Number of repetitions
+    notificationSettings.putBundle(&quot;LED_SETTINGS&quot;, ledSettings);
+
+    // Beep Settings
+    Bundle beepSetting = new Bundle();
+    beepSetting.putInt(&quot;BEEP_FREQUENCY&quot;, 1000); // 1000Hz frequency
+    beepSetting.putInt(&quot;ON_TIME&quot;, 500);         // 500ms on
+    beepSetting.putInt(&quot;OFF_TIME&quot;, 500);        // 500ms off
+    beepSetting.putInt(&quot;REPEAT_COUNT&quot;, 3);      // Number of repetitions
+    Parcelable[] beepSettings = new Parcelable[]{beepSetting};
+    notificationSettings.putParcelableArray(&quot;BEEP_SETTINGS&quot;, beepSettings);
+
+    // Vibration Settings
+    Bundle vibratorSetting = new Bundle();
+    vibratorSetting.putInt(&quot;ON_TIME&quot;, 500);     // Vibration on for 500ms
+    vibratorSetting.putInt(&quot;OFF_TIME&quot;, 500);    // Vibration off for 500ms
+    vibratorSetting.putInt(&quot;REPEAT_COUNT&quot;, 3);  // Number of repetitions
+    Parcelable[] vibratorSettings = new Parcelable[]{vibratorSetting};
+    notificationSettings.putParcelableArray(&quot;VIBRATOR_SETTINGS&quot;, vibratorSettings);
+
+    // Add notification settings to device bundle
+    deviceBundle.putBundle(&quot;NOTIFICATION_SETTINGS&quot;, notificationSettings);
+
+    // Intent to broadcast the notification configuration
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+
+    // Create and add the notification configuration bundle
+    Bundle bundleNotificationConfig = new Bundle();
+    bundleNotificationConfig.putString(&quot;DEVICE_IDENTIFIER&quot;, &quot;BLUETOOTH_RS6000&quot;);
+    bundleNotificationConfig.putBundle(&quot;NOTIFICATION_SETTINGS&quot;, notificationSettings);
+
+    // Bundle for notification
+    Bundle bundleNotify = new Bundle();
+    bundleNotify.putBundle(&quot;NOTIFICATION_CONFIG&quot;, bundleNotificationConfig);
+
+    // Add notification bundle to intent
+    i.putExtra(&quot;com.symbol.datawedge.api.notification.NOTIFY&quot;, bundleNotify);
+
+    // Broadcast the intent
+    this.sendBroadcast(i);
+
+
+
+SEE ALSO:
+
+Zebra Support Central | Integrator Guides, Product Manuals, Software Downloads and Support
+
+LaunchPad | Zebra Developer Community
+
+Intent | Android Developers
+
+Intents and Intent Filters | Android Developers
+
+Android Intents | Tutorial
+
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2025 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+      
+
+
+
+Back to Top</pre></body></html>

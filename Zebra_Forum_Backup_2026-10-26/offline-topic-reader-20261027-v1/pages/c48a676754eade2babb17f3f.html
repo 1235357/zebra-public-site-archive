@@ -1,0 +1,214 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>SS1 unable to assign Com port after MS security policy applied.</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>SS1 unable to assign Com port after MS security policy applied.</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/24289; original snapshot: threads/01326.html; SHA-256: 467b0ddd69edee31bd409f7b2e3a16504a55190b4438481eee290ef59f47fb06</small><pre id="topic">
+
+    
+        SS1 unable to assign Com port after MS security policy applied.
+
+
+        
+      
+                        
+                    
+            H
+          
+          Herbert De Jong
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            29
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                     1) Time/Date 7/1/2010 
+ 2) Response time  3 days 
+ 3) Product  MC75 
+ 4) OS Version  OEM 35 BTE 2.1.1.26932 
+ 5) Clarify Case # 2044222    Customer uses SS1 and BT Serial Port connection to OfficeJet H470 succesfully.    But after setting up Email sync with MS Exchange 2007 a security policy is applied and reboot needed.    after that the device can still discover BT devices , add BT devices but cannot assign a Com port to the BT printer anymore.    Error window from SS1 = &quot;Unable to connect with remote device.  Unknown error code&quot;    after some investigation of Partner they found the MS Security Policy being applied as follows:    ( from screenshot Default Properties - Device Tab  from MS Exchange )    Allow removable storage  allow camera  allow wifi   allow IR   allow internet sharing from device  allow remote desktop from device  allow synchronisation form a desktop  Allow Bleutooth  =  Allow choosen.    after the boot they see the following registry changes on MC75
+After the reset, some registry keys are added for BT:
+[HKEY_LOCAL_MACHINE\Software\Stonestreet One\BTExplorer\Device Profiles]
+&quot;Disallowed5&quot; = &quot;14, |IrMC Synchronization 1|, 6, 31, 0&quot;
+&quot;NumberDisallowedProfiles&quot; = dword:00000005
+&quot;Disallowed4&quot; = &quot;11, |Hands-Free Audio Gateway|, 28, 0&quot;
+&quot;Disallowed3&quot; = &quot;0, |Serial Port 1|, 10, 11, 57600, 0, 3&quot;
+&quot;Disallowed2&quot; = &quot;15, |AVRCP|, 1, 0&quot;
+&quot;Disallowed1&quot; = &quot;12, |A2DP|, 1, 0, 0&quot;
+   It looks like that this Policy disabled the SS1 allowed profiles, despite that BT is allowed on the policy    they also state that applying this Policy on a MS smartphone supposebly with MS BT stack there is no problem.    can this be some incompatibility with Policy and our SS1 BT stack.    Any thoughts how to overcome this ?       
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Herbert De Jong
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            thanks Ken  &amp;nbsp;  adding the exporting the regkey after the policy is applied   sounds like the solution indeed.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Herbert De Jong
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Ken thanks, 17390 is indeed same issue didnt found it yet.   but it is recommending to check Email Security settings on customer site.   in this case they are allowing BT on the Security Policy and MS BT stack device are OK.   so is there any guidance to allow SS1 BT stack devices with a Security Policy  or is this just a incompatibility issue from MS with SS1
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

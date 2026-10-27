@@ -1,0 +1,651 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Printing Error: Failed to write to device: Unable to establish connection to ZD421-203dpi ZPL (D8J231506086)</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Printing Error: Failed to write to device: Unable to establish connection to ZD421-203dpi ZPL (D8J231506086)</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/printing-error-failed-write-device-unable-establish-connection-zd421-203dpi-zpl-d8j231506086; original snapshot: threads/00373.html; SHA-256: f554d0b9981b6e3496ad9a2163716b2bdf23171ec0639fd2d5d761dde3bcd756</small><pre id="topic">
+
+    
+        Printing Error: Failed to write to device: Unable to establish connection to ZD421-203dpi ZPL (D8J231506086)
+
+
+        
+      
+                        
+                    
+            S
+          
+          Stuart Lythgoe
+          2 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            2899
+          
+                
+                  
+            
+            8
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  HiWe are running an Imac with MacO Ventura 13.6.3 using Chrome and Browser Print to print to ZEBRA ZD421.We are constantly having problems with intermittent connections to the printer and getting this message:Printing Error: Failed to write to device: Unable to establish connection to ZD421-203dpi ZPL (D8J231506086)Inorder to get connection I usually open up Package contents and run the sample Index.html file and send a test an sometime this engages the printer othertimes i restart the printer etc.Can someone advise / please help?Best regardsStuart
+              
+
+                    
+          
+      
+              
+ Screenshot 2024-02-14 at 14.27.33.png
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      8 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Is the ZD421 connected via USB or network? Make sure the Browser Print client app on the iMac is the latest and the  Browser Print JavaScript library is the latest.
+Could you do a quick test with our Browser Print demo site to see if you get the same connection errors? It&#x27;s https://cagdemo.com/. This demo site uses the latest version of the Browser Print JavaScript library.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Stuart Lythgoe
+          
+          
+            2 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi the ZD421 is connected via USB, the Browser Print client app has been deleted fully and installed multiple times this year, we are using  Browser Print v1.3.2.489, and we have the latest JavaScript library.I tried the test on the demo site and was asked to add caddemo.com as an accepted site which I did so it shows up as an accepted host, but I still got similar error messages when trying to print:An error occurred while printing. Please try again.Failed to write to device: Unable to establish connection to ZD421-203dpi ZPL (D8J231506086) &#x27;Button showing&quot; Try Again
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            It looks like an issue with the USB connection on macOS. I am seeing the same USB connection failure on the MacBook Sonoma 14.1 with the Browser Print v1.3.2.489. It worked for the first print, but failed for the subsequent prints on the USB. The issue has been forwarded to the engineering team to investigate further. Meanwhile, would you be able to connect the printer to the network and do the Browser Print over the network connection? I have verified that the Browser Print has no issues on macOS with network connected printers.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Stuart,
+Our engineering team investigated the issue and concluded that the issue is not related to the Browser Print. The reason that we were able to reproduce the issue from the cagdemo.com site is because the code on this site is a bit outdated. If you use the demo that comes with the Browser Printer JavaScript Library, you won&#x27;t see the issue with the USB connection at all. Here is a screenshot of the Browser Print JavaScript Library package and where the demo resides. Try the &quot;Send ZPL Label&quot; button on the demo to print over the USB connected printer, which works for me without issues. You can then follow the example code to call the proper API in your app.
+
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Stuart Lythgoe
+          
+          
+            2 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,I did say in my original post that I open up Package contents and run the sample Index.html file and  us the &quot;Send ZPL Label&quot; and I do get a Test label. But Im still getting the problem, sometimes it helps other times it doesn&#x27;tOne thing I am noticing is there always seems to be two Selected devices showing up in the Sample page see (attached)So currently I can send a test print, but still can&#x27;t print from my website or https://cagdemo.com/Regards  
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Stuart Lythgoe
+          
+          
+            2 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,I dont understand what you mean by this:You can then follow the example code to call the proper API in your app.Can you please explain in more detail?Regards
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            When testing out the Browser Print sample from the package, please run the sample from a webserver rather than opening the sample/index.html in a browser from the file system directly. As indicated in the screenshot in my response post, I have a local webserver and index.html is opened through the URL of http://localhost:8080/zebra-browser-print-js-v31250/sample/index.html. Testing the Browser Print from a file system may run into different unexpected issues.
+Inside the index.html file, we can find the &quot;Send ZPL Label&quot; button calls the writeToSelectedPrinter() function, which calls the selected_device.send(). Below is the content of the index.html that comes with the Browser Print release package.
+&lt;html&gt;
+&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;/&gt;
+&lt;head&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;../BrowserPrint-3.1.250.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot;&gt;
+var selected_device;
+var devices = [];
+function setup()
+{
+	//Get the default device from the application as a first step. Discovery takes longer to complete.
+	BrowserPrint.getDefaultDevice(&quot;printer&quot;, function(device)
+			{
+		
+				//Add device to list of devices and to html select element
+				selected_device = device;
+				devices.push(device);
+				var html_select = document.getElementById(&quot;selected_device&quot;);
+				var option = document.createElement(&quot;option&quot;);
+				option.text = device.name;
+				html_select.add(option);
+				
+				//Discover any other devices available to the application
+				BrowserPrint.getLocalDevices(function(device_list){
+					for(var i = 0; i &lt; device_list.length; i++)
+					{
+						//Add device to list of devices and to html select element
+						var device = device_list[i];
+						if(!selected_device || device.uid != selected_device.uid)
+						{
+							devices.push(device);
+							var option = document.createElement(&quot;option&quot;);
+							option.text = device.name;
+							option.value = device.uid;
+							html_select.add(option);
+						}
+					}
+					
+				}, function(){alert(&quot;Error getting local devices&quot;)},&quot;printer&quot;);
+				
+			}, function(error){
+				alert(error);
+			})
+}
+function getConfig(){
+	BrowserPrint.getApplicationConfiguration(function(config){
+		alert(JSON.stringify(config))
+	}, function(error){
+		alert(JSON.stringify(new BrowserPrint.ApplicationConfiguration()));
+	})
+}
+function writeToSelectedPrinter(dataToWrite)
+{
+	selected_device.send(dataToWrite, undefined, errorCallback);
+}
+var readCallback = function(readData) {
+	if(readData === undefined || readData === null || readData === &quot;&quot;)
+	{
+		alert(&quot;No Response from Device&quot;);
+	}
+	else
+	{
+		alert(readData);
+	}
+	
+}
+var errorCallback = function(errorMessage){
+	alert(&quot;Error: &quot; + errorMessage);	
+}
+function readFromSelectedPrinter()
+{
+
+	selected_device.read(readCallback, errorCallback);
+	
+}
+function getDeviceCallback(deviceList)
+{
+	alert(&quot;Devices: \n&quot; + JSON.stringify(deviceList, null, 4))
+}
+
+function sendImage(imageUrl)
+{
+	url = window.location.href.substring(0, window.location.href.lastIndexOf(&quot;/&quot;));
+	url = url + &quot;/&quot; + imageUrl;
+	selected_device.convertAndSendFile(url, undefined, errorCallback)
+}
+function sendFile(fileUrl){
+    url = window.location.href.substring(0, window.location.href.lastIndexOf(&quot;/&quot;));
+    url = url + &quot;/&quot; + fileUrl;
+    selected_device.sendFile(url, undefined, errorCallback)
+}
+function onDeviceSelected(selected)
+{
+	for(var i = 0; i &lt; devices.length; ++i){
+		if(selected.value == devices[i].uid)
+		{
+			selected_device = devices[i];
+			return;
+		}
+	}
+}
+window.onload = setup;
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;span style=&quot;padding-right:50px; font-size:200%&quot;&gt;Zebra Browser Print Test Page&lt;/span&gt;&lt;br/&gt;
+&lt;span style=&quot;font-size:75%&quot;&gt;This page must be loaded from a web server to function properly.&lt;/span&gt;&lt;br&gt;&lt;br&gt;
+Selected Device: &lt;select id=&quot;selected_device&quot; onchange=onDeviceSelected(this);&gt;&lt;/select&gt; &lt;!--  &lt;input type=&quot;button&quot; value=&quot;Change&quot; onclick=&quot;changeDevice();&quot;&gt;--&gt; &lt;br/&gt;&lt;br/&gt; 
+&lt;input type=&quot;button&quot; value=&quot;Get Application Configuration&quot; onclick=&quot;getConfig()&quot;&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;input type=&quot;button&quot; value=&quot;Send Config Label&quot; onclick=&quot;writeToSelectedPrinter(&#x27;~wc&#x27;)&quot;&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;input type=&quot;button&quot; value=&quot;Send ZPL Label&quot; onclick=&quot;writeToSelectedPrinter(&#x27;^XA^FO200,200^A0N36,36^FDTest Label^FS^XZ&#x27;)&quot;&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;input type=&quot;button&quot; value=&quot;Get Status&quot; onclick=&quot;writeToSelectedPrinter(&#x27;~hs&#x27;); readFromSelectedPrinter()&quot;&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;input type=&quot;button&quot; value=&quot;Get Local Devices&quot; onclick=&quot;BrowserPrint.getLocalDevices(getDeviceCallback, errorCallback);&quot;&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;input type=&quot;text&quot; name=&quot;write_text&quot; id=&quot;write_text&quot;&gt;&lt;input type=&quot;button&quot; value=&quot;Write&quot; onclick=&quot;writeToSelectedPrinter(document.getElementById(&#x27;write_text&#x27;).value)&quot;&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;input type=&quot;button&quot; value=&quot;Read&quot; onclick=&quot;readFromSelectedPrinter()&quot;&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;input type=&quot;button&quot; value=&quot;Send BMP&quot; onclick=&quot;sendImage(&#x27;Zebra_logobox.bmp&#x27;);&quot;&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;input type=&quot;button&quot; value=&quot;Send JPG&quot; onclick=&quot;sendImage(&#x27;ZebraGray.jpg&#x27;);&quot;&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;input type=&quot;button&quot; value=&quot;Send File&quot; onclick=&quot;sendFile(&#x27;wc.zpl&#x27;);&quot;&gt;&lt;br/&gt;&lt;br/&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Stuart Lythgoe
+          
+          
+            2 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,We&#x27;ve run the sample from our webserver and still getting the same problems.We can print a Test page from the Browser Print Sample/We are still getting two selected devices showing up in drop down menu, and we still can print from our website or https://cagdemo.com/. Same &#x27;Cant establish a connection&#x27; message on both!Regards 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

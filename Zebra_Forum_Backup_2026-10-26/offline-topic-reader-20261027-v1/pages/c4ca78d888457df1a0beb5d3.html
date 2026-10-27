@@ -1,0 +1,381 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>SEND_RESULT doesn&#x27;t work and my BR couldn&#x27;t receive anything from device</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>SEND_RESULT doesn&#x27;t work and my BR couldn&#x27;t receive anything from device</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/sendresult-doesnt-work-and-my-br-couldnt-receive-anything-device; original snapshot: threads/00546.html; SHA-256: 071620ecadc108e90a6dda1b953dbbd3e9668e357b86f7bf37d53118e8507ae9</small><pre id="topic">
+
+    
+        SEND_RESULT doesn&#x27;t work and my BR couldn&#x27;t receive anything from device
+
+
+        
+      
+                        
+                    
+            D
+          
+          Dan KR
+          3 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            135
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  SEND_RESULT doesn&#x27;t work and my BR couldn&#x27;t receive anything from device
+
+I used this chunk of code to enable datawedge and was hoping to receive the result in my broadcast receiver, however my broadcast receiver didn&#x27;t receive anything. Could you let me know why it doesn&#x27;t work? 
+
+ 
+
+val intent = Intent().apply {
+
+      action =&quot;com.symbol.datawedge.api.ACTION&quot;
+
+      putExtra(&quot;com.symbol.datawedge.api.ENABLE_DATAWEDGE&quot;, true)
+
+      putExtra(&quot;SEND_RESULT&quot;,&quot;LAST_RESULT&quot;)
+
+      putExtra(&quot;COMMAND_IDENTIFIER&quot;,&quot;SET_CONFIG&quot;)
+
+    }
+
+    context.applicationContext.sendBroadcast(intent)
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Dan.
+
+I see that you also filed a Help Desk ticket about this topic.
+
+I think this TechDoc may also contribute to this topic:
+
+https://techdocs.zebra.com/datawedge/13-0/guide/api/enabledatawedge/
+
+Are you sure that you want to DISABLE Datawedge for all users/app of the device? 
+
+Or just disable the Scanning for a specific function within your application?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Also what do you get with this:
+
+https://techdocs.zebra.com/datawedge/13-0/guide/api/resultinfo/
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Dan KR
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            We wanted to enable it not disable it.
+
+I followed https://techdocs.zebra.com/datawedge/13-0/guide/api/resultinfo/,  but Broadcast receiver received nothing after we called:
+
+val intent = Intent().apply {
+
+      action =&quot;com.symbol.datawedge.api.ACTION&quot;
+
+      putExtra(&quot;com.symbol.datawedge.api.ENABLE_DATAWEDGE&quot;, true)
+
+      putExtra(&quot;SEND_RESULT&quot;,&quot;LAST_RESULT&quot;)
+
+      putExtra(&quot;COMMAND_IDENTIFIER&quot;,&quot;SET_CONFIG&quot;)
+
+    }
+
+    context.applicationContext.sendBroadcast(intent)
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Two things:  ( NOTE I am using Android Studio sample code from the TechDoc )
+
+Do just this first:
+
+Intent i = new Intent();
+i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+i.putExtra(&quot;com.symbol.datawedge.api.ENABLE_DATAWEDGE&quot;, false);
+this.sendBroadcast(i);
+
+Then the extra next:  ( Please Read the TechDoc I listed for you - it seems you are layering in too many things in your intent.apply{} )
+
+// request and identify the result code
+    i.putExtra(&quot;SEND_RESULT&quot;,&quot;true&quot;);
+    i.putExtra(&quot;COMMAND_IDENTIFIER&quot;,&quot;123456789&quot;);
+    this.sendBroadcast(i);
+
+ 
+
+Try the following Manually before you run your test:
+
+Goto the Datawedge app.
+
+Once in the app - goto the 3-dot menu and Settings.
+
+Tap the &quot;Datawedge enabled&quot; munu line to &quot;uncheck&quot; the menu.
+
+( NOTE: This is disabling Datawedge - which is what your code above is attempting to enable )
+
+Click back once.  Click Home button and then choose Recent apps menu and right-swipe Datawedge to fully close the UI.
+
+Then test: and see if you get the confirm that Datawedge is started.  ( Then you can lso go back into Datawedge and check the menu that you had &quot;disabled&quot;.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

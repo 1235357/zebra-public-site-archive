@@ -1,0 +1,209 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MC55 - Modify default decoder parameters</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MC55 - Modify default decoder parameters</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/27063; original snapshot: threads/01669.html; SHA-256: e7351f4f14bea99d60e15a41a3868245f427ad6aad51c3c30b0a2ac739ddd14c</small><pre id="topic">
+
+    
+        MC55 - Modify default decoder parameters
+
+
+        
+      
+                        
+                    
+            C
+          
+          Charles Malm
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            24
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I have a customer with an application that does not allow them to modify the enabled decoders. They need to disable the TLC39 decoder because it is causing a conflict with the bar-codes they are scanning.   Is there a way to modify the default set of decoders that are enabled and their properties programatically or by registry?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Milan Riha
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Charlie try to check with decoder group. I know that 1 year ago they agreed that TLC39 will be disabled by default - SPR#18670
+Now the reason the issue does not manifest itself in the older PixDLL is because in the older PixDLL we get into this condition only when the length of the barcode is 3. This was changed in the PixDLL for subsequent revisions where this condition is checked for all the lengths.
+&amp;nbsp;
+There are 2 ways to fix this problem:
+&amp;nbsp;
+(i)&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Ask the customer to disable TLC39 if they don’t need it
+(ii)&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Create a new CameraScanPDD/ImgScanPDD which disables TLC39 by default
+&amp;nbsp;
+I think solution (ii) would probably be the more desirable solution for the customer. We will discuss this with marketing and remove TLC39 from the default list for the next maintenance release (MPA1.6 and MPA2).
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Charles Malm
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for the information
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

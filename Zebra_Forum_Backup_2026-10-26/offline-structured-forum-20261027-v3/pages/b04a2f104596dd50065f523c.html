@@ -1,0 +1,165 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Print IP Label</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/print-ip-label; snapshot threads/00351.html; SHA-256 507ab06b4e9eb58781c6966853a5469071ff1e75250dc71461ac27f0a5da9bd2. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Print IP Label</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            J
+          </div>
+          <div class="forum-topic__author-name">Jonathan Nicolau</div>
+          <div class="forum-topic__timestamp">11 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            147
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello! I am fairly new to ZBI (if that's what I even need here) and I was wondering if what I'm trying to do is even possible. On my mobile printer (QLN320 for testing) I have a field that when a user selects it, it should print the printer's current IP address, but here's the catch. I can't have any decimals because they take up too much space and our app was made to decipher the ipv4 octets by knowing each will always be three digits long, if that makes sense. Ex: if the IP is 10.12.0.372, it should print out as, 010012000372. Is this possible to be done right on the printer? Here is what I had so far. It doesn't seem to be printing correctly? I pieced this together with what I could get from the manuals, so I'm not expecting it to be anywhere close to good.</p><pre><code class="language-plaintext">001 REM --- Get printer IP ---
+002 LET IPADDR$ = GETVAR$("interface.network.active.ip_addr")
+003 REM --- Split into octets ---
+004 DECLARE STRING OCTS$(4)
+005 LET COUNT = SPLIT(OCTS$, IPADDR$, ".", 4)
+006 REM --- Pad octets ---
+007 LET OCT1P$ = RIGHT$("00" + OCTS$(0), 3)
+008 LET OCT2P$ = RIGHT$("00" + OCTS$(1), 3)
+009 LET OCT3P$ = RIGHT$("00" + OCTS$(2), 3)
+010 LET OCT4P$ = RIGHT$("00" + OCTS$(3), 3)
+011 REM --- Build padded IP ---
+012 LET PADIP$ = OCT1P$ + OCT2P$ + OCT3P$ + OCT4P$
+013 REM --- Build ZPL string ---
+014 LET ZPL$ = "^XA^PW355^LL161^LS0" + "^FT215,97^A0I,51,50^FDIP:^FS" + "^FT215,130^A0I,51,50^FD";PADIP$;"^FS" + "^BY2,3,58^FT278,25^BCN,,N,N^FD&gt;;";PADIP$;"^FS" + "^PQ1,0,1,Y^XZ"
+015 REM --- Print directly to ZPL port ---
+016 OPEN #2: NAME "ZPL"
+017 PRINT #2: ZPL$
+018 CLOSE #2
+019 END
+</code></pre>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-54265" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              M
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Mike Masotti</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            10 months 1 week ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>You should be concatenating the string with "&amp;" and not "+".</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/print-ip-label%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/print-ip-label%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

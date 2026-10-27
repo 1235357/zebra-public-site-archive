@@ -1,0 +1,390 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>CORS policy problem with Zebra Printers</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>CORS policy problem with Zebra Printers</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/cors-policy-problem-zebra-printers; original snapshot: threads/00553.html; SHA-256: dd465db922d76c3bd5ab437f6bf0519b2ab38e83f36b10844431780df7e005c5</small><pre id="topic">
+
+    
+        CORS policy problem with Zebra Printers
+
+
+        
+      
+                        
+                    
+            B
+          
+          Brian Wilson
+          3 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            1461
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I suppose this isn&#x27;t directly browser print related, but I am attempting to either use BrowserPrint which I can&#x27;t get working at all or simply a post request to http://{printerIP}/pstprnt to print qr codes on a Zebra ZT230. 
+
+ 
+
+The post request method is working successfully in development, but the moment I deploy my application and either attempt to hit the printer with a post request at HTTP or HTTPS, I am blocked by CORS policy, and I am reading that this is because the printer does not send back a header with Access-Control-Allow-Origin: &quot;*&quot;.
+
+ 
+
+It&#x27;s a bit frustrating that there is such a lack of documentation and nothing but outdated SDK&#x27;s surrounding these printers. Is there anyone who has successfully deployed an app or knows how to work past this CORS error? If this can work, I wouldn&#x27;t touch browser print with a 10 foot pole. I just need to be able to print a label on demand from my web app, and like I said, it&#x27;s working in development but not in deployment.
+
+ 
+
+I am using a Next.js (React) app with an ASP.NET Cor Web API backend. I am working behind a pretty strict corporate proxy as well, and the client-side request I showed above to the pstprnt endpoint is the only thing that seemed to even have a chance of working, and then the CORS issue popped up.
+
+ 
+
+This issue is mentioned here:
+
+ 
+
+https://supportcommunity.zebra.com/s/question/0D56S00009DYjcjSAD/has-browserprint-stopped-working-in-chrome-due-to-cors-issue?language=en_US
+
+ 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There is a mini webservice built into the firmware of Zebra printers that accepts the http://{printerIP}/pstprnt POST request for printing. This mini webservice has not been updated for awhile and does not handle more modern security improvements in browsers. That&#x27;s why the CORS errors pop up, though the print will happen correctly. The pstprint is still an option for printing from browsers, if the web application can accept or ignore this particular CORS error.
+For the Browser Print, it is a better option than the pstprnt. The Browser Print supports Windows, MacOS and Android, and supports the network, USB or Bluetooth (for Android) connected printers. Besides, the Browser Print gets updated on a regular basis. The Browser Print requires a local client app runs in background that bridges the communication between the web app running in the browser and the printers connected via network, USB or Bluetooth (for Android).
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              B
+            
+          
+                
+          
+            Brian Wilson
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi there and thank you for your response.
+
+I have to say the installation of an app is not ideal for any app that is intended to scale widely, though it’s not egregious either given that getting an installation on any computers that need the browser print bridge app is not a huge deal.
+
+Do you know if the Asp.Net SDK “Zebra.Printing.SDK” (or whatever it is, sorry I’m not at the computer right now) has any issues with this? If I were to utilize it in an ASP.NET core web api from server side rather than client side, maybe that would bypass any issues?
+
+I will have to test it tomorrow to find out I suppose..
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The Zebra.Printer.SDK is meant for the .NET Framework for building desktop applications. Instead of building your own Webservice, the simplest and easiest way for printing from a web app would be the SendFileToPrinter API, which is a REST API that can be called from anywhere in any programming language. See this article for more details about this API: Use the SendFileToPrinter API for Your Cloud-Based Printing Needs.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Reinout Mechant
+          
+          
+            1 year 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,I tested with Browser Print (on Mac), but I always get a CORS error (just fetching the printer list). So it appears that Browser Print also has limited CORS to 127.0.0.1.It is actually strange, using Chrome, in a webapplication on a domain, but when I activate BrowserPrint in that application (latest SDK), I get a popup in BrowserPrint to allow 127.0.0.1 (instead of my domain name). After that I always get the CORS error saying that my domain name is not equal to 127.0.0.1 as the allowed origin...I even tried the https://cagdemo.com site, but also there same issue.Thanks for your help;Kind regards,Reno 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Robert Hamilton
+          
+          
+            2 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I was able to post-print from a hosted SPA directly to a local printer, but there were a couple of hoops:Install a certificate on the printer to get around the browser&#x27;s mixed content (https &gt; http) restriction.Add the &#x27;mode&#x27; property with value &#x27;no-cors&#x27; to the request.Getting the certificate loaded on the printer was the most challenging part. I ended up leveraging Zebra&#x27;s Print Secure Demo App by replacing the files in the &#x27;demo-certs&#x27; folder with my own. I generated the private key and CSR using OpenSSL, and got a wildcard certificate from GoDaddy. When using OpenSSL, be sure the private is produced unencrypted. The file &#x27;HTTPS_KEY.NRD&#x27; contains the private key and &#x27;HTTPS_CERT.NRD&#x27; contains the certificate. If you do end up using something from a certificate authority, you&#x27;ll need to add the chain file &#x27;HTTPS_CA.NRD&#x27; to the &#x27;demo-certs&#x27; folder and update the &#x27;ZEBRA-PRINTSECURE_DEMO_SCRIPT.bat&#x27; file to push that file to the printer as well. You can get the contents for the chain file by copying your certificate (PEM) into any certificate chain composer / resolver online. I used this one. You&#x27;re looking for everything that comes after the certificate you pasted in.Once I had my certificate on the printer, it printed fine, but I was still getting that error in DevTools. I was able to remove that error with step 2 above. When you do this, CORS is still implemented. This just tells the browser that you&#x27;re not looking for a response, so it makes the request CORS-safe and doesn&#x27;t warn that anything was blocked. Note: In this case, CORS doesn&#x27;t block the request, it blocks the response. You&#x27;ll still get a 200 OK from the printer though.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

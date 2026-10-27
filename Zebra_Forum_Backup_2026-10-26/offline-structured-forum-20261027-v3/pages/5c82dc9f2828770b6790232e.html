@@ -1,0 +1,147 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>RFD40 → MQTT: broker shows connected but no tag messages (123RFID on TC22)</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/rfd40-mqtt-broker-shows-connected-no-tag-messages-123rfid-tc22; snapshot threads/00020.html; SHA-256 6a121ff0ca30532e63d86819178171bc2b5911f4d0e3a38f5dad3a18be733a74. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">RFD40 → MQTT: broker shows connected but no tag messages (123RFID on TC22)</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            T
+          </div>
+          <div class="forum-topic__author-name">Tim Strasser</div>
+          <div class="forum-topic__timestamp">1 year 1 month ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            146
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>I am trying to use an RFD40 with MQTT. The MQTT broker shows the client as connected, but I do not receive any tag messages while running inventory in the 123RFID Mobile app.</p><p>The RFD40 is paired via Bluetooth to a Zebra TC22 running 123RFID Mobile. In addition, the sled is connected to Wi-Fi and has an MQTT endpoint configured to our broker.</p><p>My expectation is that tag reads are published to MQTT while a read operation is active.</p><p><strong>Questions:</strong></p><ol><li>Does the RFD40 support publishing tag reads directly over MQTT?</li><li>If yes, what settings must be enabled, and which topics and payload format should I expect?</li><li>If no, can you confirm that a host-side bridge is required and point me to the recommended method for sending tag data to MQTT in this setup?</li></ol>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-54196" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Tim.</p><p>The MQTT does not work in that fashion. If/When an RFID SDK - has control of the NGE on the HH reader - the MQTT if defined can only be available for "Reader Management" functionality and not for RFID expected interactions.</p><p>This is very Similar to the FX-Serves Fixed Readers where if an RFID SDK - based Technology is used - the ZIOTC cannot then be used to establish data to/from the RFID NGE on the FX-Series reader.  ( ZIOTC when running - owns the connection to the NGE on-board the FX-Series device.)  At this point the RFD40 / RFD90 Platforms that can do Wifi+MQTT - do not have RFID Capability available.</p><p> </p><p>If your RFD40P / RFD40_P+ (Wifi + BT capable + eConnex capable.)  When the Wifi Is defined and has been authenticated (and has a TCP/IP address  config.) then the MQTT can be defined on the HH reader for ( At this time) MQTT MDM remote management:</p><p><br>See this Zebra Doc for details: <span data-original-href="https://docs.zebra.com/us/en/rfid/rfd4031-uhf-rfid-premium-premium-sled/t-rfd4031-getting-started-with-the-rfd4031/c-rfd4031-wireless-and-connectivity-functionality/r-rfd4031-mobile-device-management-supported-partners.html">https://docs.zebra.com/us/en/rfid/rfd4031-uhf-rfid-premium-premium-sled/t-rfd4031-getting-started-with-the-rfd4031/c-rfd4031-wireless-and-connectivity-functionality/r-rfd4031-mobile-device-management-supported-partners.html</span> </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/rfd40-mqtt-broker-shows-connected-no-tag-messages-123rfid-tc22%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/rfd40-mqtt-broker-shows-connected-no-tag-messages-123rfid-tc22%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

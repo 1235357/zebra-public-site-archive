@@ -1,0 +1,626 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra Iot Connector Read performance</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/zebra-iot-connector-read-performance; snapshot threads/00227.html; SHA-256 fc91b734bfc0c6d3794c38ec3cd285e46522c66140107397956286cd914fba40. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Zebra Iot Connector Read performance</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            F
+          </div>
+          <div class="forum-topic__author-name">Franco Balducci</div>
+          <div class="forum-topic__timestamp">3 months 3 weeks ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            492
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            10
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi everyone,</p><p>I'm doing some tests with IoT Connector and I have some doubts about read performance. I'm using an FX9600 updated to the latest available release. I've connected two antennas and placed some tags in the read zone without moving them across the various tests. Using 123RFID or the "Read Tags" page within the Web interface, I get about 130 reads per second.</p><p>So I configured IoT Connector to use MQTT in local deployment with a Mosquitto server. The operating mode used is the following:<br>{<br>   "accesses": [{"config": {"membank": "EPC","wordCount": 6,"wordPointer": 2},"type": "READ"}],<br>   "antennas": [1,2],<br>   "radioStopConditions": {"duration": 4},<br>   "tagMetaData": ["ANTENNA","RSSI","SEEN_COUNT"],<br>   "transmitPower": [27.0,27.0],<br>   "query": {"tagpopulation": 30,"sel": "ALL","session": "S0","target": "A"},<br>   "type": "CUSTOM"<br>}<br>A simple EPC read with S0 session. The performance achieved is at most 40 reads per second, well below what was obtained previously. Leaving only one tag in the read zone, performance decreases further, dropping to 10 reads per second. I've also run several tests with Inventory mode, and the results are consistent with Access mode.</p><p>Is this performance decrease with IoT Connector inherent/expected, or is it due to a misconfiguration on my part?</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      10 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-54444" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 months 3 weeks ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Franco.</p><p>You added "accesses" line to the JSON. <br>This changes the default simple inventory (where idHex is the EPC) - to a TagAccess - operation where the same tag is read twice to get the same data.</p><p>So this performance impact is expected.</p><p>Start here:<br><span data-original-href="https://zebradevs.github.io/rfid-ziotc-docs/schemas/operating_modes/index.html">https://zebradevs.github.io/rfid-ziotc-docs/schemas/operating_modes/index.html</span><br><br>Look at the "Cross-Field Constraints"<br> </p><p>For what you were looking for it could be closer to have/use:  &lt;MQTT JSON Sample provided as follows&gt;</p><p>{<br>"command": "set_mode",<br> "command_id": "f1e2d3",<br> "payload": {<br>   "antennaStopCondition": [<br>     {<br>       "type": "DURATION",<br>       "value": 100<br>     },<br>     {<br>       "type": "DURATION",<br>       "value": 100<br>     }<br>   ],<br>   "antennas": [<br>     1, 2<br>   ],<br>   "delayAfterSelects": 0,<br>   "delayBetweenAntennaCycles": {<br>     "duration": 0,<br>     "type": "DISABLED"<br>   },<br>   "environment": "HIGH_INTERFERENCE",<br>   "query": [<br>     {<br>       "session": "S0",<br>       "tagPopulation": 100,<br>       "target": "A"<br>     },<br>     {<br>       "session": "S0",<br>       "tagPopulation": 100,<br>       "target": "A"<br>     }<br>   ],<br>   "radioStartConditions": {},<br>   "radioStopConditions": {},<br>   "reportFilter": {<br>     "duration": 0,<br>     "type": "RADIO_WIDE"<br>   },<br>   "tagMetaData": [<br>     "ANTENNA",<br>     "RSSI",<br>     "EPC",<br>     "SEEN_COUNT"<br>   ],<br>   "transmitPower": [<br>     27, 27<br>   ],<br>   "type": "CUSTOM"<br> }<br>}</p><p> </p><p> </p><p>Can you try the above and confirm what you get for this "tagMetaData" add versus not having the "EPC" in the Tag Meta-Data field?<br> </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-54445" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              F
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Franco Balducci</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 months 3 weeks ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thanks for the reply. I read the documentation section you pointed out and ran new tests, but I still have some doubts. I simplified the scenario: FX9600 with a single antenna and a single DogBone tag in the read zone. With 123RFID I get 230 reads/sec.</p><p>So I moved on to IoT Connector, again in local deployment with Mosquitto. I followed your suggestion to remove the accesses mode and added some values of interest to me. With the following configuration I get a solid 120 reads/sec — half of 123RFID, which I imagine is a consequence of protocol overhead.<br>{<br>   "antennas": [1],<br>   "antennaStopCondition": {"type": "DURATION","value": 100},<br>   "delayBetweenAntennaCycles": {"duration": 0,"type": "DISABLED"},<br>   "environment": "HIGH_INTERFERENCE",<br>   "filter":{"match":"prefix","operation":"include","value":"31435441"},<br>   "radioStopConditions": {"duration": 4},<br>   "reportFilter": {"duration": 0,"type": "RADIO_WIDE"},<br>   "tagMetaData": ["ANTENNA","RSSI","SEEN_COUNT"],<br>   "transmitPower": [27],<br>   "type": "CUSTOM"<br>}<br>What I don't understand is that if I remove the prefix filter on the tag and add the S0 session query instead:<br>{<br>   "antennas": [1],<br>   "antennaStopCondition": {"type": "DURATION","value": 100},<br>   "delayBetweenAntennaCycles": {"duration": 0,"type": "DISABLED"},<br>   "environment": "HIGH_INTERFERENCE",<br>   "query": {"session": "S0","tagPopulation": 100,"target": "A"},<br>   "radioStopConditions": {"duration": 4},<br>   "reportFilter": {"duration": 0,"type": "RADIO_WIDE"},<br>   "tagMetaData": ["ANTENNA","RSSI","SEEN_COUNT"],<br>   "transmitPower": [27],<br>   "type": "CUSTOM"<br>}<br>I get very few reads per second. What's the reason for this?</p><p>Thanks in advance for any reply.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-54450" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 months 2 weeks ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Franco.</p><p>I see the same poor performance in the above JSON and rather than "Drill" into how that is suffering performance - I am going to add some TEST JSON - that you can try out ( I tested these before bringing them over from my MQTT instance broker / Linux system )  I'd rather you test these and confirm your performance wit these and then mark these up to suit your needs.<br><br><strong>File 1</strong> : FXR90_MQTT_MODE_DEMO.txt  -- this is pretty close to the JSON that 123RFID Desktop works with in WebSocket mode.</p><p>// FXR900 setup DEMO here.</p><p>{<br>"command": "set_mode",<br> "command_id": "a134454",<br> "payload": {<br>   "antennaStopCondition": [<br>     {<br>       "type": "DURATION",<br>       "value": 100<br>     },<br>     {<br>       "type": "DURATION",<br>       "value": 100<br>     }<br>   ],<br>   "antennas": [<br>     1,<br>     2<br>   ],<br>   "delayAfterSelects": 0,<br>   "delayBetweenAntennaCycles": {<br>     "duration": 0,<br>     "type": "DISABLED"<br>   },<br>   "environment": "DEMO",<br>   "query": [<br>     {<br>       "session": "S0",<br>       "tagPopulation": 1000,<br>       "target": "AB"<br>     },<br>     {<br>       "session": "S0",<br>       "tagPopulation": 1000,<br>       "target": "AB"<br>     }<br>   ],<br>   "radioStartConditions": {},<br>   "radioStopConditions": {},<br>   "reportFilter": {<br>     "duration": 0,<br>     "type": "RADIO_WIDE"<br>   },<br>   "rssiFilter": {<br>     "threshold": -86<br>   },<br>   "tagMetaData": [<br>     "ANTENNA",<br>     "RSSI",<br>     "SEEN_COUNT"<br>   ],<br>   "transmitPower": [<br>     27,<br>     27<br>   ],<br>   "type": "CUSTOM"<br> }<br>}</p><p>// Tested by Sèan K<br> </p><p><br><strong>File 2</strong> : FXR90_MQTT_MODE_HIGH_INF.txt  -- this is setup I tend to baseline for "Balanced Performance" from Handheld Reader Profile</p><p>// FXR90 nominal setup here.</p><p>{<br>"command": "set_mode",<br> "command_id": "a134454",<br> "payload": {<br>   "antennaStopCondition": [<br>     {<br>       "type": "DURATION",<br>       "value": 100<br>     },<br>     {<br>       "type": "DURATION",<br>       "value": 100<br>     }<br>   ],<br>   "antennas": [<br>     1,<br>     2<br>   ],<br>   "delayAfterSelects": 0,<br>   "delayBetweenAntennaCycles": {<br>     "duration": 0,<br>     "type": "DISABLED"<br>   },<br>   "environment": "HIGH_INTERFERENCE",<br>   "query": [<br>     {<br>       "session": "S0",<br>       "tagPopulation": 100,<br>       "target": "A"<br>     },<br>     {<br>       "session": "S0",<br>       "tagPopulation": 100,<br>       "target": "A"<br>     }<br>   ],<br>   "radioStartConditions": {},<br>   "radioStopConditions": {},<br>   "reportFilter": {<br>     "duration": 0,<br>     "type": "RADIO_WIDE"<br>   },<br>   "rssiFilter": {<br>     "threshold": -86<br>   },<br>   "tagMetaData": [<br>     "ANTENNA",<br>     "RSSI",<br>     "SEEN_COUNT"<br>   ],<br>   "transmitPower": [<br>     27,<br>     27<br>   ],<br>   "type": "CUSTOM"<br> }<br>}</p><p>// Tested by Sèan K<br> </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-54451" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 months 2 weeks ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>FYI - these two JSON Work well on both FXR90 as well as FX9600 -- sorry if there is confusion. <br>( One of my FX9600 is being used for testing - so I used the FXR90 to do the quick tests.)</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-54454" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              F
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Franco Balducci</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 months 2 weeks ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thanks for your reply, Sean, and sorry for the delay — I was on vacation. I tested your two configurations and I think I found the cause of the problem. It depends on the "target": "A" clause — if I change it to "target": "AB", performance becomes acceptable, even in my previous configurations.</p><p>I thought that in S0 session the tag would quickly switch from B back to A, but evidently, since the tags are very close to the antenna and continuously powered, they stay in B for a long time. Do you agree with my explanation?</p><p>It still remains that with IoT Connector I'm getting about 50% lower performance compared to 123RFID — could this be due to protocol overhead?</p><p>Thanks,<br>Franco.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-54456" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 months 1 week ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thanks Franco.<br><br>The "AB" means that the Singulation Control allows for "AB_FLIP" - which is a fast tag detection when the tag changes state to "any".<br><br>Its not a good Singulation State Aware setting if you have Multiple Readers - or use "STATE_AWARE" Singulation settings for Prefilter Conditions.<br>( Which is why I recommended "STATE_A" for "Balanced Performance" Operations - as seen in File 2 - I proposed above.)</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-54455" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>shabaz shaik</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 months 1 week ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Sean,</p><p>I have need a clarity over these two settings and their roles:<br><span>   "antennaStopCondition": [</span><br><span>     {</span><br><span>       "type": "DURATION",</span><br><span>       "value": 100</span><br><span>     },</span><br><span>     {</span><br><span>       "type": "DURATION",</span><br><span>       "value": 100</span><br><span>     }</span><br><span>   ],</span><br><br><span><strong>and</strong> </span></p><p><span>   "delayBetweenAntennaCycles": {</span><br><span>     "duration": 0,</span><br><span>     "type": "DISABLED"</span><br><span>   },</span></p><p> </p><p>Few questions:</p><ol><li>If I'm willing to run the tag read operation conitnuosly on the reader (from the moment it powerd ON) then what should be these values?</li><li>What is the json sent used when we use the simple or inventory modes in the Operating Mode:<br>I'm not getting the complete json log:<br><br><code>Jul 10 11:49:38 FX9600881084 user.info rmserver.elf: I-Cloud Monitoring: Sending request to cloud agent: {"command":"set_mode","command_id":"ASERDIFXZ","payload":{"antennas":[1,2],"environment":"HIGH_INTERFERENCE","reportFilter":{"duration":1,"type":"PER_ANTENNA"},"tagMetaD</code><br><code>Jul 10 11:49:43 FX9600881084 user.info rmserver.elf: E-Error Shutdown on RM conncettion socket: 107</code><br>What could be the cause for the error <strong>Shutdown on RM connection</strong>?</li><li>These custom json I can upload it on the WebUI of the reader right in the follwoing section:<br><span data-image-source="https://developer.zebra.com/sites/default/files/inline-images/Screenshot%20from%202026-07-14%2013-32-18.png">[Image unavailable locally: https://developer.zebra.com/sites/default/files/inline-images/Screenshot%20from%202026-07-14%2013-32-18.png]</span></li></ol></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-54466" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I will only comment on the following:  ( The remainder of your questions deviate from this Thread context - I may advise to not do that - and to separately ask your FX9600 on a New Forum Thread question. )<br><br>Back to this context:<br>&lt;snip&gt;<br>I have need a clarity over these two settings and their roles: </p><p><span>"antennaStopCondition": [ { "type": "DURATION", "value": 100 },  { "type":  DURATION",  "value":   100  }  ], </span><br><span><strong>and</strong> </span></p><p><span>"delayBetweenAntennaCycles": {  "duration": 0,  "type": "DISABLED" },</span></p><p><span>&lt;/snip&gt;</span><br><span>So...</span><br><span>"antennaStopCondition"  - is the RFID Timing for how long to capture on that given Antenna Port.</span><br><span>"delayBetweenAntennaCycles" - is the Interval for the RFID ( when active ) to wait/holdoff when going from Antenna Port to Antenna Port.</span></p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-54462" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              F
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Franco Balducci</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 months 1 week ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Sean, I took a bit of time before replying in order to finish testing. The "State Aware" topic is clear to me, thanks anyway for the clarification. The purpose of my question was to verify the FX9600's performance in IoT+MQTT mode and understand why, with certain configurations, I was getting few reads per second even in S0. I now think I've found confirmation of the hypothesis made in the post above. Using target AB, I get good throughput. Using target A with a single antenna, I get very few reads per second. Adding a second antenna, the read rate increases, and in particular it's affected by the duration of the antennaStopCondition parameter. I think this confirms that with a single antenna, the tag stays powered continuously and switches slowly from state B back to A. With two antennas, the tag loses power at every antenna switch, returning to state A.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-54465" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              A
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Alex Lavie</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Franco,</p><p>I think that you can do an easy test and connect to the reader with 123rfid desktop in IOTC mode and run inventory, performance will be the same. another test you can do is run in Inventory mode with interval 0 and you will see the thoughput similar than using an sdk.</p><p>{<br>    "mode": "inventory",<br>    "antennas": [<br>        1,<br>        2,<br>        3,<br>        4<br>    ],<br>   "modeSpecificSettings":{<br>       "interval":{<br>           "unit":"seconds",<br>           "value":0<br>       }<br>   },<br>    "filter": {<br>        "value": "",<br>        "match": "prefix",<br>        "operation": "include"<br>    },<br>   <br>    "transmitPower": 29.0,<br>    "tagMetaData": [<br>        "EPC",<br>       "ANTENNA"<br>    ]<br>}</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/zebra-iot-connector-read-performance%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/zebra-iot-connector-read-performance%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

@@ -1,0 +1,259 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Xamarin and DataWedge Intent API</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Xamarin and DataWedge Intent API</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25873; original snapshot: threads/resume-00577.html; SHA-256: fb761468903c3d06b7e90b3b68adc35460f61f8f1d7aebba0d3494a173c3413e</small><pre id="topic">
+
+    
+        Xamarin and DataWedge Intent API
+
+
+        
+      
+                        
+                    
+            M
+          
+          Mattia Durli
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            334
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello, I successfully managed to use the DataWedge intent API to scan barcode through this articles and samples:
+https://developer.zebra.com/community/home/blog/2018/07/11/xamarinforms-...
+https://developer.zebra.com/community/home/blog/2018/07/24/tutorial-scan...
+My problems are:
+1) I want to use the MultiBarcode of NG Simulscan on a Zebra TC52.
+If I set MultiBarcode and Instant Reporting manually in my DataWedge profile, it works and my app receives the multiple barcodes.
+But I&#x27;m unable to set it programmatically.
+I added the relevant code here, but scanning_mode and instant_reporting_enable doesn&#x27;t seem to pass:
+ZebraScannerConfig config = (ZebraScannerConfig)a_config;
+            Bundle profileConfig = new Bundle();
+            profileConfig.PutString(&quot;PROFILE_NAME&quot;, EXTRA_PROFILE_NAME);
+            profileConfig.PutString(&quot;PROFILE_ENABLED&quot;, _bRegistered ? &quot;true&quot; : &quot;false&quot;); //  Seems these are all strings
+            profileConfig.PutString(&quot;CONFIG_MODE&quot;, &quot;UPDATE&quot;);
+            Bundle barcodeConfig = new Bundle();
+            barcodeConfig.PutString(&quot;PLUGIN_NAME&quot;, &quot;BARCODE&quot;);
+            barcodeConfig.PutString(&quot;RESET_CONFIG&quot;, &quot;false&quot;); //  This is the default but never hurts to specify
+            Bundle barcodeProps = new Bundle();
+            barcodeProps.PutString(&quot;scanner_input_enabled&quot;, &quot;true&quot;);
+            barcodeProps.PutString(&quot;scanner_selection&quot;, &quot;auto&quot;); //  Could also specify a number here, the id returned from ENUMERATE_SCANNERS.
+            barcodeProps.PutString(&quot;scanning_mode&quot;, &quot;3&quot;);
+            barcodeProps.PutString(&quot;instant_reporting_enable&quot;, &quot;true&quot;);
+            barcodeConfig.PutBundle(&quot;PARAM_LIST&quot;, barcodeProps);
+            profileConfig.PutBundle(&quot;PLUGIN_CONFIG&quot;, barcodeConfig);
+            Bundle appConfig = new Bundle();
+            appConfig.PutString(&quot;PACKAGE_NAME&quot;, Android.App.Application.Context.PackageName);      //  Associate the profile with this app
+            appConfig.PutStringArray(&quot;ACTIVITY_LIST&quot;, new String[] { &quot;*&quot; });
+            profileConfig.PutParcelableArray(&quot;APP_LIST&quot;, new Bundle[] { appConfig });
+            SendDataWedgeIntentWithExtra(ACTION_DATAWEDGE_FROM_6_2, EXTRA_SET_CONFIG, profileConfig);
+2) I want to enable the Scanner StatusChange notification API, that is present in the mentioned sample, but not implemented:
+private void ScannedStatusChanged(object sender, string a_message)
+        {
+            string status = a_message;
+        }
+I tried to follow the API Documentation, but is all Java and samples are all in Java (some Xamarin Datawedge API samples ar really missing).
+So I added this to the SetConfig:
+            Bundle notificationConfig = new Bundle();
+            notificationConfig.PutString(&quot;PACKAGE_NAME&quot;, Android.App.Application.Context.PackageName);
+            notificationConfig.PutString(&quot;NOTIFICATION_TYPE&quot;, &quot;SCANNER_STATUS&quot;);
+            SendDataWedgeIntentWithExtra(ACTION_DATAWEDGE_FROM_6_2,&quot;com.symbol.datawedge.api.REGISTER_FOR_NOTIFICATION&quot;, notificationConfig);
+but then how do I register the intent? I tried to Register to the same broadcast receiver both the Scan Intent and the Status intent, is it the correct way? Or should I have two different Broadcast receivers, one for the scan and the other for status notification?
+if ((null != _broadcastReceiver) &amp;&amp; (null != _context))
+            {
+                // Register the broadcast receiver
+                IntentFilter filterScan = new IntentFilter(DataWedgeReceiver.IntentActionScan);
+                filterScan.AddCategory(DataWedgeReceiver.IntentCategory);
+                _context.RegisterReceiver(_broadcastReceiver, filterScan);
+                IntentFilter filterStatus = new IntentFilter(DataWedgeReceiver.IntentActionStatus);
+                filterStatus.AddCategory(DataWedgeReceiver.IntentCategory);
+                _context.RegisterReceiver(_broadcastReceiver, filterStatus);
+                _bRegistered = true;
+            }
+Essentially, using MultiBarcode, I need my app to be notified when the user releases th hard trigger.
+Thanks,
+Mattia
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Darryn Campbell
+          
+          
+            5 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Are you extracting the com.symbol.datawedge.barcodes extra?
+https://github.com/darryncampbell/DataWedge-MultiBarcode-Sample/blob/mas...
+My sample casts this as a List so I double-checked the DataWedge source code and this is an ArrayList so you should be able to cast this to&amp;nbsp;https://docs.microsoft.com/en-us/dotnet/api/java.util.arraylist?view=xa…;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Darryn Campbell
+          
+          
+            5 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Please accept my apologies in advance but I do not have any Xamarin samples that specifically address your questions.
+1.&amp;nbsp; I saw this myself and it stumped me for a while.&amp;nbsp; In the end I realised you need to specify which scanner you are using (you cannot use auto).&amp;nbsp; I am still unsure exactly why this is, I guess it was because not all scanners support&amp;nbsp;instant reporting.&amp;nbsp; Example is here:&amp;nbsp;https://github.com/darryncampbell/DataWedge-MultiBarcode-Sample/blob/mas...
+2. There is a sample showing how to register for scanner notifications here:&amp;nbsp;https://github.com/darryncampbell/DataWedge-Quick-Suspend-Scanner/blob/m...
+Hope that helps,
+Darryn.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

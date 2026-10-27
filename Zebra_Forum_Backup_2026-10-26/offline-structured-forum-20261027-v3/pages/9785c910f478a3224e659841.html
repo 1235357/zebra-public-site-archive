@@ -1,0 +1,167 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Is there a way to close/kill a running application with the help of MX?</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/thread/34973; snapshot threads/resume-00222.html; SHA-256 0112f9f92ffc7120fcb1ec28ed4644751f5324c10d08806f86630c21a5d429f2. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Is there a way to close/kill a running application with the help of MX?</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            M
+          </div>
+          <div class="forum-topic__author-name">Michael Stjernborg</div>
+          <div class="forum-topic__timestamp">5 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            702
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>We are using stageNow in order to do various task on a MC18 Android (5.1.1).<br>
+One of the MX components we are using is Condition Manager.<br>
+If a certain condition is met we would like to close/kill an app. In this case Enterprise Browser 1.5.<br>
+Is there a way to close an app with mx? Intent?<br>
+ <br>
+/Michael</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-42341" class="comment forum-topic__reply js-comment by-anonymous forum-topic__reply--comment by-viewer">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              A
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Anonymous (not verified)</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I had a customer who also needed a way to exit EB.&amp;nbsp; In this case they needed to exit EB when they started another app from the SOTI launcher,&amp;nbsp; so we put together a SOTI script to trigger EB to exit when the user pressed the icon for the second app,&amp;nbsp; but the same method should work for you.&amp;nbsp; The idea is to use the EB Intent API as the trigger,&amp;nbsp; and we used DOM injection to add some javascript to the pages to make it work because they did not have the ability to change the existing web app.&amp;nbsp; If you can change the web app, you could skip the dom injection part and do that right on the webserver.&amp;nbsp; See the EB docs for details on these features<br>
+ About Enterprise Browser 1.7 - Zebra Technologies TechDocs </p>
+<p>In config.xml,&amp;nbsp; set up the Intent receiver like this:<br>
+&amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; &amp;nbsp;&amp;nbsp; </p>
+<p>Set up dom injection in config.xml like this:<br>
+  myTags.txt and eb-exit.js go into the same folder as config.xml. ebapi-modules.js,eb.intent.js, and eb.application.js  would also need to be copied to the device in the same folder as config.xml.&amp;nbsp; These files can be found on your PC in C:\EnterpriseBrowser\JavaScriptFiles\EnterpriseBrowser\Android</p>
+<p>content of myTags.txt below.&amp;nbsp; This will inject these 4 javacscript files into every page that EB navigates to:</p>
+<p>Content of eb-exit.js below.&amp;nbsp; This sets up the intent API to start listening and the callback will quit EB if EB receives the intent it is looking for.<br>
+function intentCB(data){<br>
+ if(data.action=="Intent.QUITEB"){<br>
+ EB.Application.quit();<br>
+ }<br>
+}<br>
+EB.Intent.startListening(intentCB)</p>
+<p>If the above is all configured properly,&amp;nbsp; you should see EB exit if you send a broadcast intent with the action "Intent.QUITEB".</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/thread/34973%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/thread/34973%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

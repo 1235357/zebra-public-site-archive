@@ -1,0 +1,315 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Android - opening connection with a printer after bluetooth searching is not working</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Android - opening connection with a printer after bluetooth searching is not working</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/android-opening-connection-printer-after-bluetooth-searching-not-working; original snapshot: threads/00280.html; SHA-256: 8e916c3744b0d92b8868566cdf074461a5ed2704d2a29346d21a63f5c763aea9</small><pre id="topic">
+
+    
+        Android - opening connection with a printer after bluetooth searching is not working
+
+
+        
+      
+                        
+                    
+            M
+          
+          Matac Stefan
+          2 years 7 months ago
+        
+        
+      
+        
+            
+                  
+            
+            531
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,I have a problem using Link-OS SDK Android BTLE v2.14.5198.Many years ago I developed a feature on an app from which you can print using ZQ521 Zebra printers.Everything went well but recently a problem occured.After using BluetoothLeDiscoverer.findPrinters to search for a printer, after I create BluetoothLeConnection with the MAC Address from the printer found by findPrinters method, when I call open() on connection, I get this exception: Could not connect to device: Bluetooth LE Gatt failed to Connect. This error happens only for LE mode, on CLASSIC mode seems to be everything ok.The weird thing is that if I restart the device and I try to open the connection with the previous found MAC Address, without using findPrinters, everything works well. But if I try to search bluetooth devices, even from Android Settings and I come back to the app, when it tries to open de connection, it fails again with that error. It will work again only if I restart the device.It seems that searching for bluetooth  devices breaks something on open connection. Maybe I do something wrong but this app worked well in the past and this issue doesn&#x27;t seem to be from the app.I tested this on Zebra ET56 tablet and on a Samsung A12, both having the same problem.Thank you. 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            What&#x27;s the Android version on the ET56 and the Samsung A12 devices that have this issue? Maybe the new Android version breaks something.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Matac Stefan
+          
+          
+            2 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello,ET56 has Android 11 and Samsung A12 has Android 13. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Matac,
+I&#x27;ve just tested the ZSDK_DemosAndroid_BTLE demo app that comes with the release package of the Link-OS SDK for Android BTLE SDK v2.14.5198 on a ET56 Android 11 tablet. I do not see any exception after discovering BLE and then opening the connection. The Connectivity sub-demo has the BTLE discovery and then makes the connection immediately after clocking on the corresponding MAC address of the printer. See the screenshot below.
+Please make sure that the android.permission.ACCESS_FINE_LOCATION is requested and granted. The printer&#x27;s BTLE also needs to be enabled with the following SGD or via the Printer Setup app.
+### Verify the BTLE setting
+! U1 getvar &quot;bluetooth.le.controller_mode&quot;
+
+### Configure the BTLE setting with the &quot;le&quot; or &quot;both&quot; for BTLE.
+! U1 setvar &quot;bluetooth.le.controller_mode&quot; &quot;both&quot;
+ If the issue still persists, please share a the source code of a test app, so that we can reproduce and debug at our end.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Giorgio Zett
+          
+          
+            2 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            same issue here.It seems I can connect to the printer, but I can&#x27;t print at all.Is there any way to force to use the Classic Bluetooth mode? I guess in some way it&#x27;s using the BLE mode...I hope in this way to be able to print againI have done some customisations in the RNZebraBluetoothPrinterModule class (by npm patch) and I can easily update the code in the npm module. I&#x27;m trying to fix it, but it seems I&#x27;m not able to find out a working solutionthanks a lot! 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

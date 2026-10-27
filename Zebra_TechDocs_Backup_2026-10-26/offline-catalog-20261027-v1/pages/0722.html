@@ -1,0 +1,428 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Multi-user Programming - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/emdk-for-android/latest/guide/multiuser</code><br>Observed final URL: <code>https://techdocs.zebra.com/emdk-for-android/latest/guide/multiuser/</code><br>Raw source: <code>raw/d50573ff6e4b90e0bef98534.html</code><br>Raw SHA-256: <code>b03385b05524d1b084e9e8c802e99e5de8c46d6624c33d46d2d7fdede3f021e6</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                           EMDK For Android 15.1
+                          
+                          
+                                EMDK For Android 4.2
+                                EMDK For Android 4.0
+                          
+                                            
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Set Up
+                            
+                        
+                        
+                            
+                                    Tutorials
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Profile Manager
+                            
+                        
+                        
+                            
+                                    FAQs
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Multi-user Programming
+                        
+                    Multi-user ProgrammingOverview
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Multi-user Programming
+                                    
+                                            EMDK For Android
+                                            15.1
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+EMDK for Android 7.1 (and higher) supports Android multi-user mode, which allows a device to have Primary and Secondary users, each with its own sets of apps, capabilities and access privileges. When running an EMDK app on a device with multiple users, EMDK is enabled only for the active user. Apps must be designed to release internal device resources and the EMDKManager whenever the app goes to the background (which triggers a &quot;user switch&quot;) and to reacquire the resources when the app returns to the foreground. This is done by listening with intents:
+
+
+ACTION_USER_BACKGROUND - release internal resources when heard
+
+ACTION_USER_FOREGROUND - reacquire resources when heard
+
+
+The EMDK service automatically releases external component resources (i.e. scanner, serial and SimulScan objects) when an app goes to the background to make them available to the foreground app. Scanning resources must be programmatically reacquired when the EMDK app returns to the foreground.
+
+
+
+Example
+
+The code below demonstrates how an app should release and reacquire EMDK resources when switching users on a device.
+
+
+public class MainActivity extends Activity implements EMDKListener, DataListener, StatusListener, ScannerConnectionListener {
+
+    private EMDKManager emdkManager = null;
+    private BarcodeManager barcodeManager = null;
+    private Scanner scanner = null;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        try {
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(Intent.ACTION_USER_BACKGROUND);
+            filter.addAction(Intent.ACTION_USER_FOREGROUND);
+            registerReceiver(broadcastReceiver, filter);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        EMDKResults results = EMDKManager.getEMDKManager(getApplicationContext(), this);
+        if (results.statusCode != EMDKResults.STATUS_CODE.SUCCESS) {
+            return;
+        }
+    }
+
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean appSentToBackground = intent.getAction().equals(Intent.ACTION_USER_BACKGROUND);
+            boolean appCameToForeground = intent.getAction().equals(Intent.ACTION_USER_FOREGROUND);
+
+            // TODO MultiUser
+            if (appSentToBackground) {
+
+                log(&quot;App going to background&quot;);
+
+                try {
+                    // Release all resources
+                    if (emdkManager != null) {
+                        emdkManager.release();
+                        emdkManager = null;
+                    }
+
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            if (appCameToForeground) {
+
+                log(&quot;App coming to foreground&quot;);
+
+                // Setting objects to null if background task are interrupted.
+                if(scanner != null)
+                    scanner = null;
+
+                if(barcodeManager != null)
+                    barcodeManager = null;
+
+                if(emdkManager != null)
+                    emdkManager = null;
+
+                EMDKResults results = EMDKManager.getEMDKManager(getApplicationContext(), MainActivity.this);
+
+                // Use a final variable if MainActivity.this (above) fails.
+                // If result == SUCCESS, onOpened is called
+                // and scanner object is reacquired
+                if (results.statusCode != EMDKResults.STATUS_CODE.SUCCESS) {
+                    return;
+                }
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        try {
+            // Release all resources
+            if (emdkManager != null) {
+                emdkManager.release();
+                emdkManager = null;
+
+            }
+        }
+        catch (Throwable throwable)
+        {
+            throwable.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onOpened(EMDKManager emdkManager) {
+
+        this.emdkManager = emdkManager;
+        log(&quot;Initializing EMDK.. Please wait..&quot;);
+
+        // Acquire barcode manager resources
+        barcodeManager = (BarcodeManager) emdkManager.getInstance(FEATURE_TYPE.BARCODE);
+        if(barcodeManager == null)
+        {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            barcodeManager = (BarcodeManager) emdkManager.getInstance(FEATURE_TYPE.BARCODE);
+        }
+
+        // Add connection listener
+        if (barcodeManager != null) {
+            barcodeManager.addConnectionListener(this);
+            initScanner();
+        }
+
+
+    }
+
+    @Override
+    public void onClosed() {
+
+        try {
+            if (emdkManager != null) {
+                // Release all the resources
+                emdkManager.release();
+                emdkManager = null;
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initScanner() {
+
+        if (scanner == null) {
+
+            scanner = barcodeManager.getDevice(BarcodeManager.DeviceIdentifier.DEFAULT);
+
+            if (scanner != null) {
+
+                scanner.addDataListener(this);
+                scanner.addStatusListener(this);
+
+                try {
+                    scanner.enable();
+                } catch (ScannerException e) {
+
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public void onData(ScanDataCollection scanDataCollection) {
+        if ((scanDataCollection != null) &amp;&amp; (scanDataCollection.getResult() == ScannerResults.SUCCESS)) {
+            ArrayList&lt;ScanDataCollection.ScanData&gt; scanData = scanDataCollection.getScanData();
+            for(ScanDataCollection.ScanData data : scanData) {
+
+                log(&quot;onData: &quot; + data.getData());
+
+            }
+        }
+    }
+
+    @Override
+    public void onStatus(StatusData statusData) {
+
+        StatusData.ScannerStates state = statusData.getState();
+        String statusString = statusData.getFriendlyName()+&quot; is &quot; + state.toString().toLowerCase();
+
+        log(&quot;Status: &quot;+statusString);
+
+        switch(state) {
+            case IDLE:
+                try {
+                    scanner.read();
+                } catch (ScannerException e) {
+                    e.printStackTrace();
+                    log(&quot;Error: &quot; + e.getMessage());
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onConnectionChange(ScannerInfo scannerInfo, ConnectionState connectionState) {
+
+
+    }
+
+    private void log(String message)
+    {
+        Log.d(&quot;TAG&quot;,&quot;#EMDKMultiuser# &quot; + message);
+    }
+}
+
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

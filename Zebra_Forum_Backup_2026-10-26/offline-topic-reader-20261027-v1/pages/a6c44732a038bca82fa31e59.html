@@ -1,0 +1,180 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>IMZ220 printing too many paper and special characters</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>IMZ220 printing too many paper and special characters</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/33407; original snapshot: threads/resume-00173.html; SHA-256: d832b6170899b7a1b1ac6d1d8d64ad95beac7ed4c282190bf778658631bcef6e</small><pre id="topic">
+
+    
+        IMZ220 printing too many paper and special characters
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            29
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello all,
+I&#x27;m a beginner in the world of printing  and actually i work with xamarin android.
+I work wih xamarin android and i&#x27;m trying to print on a printer zebra MZ 220 and IMZ 220 who is the new model i have well understand.
+ 
+I have two problems in fact...
+ 
+1 -When i send some command on a MZ 220 or IMZ 220, for some characters (à, é, ...) the device print a ?
+Here is it the command :
+ 
+ configLabel = &quot;! 0 200 200 510 1\r\n&quot; //+ &quot;ON-FEED IGNORE\r\n&quot;
+                + &quot;BOX 10 10 380 450 6\r\n&quot;
+                + &quot;TEXT 5 0 110 20 &quot; + &quot;avisé le :\r\n&quot;
+                + &quot;TEXT 5 0 25 120 &quot; + &quot;&quot; + DateTime.Now.Day + &quot;/&quot; + DateTime.Now.Month + &quot;/&quot; + DateTime.Now.Year + &quot; à &quot; + DateTime.Now.Hour + &quot;:&quot; + DateTime.Now.ToString(&quot;mm&quot;) + &quot;\r\n&quot;
+                + &quot;TEXT 5 1 25 150 &quot; + &quot;dans la tournée :\r\n&quot;
+                + &quot;TEXT 5 1 25 250 &quot; + tourName + &quot;\r\n&quot;
+                + &quot;PRINT\r\n&quot;;
+            return configLabel;
+ 
+and i send this command as this :
+ 
+printerBluetooth.Write(System.Text.Encoding.ASCII.GetBytes(strToPrint));
+ 
+I think i must to configure the printer but i don&#x27;t know how ?
+ 
+2 - my others problem is only on the IMZ, no problem with the MZ.
+When i send several command to the MZ printer the space between each command is correct BUT if i realize the same test on the IMZ the space between each command is HUGUE...
+Any idea ?
+ 
+Thanks for your time and your knowledge
+Christophe
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Christophe,
+To get non-ASCII characters to print you must encode them correctly.&amp;nbsp; By default the printer takes code page 1252 character encoding.&amp;nbsp; This is a combination of how you encode them in Xamarin and in the printer.
+Send this command as this :
+Encoding encoding = Encoding.GetEncoding(1252);
+printerBluetooth.Write(encoding.GetBytes(strToPrint));
+You may also need to add the Country command to your format:+ &quot;COUNTRY FRANCE\r\n&quot;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

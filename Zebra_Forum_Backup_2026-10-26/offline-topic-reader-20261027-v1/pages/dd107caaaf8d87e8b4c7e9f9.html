@@ -1,0 +1,374 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MC65 Battery Level Programatically</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MC65 Battery Level Programatically</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/29949; original snapshot: threads/02091.html; SHA-256: 4ac9f5afdbcd4be53d94bddae158180a5f0cf5903fc92bfa0b90fe7f634c2aa8</small><pre id="topic">
+
+    
+        MC65 Battery Level Programatically
+
+
+        
+      
+                        
+                    
+            P
+          
+          Peter McWha
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            39
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  On an MC65, how does one determine the current battery level in VB.NET? Symbol.MT2000.Utils.BatteryState.Level returns -1.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Peter McWha
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            OK, just ran an extended test and determined that on an MC65, regardless of the battery state of discharge, StateOfHealthEx value is constantly zero.
+I ran the battery down and the value is still zero.
+So either there is a bug in the MC65, or, StateOfHealthEx is not the answer.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Ritesh Gupta
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+Look at Symbol.ResourceCoodination namespace and the SmartBatteryStatus class.&amp;nbsp; There is a property there for StateOfHealthEx.
+Also here is latest version of EMDK: https://portal.motorolasolutions.com/Support/US-EN/Resolution?solutionI…
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Peter McWha
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            RG:
+On my system, Symbol.ResourceCoordination.SmartBatteryStatus has only two functions: Equals, and ReferenceEquals.&amp;nbsp; There are no properties and so no StateOfHealthEx property.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Peter McWha
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Except that, on a fully charged battery, the interface reports a StateOfHealthEx value of zero.&amp;nbsp; Or is this supposed to be the percentage of charge USED and not REMAINING?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Peter McWha
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            RG:
+Aaargh, my bad.
+One has to declare an instance of the class first, as in:
+sbs = New Symbol.ResourceCoordination.SmartBatteryStatus
+myuint = sbs.StateOfHealthEx
+I&#x27;ve marked your answer &quot;correct&quot;.&amp;nbsp; Thank you for the help.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

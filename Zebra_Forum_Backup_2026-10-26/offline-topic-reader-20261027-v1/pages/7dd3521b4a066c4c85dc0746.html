@@ -1,0 +1,179 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>An error occurred while executing doInBackground(), java.lang.ClassCastException: com.zebra.rfid.RfidServiceMgr cannot be cast to b.a.b.a</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>An error occurred while executing doInBackground(), java.lang.ClassCastException: com.zebra.rfid.RfidServiceMgr cannot be cast to b.a.b.a</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/error-occurred-while-executing-doinbackground-javalangclasscastexception-comzebrarfidrfidservicemgr-cannot-be-cast-baba; original snapshot: threads/01036.html; SHA-256: f32b6ea83d44065d7357ef05f7b8994e1cb03aa28004766edafdb3b3f1339ca9</small><pre id="topic">
+
+    
+        An error occurred while executing doInBackground(), java.lang.ClassCastException: com.zebra.rfid.RfidServiceMgr cannot be cast to b.a.b.a
+
+
+        
+      
+                        
+                    
+            K
+          
+          Kevin McKee
+          5 years 3 months ago
+        
+        
+      
+        
+            
+                  
+            
+            650
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m writing a Flutter/Android app that uses the RFIDAPI3Library, and it&#x27;s base roughly off the SDK example app.  It runs successfully when I run it in debug mode, but when I run it in release mode I get an error.  Any ideas would be greatly appreciated
+2021-07-21 15:12:59.325 9982-10009/? E/AndroidRuntime: FATAL EXCEPTION: AsyncTask #1
+    Process: com.sample.rfid, PID: 9982
+    java.lang.RuntimeException: An error occurred while executing doInBackground()
+        at android.os.AsyncTask$3.done(AsyncTask.java:325)
+        at java.util.concurrent.FutureTask.finishCompletion(FutureTask.java:354)
+        at java.util.concurrent.FutureTask.setException(FutureTask.java:223)
+        at java.util.concurrent.FutureTask.run(FutureTask.java:242)
+        at android.os.AsyncTask$SerialExecutor$1.run(AsyncTask.java:243)
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1133)
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:607)
+        at java.lang.Thread.run(Thread.java:761)
+     Caused by: java.lang.ClassCastException: com.zebra.rfid.RfidServiceMgr cannot be cast to b.a.b.a
+        at com.zebra.rfid.api3.e.a()
+        at com.zebra.rfid.api3.h3.()
+        at com.zebra.rfid.api3.n4.b()
+        at com.zebra.rfid.api3.c1.()
+        at com.zebra.rfid.api3.j1.o()
+        at com.zebra.rfid.api3.j1.b()
+        at com.sample.rfid.a$d.a()
+        at com.sample.rfid.a$d.doInBackground()
+        at android.os.AsyncTask$2.call(AsyncTask.java:305)
+        at java.util.concurrent.FutureTask.run(FutureTask.java:237)
+        at android.os.AsyncTask$SerialExecutor$1.run(AsyncTask.java:243)&amp;nbsp;
+        at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1133)&amp;nbsp;
+        at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:607)&amp;nbsp;
+        at java.lang.Thread.run(Thread.java:761)&amp;nbsp;
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              K
+            
+          
+                
+          
+            Kevin McKee
+          
+          
+            5 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Adding these 2 lines (minifyEnable, shrinkResources) to the Module&#x27;s build.gradle file seems to have fixed the issue for me
+buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.debug
+        }
+    }
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

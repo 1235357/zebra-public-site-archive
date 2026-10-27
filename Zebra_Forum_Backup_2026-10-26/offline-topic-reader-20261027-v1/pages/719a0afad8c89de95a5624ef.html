@@ -1,0 +1,149 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Pass template/format through application instead of storing on printer using Link-OS SDK or otherwise</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Pass template/format through application instead of storing on printer using Link-OS SDK or otherwise</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/26015; original snapshot: threads/resume-00610.html; SHA-256: c165ac1f10d99b7389253dfff9706c05ae72d934b931f9cd5a9b6046cf1dbfc6</small><pre id="topic">
+
+    
+        Pass template/format through application instead of storing on printer using Link-OS SDK or otherwise
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            145
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  While using LinkOS SDK, we realise there is no provision to pass format/template from application. It has to be rather stored on printer and recalled from there for data merging and printing. Is that understanding correct?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The template label printing is to have a predefined template in ZPL (called Stored Format) pre-stored on the printer, and then send the recall template in ZPL (called Recall Format) to the printer to call out the pre-stored template in the printer. The printer will merge (or replace) the variables in the Stored Format with&amp;nbsp;the data in the Recall Format, and then print out the label. The advantage is that the Stored Format in ZPL only needs to be sent to the printer once, so we save the time of&amp;nbsp;transmitting the graphics (usually have large amount of image data) in the Store Format by only sending the graphics once. The Recall Format (which is a lot shorter, as it usually contains variable names and data) can then be sent to the printer many times with different data to print out the labels with different data, such as address label for example.
+Both the Stored Format and Recall Format are simply text files. We can use FileUtil.sendFileContent() API or Connection.write() API to send the text content of these files to the printer.
+There is a helper class in Link-OS SDK, called FormatUtil. This class provides convenient APIs to help the application to create and send the ZPL of the Recall Format to the printer. Hope this helps.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

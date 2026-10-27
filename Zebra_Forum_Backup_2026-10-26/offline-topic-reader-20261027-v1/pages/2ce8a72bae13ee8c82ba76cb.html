@@ -1,0 +1,263 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>xamarin android EMDK ProcessProfile always return checkXml !</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>xamarin android EMDK ProcessProfile always return checkXml !</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/34796; original snapshot: threads/resume-00212.html; SHA-256: 656b25fd6b736259f1938243b5396ec211520721b0f863e8ce816fb3f0e6a52a</small><pre id="topic">
+
+    
+        xamarin android EMDK ProcessProfile always return checkXml !
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            98
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+i work with visual studio 2015 and xamarin.
+ 
+I have a device zebra TC 75 with android version 6.0.
+I&#x27;ve a zebra tutorial for to create a profil and load it when user click on a button on the app.
+ 
+On this profil i set just the wifi never sleep and screen off to 30 min that&#x27;s all
+I&#x27;ve follow this link : Your First EMDK For Xamarin Application - Zebra Technologies TechDocs
+ 
+well, when i run my app i check that the screen off is set to 15 second for testing it.
+ 
+when i run the app, click on button the EMDKResults return always check xml BUT my profil is set !!!!
+Never time the EMDKResults return Success ....
+ 
+Here is it the code i used , anyone have an idea ?
+the code is the same than the article, i&#x27;ve add the necessary in the manifest file, i&#x27;ve reboot my device ...
+ 
+I can&#x27;t understand why the EMDKResults is always set to check xml ...argh !!!!
+ 
+on my mainActivity =&gt; onCreate method
+protected override void OnCreate(Bundle bundle)
+        {
+            base.OnCreate(bundle);
+ 
+            // Set our view from the &quot;main&quot; layout resource
+            SetContentView(Resource.Layout.Main);
+ 
+            tvStatus = FindViewById(Resource.Id.textViewStatus);
+            button = FindViewById(Resource.Id.MyButton);
+            button.Click += delegate { ApplyProfile(); };
+            //
+            EMDKResults result = EMDKManager.GetEMDKManager(this, this);
+            if (result.StatusCode == EMDKResults.STATUS_CODE.Success)
+                tvStatus.Text = &quot;RESULT IS OK&quot;;
+            else
+                tvStatus.Text = &quot;EMDK MANAGER NOT LOAD&quot;;
+        }
+ 
+Next, on button i do that :
+void ApplyProfile()
+        {
+            if (profileManager != null)
+            {
+                EMDKResults results = profileManager.ProcessProfile(&quot;ClockProfile&quot;, ProfileManager.PROFILE_FLAG.Set, new String[] { &quot;&quot; });
+                if (results.StatusCode == EMDKResults.STATUS_CODE.Success)
+                    tvStatus.Text = &quot;Status: Profile applied successfully ...&quot;;
+                else
+                {
+                    if (results.StatusCode == EMDKResults.STATUS_CODE.CheckXml)
+                    {
+                        using (XmlReader reader = XmlReader.Create(new StringReader(results.StatusString)))
+                        {
+                            String checkXmlStatus = &quot;Status:\n\n&quot;;
+                            while (reader.Read())
+ 
+thanks for your time
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Charitha Malla…
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Christophe,
+Billie has explained you the reason above why it is happening.
+If you want to analyze the return xml, you can refer to the existing samples Zebra has provided. Refer the CheckXmlError private method of the below sample.
+WiFi Configuration - Zebra Technologies TechDocs 
+Hope this helps.
+Thanks,
+Charith.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Christophe,
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; That is expected behavior,&amp;nbsp; Success will only be returned when using the Profile Manager Data Capture features. All other Profile Manager features will return CheckXml. You will need to inspect the XML to see if there any errors in the XML
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

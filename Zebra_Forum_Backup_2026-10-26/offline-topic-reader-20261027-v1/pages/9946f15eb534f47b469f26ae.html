@@ -1,0 +1,416 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>ZQ521 printer does not print .pcx cpcl image using storeImage - Android</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>ZQ521 printer does not print .pcx cpcl image using storeImage - Android</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zq521-printer-does-not-print-pcx-cpcl-image-using-storeimage-android; original snapshot: threads/01033.html; SHA-256: 1f4c3f27619ead5047560c79f0e9dc69f6cdc02e3c000882173001edebc61785</small><pre id="topic">
+
+    
+        ZQ521 printer does not print .pcx cpcl image using storeImage - Android
+
+
+        
+      
+                        
+                    
+            G
+          
+          Guilherme Dellatin
+          5 years 3 months ago
+        
+        
+      
+        
+            
+                  
+            
+            279
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello, I&#x27;m having an image printing problem on the zq521 printer, I work in an application that prints water bills, and a customer requested to print an image from a hydrometer, on RW420 printers I can print these images normally, here is my code:
+private void printPhotoFromExternal(ZebraPrinter zebraPrinter, final Bitmap bitmap) throws IOException, ConnectionException {
+        try {
+            zebraPrinter.storeImage(&quot;R:TEMP.PCX&quot;, new ZebraImageAndroid(bitmap), 496, 358);
+            zebraPrinter.getConnection().write(&quot;! U1 setvar \&quot;device.languages\&quot; \&quot;CPCL\&quot;\r\n&quot;.getBytes());
+            zebraPrinter.getConnection().write(&quot;! U1 do \&quot;file.delete\&quot; \&quot;R:TEMP.PCX\&quot;\r\n&quot;.getBytes());
+            bitmap.recycle();
+        } catch (ConnectionException | ZebraIllegalArgumentException e) {
+            e.printStackTrace();
+        }
+    }
+I saw that in previous topics they suggested using this code in the connection class:
+public class ConnectionZebraPrint {
+    private static final String TAG = ConnectionZebraPrint.class.getSimpleName();
+    public static ZebraPrinter getZebraPrinter() throws ConnectionException, ZebraPrinterLanguageUnknownException {
+        Connection printerConnection;
+        printerConnection = new BluetoothConnection(PrintUtils.getMacAddress());
+        printerConnection.open();
+        if (printerConnection.isConnected()) {
+           return ZebraPrinterFactory.getInstance(PrinterLanguage.CPCL, printerConnection);
+        }
+        return null;
+    }
+}
+I was not successful on the zq520 and zq520 printers. I configured the printers in Zebra Setup Utilities with the respective drivers for CPCL.
+When I debug the code the image is captured normally but it doesn&#x27;t appear on the invoice, what could be happening? do I need to configure the R: on the ZQ521?
+The only way to print an image on the zq521 and 520 that I could was using the following code:
+zebraPrinter.printImage( new ZebraImageAndroid(bitmap), 1, 1,496, 358, false);
+But the image is printed on a separate sheet...
+Could someone help me with this question?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Guilherme Dellatin
+          
+          
+            5 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            In the water bill class:
+PCX 40 133 !
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Both ZQ520 and ZQ521 are in ZPL mode by default. Though they both support CPCL by configuring device.languages to CPCL, it&#x27;s recommended to use ZPL with these Link-OS printers. In the Link-OS SDK for Android, there is a GraphicsUtil class, in which there are a number of methods to print image. The zebraPrinter.printImage() is one of the methods in  GraphicsUtil class. The reason the image is printed on a separate label in your case is because you passed false for the insideFormat parameter of zebraPrinter.printImage(). If you want to print the image as part of a label, you need to pass true for the insideFormat parameter. Here is the pseudo code.
+
+String firstHalfOfZPL = &quot;^XA .....&quot;;
+String secondHalfOfZPL = &quot;....^XZ&quot;;
+
+connection.open();
+ZebraPrinter printer = ZebraPrinterFactory.getInstance(connection);
+
+// Send the first half of the ZPL to the printer
+connection.write(firstHalfOfZPL.getBytes());
+
+// Send your image as part of the ZPL label to the printer with true for the insideFormat parameter
+zebraPrinter.printImage( new ZebraImageAndroid(bitmap), 1, 1,496, 358, true);
+
+// Send the 2nd half of ZPL to the printer
+connection.write(secondHalfOfZPL.getBytes()); 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Guilherme Dellatin
+          
+          
+            5 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you for your attention SSi1
+I tried using it with &quot;true&quot;, with cpcl the printer prints a bunch of binary nonstop, I can only pass the image file to zpl and the rest of the invoice print to cpcl?
+The problem with moving to zpl is that the code is legacy and is all done using cpcl..
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            To support CPCL, you need to first set the device.languages to CPCL on the ZQ521 printer. Then you need to get the printer instance for the CPCL printer as following:
+ZebraPrinter printer = ZebraPrinterFactory.getInstance(CPCL, connection); // Get CPCL printerThen send the 1st half of the CPCL, and followed by sending the image with printer.printImage() with true for insideFormat, and the 2nd part of the CPCL.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Guilherme Dellatin
+          
+          
+            5 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi, I came back here to share my solution:
+Using the code I described at the beginning of the post I made a small change in my cpcl class that prints the water bill
+//I used the following code in the invoice layout to print the image
+PCX 40 133 TEMP.PCX;
+//It was only necessary to add this zpl code, and configure the printer drivers for cpcl
+^XA^FO0,0^IMR:TEMP.PCX^XZ
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

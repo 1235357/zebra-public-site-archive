@@ -1,0 +1,147 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Clear scanned barcodes cache upon (re)connection of RFD4031 to an Android app</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/clear-scanned-barcodes-cache-upon-reconnection-rfd4031-android-app; snapshot threads/00030.html; SHA-256 3d67b9ea1a6ddfa6611b45ab989853bc277b679689a5dbbb0c2f7cb1e5d41715. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Clear scanned barcodes cache upon (re)connection of RFD4031 to an Android app</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            H
+          </div>
+          <div class="forum-topic__author-name">Honza Pospech</div>
+          <div class="forum-topic__timestamp">1 year 1 month ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            358
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello,</p><p>I am integrating the RFD4031 2D barcode scanner with a custom Android app.</p><p>Using the most recent version (2.6.29.0) of the <span data-original-href="https://techdocs.zebra.com/dcs/scanners/sdk-android/about/">Scanner SDK for Android</span>.</p><p>Everything seems to work fine and I am struggling with just one last issue: In some of the app's workflow I need to have a <strong>control of when a particular barcode was scanned</strong>. In particular, I need to make sure that <strong>a particular barcode was scanned while the RFD4031 scanner was actually connected to my app</strong>.</p><p>What I am seeing is that the RFD4031 can be used to scan barcodes by pulling the trigger button. Those barcodes seem to be stored in the scanners internal memory and then delivered to my app once the app connects to the scanner. In my app, I want to be able to <em>ignore</em> such cached barcodes. However, there doesn't seem to be any way to distinguish them from the barcodes scanned after the app connected to the scanner. They both get delivered via the same event and there's no timestamp or anything like that.</p><p><strong>Is there any way how to either recognize the </strong><em><strong>old</strong></em><strong> barcodes when they are delivered to the Android app or to prevent the scanner from caching them while disconnected or to actively ask the scanner to clear its caches?</strong> (The <span data-original-href="https://techdocs.zebra.com/dcs/rfid/android/2-0-3-148/guide/about/">RFID SDK for Android</span> has <code>com.zebra.api3.Actions.purgeTags()</code> method that does this for the RFID tags.) </p><p>Note: I have tried several workarounds like disabling the barcode scanning when disconnecting and reenabling upon reconnection as well as disabling/enabling particular barcode types so that they cannot even be scanned while disconnected. These solutions work to some degree but are not bulletproof. And they quite complicated compared to a single method call that exists for the RFID scanner.</p><p>Thank you for any ideas or guidance.</p><p>Honza</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-54200" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Honza.</p><p>The RFID SDK also contains the pertinent Scanner Control Libraries for the on-Scanner Barcode Scanner for the RFD40/RFD90.</p><p>Please note - there is a better "Android" demo + Source code - to look at the Variety of "Batchmode" settings.</p><p>I will use the BT Batchmode as a reference - since this one has the most history.</p><p>https://techdocs.zebra.com/dcs/rfid/android/2-0-2-94/guide/batchmode/</p><p>Also there is an RFID Techdoc for this for the RFID "Batchmode" too.</p><p>NOTE: reader.Actions.getBatchedTags(); </p><p>and reader.Actions.purgeTags();  // Are what is used to capture the RFID Data when you get batch mode data.</p><p>( DONT FORGET TO PURGE!! ) </p><p>NOTE:</p><p>The Best app to demonstrate the BT Batchmode processing - is the 123RFID Mobile app (Support Portal) </p><p>The 123RFID App - when "BT Batchmode" = "ENABLE" the code for both the RFID Operations - AS WELL AS THE BARCODE OPERATIONS, </p><p>when you can for tags or scan for Barcodes - nothing is presented to the UI - until you "release" the trigger for the RFID - and in the "Scan" tab on 123RFID Mobile - app you tap the on-screen [ BATCH REQUEST ] button to get the Batched Barcode Scans.<br>This Techdoc explains this for Barcode Scans:</p><p><span data-original-href="https://techdocs.zebra.com/dcs/rfid/android/2-0-2-116/tutorials/receivingbatchedbarcodedata/">https://techdocs.zebra.com/dcs/rfid/android/2-0-2-116/tutorials/receivingbatchedbarcodedata/</span></p><p>( If I recall - this operation is Self Purging - so When you see this demo on 123RFID Mobile app - there is not corresponding ".purgeBarcodes();" Like the RFID SDK does.<br><br>{ DCSSDK_COMMAND_OPCODE.DCSSDK_DEVICE_BATCH_REQUEST }<br> </p><p> </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/clear-scanned-barcodes-cache-upon-reconnection-rfd4031-android-app%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/clear-scanned-barcodes-cache-upon-reconnection-rfd4031-android-app%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

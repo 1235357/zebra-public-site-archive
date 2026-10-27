@@ -1,0 +1,231 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Symbol CS4070 turns on Amber LED when asked to turn on Red LED</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Symbol CS4070 turns on Amber LED when asked to turn on Red LED</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/symbol-cs4070-turns-amber-led-when-asked-turn-red-led; original snapshot: threads/00675.html; SHA-256: e33e63a091f8a9e25289b7f4cd9b4804576187de3c83e585aba2e0c8fb1ee2be</small><pre id="topic">
+
+    
+        Symbol CS4070 turns on Amber LED when asked to turn on Red LED
+
+
+        
+      
+                        
+                    
+            F
+          
+          Faiz Waghoo
+          3 years 10 months ago
+        
+        
+      
+        
+            
+                  
+            
+            52
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m consuming Zebra&#x27;s barcode_scanner_library_v2.6.6.0-release.aar for Android and setting CS4070&#x27;s LED. But when I pass RMDAttributes.RMD_ATTR_VALUE_ACTION_LED_RED_ON it turns on Amber LED on the scanner and when I pass RMDAttributes.RMD_ATTR_VALUE_ACTION_LED_OTHER_ON it turns on Red LED on the scanner. So I wanted clarification whether is this intended behavior. If yes, then what is the reason behind this.
+Note: I have only CS4070 so can&#x27;t confirm if this behavior is same on other models too.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Riad Benallou
+          
+          
+            3 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            This behavior is indeed only with CS4070 . you can use the scanner name to Trigger other LED for RED  , something like below 
+ public void otherLEDOnClicked(View view) {
+        if(scannerName.startsWith(SCANNER_MODEL_CS4070)){
+            prepareInXML(RMDAttributes.RMD_ATTR_VALUE_ACTION_LED_RED_ON);
+        }else {
+            prepareInXML(RMDAttributes.RMD_ATTR_VALUE_ACTION_LED_OTHER_ON);
+        }
+    }
+    public void otherLEDOffClicked(View view) {
+        if(scannerName.startsWith(SCANNER_MODEL_CS4070)){
+            prepareInXML(RMDAttributes.RMD_ATTR_VALUE_ACTION_LED_RED_OFF);
+        }else {
+            prepareInXML(RMDAttributes.RMD_ATTR_VALUE_ACTION_LED_OTHER_OFF);
+        }
+    }
+    public void redLEDOnClicked(View view) {
+        if(scannerName.startsWith(SCANNER_MODEL_CS4070)){
+            prepareInXML(RMDAttributes.RMD_ATTR_VALUE_ACTION_LED_OTHER_ON);
+        }else{
+            prepareInXML(RMDAttributes.RMD_ATTR_VALUE_ACTION_LED_RED_ON);
+        }
+    }
+    public void redLEDOffClicked(View view) {
+        if(scannerName.startsWith(SCANNER_MODEL_CS4070)){
+            prepareInXML(RMDAttributes.RMD_ATTR_VALUE_ACTION_LED_OTHER_OFF);
+        }else {
+            prepareInXML(RMDAttributes.RMD_ATTR_VALUE_ACTION_LED_RED_OFF);
+        }
+    }
+}
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              F
+            
+          
+                
+          
+            Faiz Waghoo
+          
+          
+            3 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Yeah I had thought of this workaround but I wasn&#x27;t sure whether this was only specific to CS4070 or other models too. Thanks for the clarification.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

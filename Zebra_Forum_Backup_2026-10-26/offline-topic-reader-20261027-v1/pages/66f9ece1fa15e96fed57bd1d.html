@@ -1,0 +1,201 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Saving connection details to use for auto connection</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Saving connection details to use for auto connection</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25373; original snapshot: threads/resume-00474.html; SHA-256: 9ab4bc4a319af6f98a9b4449de7020dced92621e6e39fa977888ccd57fbf5e8e</small><pre id="topic">
+
+    
+        Saving connection details to use for auto connection
+
+
+        
+      
+                        
+                    
+            S
+          
+          System Admin
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            40
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+Im working on the Link OS SDK (previous generation) and can successfully connect via USB &gt; select printer &gt; print demo ZPL using the demo application.
+the printer.Address = &quot;/dev/bus/usb/001/002&quot;.
+the model im using is the ZD420 with USB interface only.
+Given the address, how can I create a Connection object using connection builder?
+So that i can simply print the data after the first printer selection.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            6 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The ConnectionBuilder class does not support USB connection.
+It&#x27;s recommended to use UsbDiscover to find the USB connected printer, rather than using hardcoded USB connection string.
+// Request for USB Host Permission
+@Override
+protected void findUsbPrinter() {
+    new Thread(new Runnable() {
+        public void run() {
+            // Find printer on USB
+            UsbDiscoveryHandler handler = new UsbDiscoveryHandler();
+            UsbDiscoverer.findPrinters(getApplicationContext(), handler);
+            try {
+                while (!handler.discoveryComplete) {
+                        Thread.sleep(100);
+                }
+                if (handler.printers != null &amp;amp;&amp;amp; handler.printers.size() &amp;gt; 0) {
+                    discoveredPrinterUsb = handler.printers.get(0);
+                    // Check for permission
+                    if (!usbManager.hasPermission(discoveredPrinterUsb.device)) {
+                        usbManager.requestPermission(discoveredPrinterUsb.device, permissionIntent);
+                    } else {
+                        hasPermissionToCommunicate = true;
+                    }
+                } else {
+                    // No printer found on USB.
+                }
+            } catch (Exception e) {
+                // Do something
+            }
+        }
+    }).start();
+}&amp;nbsp;
+// Handles USB device discovery
+class UsbDiscoveryHandler implements DiscoveryHandler {
+    public List printers;
+    public boolean discoveryComplete = false;
+    public UsbDiscoveryHandler() {
+        printers = new LinkedList();
+    }
+    public void foundPrinter(final DiscoveredPrinter printer) {
+        printers.add((DiscoveredPrinterUsb) printer);
+    }
+    public void discoveryFinished() {
+        discoveryComplete = true;
+    }
+    public void discoveryError(String message) {
+        discoveryComplete = true;
+    }
+}Once the USB connected printer is discovered, then we can get the connection as shown below. You can save&amp;nbsp;discoveredPrinterUsb object for close/open later without discovering again.
+Connection conn = discoveredPrinterUsb.getConnection();
+&amp;nbsp;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

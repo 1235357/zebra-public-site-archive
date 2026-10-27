@@ -1,0 +1,345 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Link-OS Android SDK support for ZXP-7 Printer</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Link-OS Android SDK support for ZXP-7 Printer</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/36066; original snapshot: threads/extra-02875.html; SHA-256: 12867f8baf9af2342fa203c9e096034d0eb04ea86ce64d59dcbddfd3a3d011ef</small><pre id="topic">
+
+    
+        Link-OS Android SDK support for ZXP-7 Printer
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            89
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Does anyone know if the Link-OS Android SDK supports the ZXP-7 (ZXP Series 7) printers?  The specifics of the printer are:
+MODEL: ZXP-7
+MFG – ZEBRA
+PART #Z72AMAC0BH0USFP -MF
+Specifically, we know the Java API supports the above, but it&#x27;s unclear if the Android version of the SDK does.  The specific functions we&#x27;d be performing are reading the NFC ID off an RFID card and printing laminex onto a pre-encoded card (text and image).  
+The documentation seems to imply that the Android version of the SDK does not support the above for the series 7 printers, but its not entirely clear.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Manuel Caicedo…
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi James,
+The ZXP-7 printer with MiFare normally is equipped with Identiv encoder SDI010:
+Here the drivers from manufacturer:
+SDI010/SDI011 Dual Interface Smart Card Reader | Identiv Support 
+Here, the latest manual
+https://drive.google.com/file/d/14pSHWD1B_jrnwLRF6tnNmlVFu91HrXar/view?… 
+Here, the developer tools from the third-party
+Developer Tools for Smart Card Readers | Identiv Support 
+Good luck in your coding!
+MC
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Manuel Caicedo…
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            James,
+Please, could you elaborate a little more about your last question. If you meant to read the UID UHF of the card inserted through the RFID reader installed, I would say that the reader can do it, but Zebra has not developed libraries in Android for doing it with ZXP7. We have developed sample code with the smartcard ELATEC&amp;nbsp; for ZC1/300 in C#. Any operation with RFID readers installed in card printers are 3rd party companies that should have their own set of tools to execute those type of operations but Zebra do not own them. 
+Thanks,
+MC
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Manuel Caicedo…
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The&amp;nbsp; Multiplatform SDK installer  branded as Link-OS has 12 folders for each environment Zebra Supports.
+Zebra launched recently two more platforms for supporting the ZC1/300 card printers. Android_card and PC-.Net-card, see the image below.
+The first version of this Android_card SDK was tested for ZC1/300. However, it should work for ZXP 7 as well. For more information, and how to work with our new Android SDK for card printers, please take a look to the webinar and blogs that I have developed to speed up the implementation in card printers projects.
+Thanks,
+MC
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Manuel Caicedo…
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            James,
+The Zebra card printer SDK provides libraries only to cover the following items:
+Printing Operations
+•Bidirectional communication (Ethernet, WiFi, USB)
+•Printer settings
+•Print Job operations
+Encoding Operations
+•Magnetic encoding
+•Set the card on position to be encoded (smartcards)
+Image Operations
+•Build the object for the printer based on Ribbon’s layers
+For now, NFC Tag in the printer only provides info to point to the website of the product. 
+NFC reading is not part of the libraries. You should ask the manufacturer about the RFID reader if they have developed libraries in Android, or if Google Android has developed some libraries that work for them.
+Please, let me know if you have more questions or comments.
+Thanks,
+MC
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

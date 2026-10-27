@@ -1,0 +1,637 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MC3300x rfid stopped working with updated DataWedge</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MC3300x rfid stopped working with updated DataWedge</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/mc3300x-rfid-stopped-working-updated-datawedge; original snapshot: threads/00581.html; SHA-256: d453d20504b3fadb6cdf50c89bad837698873b7712bf73aa60c1766d88799e27</small><pre id="topic">
+
+    
+        MC3300x rfid stopped working with updated DataWedge
+
+
+        
+      
+                        
+                    
+            H
+          
+          Hakan Ostrom
+          3 years 5 months ago
+        
+        
+      
+        
+            
+                  
+            
+            776
+          
+                
+                  
+            
+            8
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                          //Solved
+        
+  
+
+    
+    
+        
+      
+            
+                  We have developed an app for the MC3300x. The app is reading rfid through DataWedge and Android Intents (which we understood is the preferred way of doing it). It worked perfectly when we developed the app about a year ago.
+
+But now rfid-reading has stopped working. No new developing has been done from us on the app. It is though a slightly more updated model of the MC3300x that is now malfunctioning.
+It is still on the Android 10, but the DataWedge seem to have a newer version; 8.2.16 (as we recall during development it was on v7.3).
+
+And also the demo app called &quot;RWDemo&quot; wont scan rfid tags. In contrast though the demo app called &quot;123RFID Mobile&quot; is reading rfid as before, but this app is (as we understood it) not using the DataWedge interface.
+
+Another mysterious thing is that the DataWedge profile can be configured to read traditional barcodes, and this is still working as usuall.
+
+It seems like the rfid-scan through DataWedge is somehow broken on updated devices. Is there some initial setup that has to be runned on new devices?
+
+We have followed the online guide about creating a DataWedge profile in code. But to no avail. What can we do?
+https://techdocs.zebra.com/datawedge/8-2/guide/api/setconfig/
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+        
+      
+        ✓ Accepted Solution
+      
+      
+          
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hakan Ostrom
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            As an answer to my own question. I finally got it to work!
+It was not so very well documented (or logical) but here it goes:
+
+
+	The DW-profile used must have the setting &quot;Gun trigger&quot; under &quot;RFID Input -&gt; Configure reader settings -&gt; Hardware key&quot; selected.
+	Why is this new? I dont know. And I also do not know how to set it programmatticaly. So as for now it had to be done manually editing the profile (after it was created by our app). I tried the new scanner_trigger_resource introduced in DW 8.2, but it I did not seemed to get it to work.
+	No other apps on the device can run simultaneous that also uses the rfid-scanning (like for instance the demo app). I seems that in that case it could result in some kind of rase condition.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+      
+    
+  
+      
+    
+      8 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Robert Arneson
+          
+          
+            3 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You can try navigating to the RFID Manager application and select the configuration wheel cog, from there make sure the Reader Power Off/On is selected to the &#x27;ON&#x27; position. It is possible on OS update this was moved to the off position.
+
+ 
+
+ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hakan Ostrom
+          
+          
+            3 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you for quick answer. Unfortunately it did not do the trick. 
+
+I even tried via the mentioned RFID Manager to reset the scanner, even to factory reset it. And restart device. But the problem persists.
+
+When holding down the scan-button the app though is saying &quot;blip blip, scan is active&quot; but no result is received (but here if I point it to a barcode the that result is received as expected).
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Robert Arneson
+          
+          
+            3 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I just want to be sure that you followed the below settings?
+
+1. Open DataWedge settings
+2. Select target profile, example Profile0 (default)
+3. Scroll down and enable RFID Input
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hakan Ostrom
+          
+          
+            3 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Yes, exactly as that.
+
+The profile for our app is called Builid. And it has both the Barcode input and the RFID input. And also the Intent output. All programmatically added as in the guide at https://techdocs.zebra.com/datawedge/7-3/guide/api/setconfig/. Initially when developed about a year ago this was working fine.
+
+And also the profile for rhe RWDemo standard app (with profile RWDemo) is active and has the RFID input and Intent output. And even that app is not reading rfid.
+
+Both are just sounding &quot;blip&quot; when trigger is pressed indicating reader activated. But no rfid-data received (with rfid-chip within 10 cm). (Although barcode-data is received, so the intent capturing code is working as intended.)
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Hakan  - The MC33x0XR you are working with - can you check the (Settings - About Phone - Build Number) on the device?
+
+( My MC3330XR is currently running A11, and RWDemo does work, but I currently have the Keypad Scan button re-assigned to the Barcode Scanning and not the optional RFID scanning.)
+
+I may recommend using the &quot;Restore Defaults&quot; on Datawedge to refresh the Datawedge settings ( a normal Troubleshooting suggestion from Help Desk)  - this will only configure the three default profiles - Profile0,  DWDemo, and Launcher.  None of these will have the RFID Settings.
+
+If you open RWDemo - you will see that RWDemo will auto-provision a profile that configures for RWDemo use.
+
+I cannot speak to your &quot;Builid&quot; app - but if that app auto-creates a Datawedge Profile - then you can test that.  If &quot;Builid&quot; needs a profile created manually - you can create it and then &quot;Backup Profile&quot; to save this for future (Compatible Datawedge version) useages.
+
+Please try the above and let me know the build number - and I will see what further suggestions I may make.
+
+ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+             Also make sure in the &quot;Reader Selection&quot; menu - that you have chosen the &quot;Available reader&quot; check box in the profile you are working with. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hakan Ostrom
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            As an answer to my own question. I finally got it to work!
+It was not so very well documented (or logical) but here it goes:
+
+
+	The DW-profile used must have the setting &quot;Gun trigger&quot; under &quot;RFID Input -&gt; Configure reader settings -&gt; Hardware key&quot; selected.
+	Why is this new? I dont know. And I also do not know how to set it programmatticaly. So as for now it had to be done manually editing the profile (after it was created by our app). I tried the new scanner_trigger_resource introduced in DW 8.2, but it I did not seemed to get it to work.
+	No other apps on the device can run simultaneous that also uses the rfid-scanning (like for instance the demo app). I seems that in that case it could result in some kind of rase condition.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              T
+            
+          
+                
+          
+            Thomas Feuerstein
+          
+          
+            2 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I found a way to setup Hardware Key, export your DataWedge profile (with the hardware key defined) and transfert-it to a computer, open the .db file with DB Browser for SQLite (https://sqlitebrowser.org/), by exploring the table you will see plenty of undocumented parameter and especially the one your are looking for :&quot;rfid_key_mapping&quot; if you set this one to &quot;1&quot; then &quot;Hardware key&quot; is set to &quot;Gun trigger&quot;I hope it helps !
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

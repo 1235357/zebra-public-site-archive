@@ -1,0 +1,213 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra FX9600 RFID IOT Connector</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Zebra FX9600 RFID IOT Connector</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zebra-fx9600-rfid-iot-connector; original snapshot: threads/00344.html; SHA-256: 877d6692840cd6f0dc58fd42d3bc12d988bfc9434ef93a017e911cdb850f56b9</small><pre id="topic">
+
+    
+        Zebra FX9600 RFID IOT Connector
+
+
+        
+      
+                        
+                    
+            P
+          
+          Piumal Nipun
+          8 months 4 weeks ago
+        
+        
+      
+        
+            
+                  
+            
+            285
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi everyone,I’m working with a Zebra FX9600 using RFID IoT Connector and MQTT, and I’m trying to continuously receive data for the same EPC from two different antennas at approximately 10 readings per second per antenna.What I want to achieve:Same tag should be reported by antenna 1 and antenna 2Around 10 reports per second (≈100 ms interval)Data should include RSSI and phaseCurrent approach:Using INVENTORY modeTwo antennas enabledContinuous reading (DURATION = 0)Using reportFilter to control repeated reportsExample (simplified) configuration: {
+  &quot;type&quot;: &quot;INVENTORY&quot;,
+  &quot;antennas&quot;: [1, 2],
+  &quot;interval&quot;: 100,
+  &quot;transmitPower&quot;: 30,
+  &quot;tagMetaData&quot;: [&quot;RSSI&quot;, &quot;PHASE&quot;, &quot;ANTENNA_ID&quot;],
+  &quot;reportFilter&quot;: {
+    &quot;type&quot;: &quot;PER_ANTENNA&quot;,
+    &quot;duration&quot;: 100
+  },
+  &quot;antennaStopCondition&quot;: [
+    {
+      &quot;type&quot;: &quot;DURATION&quot;,
+      &quot;value&quot;: 0
+    }
+  ] } Issue / question:With certain configurations, the tag is reported by only one antennaI understand that:RADIO_WIDE suppresses other antennasPER_ANTENNA with duration = 0 can block reportingI want to confirm the recommended configuration to reliably get:~10 reports/secFrom both antennasFor the same EPCQuestions:Is PER_ANTENNA with a ~100 ms duration the correct approach for this?Are there internal limits on antenna switching or report rate that affect this?Is INVENTORY mode the best choice for continuous multi-antenna phase/RSSI data, or is there a better mode?Any guidance or confirmation would be appreciated.Thanks
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Piumal Nipun
+          
+          
+            8 months 4 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alex Lavie
+          
+          
+            8 months 3 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I think you are mixing things and not getting the right result.You can use Inventory with interval =0 seconds which means the reader will be reporting tags all the time. Select tagmetadata to contain ANTENNA so that you get all reads with the antenna info. When you use the Inventory mode report filter is normally not effective and in latest version should not be available in the web interface.Next best thing is to use Custom where you can specify antenna start and stop conditions and probably specify the dwell time per antenna.here is an example: { &quot;type&quot;: &quot;SIMPLE&quot;, &quot;modeSpecificSettings&quot;: {   &quot;interval&quot;: {     &quot;unit&quot;: &quot;hours&quot;,     &quot;value&quot;: -63127613   } }, &quot;environnement&quot;:  &quot;antennas&quot;: [   -50521876,   51243269 ], &quot;filter&quot;: {   &quot;value&quot;: &quot;[a-zA-Z0-9]{2,}&quot;,   &quot;match&quot;: &quot;regex&quot;,   &quot;operation&quot;: &quot;include&quot; }, &quot;transmitPower&quot;: -70556978, &quot;linkProfile&quot;: 12340601, &quot;antennaStopCondition&quot;: {   &quot;type&quot;: &quot;SINGLE_INVENTORY_LIMITED_DURATION&quot;,   &quot;value&quot;: -19319971.90736863 }, &quot;query&quot;: {   &quot;tagPopulation&quot;: 61863464,   &quot;sel&quot;: &quot;SL&quot;,   &quot;session&quot;: &quot;S3&quot;,   &quot;target&quot;: &quot;B&quot; }, &quot;tagMetaData&quot;: [   &quot;XPC&quot;,   &quot;CHANNEL&quot; ], &quot;radioStartConditions&quot;: {   &quot;type&quot;: &quot;GPI_WITH_RESTART&quot;,   &quot;gpis&quot;: [     {       &quot;port&quot;: 1,       &quot;signal&quot;: &quot;HIGH&quot;,       &quot;debounceTime&quot;: 0     },     {       &quot;port&quot;: 1,       &quot;signal&quot;: &quot;HIGH&quot;,       &quot;debounceTime&quot;: 0     }   ] }, &quot;radioStopConditions&quot;: {   &quot;duration&quot;: -91418143,   &quot;antennaCycles&quot;: 35293144,   &quot;tagCount&quot;: 76942500,   &quot;durationAfterNoMoreUniqueTags&quot;: 86348421,   &quot;gpis&quot;: [     {       &quot;port&quot;: 1,       &quot;signal&quot;: &quot;HIGH&quot;,       &quot;debounceTime&quot;: 0     },     {       &quot;port&quot;: 1,       &quot;signal&quot;: &quot;HIGH&quot;,       &quot;debounceTime&quot;: 0     }   ] }, &quot;reportFilter&quot;: {   &quot;duration&quot;: 15261567,   &quot;type&quot;: &quot;RADIO_WIDE&quot; }, &quot;rssiFilter&quot;: {   &quot;threshold&quot;: -22 }}
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

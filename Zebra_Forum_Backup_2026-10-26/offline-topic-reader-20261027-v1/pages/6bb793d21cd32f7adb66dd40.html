@@ -1,0 +1,179 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Android api 31 printing security problem</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Android api 31 printing security problem</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/android-api-31-printing-security-problem; original snapshot: threads/00876.html; SHA-256: 87c76046cec3c28b58de994ce829db492c441e3579e0f70bc5f7dc56d46cb890</small><pre id="topic">
+
+    
+        Android api 31 printing security problem
+
+
+        
+      
+                        
+                    
+            M
+          
+          Maria Palacios
+          4 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            121
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello, Im getting the following error: 
+java.lang.SecurityException
+com.zebra.sdk.comm.BluetoothConnection.cancelBluetoothDiscovery
+with these stacktrace
+java.lang.RuntimeException:
+  at android.os.AsyncTask$4.done (AsyncTask.java:415)
+  at java.util.concurrent.FutureTask.finishCompletion (FutureTask.java:383)
+  at java.util.concurrent.FutureTask.setException (FutureTask.java:252)
+  at java.util.concurrent.FutureTask.run (FutureTask.java:271)
+  at android.os.AsyncTask$SerialExecutor$1.run (AsyncTask.java:305)
+  at java.util.concurrent.ThreadPoolExecutor.runWorker (ThreadPoolExecutor.java:1167)
+  at java.util.concurrent.ThreadPoolExecutor$Worker.run (ThreadPoolExecutor.java:641)
+  at java.lang.Thread.run (Thread.java:920)
+Caused by: java.lang.SecurityException:
+  at android.os.Parcel.createExceptionOrNull (Parcel.java:2437)
+  at android.os.Parcel.createException (Parcel.java:2421)
+  at android.os.Parcel.readException (Parcel.java:2404)
+  at android.os.Parcel.readException (Parcel.java:2346)
+  at android.bluetooth.IBluetooth$Stub$Proxy.cancelDiscovery (IBluetooth.java:4979)
+  at android.bluetooth.BluetoothAdapter.cancelDiscovery (BluetoothAdapter.java:2942)
+  at com.zebra.sdk.comm.BluetoothConnection.cancelBluetoothDiscovery (BluetoothConnection.java:6)
+  at com.zebra.sdk.comm.BluetoothConnection.open (BluetoothConnection.java)
+  at com.yoveri.axiscloud.Utility.impresion.impresoras.Zebra.connect (Zebra.java:7)
+  at com.yoveri.axiscloud.Utility.impresion.impresoras.Zebra.access$100 (Zebra.java)
+  at com.yoveri.axiscloud.Utility.impresion.impresoras.Zebra$connTask.doInBackground (Zebra.java:4)
+  at com.yoveri.axiscloud.Utility.impresion.impresoras.Zebra$connTask.doInBackground (Zebra.java:2)
+  at android.os.AsyncTask$3.call (AsyncTask.java:394)
+  at java.util.concurrent.FutureTask.run (FutureTask.java:266)
+  at android.os.AsyncTask$SerialExecutor$1.run (AsyncTask.java:305)
+  at java.util.concurrent.ThreadPoolExecutor.runWorker (ThreadPoolExecutor.java:1167)
+  at java.util.concurrent.ThreadPoolExecutor$Worker.run (ThreadPoolExecutor.java:641)
+  at java.lang.Thread.run (Thread.java:920)
+It only occurs when trying to print with  Android 12 (API 31) phones. We have already tried using the latest ZEBRA sdk available for developers but its not compatible with this android version.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            It looks like a location permission issue. Please check out this thread - ZSDK BluetoothDiscoverer.findPrinters() is not able detect Zebra ZQ310 printer and follow the recommendations to provide the required location permission both implicitly and explicitly.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

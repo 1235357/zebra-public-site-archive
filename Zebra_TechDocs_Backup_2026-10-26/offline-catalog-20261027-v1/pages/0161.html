@@ -1,0 +1,583 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Device Update - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/lifeguard/update/</code><br>Observed final URL: <code>https://techdocs.zebra.com/lifeguard/update/</code><br>Raw source: <code>raw/793e9b4a9c60ff609c0831a4.html</code><br>Raw SHA-256: <code>6ff5706d0fa4f2fd97913e24ba9f3e183042d8ee42a819cb90e5a1eca1f06eb2</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            LifeGuard for Android
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Device Update
+                            
+                        
+                        
+                            
+                                    Relay Mode
+                            
+                        
+                        
+                            
+                                    A13+ Upgrade (SD660)
+                            
+                        
+                        
+                            
+                                    A14+ Upgrade (others)
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Device Update
+                        
+                    OverviewLifeGuard OTA UpdatesScheduled MaintenanceDevice RequirementsFOTA NotesOTA Update InstructionsAutomatic UpdatesEnterprise-managed Automatic UpdatesAuto-update Features ComparedNon-FOTA Update Methods
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Device Update
+                                    
+                                            LifeGuard for Android
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        
+   PAGE UPDATED: July 20, 2026
+
+
+
+
+Overview
+
+Zebra LifeGuard system delivers OS updates and security patches to Zebra devices running Android through its Firmware Over the Air (FOTA) Client app and the Zebra Common Transport Layer (CTL)  service. Updates include patches and fixes to Zebra embedded systems, as well as security updates from Google, which publishes a monthly list of OS vulnerabilities tracked as the Security Patch Level (SPL). The SPL on Zebra devices can be found in Settings &gt; System &gt; System update and are cumulative; each includes vulnerability fixes from all previous updates. 
+
+Built on Google Firebase Cloud Messaging (FCM), the solution includes a set of REST APIs that can be used by EMM solution providers to interface with Zebra servers and automate updates of managed devices. Organizations using an Enterprise Mobility Management (EMM) system integrated with LifeGuard OTA can view, select and apply updates from within compatible EMM systems. In addition, StageNow 5.0 and later integrates with the LifeGuard update database, allowing administrators to easily identify the OS and LifeGuard image(s) required for upgrade operation(s) in StageNow Profiles. See StageNow section for more information. 
+
+EMM solution providers interested in integrating with Zebra LifeGuard APIs can learn more at the Zebra Developer Portal (login required). 
+
+
+
+LifeGuard OTA Updates
+
+Scheduled Maintenance
+
+Zebra&#x27;s over-the-air service requires periodic maintenance. See the schedule of planned service outages.
+
+Device Requirements
+
+The following is required for a device to receive updates using LifeGuard OTA through an EMM:
+
+
+Devices must be fully managed
+
+Automatic Update feature is supported on:
+
+
+
+Android 14: All devices, all packages 
+
+Android 13: All devices, all packages 
+
+Android 11: All devices, all packages 
+
+Android 10: Full OTA packages (baseline only) 
+
+Android 8.x (Oreo): Supported only on PS20J devices with BSP 1.30.04 Patch 19 (or later) 
+
+Android 7.x (Nougat): With Patch 19 (or later)
+
+
+FOTA client must be enabled on device(s)
+
+Internet connectivity must be active (for downloads to device)
+
+The following network ports must be open for LifeGuard and FCM operations: 
+
+
+
+443
+
+5228
+
+5229
+
+5230 
+Select one of these IP options (to apply to FCM ports listed above):
+
+No internet protocol (IP) restrictions (recommended)   
+
+All IP addresses for default domains
+
+
+The following LifeGuard servers are accessed over port 443 for device enrollment and downloads: 
+
+
+
+fts.zebra.com
+
+downloads.zebra.com
+
+zbr-entitled-downloads-prod.s3.amazonaws.com
+
+s3-1-w.amazonaws.com
+
+s3-w.us-east-1.amazonaws.com
+
+payloads.zebra.com
+
+
+
+
+
+FOTA Notes
+
+Direct Boot Awareness
+
+
+The OS upgrade package is downloaded only after a device is unlocked.
+
+Prior to unlocking, the deployment remains in a new pending state: WAITING_FOR_USER_UNLOCK 
+
+ Important: Upgrades to Android 14 from Android 11 or Android 13: 
+
+
+
+Final update status is not immediately reported after a successful upgrade. This is because the factory-shipped FOTA client inside the initial A14 LifeGuard images does not yet support Direct Boot.
+
+Once the device is unlocked for the first time post-upgrade, the device automatically self-updates to the latest FOTA client (which supports Direct Boot), and the correct status is then reported. 
+
+ A Direct Boot-enabled FOTA client pre-built into the system image is scheduled to be delivered with the Android 14 and Android 15 LifeGuard updates in August, 2026.  
+
+
+
+General Operation:
+
+
+FOTA deployments can occur only if the previous update either COMPLETED SUCCESSFULLY or FAILED gracefully.  
+
+If a FOTA update fails in an irregular way, subsequent updates also fail, and a non-FOTA update might be required. (See Update Guide).
+
+Non-FOTA updates can be performed with Zebra StageNow or an EMM system with Zebra OEMConfig. (Learn more.
+
+If GMS Restricted Mode is desired, the device MUST be enrolled in FOTA before the restricted mode is enabled.
+
+Devices with Android 13 and later:
+
+
+The CTL service is built into Zebra devices running Android 13 (and later), and is no longer available from Google Play. The service is updated by Zebra automatically. 
+
+ DO NOT DISABLE OR REMOVE THE CTL; it could lead to unpredictable device behavior. 
+
+To prevent patches, updates or upgrades, Zebra recommends setting the appropriate App Manager Action or LifeGuard Over the Air Manager preference.  
+
+The Enrollment Manager app is built into Zebra devices running Android A13 (and later), but can be installed/updated through Google Play.
+
+LifeGuard OTA upgrade requests expire after 28 days by default. A shorter duration can be selected when creating the request.
+
+In the absence of Google Play Services (e.g. non-GMS devices or those in GMS Restricted Mode):
+
+
+Updates to Enrollment Manager and CTL must be explicitly requested by contacting Zebra Support. 
+
+The over-the-air upgrades reach the device within 24hrs. 
+
+Subsequent deployments will be honored by the FOTA client only if the ongoing deployment is either COMPLETED or FAILED. 
+
+If a requirement arises to upgrade devices via non-FOTA mode then suggestion can be made to either use Zebra StageNow tool or FileSync mechanism provided by EMMs. 
+
+
+
+
+More Information
+
+
+Zebra Data Services FAQ | Frequently asked questions about Zebra&#x27;s data transportation  
+
+Zebra Network Traffic | All Zebra device traffic explained on a single page
+
+FCM networking policies and restrictions  | Google&#x27;s Firebase firewall docs 
+
+
+
+
+OTA Update Instructions
+
+The instructions linked below describe the manual process for upgrading SDM660- and 6490-platform devices from Android 8.x Oreo (or later) to the Android version indicated. The instructions also can be used as a basis for developing an EMM-driven update process.
+
+
+   Before attempting to upgrade, find out which Android version is current for the intended target device(s).
+
+
+
+
+  
+    From OS
+    To OS
+    Platform or Device(s)
+    Instructions(R-click to download)
+  
+
+
+  Android 8.x (Oreo) or later
+  Android 13
+  SDM660
+  View Guide
+
+
+
+  Android 8 (or later)
+  Android 13 
+  TC21 GMS and other SDM660-platform devices
+  View PDF 
+
+
+
+  Android 8 (or later)
+  Android 13 
+  TC53 GMS
+  View PDF 
+
+
+
+  Android 8 (or later)
+  Android 13 
+  TC73 GMS
+  View PDF 
+
+
+
+  Android 8 (or later)
+  Android 13 
+  6490-platform devices
+  View PDF 
+
+
+
+  Android 11 (factory)
+  Android 11 (latest)
+  6490
+  View PDF 
+
+
+
+  Android 8 (or later)
+  Android 11 (latest)
+  6490
+  View PDF 
+
+
+
+  Android 8.x (Oreo) or later
+  Android 11
+  SDM660
+  View PDF 
+
+
+
+  Android 8.x (Oreo) or later
+  Android 10
+  SDM660
+  View PDF 
+
+
+
+  Android 8.x (Oreo) or later
+  Android 9.x (Pie)
+  SDM660
+  View PDF 
+
+
+
+  Android 8.x (Oreo) or later
+  Android 8.x (Updates only; not for OS upgrade)
+  SDM660
+  View PDF 
+
+
+
+
+
+
+   Upgrade instructions for 8956-platform devices can be found within their respective release notes.  
+
+
+
+
+Automatic Updates
+
+The LifeGuard system gives administrators the option of applying device updates automatically whenever one is available from Zebra. There are two options for enabling auto-updates; a device can be enrolled in one or the other:
+
+Zebra-managed Automatic Updates
+
+If not disabled on the device by the administrator, Zebra-managed updates can be enabled by toggling Automatic System Updates in the FOTA client UI: 
+
+
+Settings &gt; System &gt; System update &gt; Gear icon &gt; Automatic System Update (toggle) 
+
+
+ The FOTA client also can be enabled using Zebra StageNow or an EMM system with Zebra OEMConfig. 
+
+ Important Notes:
+
+
+Enabling this option disables any prior enrollment in enterprise-managed automatic updates. 
+
+If an EMM system was previously managing the device, the device loses enterprise tenancy and enrollment status on the FOTA client changes to &quot;Enrolled to Zebra Services&quot; (after about 10 minutes).  
+
+Devices can opt out of FOTA-service updates by moving the toggle to the disabled position. After about 10 minutes, the enrollment status should read &quot;Not Enrolled.&quot;
+
+After enabling the FOTA service, an OS upgrade request is triggered if: 
+
+
+
+Any device(s) were enrolled in the last 24 hours. 
+
+A new BSP has been released in the last 24 hours (applies to previously enrolled devices).  
+
+
+
+
+
+Enterprise-managed Automatic Updates
+
+For companies with an EMM system integrated with Zebra LifeGuard OTA, this option is enabled by enrolling the device using Zebra Enrollment Manager and setting an auto-update deployment policy for the device(s). This option enables additional controls for setting update schedules and other rules. 
+
+
+
+Auto-update Features Compared
+
+
+
+  
+    Zebra-managed Automatic Updates
+    Enterprise-managed Automatic Updates
+  
+
+
+  Full Automation
+  Flexible Automation
+
+
+
+  Fixed rules
+  Admin sets rules for update network and device power
+
+
+
+  Download over LAN, WLAN, or WWAN (whatever is available)
+  Select which networks to use for updates
+
+
+
+  No local media server support
+  Supports local media server
+
+
+
+  Start updates at a selected time of day; user can postpone
+  Scheduled updates
+
+
+
+  Sends updates 1-3 days after release
+  Allows testing of updates before sending
+
+
+
+  No device-user messaging
+  Allows custom messages to device user
+
+
+
+  No EMM required
+  EMM required
+
+
+
+  Enroll on device or through StageNow
+  Enroll through EMM only
+
+
+
+  Cancel updates on device or via StageNow
+  Cancel updates via EMM server
+
+
+
+  Supports Android 11+
+  Supports Android 7+
+
+
+
+
+
+
+Non-FOTA Update Methods
+
+Device updates can be performed without the use of FOTA, if desired. Also, a non-FOTA update can sometimes be used to restore a device that failed to complete a FOTA update or got hung up during update. Zebra recommends considering these methods to restore device(s) to operation before sending out for repair. 
+
+
+Non-FOTA update methods: 
+
+
+
+Zebra StageNow and its Smart Update* feature can be used to manually build a staging Profile to upgrade to a newer OS version. 
+
+EMM system with Zebra OEMConfig using one of the device-specific LifeGuard builds downloaded for the intended target.
+
+
+If the target device contains a build without the &quot;STD&quot; (standard) designation, the build selected for the staging Profile must be selected manually.
+
+Upon a successful non-FOTA upgrade using a STD-designated build, the device can be enabled to receive automatic system updates via FOTA. 
+
+
+*  Smart Update requires a &quot;STD&quot; build on the device; not compatible with &quot;PRD&quot; or other designations.
+
+
+
+
+
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

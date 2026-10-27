@@ -1,0 +1,993 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Consuming Data - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/oeminfo/consume</code><br>Observed final URL: <code>https://techdocs.zebra.com/oeminfo/consume/</code><br>Raw source: <code>raw/6443b1f3c2203a4b871dac78.html</code><br>Raw SHA-256: <code>f924f8f15764c8a21a0639634ba0f74f710ff3dcbc7cebb744f7241dce88a8b6</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            OEMinfo
+                                            9.0.1.894
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Consume Data
+                            
+                        
+                        
+                            
+                                    Provide Data
+                            
+                        
+                        
+                            
+                                    FAQs
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Consuming Data
+                        
+                    OverviewConsuming OEMinfo DataContent URIsAuthorization MechanismTargeting Android 11Grant VisibilitySample CodeAcquire Device DataAbout the SampleCallbacksData Acquisition APIsAcquire OS Update InfoAcquire Peripheral Battery InfoAcquire Peripheral Device InfoAcquire Secure InfoAcquire Software InfoAcquire WAN InfoNotesAlso See
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Consuming Data
+                                    
+                                            OEMinfo
+                                            9.0.1.894
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+OEMinfo defines Data Consumers as apps seeking to retrieve information about the device on which they are running. Examples of such Zebra-owned apps include StageNow and OEMConfig device configuration tools, as well as Power Manager and other built-in configuration service provider (CSP) modules, which interface directly with Zebra&#x27;s device API layer. 
+
+
+
+Information for consumption is made available through  Data Provider apps. Both app types–Consumers and Providers–use the  Zebra Data Provider Interfaces (ZDPIs) included in the OEMinfo Content Provider Framework to consume data and/or to publish data for consumption. 
+
+
+
+Consuming OEMinfo Data
+
+The process of retrieving data through OEMinfo is the same as that of querying an Android content provider . And like Android, OEMinfo employs content URIs to identify certain data available from a provider. 
+
+However, before an app can retrieve data from OEMinfo, it must first receive permission to do so. This step must be performed only once for each app, but is required before the app can attempt any OEMinfo read operation. 
+
+To acquire read permission:
+
+Add the following statement to the app&#x27;s AndroidManifest.xml file:
+
+    &lt;uses-permission android:name=”com.zebra.provider.READ”&gt;
+
+Content URIs
+
+Each content URI includes the authority of the content provider represented as a symbolic name along with the package name of a Content Provider or path to a table containing its content. When calling a client method to access a content provider or table, the content URI is passed as an argument.
+
+URIs are broken into four (4) parts as&lt;scheme:&gt;//&lt;Authority&gt;/&lt;Provider name&gt;/&lt;API&gt;
+
+For example, the URI content://oem_info/oem.zebra.secure/build_serial can be broken down as follows: 
+
+
+content:// is the scheme, which tells Android that the URI points to a content provider.  
+
+oem_info is the authority name of the content provider.
+
+oem.zebra.secure is the content provider name unique within a given authority, usually a package name.
+
+build_serial is the API name unique within a given package name.
+
+
+
+
+Authorization Mechanism
+
+The ZDPI uses Zebra  Access Manager to grant or deny apps authorization to access data published by the framework. The Zebra-owned system components and application types listed below are authorized by default. 
+
+
+
+Authorization Required
+
+
+Customer-developed apps and services
+
+Third-party apps
+
+Any app NOT developed by Zebra
+
+
+When provisioning one or more of the app types listed above, authorization to access the ZDPI can be granted using StageNow and Access Manager, OEMconfig and the Service Access Configuration, or a company&#x27;s own Enterprise Mobility Management (EMM) system. 
+
+
+Click image to enlarge; ESC to exit. 
+
+
+To grant access using Access Manager and StageNow:
+
+Configure the following actions based on the individual requirements. 
+
+
+Service Access Action: “Allow Caller to Call Service”
+
+Service Identifier: ZDPI URI to access (see  Consuming Data overview, above.)
+
+Caller Package Name: Package Name of the third-party app
+
+Caller Signature: App certificate of the third-party app
+
+
+Also See
+
+How to generate a package signature for MX | From Zebra engineering 
+
+
+
+Targeting Android 11
+
+Enhancements delivered with Android 11 (API level 30) enforce greater protections on app and user data stored externally, building on the scoped storage feature introduced with Android 10 (API level 29). Scoped storage limits apps targeting API 29 (and later) to an app-specific device folder and to media types it creates. This was intended to provide more user control over stored files and reduce the file clutter. Apps targeting Android 10 (API level 29) can opt out of restrictions imposed by Android 11 by setting a flag in the app&#x27;s manifest. This flag is ignored by apps that target Android 11.
+
+Android 11 also imposes a package visibility filter, which effectively reduces the number of other apps that appear to be installed on the device when queried by your app. See below to grant visibility to your app and prevent it from being filtered. 
+
+Grant Visibility
+
+To grant visibility to an app so that it&#x27;s not subject to the visibility filter, add the following to the app&#x27;s manifest:
+
+
+&lt;queries&gt;
+    &lt;package android:name=&quot;com.zebra.zebracontentprovider&quot; /&gt;
+&lt;/queries&gt;
+
+Learn more about package visibility filtering  from the Android developer community. 
+
+
+
+Sample Code
+
+The sample code below acquires the build serial number from a device. Modify the code to suit individual needs. For more information or to request additional sample URIs,  contact the Zebra Data Services team. 
+
+Acquire Device Data
+
+
+Get the AUTHORITY, PROVIDER and API using the following example URI:
+
+String SERIAL_URI = &quot;content://oem_info/oem.zebra.secure/build_serial&quot;;
+
+Get the data (in this case the &quot;build serial&quot; number) by parsing the string using Android cursor query methods implemented in the following Java code:
+
+
+// Prepare the URI
+public void getData() {
+    final Uri myUri = Uri.parse(SERIAL_URI);
+    new UpdateAsync().execute(myUri.toString());
+}
+
+// Always query for data in Async task or background thread
+class UpdateAsync extends AsyncTask&lt;String,Void,Cursor&gt; {
+    private String myUri;
+
+@Override
+protected Cursor doInBackground(String... args) {
+    myUri = args[0];
+
+// Query the content provider
+ContentResolver cr = getContentResolver();
+Cursor cursor = cr.query(Uri.parse(myUri),
+                null, null, null, null);
+
+// Read the cursor
+cursor.moveToFirst();
+String serialNumber = cursor.getString(0);
+Log.i(TAG, &quot;Device Serial Number is : ” + serialNumber);            
+return cursor;
+}
+
+
+}
+
+
+
+
+About the Sample
+
+Copy, paste and modify the sample Java code above to programmatically retrieve the desired device data. The image below shows which areas of the sample to modify. Note that if peripheral info is to be retrieved from a device (e.g. the Bluetooth MAC address), the peripheral must be connected and enabled at the time of the query. 
+
+ See OEMConfig, StageNow or your company&#x27;s EMM system documentation for more information. 
+
+
+Click image to enlarge; ESC to exit. 
+
+
+💡For monitoring non-static device data such as the build serial number, Zebra recommends configuring the app to be notified of changes to OEMinfo data.  See Callback section below for more information.
+
+
+
+Callbacks
+
+Use the following Java code to register an app to be notified when URI data changes. Apps also can receive callbacks for changes to the content using the standard Android content observer methods, but Zebra recommends always registering callbacks for semi-static URI values.
+
+    // Prepare the URI
+    Uri myUri = Uri.Parse(MY_URI_STRING);
+
+    // Register with content observer
+    ContentResolver cr = getContentResolver();
+    cr.registerContentObserver(myUri, true, 
+        new ContentObserver(new Handler(getMainLooper())) {
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+
+            // Content has changed
+            Log.d(TAG, &quot;content has changed, uri = &quot; + uri);
+
+            // Reading the data is like above example
+            getData();
+        }
+    });
+
+
+
+Data Acquisition APIs
+
+Acquire OS Update Info
+
+The process for acquiring the device OS varies slightly from others. The APIs below are defined by Zebra.  
+
+URI:
+
+
+content://oem_info/oem.zebra.osupdate/
+
+
+APIs:
+
+
+status: SUCCESS (Android 8 only), FAILED, PASSED, CANCELLED, IN_PROGRESS, IN_SUSPEND, WAITING_FOR_REBOOT
+
+detail: Verbose text describing the status
+
+ts: Returns an epoch timestamp indicating when the intent was received
+
+
+1. Get the AUTHORITY, PROVIDER and API using the following Java code:
+
+    
+    // OS UPDATE URI
+    String OSU_URI = “content://oem_info/oem.zebra.osupdate”;
+
+    // APIs
+    String OSU_STATUS = “status”; 
+
+    String OSU_DETAIL = “detail”;
+
+    String OSU_TS = “ts”;
+
+2. Get the data (in this case the device OS update info) by parsing the string using Android cursor query methods implemented in the following Java code:
+
+            
+            // Prepare the URI
+            public void getData() {
+                final Uri myUri = Uri.parse(OSU_URI);
+                new UpdateAsync().execute(myUri.toString());
+            }
+
+            // Always query for data in Async task or background thread
+                class UpdateAsync extends AsyncTask&lt;String,Void,Cursor&gt; {
+                private String myUri;
+
+            @Override
+            protected Cursor doInBackground(String... args) {
+                myUri = args[0];
+
+                // Query the content provider
+                ContentResolver cr = getContentResolver();
+                Cursor cursor = cr.query(Uri.parse(myUri),
+                                null, null, null, null);
+
+                // Read the cursor
+                While (cursor.moveToNext()) {
+                String status = cursor.getString(
+                cursor.getColumnIndex(OSU_STATUS));
+
+                String detail = cursor.getString(
+                cursor.getColumnIndex(OSU_DETAIL));
+
+                String time = cursor.getString(
+                cursor.getColumnIndex(OSU_TS));
+
+                Log.i(TAG, &quot;STATUS : &quot; + status + “, DETAIL : ” + detail
+                    + “, TIME : ” + time);
+
+            }
+            return cursor;
+        }
+    }
+
+
+
+Acquire Peripheral Battery Info
+
+Battery information can be retrieved only on peripherals connected to the mobile computer at the time of the query. Information is stored as a single JSON string that can be queried based on application requirements. API values match those of Android system properties.
+
+ To retrieve information about a connected peripheral (e.g. its battery status, etc.):
+
+
+ Zebra Device Central must be installed and running on the mobile device.
+
+The target peripheral must be connected to—and enabled on—the device.
+
+To query battery information of RS-series scanners: 
+
+
+
+Devices running Android 13 must have the Jul. 2023 LifeGuard update (or later)  
+
+Devices running Android 11 must have the Oct. 2023 LifeGuard update (or later)
+
+
+
+ Get updates from the LifeGuard updates page.
+
+URI:
+
+
+content://com.symbol.devicecentral.provider/peripheral_info/
+
+
+API:
+
+
+battery_info
+
+
+Properties:
+
+
+/accessory_name
+
+/battery_level
+
+/battery_health_status
+
+/battery_serial_number
+
+/battery_model_number
+
+
+(Properties are returned in JSON format) 
+
+To retrieve battery information from a connected peripheral, perform the following in the app:
+
+1. Declare the content URI that identifies the data in the provider: 
+
+
+String BATTERY_INFO_URI = &quot;content://com.symbol.devicecentral.provider/peripheral_info/battery_info&quot;;
+
+2. Parse the JSON string using Android cursor query methods:
+
+
+// Prepare the URI:
+public void getData() {
+
+final Uri myUri = Uri.parse(BATTERY_INFO_URI);
+new UpdateAsync().execute(myUri.toString());
+}
+// Always query for data in async task or background thread:
+    class UpdateAsync extends AsyncTask&lt;String,Void,Cursor&gt; {
+
+private String myUri;
+
+@Override
+protected Cursor doInBackground(String... args) {
+    myUri = args[0];
+    JSONObject batteryDetails;
+
+// Query the content provider:
+    ContentResolver cr = getApplicationContext.getContentResolver();
+    Cursor cursor = cr.query(Uri.parse(myUri), null, null, null, null);
+
+// Read the cursor:
+    cursor.moveToFirst();
+    batteryDetails = new JSONObject(cursor.getString(0));
+    Log.i(TAG, &quot;Peripheral Battery Information : ” + batteryDetails);     
+    return cursor;
+    }
+}
+
+Supported Bluetooth Scanners
+
+
+DS2278 
+
+DS3678 
+
+DS8178 
+
+LI3678 
+
+RS507 
+
+RS5100 
+
+RS6000 
+
+RS6100 
+
+
+Supported Bluetooth Headsets
+
+
+HS3100
+
+
+
+   To retrieve information about a peripheral (e.g. battery status, etc.):
+  
+  
+   Zebra Device Central must be installed and running on the mobile device 
+  
+  The target peripheral must be connected to—and enabled on—the device
+  
+
+
+
+
+Acquire Peripheral Device Info
+
+Device information can be retrieved only on peripherals connected to the mobile computer at the time of the query. Information is stored as a single JSON string that can be queried based on application requirements. API values match those of Android system properties. 
+
+To retrieve information about a connected peripheral: 
+
+
+Zebra Device Central 4.4  (or later) must be installed and running on the mobile device.
+
+The target peripheral must be connected to—and enabled on—the device.
+
+To query device information of RS-series scanners: 
+
+
+
+Devices running Android 13 must have the Nov. 2025 LifeGuard update (or later, with emdkservice version 13.0.33 or later)  
+
+Devices running Android 11 must have the Nov. 2025 LifeGuard update (or later, with emdkservice version 11.0.149 or later)
+
+
+
+ Get updates from the LifeGuard updates page.
+
+URI:
+
+
+content://com.symbol.devicecentral.provider/peripheral_info/ 
+
+
+API:
+
+
+device_info 
+
+
+Properties:
+
+
+/accessory_name 
+
+/device_serial_number 
+
+/device_model_number 
+
+/device_firmware_version 
+
+/device_123scan_config_name 
+
+/device_fw_package_version 
+
+
+(Properties are returned in JSON format) 
+
+To retrieve device information from a connected peripheral programmatically, perform the following in the app: 
+
+1. Declare the content URI that identifies the data in the provider: 
+
+    
+    String DEVICE_INFO_URI = &quot;content://com.symbol.devicecentral.provider/peripheral_info/device_info&quot;; 
+
+2. Parse the JSON string using Android cursor query methods: 
+
+
+retrieveDeviceButton.setOnClickListener(new View.OnClickListener() { 
+    @Override 
+    public void onClick(View v) { 
+        fetchData(DEVICE_INFO_URI); 
+    } 
+}); 
+private void fetchData(String uri) { 
+    new FetchInfoTask().execute(uri); 
+} 
+private class FetchInfoTask extends AsyncTask&lt;String, Void, String&gt; { 
+        @Override 
+        protected String doInBackground(String... args) { 
+            String uri = args[0]; 
+            StringBuilder info = new StringBuilder(); 
+            try { 
+                Cursor cursor = getContentResolver().query(Uri.parse(uri), null, null, null, null); 
+                if (cursor != null &amp;&amp; cursor.moveToFirst()) { 
+                    JSONObject jsonObject = new JSONObject(cursor.getString(0)); 
+                    Iterator&lt;String&gt; keys = jsonObject.keys(); 
+                    if (keys.hasNext()) { 
+                        String key = keys.next(); 
+                        JSONObject details = jsonObject.getJSONObject(key); 
+                        for (Iterator&lt;String&gt; it = details.keys(); it.hasNext(); ) { 
+                            String field = it.next(); 
+                            info.append(field).append(&quot;: &quot;).append(details.optString(field)).append(&quot;\n&quot;); 
+                        } 
+                    } 
+                } 
+                if (cursor != null) { 
+                    cursor.close(); 
+                } 
+            } catch (Exception e) { 
+                Log.e(TAG, &quot;Error fetching details&quot;, e); 
+                info.append(&quot;Error fetching details&quot;); 
+            } 
+            return info.toString(); 
+        } 
+        @Override 
+        protected void onPostExecute(String result) { 
+            infoTextView.setText(result); 
+        } 
+    } 
+
+Supported Bluetooth Scanners
+
+
+DS2278
+
+DS3678
+
+DS8178
+
+LI3678
+
+RS2100
+
+RS507
+
+RS5100
+
+RS6000
+
+RS6100
+
+
+Supported Corded Scanners
+
+
+RS5000
+
+
+
+   To retrieve information about a peripheral (e.g. battery status, etc.):
+  
+  
+  Zebra Device Central must be installed and running on the mobile device 
+  
+  The target peripheral must be connected to—and enabled on—the device
+  
+
+
+
+
+Acquire Secure Info
+
+Data acquired with the APIs in this section is considered sensitive. API values match those of Android system properties.
+
+URI:
+
+
+content://oem_info/oem.zebra.secure/
+
+
+APIs:
+
+
+ro_product_model
+
+build_serial
+
+part_number†
+
+identity_device_id
+
+manifest_verify_info
+
+
+
+/ro.build.**
+
+/ro.device.**
+
+/ro.config.**
+
+/ro.product.**
+
+/ro.symbol.**
+
+/ro.boot.device.**
+
+/min_sdk
+
+/ro.vendor.hw_config.partnumber
+
+
+bt_mac
+
+persist.sys.reboot_count
+
+wifi_mac
+
+wifi_ap_mac
+
+wifi_ssid
+
+ethernet_mac
+
+ro.bluetooth.bt_filter (Qurvo BT chipset only)
+
+sys.boot.reason‡ 
+
+
+†  Requires OEMinfo 9.0.1.894. Supported only on devices running Android 14+. 
+
+‡  Requires OEMinfo 9.0.1.894. Supported only on devices running Android 15+. 
+
+*  The wildcard character is supported for adb shell commands; exact API values vary by device. 
+
+ To retrieve peripheral information (e.g. Ethernet MAC address), the target peripheral must be connected to the device and enabled.
+
+
+
+Acquire Software Info
+
+The API values below match those of Android system properties. 
+
+URI:
+
+
+content://oem_info/oem.zebra.software/
+
+
+APIs:
+
+
+ro.os.delta.support.version
+
+ro.build.fingerprint
+
+ro.build.base.fingerprint
+
+ro.build.baseline
+
+ro.build.version.security.patch
+
+ro.build.security.critical
+
+ro.device.patch.version
+
+persist.sys.cfe.patchver
+
+ro.crypto.type
+
+persist.vendor.sys.touch_mode†
+
+persist.sys.touch_mode†
+
+zdm_version
+
+mx_version
+
+
+†  Varies by Android version. 
+
+
+
+Acquire WAN Info
+
+The API values below match those of Android system properties.  To retrieve information about the cellular provider, subscriber ID or WWAN circuitry in use on a device, a SIM and/or corresponding circuitry must be installed and/or enabled on the device. 
+
+URI:
+
+
+content://oem_info/wan/
+
+
+
+
+APIs:
+
+The following APIs can be used with the URI above to return the information described below. 
+
+
+eid - Embedded Identity Document (EID) unique to each eSIM
+
+imei - International Mobile Equipment Identity (IMEI) unique to each mobile phone SIM slot
+
+telephony_sim_operator - Mobile country code and mobile network code (MCCMNC) of the SIM&#x27;s mobile service provider.  Learn more.
+
+
+URI:
+
+
+content://com.zebra.phone.provider/wan
+
+
+APIs:
+
+The following APIs can be used with the URI above to return the information described below. 
+
+
+AllESIMProfilesInfo1 – The eSIM profile information of all the eSIM profiles* associated with the first slot; returned as a JSON-formatted string
+
+AllESIMProfilesInfo2 - The eSIM profile information of all the eSIM profiles* associated with the second slot; returned as a JSON-formatted string
+
+CarrierName1 – Carrier name associated with the SIM in the first SIM slot
+
+CarrierName2 - Carrier name associated with the SIM in the second SIM slot
+
+Eid1 - EID for the eSIM installed in the first SIM slot
+
+Eid2 - EID for the eSIM installed in the second SIM slot (if device is so equipped)†
+
+Iccid1 - Integrated Circuit Card Identification (ICCID) information (a unique identifier for SIM and other circuit cards) associated with the SIM card in the first SIM slot
+
+Iccid2- ICCID information associated with the SIM card in the second SIM slot (if device is so equipped)†
+
+Imei1 - IMEI information for the first SIM slot
+
+Imei2 - IMEI information for the second SIM slot (if device is so equipped)†
+
+Imsi1 - International Mobile Subscriber Identity (IMSI) (a unique number that identifies each user of a cellular network) associated with the SIM card in the first SIM slot
+
+Imsi2 - IMSI information associated with the SIM card in the second SIM slot (if device is so equipped)†
+
+PreferredAPN - The access point name (APN) currently set by the device user or the network provider for the device&#x27;s data connection. Returns a JSON-formatted string containing the APN, MCC, MNC, NAME, TYPE, MVNO_TYPE and MVNO_MATCH_DATA.
+
+SimState1 – State of the SIM card in the first slot Possible values: 
+
+
+
+“Present”
+
+“Absent”
+
+“Unknown”
+
+“Card Restricted”
+
+“Card I/O Error”
+
+
+SimState2 – State of the SIM card in the second slot (if device is so equipped)† Possible values: 
+
+
+
+“Present”
+
+“Absent”
+
+“Unknown”
+
+“Card Restricted”
+
+“Card I/O Error”
+
+
+
+*  The JSON object element is repeated based on the number of eSIM profiles available on the respective eSIM chip. For example, if there are five eSIM profiles, there must also be five such JSON object elements for each profile. eSIM ICCID and eSIM IMSI are not guaranteed to be available for all profiles; some such profiles can have an empty string. 
+
+†  Querying a slot not present in the device returns an empty string. 
+
+
+
+
+
+
+
+Notes
+
+Data acquired through the OEMinfo content provider is subject to the rules and behavior listed below. 
+
+
+OEMinfo does NOT read system properties that can change at runtime (except OS update events).
+
+OEMinfo reads system properties only after being signaled by the BOOT_COMPLETE event.
+
+
+
+After receiving BOOT_COMPLETE, OEMinfo queries selected system properties and refreshes the content provider. This generally takes a few seconds, but a delay of about one minute is typical before results of an OS Update are published to the ZDPI.
+
+If an app queries OEMinfo too soon after reboot, some URIs might return &quot;stale&quot; data, posing a potential issue for non-static values. 
+
+
+OEMinfo requires extra time populate the content provider database when device data is wiped after an Enterprise Reset, Factory Reset or other erasure event.
+
+
+
+Zebra recommends registering apps with a content observer on the URI to receive a callback whenever new data is available to avoid issues relating to stale or missing data due to re-population delays.
+
+
+OEMinfo is “System UID” and platform-signed, and is therefore subject to platform permissions and SELinux restrictions across Android versions and devices.
+
+
+
+The same set of system properties might not be readable on all devices.
+
+System properties might become restricted, removed or added after an OS update.
+
+
+
+
+
+Also See
+
+Android Developer Docs
+
+
+Android Content Provider Basics | An Introduction 
+
+Creating a content provider | Why and how to share an app&#x27;s data 
+
+Android Cursor docs | How to interface with a result data set 
+
+Content Observer | Get a callback when data changes 
+
+
+Articles by Zebra Engineers
+
+
+How to display serial and IMEI numbers on a device | Sample app, instructions, source code
+
+Save OEM identifiers to a file on the device | Sample app, source code
+
+
+
+
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

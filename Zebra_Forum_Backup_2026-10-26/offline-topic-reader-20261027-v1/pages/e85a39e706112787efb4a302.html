@@ -1,0 +1,265 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>PlatformNotSupportedException CE7</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>PlatformNotSupportedException CE7</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/29951; original snapshot: threads/02089.html; SHA-256: 465abaff37888d88d852decc668ebfd5565d0b56aab1537b858e06b6b5df06e2</small><pre id="topic">
+
+    
+        PlatformNotSupportedException CE7
+
+
+        
+      
+                        
+                    
+            E
+          
+          Elias Koukoulas
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            37
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I have a empty project (compact framework 3.5) for pda. I add a imagelist and i add a image in the list. When i deploy the project at a CE7 device (Motorola MC32N0) i get a PlatformNotSupportedException at the line
+this.imageList1.Images.Add(((System.Drawing.Image)(resources.GetObject(&quot;resource&quot;))));The stacktrace is:
+  at System.Globalization.CompareInfo..ctor(Int32 culture) at System.Globalization.CompareInfo.GetCompareInfo(Int32 culture) at System.Globalization.CultureInfo.get_CompareInfo() at System.Collections.Comparer..ctor(CultureInfo culture) at System.Collections.Comparer..cctor() at System.OrdinalComparer.EqualsStringImpl(String x, String y) at System.StringComparerImpl.Equals(Object x, Object y) at System.Collections.Hashtable.KeyEquals(Object item, Object key) at System.Collections.Hashtable.get_Item(Object key) at System.Globalization.CultureInfo.GetCultureInfoHelper(Int32 lcid, String name, String altName) at System.Globalization.CultureInfo.GetCultureInfo(String name) at System.Globalization.CompareInfo.GetSortingLCID(Int32 culture) at System.Globalization.CompareInfo..ctor(Int32 culture) at System.Globalization.CompareInfo.GetCompareInfo(Int32 culture) at System.Globalization.CultureInfo.get_CompareInfo() at System.Globalization.CultureInfo.GetHashCode() at System.Collections.Hashtable.GetHash(Object key) at System.Collections.Hashtable.InitHash(Object key, Int32 hashsize, UInt32&amp; seed, UInt32&amp; incr) at System.Collections.Hashtable.get_Item(Object key) at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo culture, Boolean createIfNotExists, Boolean tryParents) at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo culture, Boolean createIfNotExists, Boolean tryParents) at System.Resources.ResourceManager.GetObject(String name, CultureInfo culture) at System.Resources.ResourceManager.GetObject(String name) at SmartDeviceProject5.Form1.InitializeComponent() at SmartDeviceProject5.Form1..ctor() at SmartDeviceProject5.Program.Main()I only get this exception in CE7. Any ideas?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              E
+            
+          
+                
+          
+            Elias Koukoulas
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Is it possible to downgrade the PDA (MC32N0) to CE6 in order to bypass the problem?
+If so can you give me some instructions?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            No, it is not possible to downgrade to CE6.
+Do you have all of the prerequisites mentioned in the EMDK release notes?&amp;nbsp; Particularly these ones?
+If developing applications for Windows Embedded Compact 7.0 (CE 7.0) is a requirement, then install the followings:
+Microsoft® Visual Studio 2008 with Service Pack1
+Install the update that adds support for Windows Embedded Compact 7.0
+Install the update that extends support for Windows Embedded Compact 7.0. This fix is required only if you are targeting ATL or MFC.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Not sure what you mean by &quot;for pda&quot;.&amp;nbsp; Windows Ce is not the same as Pocket PC or Windows Mobile.&amp;nbsp; You need to target Windows CE.&amp;nbsp; And for a CE7 device, you will want to have our PSDK installed on your developer machine, so once you do that you can target the specific device you are working with.&amp;nbsp; Below is a link to our PSDK for MC32N0.&amp;nbsp; Install this on your developer PC, then target your app to that device and it should work fine.&amp;nbsp; 
+Not directly related to your issue, but just so you know,&amp;nbsp; if you do not have a PSDK from one of our CE7 devices installed on your developer machine, you will also likely run into debugging issues.
+https://portal.motorolasolutions.com/Support/US-EN/Resolution?solutionI…
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

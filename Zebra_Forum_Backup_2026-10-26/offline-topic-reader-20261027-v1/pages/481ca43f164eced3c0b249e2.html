@@ -1,0 +1,201 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Regular warm boot using MSP</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Regular warm boot using MSP</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/27487; original snapshot: threads/01730.html; SHA-256: eed3e73477753465c6822379f3b4958500ddbd35b7147e7bf892433e54b2e9b9</small><pre id="topic">
+
+    
+        Regular warm boot using MSP
+
+
+        
+      
+                        
+                    
+            S
+          
+          Sean Wheatley
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            15
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  How can MSP be used to used to ensure a daily warm boot is actioned on mobile devices?   I know that a job can be created and sent to devices with a time condition but can this be repeated every 24 hrs automatically? ie. avoid having to send a new job each time.   Also not sure if the customer in question has control edition so might be looking for a solution with and without using actions. 
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Wheatley
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for your replies.   I thought that there was a solution in there somewhere by using 2 policies that could work against each other in see-saw fashion. Thomas your method looks to be a more elegant solution so will give that a try thanks. Allan I will advise that this is outside the scope of MSP and that an application might still be the way to go. Maybe we could look to add this functionality&amp;nbsp;in version 5&amp;nbsp; :
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Sean,   this can be achieved easily with MSP.   1) Ensure the PlugIn AdapterTime is installed on the device  2) Create a AdapterTime condition &quot;reboot&quot; that is valid once a day between 3:00am to 4:00am.  2-a) Set &quot;Constrain time of day&quot; to &quot;Constrain based on time of day&quot;.  2-b) Set&amp;nbsp;&quot;Start hour&quot; to &quot;03&quot;.  2-c) Set &quot;Start minute&quot; to &quot;00&quot;.  2-d) Set &quot;End hour&quot; to &quot;04&quot;.  2-e) Set &quot;End minute&quot; to &quot;00&quot;  2-f) Set &quot;Set Frequency limit&quot; to &quot;Set frequency limit&quot;.  2-g) Set &quot;Select frequency limit&quot; to &quot;Every one day&quot;  3) Create a dummy package &quot;reboot.dummy&quot; to deploy something like a 2 byte big txt file etc.  4) Create a bundle &quot;reboot1&quot; that first install &quot;reboot.dummy&quot; and second reboot warm.  5) Create a bundle &quot;reboot2&quot; that first uninstall &quot;reboot.dummy&quot; and second reboot warm.  6) Create a policy &quot;reboot1&quot; that contains the bundle &quot;reboot1&quot; and the readyness condition &quot;reboot&quot;.  7) Create a policy &quot;reboot2&quot; that contains the bundle &quot;reboot2&quot; and the readyness condition &quot;reboot&quot;.   This is an very easy and configurable approach to regular reboot devices. You have just to ensure that the devices are not suspended and able to check in during the time frame specified in AdapterTime condition. To enable the MSPA to wakeup a device if suspended just use the setting in the Agent 30 settings class.   Hope that helps   Thomas
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

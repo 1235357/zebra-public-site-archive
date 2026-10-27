@@ -1,0 +1,169 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Unknown Serial Number &#x27;XXXXX&#x27; for tenant</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Unknown Serial Number &#x27;XXXXX&#x27; for tenant</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/unknown-serial-number-xxxxx-tenant; original snapshot: threads/00307.html; SHA-256: 68f98205be3c6d747f9340b662c89b8f4b5933d1c3ed5a38e194a404c6373358</small><pre id="topic">
+
+    
+        Unknown Serial Number &#x27;XXXXX&#x27; for tenant
+
+
+        
+      
+                        
+                    
+            A
+          
+          Austin Berry
+          5 months ago
+        
+        
+      
+        
+            
+                  
+            
+            13662
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I am getting the below response from postman when trying to print from the SendFileToPrinter api. My printer&#x27;s are connected under my devices in the web portal, I followed the steps provided to set them up. Why am I still getting this response though? postman request POST &#x27;https://stage-api.zebra.com/v2/devices/printers/send&#x27; \
+ --header &#x27;apikey: MY-API-KEY&#x27; \
+ --header &#x27;accept: text/plain&#x27; \
+ --header &#x27;tenant: MY-TENANT-ID&#x27;&#x27; \
+  --form &#x27;sn=MY-SN&#x27; &#x27;zpl_file=@&quot;/C:/Users/Austin Berry/Repos/zebra-server/testlable.zpl&quot;&#x27;
+  
+  
+{&quot;responses&quot;:[{&quot;sn&quot;:&quot;MY-SN&quot;,&quot;status&quot;:&quot;FAILURE&quot;,&quot;errorMsg&quot;:&quot;Unknown Serial Number &#x27;MY-SN&#x27; for tenant &#x27;savanna.MY-TENANT-ID&#x27;&quot;}],&quot;status&quot;:&quot;SUCCESS&quot;}I have also tried to use the swagger interface too but get this instead. 
+              
+
+                    
+          
+      
+              
+ Screenshot 2026-05-28 114121.png
+
+              
+ Screenshot 2026-05-28 114748.png
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Shreyas Purohit
+          
+          
+            4 months 3 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            
+Hi Austin,
+Looking closely at the Postman snippet you provided, two quick adjustments should resolve the &quot;Unknown Serial Number&quot; error:
+1. Update to the Production EndpointYour request is currently pointing to our staging environment (https://stage-api.zebra.com/...). Devices enrolled through the standard web portal are registered in our Production environment, which is why the staging API cannot find your printer&#x27;s serial number.Please update your POST request URL to:https://api.zebra.com/v2/devices/printers/send
+2. Check Header SyntaxIn your snippet, there is an extra single quote at the end of the tenant header (--header &#x27;tenant: MY-TENANT-ID&#x27;&#x27; \). Please double-check your headers in Postman to ensure there are no stray quotes or spaces, as this will cause the system to look for an incorrect tenant string.
+Regarding the Swagger UI:When using Swagger, please ensure that the &quot;Servers&quot; dropdown menu at the top of the page is set to Production (api.zebra.com) rather than Staging. Also, verify you have clicked the &quot;Authorize&quot; padlock and entered both your apikey and tenant headers correctly.
+Give those adjustments a try, and let us know if you are still running into any issues!
+
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

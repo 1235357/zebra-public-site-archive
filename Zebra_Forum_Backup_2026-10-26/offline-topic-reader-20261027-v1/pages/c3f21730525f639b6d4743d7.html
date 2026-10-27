@@ -1,0 +1,193 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra QLn420 Disconnects After Single Label Printing</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Zebra QLn420 Disconnects After Single Label Printing</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/34727; original snapshot: threads/resume-00207.html; SHA-256: e408351bb33f5a26c0ef61115d31a3e7fa3c6dc2044024e98e722ba49d1ba945</small><pre id="topic">
+
+    
+        Zebra QLn420 Disconnects After Single Label Printing
+
+
+        
+      
+                        
+                    
+            M
+          
+          Matthew Bailey
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            354
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hoping that someone can help me understand the issue I&#x27;m coming across.
+ 
+I have hundreds of Zebra Printers in the field currently. Many are older than 2 years. I&#x27;ve just deployed three new printers and each printer is having the same problem - they lose connection with my software upon printing multiple labels. I&#x27;ve been wracking my brain trying to troubleshoot the configurations since my application (nor the iOS version has changed) then I noticed two small differences between the configuration of the 3 new printers and my in-house debug unit.
+ 
+1. My debug unit (which works perfectly) is running Firmware V68.19.7 and utilizes Bluetooth v4.2.1
+2. The new printer (which fails every time) is running on Firmware V68.20.01 and utilizes Bluetooth v4.3.1p1
+ 
+In terms of configuring the printer, I do very minimal through the Zebra Setup Utility. Two small sets of commands.
+The first to define my label settings
+~SD05
+~TA000
+~JSN
+^XA
+^SZ2
+^PW406
+^LL203
+^PON
+^PR2,2
+^PMN
+^MNM
+^LS0
+^MTD
+^MMT,N
+^MPE
+^MFC,C
+^XZ
+^XA^JUS^XZ
+ 
+And the second to define my bluetooth/connectivity
+! U1 setvar &quot;bluetooth.enable&quot; &quot;on&quot;
+! U1 setvar &quot;bluetooth.discoverable&quot; &quot;on&quot;
+! U1 setvar &quot;bluetooth.minimum_security_mode&quot; &quot;1&quot;
+! U1 setvar &quot;bluetooth.bonding&quot; &quot;on&quot;
+! U1 setvar &quot;bluetooth.enable_reconnect&quot; &quot;iOS_only&quot;
+! U1 do &quot;device.reset&quot; &quot;&quot;
+ 
+On the NEW Printers I can connect via Bluetooth in the iOS settings, and show as paired on the printer. Then I can open my application and print a test page as well as calibrate the page size (we have two interchangable labels). But then when I go in to the actual data I&#x27;m printing (receipts, labels or tags) if I attempt to print more than one item in succession the printer shows as disconnected in my application but still displays as connected in iOS.
+ 
+Since my application code has not changed - nor has the Apple iOS settings, my only thought is that it has something to do with the Bluetooth supported version on the printer itself. Is there come command that I could run to either roll back the bluetooth driver to 4.2.1 or a command that will stop from a disconnect while printing?
+ 
+Any thoughts would be greatly appreciated.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Mattew,
+I didn&#x27;t see anything in the release notes that would cause this.&amp;nbsp; Unfortunately there is no way to downgrade the Bluetooth driver on the printer without downgrading the firmware entirely.&amp;nbsp; The old firmware is still available on Zebra.com.
+The only command I can think of that might effect this, as we&#x27;ve had issues with iOS in the past, is the Bluetooth scan window.&amp;nbsp; The older printers (edit: firmware) have a window of 30 (hard coded), I think the new ones default to 60.&amp;nbsp; The JSON for the command is:
+{}{&quot;bluetooth.page_scan_window&quot;:null}
+to get the current value,
+{}{&quot;bluetooth.page_scan_window&quot;:&quot;60&quot;}
+to set it to 60.
+If this doesn&#x27;t work, I recommend contacting our tech support.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

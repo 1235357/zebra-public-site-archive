@@ -1,0 +1,211 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>ZSDK BluetoothDiscoverer.findPrinters() is not able detect Zebra ZQ310 printer</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>ZSDK BluetoothDiscoverer.findPrinters() is not able detect Zebra ZQ310 printer</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zsdk-bluetoothdiscovererfindprinters-not-able-detect-zebra-zq310-printer; original snapshot: threads/00884.html; SHA-256: 4058e19a51c660b53a55daa094295a8f2cd878f408af49f5d76abd171797ac87</small><pre id="topic">
+
+    
+        ZSDK BluetoothDiscoverer.findPrinters() is not able detect Zebra ZQ310 printer
+
+
+        
+      
+                        
+                    
+            F
+          
+          Faiz Waghoo
+          4 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            731
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I am trying to implement ZSDK_ANDROID_API.jar SDK for Zebra Bluetooth supported printers in my React Native app. I am referring to Zebra&#x27;s blog for the same - https://developer.zebra.com/blog/develop-react-native-printing-app-andr…
+In my freshly created React Native app, I&#x27;m able to print receipt by hard coding the printer&#x27;s Bluetooth address however the findPrinters() API is not able to detect the printer.
+But Zebra&#x27;s own React Native sample app (https://github.com/ZebraDevs/Zebra-Printer-Samples/tree/ZSDKRCTDevDemo) works and the same code doesn&#x27;t work for my app.
+In my app, I never receive callback in foundPrinter() and only in discoveryFinished() whereas in Zebra&#x27;s sample app, I receive callback in foundPrinter() before getting callback in discoveryFinished(). 
+I don&#x27;t understand what I am doing wrong since I have copied code from Zebra&#x27;s sample app itself. Has anyone faced this issue?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            This sounds a permission issue. First of all, please add the following permissions in the manifest file. Please note that the ACCESS_FINE_LOCATION is required for the Bluetooth discovery on newer Android OS.
+&lt;uses-permission android:name=&quot;android.permission.BLUETOOTH&quot;/&gt;
+&lt;uses-permission android:name=&quot;android.permission.BLUETOOTH_ADMIN&quot;/&gt;
+&lt;uses-permission android:name=&quot;android.permission.ACCESS_FINE_LOCATION&quot;/&gt;If running on Android 11 or later, secondly, the app also needs to ask the user explicitly for the permission. See this article for details: Link-OS SDK for Android | Permissions and Bluetooth API, which has the details about the permission requirement for Bluetooth.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              F
+            
+          
+                
+          
+            Faiz Waghoo
+          
+          
+            4 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you for your reply.
+It was indeed a permission issue, the ACCESS_FINE_LOCATION at that. I mean I had that permission in my manifest but I wasn&#x27;t asking for that permission at run time.
+But one weird thing is that, Zebra&#x27;s React Native app also doesn&#x27;t ask for that permission at runtime. And when I went to app info, I saw that it already had that permission along with phone and storage. I&#x27;m testing this on Android 7 so ideally it shouldn&#x27;t have that permission without user&#x27;s consent since dynamic permissions were added from Android 6.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

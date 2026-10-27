@@ -1,0 +1,318 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Set Ignore Disabled Profiles - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/setignoredisabledprofiles</code><br>Observed final URL: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/setignoredisabledprofiles/</code><br>Raw source: <code>raw/78ca071358fae831414f54ed.html</code><br>Raw SHA-256: <code>2e6ec26c946d77c974cc30010275054561c319d7936a7d332062c714c370e198</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs Home
+                        
+                                            DataWedge
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Get Started
+                            
+                        
+                        
+                            
+                                    Profiles
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Feature Matrix
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            US - English
+                          
+                          
+                                 CN - 普通话
+                                 JP - 日本語
+                          
+                                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Set Ignore Disabled Profiles
+                        
+                    SET_IGNORE_DISABLED_PROFILESFunction PrototypeParametersReturn ValuesExample Code
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Set Ignore Disabled Profiles
+                                    
+                                            DataWedge
+                                            15.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        SET_IGNORE_DISABLED_PROFILES
+
+Introduced in DataWedge 6.8.
+
+Prevents DataWedge from switching to a Profile that is disabled; including Profile0. Applies to Profile switches initiated manually through the DataWedge settings panel and programmatically using the SWITCH_TO_PROFILE API.
+
+The settings controlled by this API can help address timing issues that sometimes arise in Android devices when intents are used to switch Profiles.
+
+
+
+Function Prototype
+
+Intent i = new Intent();
+i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+i.putExtra(&quot;com.symbol.datawedge.api.SET_IGNORE_DISABLED_PROFILES&quot;, &quot;true&quot;);
+
+Parameters
+
+ACTION [String]: &quot;com.symbol.datawedge.api.ACTION&quot;
+
+EXTRA_DATA [String]: &quot;com.symbol.datawedge.api.SET_IGNORE_DISABLED_PROFILES&quot;
+
+POSSIBLE VALUES: [String]: [&quot;true&quot; , &quot;false&quot; ]
+
+Return Values
+
+Returns a String of the name of the active DataWedge Profile
+
+EXTRA NAME: &quot;com.symbol.datawedge.api.SET_IGNORE_DISABLED_PROFILES&quot;
+
+EXTRA TYPE [String]: [ ]
+
+Example Code
+
+//Sample code for sending the intent to SET the setting
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.putExtra(&quot;com.symbol.datawedge.api.SET_IGNORE_DISABLED_PROFILES&quot;,&quot;true&quot;);
+
+// request and identify the result code
+    i.putExtra(&quot;SEND_RESULT&quot;,&quot;true&quot;);
+    i.putExtra(&quot;COMMAND_IDENTIFIER&quot;,&quot;123456789&quot;);//user specified unique id
+
+    this.sendBroadcast(i);
+
+// Register/unregister broadcast receiver and filter results
+
+    void registerReceivers() {
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(&quot;com.symbol.datawedge.api.RESULT_ACTION&quot;);
+            filter.addCategory(&quot;android.intent.category.DEFAULT&quot;);
+            registerReceiver(mybroadcastReceiver, filter);
+    }
+
+    void unRegisterReceivers(){
+            unregisterReceiver(mybroadcastReceiver);
+    }
+        //receiving the results
+            BroadcastReceiver mybroadcastReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    String command = intent.getStringExtra(&quot;COMMAND&quot;);
+                    String commandIdentifier = intent.getStringExtra(&quot;COMMAND_IDENTIFIER&quot;);
+                    String result = intent.getStringExtra(&quot;RESULT&quot;);
+
+        Bundle bundle;
+        String resultInfo = &quot;&quot;;
+        if(intent.hasExtra(&quot;RESULT_INFO&quot;)){
+            bundle = intent.getBundleExtra(&quot;RESULT_INFO&quot;);
+            Set&lt;String&gt; keys = bundle.keySet();
+            for (String key: keys) {
+                Object object = bundle.get(key);
+                if(object instanceof String){
+                    resultInfo += key + &quot;: &quot;+object+ &quot;\n&quot;;
+                }
+                else if(object instanceof String[]){
+                    String[] codes = (String[])object;
+                    for(String code : codes){
+                        resultInfo += key + &quot;: &quot;+code+ &quot;\n&quot;;
+                    }
+                }
+            }
+        }
+
+        String text = &quot;Command: &quot;+command+&quot;\n&quot; +
+            &quot;Result: &quot; +result+&quot;\n&quot; +
+            &quot;Result Info: &quot; +resultInfo + &quot;\n&quot; +
+            &quot;CID:&quot;+commandIdentifier;
+
+           Log.d(TAG,text);
+
+    }
+};
+
+
+
+SEE ALSO:
+
+Zebra Support Central | Integrator Guides, Product Manuals, Software Downloads and Support
+
+LaunchPad | Zebra Developer Community
+
+Intent | Android Developers
+
+Intents and Intent Filters | Android Developers
+
+Android Intents | Tutorial
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2024 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+      
+
+
+
+Back to Top</pre></body></html>

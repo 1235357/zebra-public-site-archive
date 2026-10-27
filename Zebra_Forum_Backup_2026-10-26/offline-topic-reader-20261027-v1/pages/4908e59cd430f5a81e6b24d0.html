@@ -1,0 +1,338 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Basic scanner app&#x27;s onData function doesn&#x27;t called (Kotlin)</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Basic scanner app&#x27;s onData function doesn&#x27;t called (Kotlin)</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/basic-scanner-apps-ondata-function-doesnt-called-kotlin; original snapshot: supplement/threads/d311f313c89b5657df744065.html; SHA-256: ab1ff6c2f95c9aa130cd23912e6d468c548093aa668fec19ac885098dac59701</small><pre id="topic">
+
+    
+        Basic scanner app&#x27;s onData function doesn&#x27;t called (Kotlin)
+
+
+        
+      
+                        
+                    
+            S
+          
+          System Admin
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            205
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+I made a basic scanner application for the TC200J Zebra in Kotlin. I followed the tutorial step by step but the onData function does not triggerd by the hardware scan button on the right and left side of the phone. I downloaded the emdk plugin for android studio too. I am sure that i do it something in wrong way but i don&#x27;t know what. It scans the ean13 code and write into a input field but i cannot catch the event in the onData. My CvLoggerClass logs only when the app in debug mode (i&#x27;m trying it in debug mode). I could use some help. If everything is true i don&#x27;t need to install anything on the device, because the gradle dependency do it for me above 7.0.0.
+My AndroidManifest file:
+My gradle file:
+minSdk: 21
+targetSdk: 28
+dependencies {
+  compileOnly &#x27;com.symbol:emdk:7.0.0&#x27;
+}
+My activity (the initializeEmdkManager called in onCreate(savedInstanceState: Bundle?)):
+   // Declare a variable to store EMDKManager object
+    private var emdkManager: EMDKManager? = null
+    // Declare a variable to store Barcode Manager object
+    private var barcodeManager: BarcodeManager? = null
+    // Declare a variable to hold scanner device to scan
+    private var scanner: Scanner? = null
+    // boolean flag to start scanning after scanner initialization
+    // Used in OnStatus callback to ensure scanner is idle before read() method is called
+    private var startRead = false
+    // Method to initialize and enable Scanner and its listeners
+    @Throws(ScannerException::class)
+    private fun initializeScanner() {
+        if (scanner == null) {
+            // Get the Barcode Manager object
+            barcodeManager = this.emdkManager!!.getInstance(FEATURE_TYPE.BARCODE) as BarcodeManager
+            // Get default scanner defined on the device
+            scanner = barcodeManager!!.getDevice(BarcodeManager.DeviceIdentifier.DEFAULT)
+            // Add data and status listeners
+            scanner!!.addDataListener(this)
+            scanner!!.addStatusListener(this)
+            // Hard trigger. When this mode is set, the user has to manually
+            // press the trigger on the device after issuing the read call.
+            scanner!!.triggerType = Scanner.TriggerType.HARD
+            // Enable the scanner
+            scanner!!.enable()
+            //set startRead flag to true. this flag will be used in the OnStatus callback to insure
+            //the scanner is at an IDLE state and a read is not pending before calling scanner.read()
+            startRead = true
+        }
+    }
+    @Throws(ScannerException::class)
+    private fun deInitializeScanner() {
+        if (scanner != null) {
+            try {
+                if (scanner!!.isReadPending) {
+                    scanner!!.cancelRead()
+                }
+                scanner!!.disable()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            try {
+                scanner!!.removeDataListener(this)
+                scanner!!.removeStatusListener(this)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            try {
+                scanner!!.release()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            scanner = null
+        }
+    }
+    private fun initializeEmdkManager() {
+        val results = EMDKManager.getEMDKManager(applicationContext, this)
+        // Check the return status of getEMDKManager and update the status Text
+        // View accordingly
+        if (results.statusCode != EMDKResults.STATUS_CODE.SUCCESS) CvLogger.log(&quot;Scan: EMDKManager Request Failed&quot;)
+    }
+    // AsyncTask that configures the scanned data on background
+    // thread and updated the result on UI thread with scanned data and type of
+    // label
+    private class AsyncDataUpdate(val scanner: Scanner) : AsyncTask() {
+        override fun doInBackground(vararg params: ScanDataCollection?): String {
+            // Status string that contains both barcode data and type of barcode
+            // that is being scanned
+            var statusStr = &quot;&quot;
+            try {
+                // Starts an asynchronous Scan. The method will NOT turn ON the
+                // scanner, but puts it in a state in which the scanner can be turned
+                // on automatically or by pressing a hardware trigger
+                scanner.read()
+                val scanDataCollection = params[0]
+                // The ScanDataCollection object gives scanning result and the
+                // collection of ScanData. So check the data and its status
+                if (scanDataCollection != null &amp;&amp; scanDataCollection.result == ScannerResults.SUCCESS) {
+                    val scanData = scanDataCollection.scanData
+                    // Iterate through scanned data and prepare the statusStr
+                    scanData.forEach {
+                        // Get the scanned data
+                        val barcodeData = it.data
+                        // Get the type of label being scanned
+                        val labelType = it.labelType
+                        // Concatenate barcode data and label type
+                        statusStr = &quot;$barcodeData $labelType&quot;
+                    }
+                }
+            } catch (e: ScannerException) {
+                e.printStackTrace()
+            }
+            // Return result to populate on UI thread
+            return statusStr
+        }
+        override fun onPostExecute(result: String?) {
+            CvLogger.log(&quot;Scan data: $result + \n&quot;)
+        }
+        override fun onPreExecute() {
+        }
+        override fun onProgressUpdate(vararg values: Void?) {
+        }
+    }
+    // AsyncTask that configures the current state of scanner on background
+    // thread and updates the result on UI thread
+    @SuppressLint(&quot;StaticFieldLeak&quot;)
+    private inner class AsyncStatusUpdate : AsyncTask() {
+        override fun doInBackground(vararg params: StatusData): String {
+            var statusStr = &quot;&quot;
+            // Get the current state of scanner in background
+            val statusData = params[0]
+            // Different states of Scanner
+            when (statusData.state) {
+                // Scanner is IDLE
+                StatusData.ScannerStates.IDLE -&gt; statusStr = &quot;The scanner enabled and its idle&quot;
+                // Scanner is SCANNING
+                StatusData.ScannerStates.SCANNING -&gt; statusStr = &quot;Scanning..&quot;
+                // Scanner is waiting for trigger press
+                StatusData.ScannerStates.WAITING -&gt; statusStr = &quot;Waiting for trigger press..&quot;
+                // Scanner is not enabled
+                StatusData.ScannerStates.DISABLED -&gt; statusStr = &quot;Scanner is not enabled&quot;
+                else -&gt; {
+                }
+            }
+            // Return result to populate on UI thread
+            return statusStr
+        }
+        override fun onPostExecute(result: String) {
+            // Update the status text view on UI thread with current scanner
+            // state
+            CvLogger.log(&quot;Scan status: $result&quot;)
+        }
+        override fun onPreExecute() {}
+        override fun onProgressUpdate(vararg values: Void) {}
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        if (emdkManager != null) {
+            // Clean up the objects created by EMDK manager
+            emdkManager!!.release()
+            emdkManager = null
+        }
+    }
+    override fun onStop() {
+        super.onStop()
+        try {
+            if (scanner != null) {
+                // Releases the scanner hardware resources for other application
+                // to use. Must be called as soon as scanning is done.
+                scanner!!.removeDataListener(this)
+                scanner!!.removeStatusListener(this)
+                scanner!!.disable()
+                scanner = null
+            }
+        } catch (e: ScannerException) {
+            e.printStackTrace()
+        }
+    }
+    //some lines of code omitted for clarity
+    override fun onClosed() {
+        if (this.emdkManager != null) {
+            this.emdkManager!!.release()
+            this.emdkManager = null
+        }
+    }
+    override fun onOpened(emdkManager: EMDKManager) {
+        this.emdkManager = emdkManager
+        try {
+            // Call this method to enable Scanner and its listeners
+            initializeScanner()
+        } catch (e: ScannerException) {
+            e.printStackTrace()
+        }
+    }
+    override fun onData(scanDataCollection: ScanDataCollection) {
+        // Use the scanned data, process it on background thread using AsyncTask
+        // and update the UI thread with the scanned results
+        AsyncDataUpdate(scanner!!).execute(scanDataCollection)
+    }
+    override fun onStatus(statusData: StatusData) {
+        AsyncStatusUpdate().execute(statusData)
+    }
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Darryn Campbell
+          
+          
+            7 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi, I tried this a little while back with EMDK 6.9 and it seemed to work OK, the sample app is at&amp;nbsp;https://github.com/darryncampbell/samples-emdkforandroid-6_9/tree/Barco… the original forum post is at&amp;nbsp;https://developer.zebra.com/community/home/blog/2018/11/19/kotlin-and-d….
+Can you&amp;nbsp;try the sample app I listed above to see if that works?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

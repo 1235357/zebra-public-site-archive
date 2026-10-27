@@ -1,0 +1,647 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Intent Result Codes - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/resultinfo</code><br>Observed final URL: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/resultinfo/</code><br>Raw source: <code>raw/842edf0a82187598b769970b.html</code><br>Raw SHA-256: <code>b4617eebb1c123644f593108bb83f3d0fe23583355bff5d1e0189883e089a291</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs Home
+                        
+                                            DataWedge
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Get Started
+                            
+                        
+                        
+                            
+                                    Profiles
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Feature Matrix
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            US - English
+                          
+                          
+                                 CN - 普通话
+                                 JP - 日本語
+                          
+                                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Intent Result Codes
+                        
+                    
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Intent Result Codes
+                                    
+                                            DataWedge
+                                            15.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+Introduced in DataWedge 6.5.
+
+Intent result codes deliver status information about DataWedge API commands to help developers determine the flow of data and the function of their business logic. Result codes are implemented with some of the APIs Introduced in DataWedge 6.5 and have been added to many APIs that existed previously.
+
+Result codes are accessed using the RESULT_INFO intent mechanism, which returns error codes if the app includes the intent extras SEND_RESULT and COMMAND_IDENTIFIER as shown in the prototype below. See the Example section below for code showing how to register the app to receive result codes.
+
+Function Prototype
+
+// send the intent
+Intent i = new Intent();
+i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+i.putExtra(&quot;com.symbol.datawedge.api.CREATE_PROFILE&quot;, &quot;Profile007&quot;);
+
+// request and identify the result code
+i.putExtra(&quot;SEND_RESULT&quot;,&quot;LAST_RESULT&quot;); //Supported values: NONE, LAST_RESULT, COMPLETE_RESULT
+i.putExtra(&quot;COMMAND_IDENTIFIER&quot;,&quot;123456789&quot;);
+this.sendBroadcast(i);
+
+
+Parameters
+
+RESULT [String]: Success/failure of the operation
+
+COMMAND [String]: Name of the received intent command
+
+COMMAND_IDENTIFIER [String]: Optional parameter for linking results to a specific command
+
+SEND_RESULT [String]: Accepts the following values in DataWedge 7.1 or higher. (DataWedge versions lower than 7.1 accept only TRUE and FALSE).
+
+
+NONE: No result returned to the application. (This is equivalent to FALSE for DataWedge versions lower than 7.1).
+
+LAST_RESULT: Sends the result info for the last executed module. If the user sends multiple plugins, the result info is returned for the last plugin sent. (This is equivalent to TRUE for versions lower than DataWedge 7.1).
+E.g.: Send BARCODE, SIMULSCAN and SERIAL plugins in order. The result info received by the application returns results from the SERIAL plugin only.
+
+COMPLETE_RESULT: Returns a list of result info for each and every plugin if multiple plugins are sent.
+
+
+RESULT_INFO [Bundle]: Can contain any of the fields below depending on the API in use:
+
+
+PREVIOUS_DEFAULT_PROFILE - Specifies the previous default Profile when setting a new default Profile
+
+PREVIOUS_PROFILE - Specifies the previous Profile in the parameter when switching and renaming a Profile
+
+PROFILE_NAME - Always the current or next Profile name
+
+RESULT_CODE - One of the possible result codes shown in list table
+
+SOURCE_PROFILE_NAME - Specifies the source Profile when cloning a Profile
+
+RESULT_CODE - returned only for FAILURE. Can contain any of the fields below depending on the API in use:
+
+APP_ALREADY_ASSOCIATED - An attempt was made to associate an app that was already associated with another Profile
+
+BUNDLE_EMPTY - The bundle contains no data
+
+DATAWEDGE_ALREADY_DISABLED - An attempt was made to disable DataWedge when it was already disabled
+
+DATAWEDGE_ALREADY_ENABLED - An attempt was made to enable DataWedge when it was already enabled
+
+DATAWEDGE_DISABLED - An attempt was made to perform an operation when DataWedge was disabled
+
+FEATURE_NOT_SUPPORTED - An attempt was made to request a frame, but the active profile is not properly configured to support it
+
+INPUT_NOT_ENABLED - An attempt was made to acquire data when the Barcode or SimulScan plug-in was disabled
+
+OPERATION_NOT_ALLOWED - An attempt was made to rename or delete a protected Profile or to associate an app with Profile0
+
+PARAMETER_INVALID - The passed parameters were empty, null or invalid
+
+PLUGIN_NOT_SUPPORTED - An attempt was made to configure a plug-in that is not supported by DataWedge intent APIs
+
+PLUGIN_BUNDLE_INVALID - A passed plug-in parameter bundle is empty or contains insufficient information
+
+PROFILE_ALREADY_EXISTS - An attempt was made to create, clone or rename a Profile with a name that already exists
+
+PROFILE_ALREADY_SET - An attempt was made to set the default Profile as the default Profile
+
+PROFILE_DISABLED - An attempt was made to perform an operation on a disabled Profile
+
+PLUGIN_DISABLED_IN_CONFIG - An attempt was made to enable or disable the scanner when barcode plug-in was disabled manually from the DataWedge UI
+
+PROFILE_HAS_APP_ASSOCIATION - An attempt was made to switch to or set as the default a Profile that is already associated with another app
+
+PROFILE_NAME_EMPTY - An attempt was made to configure an empty Profile name
+
+PROFILE_NOT_FOUND - An attempt was made to perform an operation on a Profile that does not exist
+
+SCANNER_ALREADY_DISABLED - An attempt was made to disable a scanner that is already disabled
+
+SCANNER_ALREADY_ENABLED - An attempt was made to enable a scanner that is already enabled
+
+SCANNER_DISABLE_FAILED - An exception occurred while disabling the scanner
+
+SCANNER_ENABLE_FAILED - An exception occurred while enabling the scanner
+
+UNKNOWN - An unidentified error occurred
+
+WORKFLOW_IN_INVALID_STATE - An attempt was made to perform an operation, but the workflow is not in the correct state
+
+
+Example Code
+
+//SENDING THE INTENT
+Intent i = new Intent();
+i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+i.putExtra(&quot;com.symbol.datawedge.api.RESTORE_CONFIG&quot;, &quot;&quot;);
+this.sendBroadcast (i);
+
+
+Generate and receive result codes
+
+Command and configuration intent parameters determine whether to send result codes (disabled by default). When using SEND_RESULT, the COMMAND_IDENTIFIER is used to match the result code with the originating intent. Sample usage of these parameters is shown below.
+
+Note: Modify this generic code to match the API being used.
+
+// send the intent
+Intent i = new Intent();
+i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+i.putExtra(&quot;com.symbol.datawedge.api.CREATE_PROFILE&quot;, &quot;Profile007&quot;);
+
+// request and identify the result code
+i.putExtra(&quot;SEND_RESULT&quot;,&quot;LAST_RESULT&quot;); //Supported values: NONE, LAST_RESULT, COMPLETE_RESULT
+i.putExtra(&quot;COMMAND_IDENTIFIER&quot;,&quot;123456789&quot;);
+this.sendBroadcast(i);
+
+// register to receive the result
+public void onReceive(Context context, Intent intent){
+
+    String command = intent.getStringExtra(&quot;COMMAND&quot;);
+    String commandidentifier = intent.getStringExtra(&quot;COMMAND_IDENTIFIER&quot;);
+    String result = intent.getStringExtra(&quot;RESULT&quot;);
+
+    Bundle bundle = new Bundle();
+    String resultInfo = &quot;&quot;;
+    if(intent.hasExtra(&quot;RESULT_INFO&quot;)){
+        bundle = intent.getBundleExtra(&quot;RESULT_INFO&quot;);
+        Set&lt;String&gt; keys = bundle.keySet();
+        for (String key: keys) {
+            resultInfo += key + &quot;: &quot;+bundle.getString(key) + &quot;\n&quot;;
+        }
+    }
+
+    String text = &quot;Command: &quot;+command+&quot;\n&quot; +
+            &quot;Result: &quot; +result+&quot;\n&quot; +
+            &quot;Result Info: &quot; +resultInfo + &quot;\n&quot; +
+            &quot;CID:&quot;+commandidentifier;
+
+    Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+
+};
+
+
+Generate and receive result codes for multiple modules (plugins, APP_LIST, and Data Capture Plus)
+
+public void setConfig() {
+
+    // SetConfig [Start]
+    Bundle bMain = new Bundle();
+
+    Bundle bConfigIntent = new Bundle();
+    Bundle bParamsIntent = new Bundle();
+    bParamsIntent.putString(&quot;intent_output_enabled&quot;, &quot;true&quot;);
+    bParamsIntent.putString(&quot;intent_action&quot;, &quot;com.symbol.dwudiusertokens.udi&quot;);
+    bParamsIntent.putString(&quot;intent_category&quot;, &quot;zebra.intent.dwudiusertokens.UDI&quot;);
+    bParamsIntent.putInt(&quot;intent_delivery&quot;, 5); //Use &quot;0&quot; for Start Activity, &quot;1&quot; for Start Service, &quot;2&quot; for Broadcast, &quot;3&quot; for start foreground service
+    bConfigIntent.putString(&quot;PLUGIN_NAME&quot;, &quot;INTENT&quot;);
+    bConfigIntent.putString(&quot;RESET_CONFIG&quot;, &quot;false&quot;);
+    bConfigIntent.putBundle(&quot;PARAM_LIST&quot;, bParamsIntent);
+
+    Bundle bConfigSimulScan = new Bundle();
+    Bundle bParamsSimulScan = new Bundle();
+    bParamsSimulScan.putString(&quot;simulscan_input_enabled&quot;, &quot;true&quot;);
+    bParamsSimulScan.putString(&quot;simulscan_input_source&quot;, &quot;Imager&quot;); //Supported values: Camera, Imager, Default
+    bParamsSimulScan.putString(&quot;simulscan_region_separator&quot;, &quot;TAB&quot;); //Supported Values:None, TAB, CR, LF, NONE
+    bParamsSimulScan.putString(&quot;simulscan_log_dir&quot;, &quot;/storage/zebra/intent/&quot;);
+    bParamsSimulScan.putString(&quot;simulscan_enable_timestamp&quot;, &quot;true&quot;);
+
+    Bundle templateParamsBundle = new Bundle();
+    templateParamsBundle.putString(&quot;dynamic_quantity&quot;, &quot;99&quot;);
+    bParamsSimulScan.putString(&quot;simulscan_template&quot;, &quot;UserDefinedQuantity.xml&quot;); // Ex:  UserDefinedQuantity.xml, Default - BankCheck.xml, Default - Barcode 1.xml, Default - Barcode 10.xml, Default - Barcode 2.xml, Default - Barcode 4.xml, Default - Barcode 5.xml, Default - BookNumber.xml, Default - DocCap + Optional Barcode.xml, Default - DocCap + Required Barcode.xml, Default - TravelDoc.xml, Default - Unstructured Multi-Line.xml, Default - Unstructured Single Line.xml
+    bParamsSimulScan.putBundle(&quot;simulscan_template_params&quot;,templateParamsBundle);
+
+    bConfigSimulScan.putString(&quot;PLUGIN_NAME&quot;, &quot;SIMULSCAN&quot;);
+    bConfigSimulScan.putString(&quot;RESET_CONFIG&quot;, &quot;false&quot;);
+    bConfigSimulScan.putBundle(&quot;PARAM_LIST&quot;, bParamsSimulScan);
+
+    Bundle bConfigBarcode = new Bundle();
+    Bundle bParamsBarcode = new Bundle();
+    bParamsBarcode.putString(&quot;scanner_selection&quot;,&quot;auto&quot;);
+    bParamsBarcode.putString(&quot;scanner_input_enabled&quot;,&quot;true&quot;);
+    bConfigBarcode.putString(&quot;PLUGIN_NAME&quot;, &quot;BARCODE&quot;);
+    bConfigBarcode.putString(&quot;RESET_CONFIG&quot;, &quot;false&quot;);
+    bConfigBarcode.putBundle(&quot;PARAM_LIST&quot;, bParamsBarcode);
+
+    Bundle bConfigMSR = new Bundle();
+    Bundle bParamsMSR = new Bundle();
+    bParamsMSR.putString(&quot;msr_input_enabled&quot;, &quot;true&quot;);
+    bConfigMSR.putString(&quot;PLUGIN_NAME&quot;, &quot;MSR&quot;);
+    bConfigMSR.putString(&quot;RESET_CONFIG&quot;, &quot;false&quot;);
+    bConfigMSR.putBundle(&quot;PARAM_LIST&quot;, bParamsMSR);
+
+    Bundle bConfigIPOutput = new Bundle();
+    Bundle bParamsIPOutput = new Bundle();
+    bParamsIPOutput.putString(&quot;ip_output_enabled&quot;, &quot;true&quot;);
+    bParamsIPOutput.putString(&quot;ip_output_ip_wedge_enabled&quot;, &quot;false&quot;);
+    bParamsIPOutput.putString(&quot;ip_output_protocol&quot;, &quot;UDP&quot;); //Supported Values: TCP: UDP
+    bParamsIPOutput.putString(&quot;ip_output_address&quot;, &quot;192.168.0.1&quot;); //Supported Values : IP Address format
+    bParamsIPOutput.putString(&quot;ip_output_port&quot;, &quot;55555&quot;); //Supported Values : 1 - 65535
+
+    bConfigIPOutput.putString(&quot;PLUGIN_NAME&quot;, &quot;IP&quot;);
+    bConfigIPOutput.putString(&quot;RESET_CONFIG&quot;, &quot;false&quot;);
+    bConfigIPOutput.putBundle(&quot;PARAM_LIST&quot;, bParamsIPOutput);
+
+    Bundle bConfigToken = new Bundle();
+    Bundle bParamsToken = new Bundle();
+
+    bParamsToken.putString(&quot;send_tokens_option&quot;, &quot;BARCODES_TOKENS&quot;); // Supported Values: DISABLED, TOKENS, BARCODES_TOKENS
+    bParamsToken.putString(&quot;token_separator&quot;, &quot;LF&quot;); //Supported Values:None, TAB, CR, LF, NONE
+    bParamsToken.putString(&quot;multibarcode_separator&quot;, &quot;LF&quot;); //Supported Values:None, TAB, CR, LF, NONE
+
+    Bundle tokenOrder_manufacturing_date_original = new Bundle();
+    tokenOrder_manufacturing_date_original.putString(&quot;name&quot;,&quot;manufacturing_date_original&quot;);
+    tokenOrder_manufacturing_date_original.putString(&quot;enabled&quot;,&quot;true&quot;);
+
+    Bundle tokenOrder_expiration_date_original = new Bundle();
+    tokenOrder_expiration_date_original.putString(&quot;name&quot;,&quot;expiration_date_original&quot;);
+    tokenOrder_expiration_date_original.putString(&quot;enabled&quot;,&quot;true&quot;);
+
+    Bundle tokenOrder_di = new Bundle();
+    tokenOrder_di.putString(&quot;name&quot;,&quot;di&quot;);
+    tokenOrder_di.putString(&quot;enabled&quot;,&quot;true&quot;);
+
+    Bundle tokenOrder_lot_number = new Bundle();
+    tokenOrder_lot_number.putString(&quot;name&quot;,&quot;lot_number&quot;);
+    tokenOrder_lot_number.putString(&quot;enabled&quot;,&quot;true&quot;);
+
+    Bundle tokenOrder_serial_number = new Bundle();
+    tokenOrder_serial_number.putString(&quot;name&quot;,&quot;serial_number&quot;);
+    tokenOrder_serial_number.putString(&quot;enabled&quot;,&quot;true&quot;);
+
+    Bundle tokenOrder_mpho_lot_number = new Bundle();
+    tokenOrder_mpho_lot_number.putString(&quot;name&quot;,&quot;mpho_lot_number&quot;);
+    tokenOrder_mpho_lot_number.putString(&quot;enabled&quot;,&quot;true&quot;);
+
+    Bundle tokenOrder_donation_id = new Bundle();
+    tokenOrder_donation_id.putString(&quot;name&quot;,&quot;donation_id&quot;);
+    tokenOrder_donation_id.putString(&quot;enabled&quot;,&quot;true&quot;);
+
+    Bundle tokenOrder_labeler_identification_code = new Bundle();
+    tokenOrder_labeler_identification_code.putString(&quot;name&quot;,&quot;labeler_identification_code&quot;);
+    tokenOrder_labeler_identification_code.putString(&quot;enabled&quot;,&quot;true&quot;);
+
+    Bundle tokenOrder_product_or_catalog_number = new Bundle();
+    tokenOrder_product_or_catalog_number.putString(&quot;name&quot;,&quot;product_or_catalog_number&quot;);
+    tokenOrder_product_or_catalog_number.putString(&quot;enabled&quot;,&quot;true&quot;);
+
+    Bundle tokenOrder_unit_of_measure_id = new Bundle();
+    tokenOrder_unit_of_measure_id.putString(&quot;name&quot;,&quot;unit_of_measure_id&quot;);
+    tokenOrder_unit_of_measure_id.putString(&quot;enabled&quot;,&quot;true&quot;);
+
+    Bundle tokenOrder_quantity = new Bundle();
+    tokenOrder_quantity.putString(&quot;name&quot;,&quot;quantity&quot;);
+    tokenOrder_quantity.putString(&quot;enabled&quot;,&quot;false&quot;);
+
+    ArrayList&lt;Bundle&gt; tokenOrderList = new ArrayList&lt;&gt;();
+    tokenOrderList.add(tokenOrder_manufacturing_date_original);
+    tokenOrderList.add(tokenOrder_expiration_date_original);
+    tokenOrderList.add(tokenOrder_lot_number);
+    tokenOrderList.add(tokenOrder_di);
+    tokenOrderList.add(tokenOrder_serial_number);
+    tokenOrderList.add(tokenOrder_mpho_lot_number);
+    tokenOrderList.add(tokenOrder_donation_id);
+    tokenOrderList.add(tokenOrder_labeler_identification_code);
+    tokenOrderList.add(tokenOrder_product_or_catalog_number);
+    tokenOrderList.add(tokenOrder_unit_of_measure_id);
+    tokenOrderList.add(tokenOrder_quantity);
+
+    bParamsToken.putParcelableArrayList(&quot;token_order&quot;, tokenOrderList);
+
+    bConfigToken.putString(&quot;PLUGIN_NAME&quot;, &quot;TOKEN&quot;);
+    bConfigToken.putString(&quot;OUTPUT_PLUGIN_NAME&quot;,&quot;IP&quot;);
+    bConfigToken.putString(&quot;RESET_CONFIG&quot;, &quot;true&quot;);
+    bConfigToken.putBundle(&quot;PARAM_LIST&quot;, bParamsToken);
+
+    ArrayList&lt;Bundle&gt; bundlePluginConfig = new ArrayList&lt;&gt;();
+    bundlePluginConfig.add(bConfigIntent);
+    bundlePluginConfig.add(bConfigBarcode);
+    bundlePluginConfig.add(bConfigSimulScan);
+    bundlePluginConfig.add(bConfigMSR);
+    bundlePluginConfig.add(bConfigIPOutput);
+    bundlePluginConfig.add(bConfigToken);
+
+    bMain.putParcelableArrayList(&quot;PLUGIN_CONFIG&quot;, bundlePluginConfig);
+
+    //AppList[Start]
+    Bundle bundleApp1 = new Bundle();
+    bundleApp1.putString(&quot;PACKAGE_NAME&quot;, &quot;com.symbol.emdk.simulscansample1&quot;);
+    bundleApp1.putStringArray(&quot;ACTIVITY_LIST&quot;, new String[]{
+            &quot;com.symbol.emdk.simulscansample1.DeviceControl&quot;,
+            &quot;com.symbol.emdk.simulscansample1.MainActivity&quot;,
+            &quot;com.symbol.emdk.simulscansample1.ResultsActivity&quot;,
+            &quot;com.symbol.emdk.simulscansample1.ResultsActivity2&quot;,
+            &quot;com.symbol.emdk.simulscansample1.SettingsFragment1&quot;});
+
+    Bundle bundleApp2 = new Bundle();
+    bundleApp2.putString(&quot;PACKAGE_NAME&quot;, &quot;com.example.intents.datawedgeintent&quot;);
+    bundleApp2.putStringArray(&quot;ACTIVITY_LIST&quot;, new String[]{
+            &quot;com.example.intents.datawedgeintent.DeviceControl&quot;,
+            &quot;com.example.intents.datawedgeintent.MainActivity&quot;,
+            &quot;com.example.intents.datawedgeintent.ResultsActivity&quot;,
+            &quot;com.example.intents.datawedgeintent.SettingsFragment1&quot;});
+
+    Bundle bundleApp3 = new Bundle();
+    bundleApp3.putString(&quot;PACKAGE_NAME&quot;, &quot;com.symbol.pubudu&quot;);
+    bundleApp3.putStringArray(&quot;ACTIVITY_LIST&quot;, new String[]{&quot;*&quot;});
+
+    Bundle bundleApp4 = new Bundle();
+    bundleApp4.putString(&quot;PACKAGE_NAME&quot;, &quot;com.symbol.myzebraapp&quot;);
+    bundleApp4.putStringArray(&quot;ACTIVITY_LIST&quot;, new String[]{&quot;*&quot;});
+
+    // ADD APP_LIST BUNDLE(S) INTO THE MAIN BUNDLE
+    bMain.putParcelableArray(&quot;APP_LIST&quot;, new Bundle[]{
+            bundleApp1
+            , bundleApp2
+            , bundleApp3
+            , bundleApp4
+    });
+
+    //AppList [End]
+
+    Bundle bConfigDCP = new Bundle();
+    Bundle bParamsDCP = new Bundle();
+    bParamsDCP.putString(&quot;dcp_input_enabled&quot;, &quot;true&quot;);
+    bParamsDCP.putString(&quot;dcp_dock_button_on&quot;, &quot;LEFT&quot;); //Supported values: BOTH - Left or Right, LEFT - Left only, RIGHT - Right only
+    bParamsDCP.putString(&quot;dcp_start_in&quot;, &quot;FULLSCREEN&quot;); //Supported Values: FULLSCREEN, BUTTON, BUTTON_ONLY
+    bParamsDCP.putString(&quot;dcp_highest_pos&quot;, &quot;10&quot;); //Supported Values:  0 - 100
+    bParamsDCP.putString(&quot;dcp_lowest_pos&quot;, &quot;20&quot;); //Supported Values: 0 - 100
+    bParamsDCP.putString(&quot;dcp_drag_detect_time&quot;, &quot;501&quot;); //Supported Values: 0 - 1000
+    bConfigDCP.putString(&quot;RESET_CONFIG&quot;, &quot;true&quot;);
+    bConfigDCP.putBundle(&quot;PARAM_LIST&quot;, bParamsDCP);
+
+    bMain.putBundle(&quot;DCP&quot;, bConfigDCP);
+
+    bMain.putString(&quot;PROFILE_NAME&quot;, &quot;Profile007&quot;);
+    bMain.putString(&quot;PROFILE_ENABLED&quot;, &quot;true&quot;);
+    bMain.putString(&quot;CONFIG_MODE&quot;, &quot;CREATE_IF_NOT_EXIST&quot;);
+
+    Intent iSetConfig = new Intent();
+    iSetConfig.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    iSetConfig.putExtra(&quot;com.symbol.datawedge.api.SET_CONFIG&quot;, bMain);
+    iSetConfig.putExtra(&quot;SEND_RESULT&quot;, &quot;COMPLETE_RESULT&quot;); //Supported values: NONE, LAST_RESULT, COMPLETE_RESULT
+    iSetConfig.putExtra(&quot;COMMAND_IDENTIFIER&quot;, &quot;INTENT_API&quot;);
+    // SetConfig [End]
+
+    this.sendBroadcast(iSetConfig);
+}
+
+private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String action = intent.getAction();
+
+        String strFinalResult = &quot;&quot;;
+        String command = intent.getStringExtra(&quot;COMMAND&quot;);
+        String profileName = intent.getStringExtra(&quot;PROFILE_NAME&quot;);
+        String resultInfo = &quot;&quot;;
+
+        if (action.equals(&quot;com.symbol.datawedge.api.RESULT_ACTION&quot;)) {
+
+            if (intent.hasExtra(&quot;RESULT_LIST&quot;)) { // returns for COMPLETE_RESULT
+                resultInfo += &quot;ProfileName: &quot; + profileName + &quot;\n&quot;;
+                ArrayList&lt;Bundle&gt; result_list = (ArrayList)intent.getSerializableExtra(&quot;RESULT_LIST&quot;);
+                for (Bundle bundleResult : result_list) {
+
+                    resultInfo +=&quot;\n\n&quot;;
+
+                    Set&lt;String&gt; keys = bundleResult.keySet();
+                    for (String key : keys) {
+                        String val = bundleResult.getString(key);
+                        if (val == null) {
+
+                            if (bundleResult.getStringArray(key) != null) {
+                                val = &quot;&quot;;
+                                for (String s : bundleResult.getStringArray(key)) {
+                                    val += &quot;&quot; + s + &quot;\n&quot;;
+                                }
+                            }
+                        }
+
+                        resultInfo += key + &quot;: &quot; + val + &quot;\n&quot;;
+                    }
+                }
+            }
+            else if (intent.hasExtra(&quot;RESULT_INFO&quot;)) { // returns for LAST_RESULT
+                String result = intent.getStringExtra(&quot;RESULT&quot;);
+                Bundle bundle = intent.getBundleExtra(&quot;RESULT_INFO&quot;);
+                resultInfo += &quot;Result: &quot; + result + &quot;\n&quot;;
+                Set&lt;String&gt; keys = bundle.keySet();
+                for (String key : keys) {
+                    String val = bundle.getString(key);
+                    if(val == null) {
+
+                        if(bundle.getStringArray(key) != null) {
+                            val=&quot;&quot;;
+                            for (String s : bundle.getStringArray(key)) {
+                                val += &quot;&quot; + s + &quot;\n&quot;;
+                            }
+                        }
+                    }
+
+                    resultInfo += key + &quot;: &quot; + val + &quot;\n&quot;;
+                }
+
+            }
+            if (command != null) {
+                if (command.equalsIgnoreCase(&quot;com.symbol.datawedge.api.SET_CONFIG&quot;)) {
+                    Log.d(&quot;TAG&quot;, &quot;#IntentApp# \n\nSetConfig status received:\nResultInfo: \n&quot; + resultInfo);
+                }
+            }
+        }
+    }
+};
+
+
+Comments
+
+
+The result intent mechanism does not perform parameter-level validation for scanner input parameters and intent output parameters. For example, it would be not be possible for any app to validate every possible parameter for a scanner that is no longer connected. However, if a parameter value in a configuration is not valid when that Profile is loaded, DataWedge uses the default value for that parameter.
+
+DataWedge executes the SET_CONFIG command in the following order if multiple modules are received.
+
+
+
+Plugins
+
+APP_LIST
+
+DCP (Data Capture Plus)
+
+
+
+
+SEE ALSO:
+
+Zebra Support Central | Integrator Guides, Product Manuals, Software Downloads and Support
+
+LaunchPad | Zebra Developer Community
+
+Intent | Android Developers
+
+Intents and Intent Filters | Android Developers
+
+Android Intents | Tutorial
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2026 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    </pre></body></html>

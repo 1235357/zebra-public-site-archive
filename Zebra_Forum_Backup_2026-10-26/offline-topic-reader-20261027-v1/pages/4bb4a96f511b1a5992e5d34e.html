@@ -1,0 +1,202 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>MC67-Imager vs RS507 via BT</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>MC67-Imager vs RS507 via BT</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/32873; original snapshot: threads/resume-00110.html; SHA-256: fd967f447abd5018b7912cd45045e4c6cb3b7f6c2346b3338928cb3d110abe85</small><pre id="topic">
+
+    
+        MC67-Imager vs RS507 via BT
+
+
+        
+      
+                        
+                    
+            M
+          
+          Markus Balschbach
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            27
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+ 
+we start developing our first application von MC67-Android devices using KK as OS-Image.
+As we use RS507 with our WindowsMobile MC67-Devices we also need to do this in our Android-Applications.
+In our first tests I use the code from the samples for Barcode API but without using the Listener for Scanner-Status:
+ 
+public class ZebraScanner implements EMDKListener, ScannerControl, DataListener {
+...
+}
+ 
+ScannerControl is one of my own Interfaces
+we use HARD-Trigger
+ 
+When we use the internal imager of the MC67 it is possible to scan an barcode or to press and release the hard-trigger without scanning an barcode.
+In first case (after reading a barcode) scanner gets &quot;disabled&quot;, we have to start the scanner again using Scanner.read(), in second case (no barcode scanned) we don&#x27;t need to do so, that means if we don&#x27;t scan a barcode and release the hard-trigger the scanner keeps enabled in state WAITING.
+ 
+Now I used the same code for scanning with RS507. As described in tutorial about pairing the BT-scanner the device activates BT an shows the BT-adressbarcode to scan. After scanning the barcode everything&#x27;s fine, we can use RS507 to scan any barcode. The difference now is that it&#x27;s not possible to press the hard-trigger of RS507, release it without scanning a barcode and press it again. The RS507 doesn&#x27;t change to state WAITING again, we have to activate the scanner again using Scanner.read().
+ 
+I&#x27;m not sure whether this behavior is the normal one, the only solution was to implement the StatusListener to activate the scanner again if it&#x27;s in state IDLE:
+ 
+           ......
+           // Different states of Scanner
+            switch (state) {
+                // Scanner is IDLE
+                case IDLE:
+                    statusStr = &quot;The scanner enabled and its idle&quot;;
+                    try {
+                        if(scanner!=null) {
+                            scanner.read();
+                        }
+ 
+ 
+                    } catch (ScannerException e) {
+                        Log.e(TAG_SCANNER, e.getMessage());
+                    }
+ 
+ 
+                    break;
+           ......
+ 
+Is this a bug in Barcode API ?
+As I don&#x27;t want to use the StatusListener my question is whether I must do so to keep the RS507 working ?
+ 
+Regards
+Markus
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Markus,&amp;nbsp;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; I don&#x27;t believe this is a bug in the Barcode API&#x27;s, but likely the barcode api adapting to the the RS507 hardware and bluetooth communication.&amp;nbsp; I think it&#x27;s best to always implement the StatusListener, and only call scanner.enable() when status is IDLE, the scanner is enabled and a read is not pending.
+case IDLE:
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; statusStr = &quot;Scanner is idle and ready to submit read.&quot;;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; try {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; if (scanner.isEnabled() &amp;amp;&amp;amp; !scanner.isReadPending()) {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; scanner.read();
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; } catch (ScannerException e) {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; e.printStackTrace();
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; statusStr = e.getMessage();
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; break;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

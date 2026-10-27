@@ -1,0 +1,216 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>RFID_API_LOCK_ACQUIRE_FAILURE in GetAntennaConfig when changing modes frequently – Best Practices for Safe Command Execution</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/rfidapilockacquirefailure-getantennaconfig-when-changing-modes-frequently-best-practices-safe-command-execution; snapshot threads/00021.html; SHA-256 c7397e54a1898b1af878084fdbc479ff60a57b5c66b0646edb641bf587ed1029. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">RFID_API_LOCK_ACQUIRE_FAILURE in GetAntennaConfig when changing modes frequently – Best Practices for Safe Command Execution</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            A
+          </div>
+          <div class="forum-topic__author-name">Aravindhan K</div>
+          <div class="forum-topic__timestamp">1 year 1 month ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            171
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello Zebra Developer Community,</p><p>I am experiencing an issue with the <strong>Zebra RFID Android SDK</strong> where I intermittently encounter the following error:</p><p> </p><pre><code class="language-plaintext">D/IRFIDinfo(23408): logError RFID_API_LOCK_ACQUIRE_FAILURE LOCK_ACQUIRE_FAILURE in GetAntennaConfig 
+D/IRFIDError(31697): RFIDPROTOAscii: GetStatus: RFID_API_COMMAND_TIMEOUTSetAntennaConfiguration size 0 
+D/IRFIDinfo(31697): logError RFID_API_COMMAND_TIMEOUT Response timeout</code></pre><p><strong>Context:</strong></p><ul><li>This occurs when <strong>changing RFID reader's custom modes frequently</strong>, such as switching between a single-tag assignment mode and full inventory mode.</li><li>The SDK throws a lock acquisition failure when multiple commands are sent to the reader without waiting for the previous operation to complete.</li></ul><p><strong>Code Example:</strong><br>Below is a simplified snippet showing how mode changes are currently handled in Native Android / Kotlin.</p><pre><code class="language-plaintext">"assignmentMode" -&gt; {
+    if (reader != null &amp;&amp; reader!!.isConnected) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val antennaRfConfig = reader!!.Config.Antennas.getAntennaRfConfig(1)
+                antennaRfConfig.setrfModeTableIndex(22)
+                antennaRfConfig.transmitPowerIndex = 10
+                antennaRfConfig.tari = 18800
+                reader?.Actions?.Inventory?.stop()
+                reader!!.Config.Antennas.setAntennaRfConfig(1, antennaRfConfig)
+
+                val singulationControl = reader!!.Config.Antennas.getSingulationControl(1)
+                singulationControl.session = SESSION.SESSION_S1
+                singulationControl.tagPopulation = 1
+                val action = singulationControl.Action
+                action.setPerformStateAwareSingulationAction(true)
+                action.setInventoryState(INVENTORY_STATE.INVENTORY_STATE_A)
+                action.setSLFlag(SL_FLAG.SL_ALL)
+                reader!!.Config.Antennas.setSingulationControl(1, singulationControl)
+
+                withContext(Dispatchers.Main) {
+                    result.success(mapOf("status" to "success", "message" to "Single tag read mode configured"))
+                }
+            } catch (e: InvalidUsageException) {
+                withContext(Dispatchers.Main) { result.error("INVALID_USAGE", e.vendorMessage, null) }
+            } catch (e: OperationFailureException) {
+                withContext(Dispatchers.Main) { result.error("OPERATION_FAILED", e.vendorMessage, null) }
+            }
+        }
+    } else {
+        result.error("READER_NOT_CONNECTED", "Reader not connected", null)
+    }
+}
+
+"inventoryMode" -&gt; {
+    if (reader != null &amp;&amp; reader!!.isConnected) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val antennaRfConfig = reader!!.Config.Antennas.getAntennaRfConfig(1)
+                antennaRfConfig.setrfModeTableIndex(0)
+                antennaRfConfig.tari = 25000
+                antennaRfConfig.transmitPowerIndex = getMaxAntennaPower()
+                reader?.Actions?.Inventory?.stop()
+                reader!!.Config.Antennas.setAntennaRfConfig(1, antennaRfConfig)
+
+                val singulationControl = reader!!.Config.Antennas.getSingulationControl(1)
+                singulationControl.session = SESSION.SESSION_S0
+                singulationControl.tagPopulation = 30
+                val action = singulationControl.Action
+                action.setPerformStateAwareSingulationAction(false)
+                action.setInventoryState(INVENTORY_STATE.INVENTORY_STATE_AB_FLIP)
+                action.setSLFlag(SL_FLAG.SL_ALL)
+                reader!!.Config.Antennas.setSingulationControl(1, singulationControl)
+
+                withContext(Dispatchers.Main) {
+                    result.success(mapOf("status" to "success", "message" to "Reader restored to normal mode"))
+                }
+            } catch (e: InvalidUsageException) {
+                withContext(Dispatchers.Main) { result.error("INVALID_USAGE", e.vendorMessage, null) }
+            } catch (e: OperationFailureException) {
+                withContext(Dispatchers.Main) { result.error("OPERATION_FAILED", e.vendorMessage, null) }
+            }
+        }
+    } else {
+        result.error("READER_NOT_CONNECTED", "Reader not connected", null)
+    }
+}
+</code></pre><p><strong>What I Want to Know:</strong></p><ol><li>What is the <strong>recommended code structure / design pattern</strong> for handling all reader-related activities (mode switching, configuration, inventory start/stop) to <strong>avoid this </strong><code><strong>LOCK_ACQUIRE_FAILURE</strong></code>?</li><li>Are there <strong>best practices for queuing or serializing commands</strong> in Kotlin/Android when interacting with the Zebra RFID SDK?</li><li>Any <strong>official guidance or sample code</strong> demonstrating safe handling of frequent mode changes and concurrent reader operations?</li></ol>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-54198" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span class="username" title="View user profile." data-original-href="/users/pvt784">Sean Kennedy</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>FYI :  123RFID Mobile app - has a Support Portal here:</p><p><span data-original-href="https://www.zebra.com/us/en/support-downloads/software/rfid-software/123rfid-mobile.html">https://www.zebra.com/us/en/support-downloads/software/rfid-software/123rfid-mobile.html</span></p><p>The ZIP files found within - have the Android Studio Project and Source Code - which I would recommend as a suggestion to review on the methods that are highly successful. ( If you unpack the ZIP you will find the sideloadable APK as well as nother ZIP file with the Android Studio project and Source Code. The may explain the questions 1,2,3 for the RFID Operations  code.<br><br>A quick mention - DO NOT USE 123RFID Mobile app for "Normal" Android Lifecycle RFID app demonstration.<br>Rather the 123RFID Mobile app is a Demo and Diagnostic app - and the Connection to the RFID HH reader - is "Sticky" and once connected will retain this connection despite the app being put to the Background.<br><br>The RFID SDK - for Android Studio - sample code  (HHSampleApp) - does provide the correct "Android Lifecycle" app methods when used with the RFID SDK and RFID Handheld Sleds.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/rfidapilockacquirefailure-getantennaconfig-when-changing-modes-frequently-best-practices-safe-command-execution%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/rfidapilockacquirefailure-getantennaconfig-when-changing-modes-frequently-best-practices-safe-command-execution%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

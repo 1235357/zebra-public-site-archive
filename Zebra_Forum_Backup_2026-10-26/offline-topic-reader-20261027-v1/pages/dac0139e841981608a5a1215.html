@@ -1,0 +1,251 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Is it possible to set the configword of NXP&#x27;s u9xm chip?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Is it possible to set the configword of NXP&#x27;s u9xm chip?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/it-possible-set-configword-nxps-u9xm-chip; original snapshot: threads/00106.html; SHA-256: 3cf8a6cc19fd4df9cc3c404623e8d5c711cd5b9e81f54b3d0eeefaf97c8d77e4</small><pre id="topic">
+
+    
+        Is it possible to set the configword of NXP&#x27;s u9xm chip?
+
+
+        
+      
+                        
+                    
+            M
+          
+          Marco Fogli
+          1 year 10 months ago
+        
+        
+      
+        
+            
+                  
+            
+            204
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I am trying to use change configuration to the U9xm chip, this type of chip can be used with 3 configurations.Standard is shipped with configuration 2 (EPC=256b,User=624b)But it can also be configured as (EPC=128b,User=752b) or (epc=496b,User=384b)According to the chip datasheet UCODE 9xm ConfigWord is in Memory Bank ‘10’ (TID memory), starting at bit address 0x70 or word address / word count 0x7Memory Configuration  EPC (bits)    User memory (bits)       Write command content         Config 1                     128                       752                                0x0000         Config 2                     256                       624                                0x0001         Config 3                    496                        384                                0x0002I tried this simple Zebra script without success^RR10^RFW,H,112,2,2^FD0003^FS^XZit generates a gen2 memory bad pc, as if it is not possible to go beyond word6 of the TID codedoes anyone have experience in this?  
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Draven Locke
+          
+          
+            1 year 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I’ve worked with UCODE chips a bit but not specifically the U9xm. From what you described, it sounds like the script might not be writing to the correct memory address or the TID memory access is restricted beyond word 6. Have you tried verifying if the printer or encoder has any specific limitations with writing to TID memory? Also, double-check if there’s a need for any unlock commands or permissions before writing to that address. 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            1 year 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            #RFID #PrinterRfid #ZPLA quick word - even the Zebra RFID SDK + Apps - cannot update the TID since most TID are Locked due to the E2 G2 specifications.So if you tired to test this with 123RFID Mobile / 123RFID Desktop you will find that the TID Memory Bank with Offset = 7 And Length = 1 and you read - this - when you try to adjust the word value (in Hexadecimal) you may get an RFID_ACCESS_TAG_WRITE_FAIL when you go to &quot;write&quot; the TID memory bank (Or a Possible access memory crc overrun error if the memory bank is not present or not readable.)
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            1 year 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Of you referred to the EPC - PC word - and adjusted that - from typical Default 0x3000 / 0x3400 - to for example 0x2000 / 0x2400 - And see the EPC words that result - this too can be used of your use case only needs a shorter EPC value seen upon Inventory.With the printer team we had a use-case that asked for a 32-bit (8characters EPC value.  (0x1000 for the PC word.)(FYI: Note - the change of this &quot;Protocol Control&quot; word only lets the RFID reader to index how many words to read when doing inventory - it does not affect the above UCODE &quot;Memory Bank&quot; division setting that the UCODE TID adjustment does. The EPC &quot;words&quot; are still in the EPC memory bank, and no words are added to the USER memory bank. ) 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,406 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Export Config - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/exportconfig</code><br>Observed final URL: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/exportconfig/</code><br>Raw source: <code>raw/9fbc0b8e6675b2db6c394dfc.html</code><br>Raw SHA-256: <code>1e84dfe69d8784652f419a8357453281c6797de14ef45f9a28b3c6624c58d161</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs Home
+                        
+                                            DataWedge
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Get Started
+                            
+                        
+                        
+                            
+                                    Profiles
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Feature Matrix
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            US - English
+                          
+                          
+                                 CN - 普通话
+                                 JP - 日本語
+                          
+                                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Export Config
+                        
+                    EXPORT_CONFIGIntent BehaviorFunction PrototypeParametersResult BundleExample CodeExport FilesReceive Results of the Export
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Export Config
+                                    
+                                            DataWedge
+                                            15.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        EXPORT_CONFIG
+
+The EXPORT_CONFIG API enables the export of DataWedge Profiles and Configuration settings file, allowing configuration settings to be saved for future import or to replicate DataWedge configurations on other devices.
+
+A DataWedge Profile is a collection of settings that control how DataWedge interacts specific applications and devices.
+A DataWedge Config file may include multiple Profiles and encompass all other DataWedge settings, such as status (enabled/disabled), logging and various configurable parameters.
+
+There are limitations for exporting DataWedge configurations to public folders:
+
+
+Android File Access Restrictions (Scoped Storage): Apps cannot directly export files to public folders, such as /Documents, using the DataWedge Intent API. Android restricts app access to public directories unless the app is granted elevated permissions (MANAGE_EXTERNAL_STORAGE), which is not available to the custom app.
+
+Exporting to Public Folders: Exporting configurations to public folders can only be performed through the DataWedge UI, which has elevated system-level permissions to bypass these restrictions.
+
+
+Intent Behavior
+
+EXPORT_CONFIG sends an intent to export DataWedge Profiles or Config file to a specified folder, which can be accessed for backup or transferred to other devices.
+
+When EXPORT_CONFIG intent is invoked, the files are exported to the specified folder, each file name reflecting the type of configuration exported:
+
+
+datawedge.db - Contains the current DataWedge configuration settings saved as a database file
+
+dwprofile_&lt;profilename&gt;.db - Contains the individual DataWedge profile settings
+
+
+Function Prototype
+
+Intent i = new Intent();
+i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+i.putExtra(&quot;com.symbol.datawedge.api.EXPORT_CONFIG&quot;, &lt;mainbundle&gt;);
+
+Parameters
+
+ACTION [String]: &quot;com.symbol.datawedge.api.ACTION&quot;
+
+EXTRA_DATA [String]: &quot;com.symbol.datawedge.api.EXPORT_CONFIG&quot;
+
+BUNDLE: &lt;mainbundle&gt; (see parameters below)
+
+Main Bundle
+
+The main EXPORT_CONFIG bundle includes the following properties:
+
+
+FOLDER_PATH [String]: Required folder path where the configuration file(s) is exported.
+
+EXPORT_TYPE [String]: Specifies the file type exported: &quot;PROFILE_CONFIG&quot; for Profile or &quot;FULL_CONFIG&quot; for Config file.
+
+PROFILE_NAME [String] (Optional): Name of the profile to be exported. Required only if EXPORT_TYPE is &quot;PROFILE_CONFIG&quot;.
+
+
+Result Bundle
+
+After an EXPORT_CONFIG intent is sent, DataWedge broadcasts a result intent with the status (success or failure) of the export. Result info is returned as an ArrayList of bundles containing RESULT_CODE and RESULT_CODE_INFO sections to describe the additional information.
+
+RESULT [String]: &quot;SUCCESS&quot; or &quot;FAILURE&quot;
+
+RESULT_INFO [ArrayList&lt;bundles&gt;]
+
+RESULT_CODE: The following result codes are returned with the specified folder/file name or the RESULT_CODE_INFO as indicated:
+
+
+EMPTY_FOLDER_PATH – FOLDER_PATH is empty or not specified
+
+INVALID_FOLDER_PATH – Specified FOLDER_PATH is invalid
+
+
+
+RESULT_CODE_INFO - “&lt;folder path&gt;”
+
+
+INVALID_CONFIG_FILE – Corrupted database files present in specified folder
+
+CONFIG_FILE_NOT_EXIST - No valid DataWedge database files in specified folder
+
+
+
+RESULT_CODE_INFO - “dwprofile_&lt;profilename&gt;.db&quot; or “datawedge.db”
+
+
+INVALID_FILE_NAME – Folder contains valid and invalid DataWedge .db file names
+
+
+
+RESULT_CODE_INFO - &quot;&lt;invalid file name&gt;&quot;
+
+
+
+More about Result Codes
+
+Example Code
+
+Export Files
+
+    private void exportConfig() {
+
+        // Main Bundle properties
+
+        Bundle bMain = new Bundle();
+        bMain.putString(&quot;FOLDER_PATH&quot;, path);  // FOLDER_PATH: /storage/emulated/0/Download/
+        bMain.putString(&quot;EXPORT_TYPE&quot;, configType); // EXPORT_TYPE: PROFILE_CONFIG or FULL_CONFIG
+        if (configType.equals(&quot;PROFILE_CONFIG&quot;)) {
+            bMain.putString(&quot;PROFILE_NAME&quot;, profileName);
+        }
+
+        // Send the intent
+
+        Intent i = new Intent();
+        i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+        i.putExtra(&quot;com.symbol.datawedge.api.EXPORT_CONFIG&quot;, bMain);
+
+        // Request and identify the result code
+
+        i.putExtra(&quot;SEND_RESULT&quot;, &quot;true&quot;);
+        i.putExtra(&quot;COMMAND_IDENTIFIER&quot;, &quot;123456789&quot;);
+        this.sendBroadcast(i);
+
+    }
+
+Receive Results of the Export
+
+    Private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, &quot;Received intent: &quot; + intent);
+
+            // Validate expected extras
+            if (!intent.hasExtra(&quot;COMMAND_IDENTIFIER&quot;) || !intent.hasExtra(&quot;RESULT&quot;)) {
+                Log.d(TAG, &quot;Received intent without expected extras: &quot; + intent.getExtras());
+                return;
+            }
+
+            String commandIdentifier = intent.getStringExtra(&quot;COMMAND_IDENTIFIER&quot;);
+            String result = intent.getStringExtra(&quot;RESULT&quot;);
+
+            // Check if the command identifier matches
+            if (!&quot;123456789&quot;.equals(commandIdentifier)) {
+                Log.d(TAG, &quot;Unrecognized COMMAND_IDENTIFIER: &quot; + commandIdentifier);
+                return;
+            }
+
+            if (&quot;SUCCESS&quot;.equals(result)) {
+                Toast.makeText(context, &quot;Export Successful&quot;, Toast.LENGTH_LONG).show();
+                Log.d(TAG, &quot;Export Successful&quot;);
+            } else {
+                handleExportFailure(context, intent);
+            }
+        }
+
+        /**
+        * Handles export failure by processing the RESULT_INFO bundle.
+        *
+        * @param context The application context.
+        * @param intent  The intent containing failure details.
+        */
+
+        private void handleExportFailure(Context context, Intent intent) {
+            ArrayList&lt;Bundle&gt; bundleList = intent.getParcelableArrayListExtra(&quot;RESULT_INFO&quot;);
+
+            if (bundleList == null || bundleList.isEmpty()) {
+                Log.d(TAG, &quot;Export failed but RESULT_INFO is empty or missing.&quot;);
+                Toast.makeText(context, &quot;Export Failed: Unknown Error&quot;, Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            StringBuilder resultInfo = new StringBuilder();
+            for (Bundle resultBundle : bundleList) {
+                for (String key : resultBundle.keySet()) {
+                    String value = resultBundle.getString(key);
+                    resultInfo.append(key).append(&quot;: &quot;).append(value).append(&quot;\n&quot;);
+
+                    // Show error details in toast if RESULT_CODE_INFO exists
+                    if (&quot;RESULT_CODE_INFO&quot;.equalsIgnoreCase(key)) {
+                        String errorCode = resultBundle.getString(&quot;RESULT_CODE&quot;);
+                        Toast.makeText(context, &quot;Export Failed: (Error Code: &quot; + errorCode + &quot;)&quot;, Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            Log.d(TAG, &quot;Export Failed Details: &quot; + resultInfo.toString());
+        }
+    };
+
+
+
+SEE ALSO:
+
+Intent | Android Developers
+
+Intents and Intent Filters | Android Developers
+
+Android Intents | Tutorial
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2024 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+      
+
+
+
+Back to Top</pre></body></html>

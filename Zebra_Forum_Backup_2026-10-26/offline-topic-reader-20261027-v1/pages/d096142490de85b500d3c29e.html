@@ -1,0 +1,267 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Dependant AP5131 - multiple store VLANs</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Dependant AP5131 - multiple store VLANs</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/25322; original snapshot: threads/01439.html; SHA-256: b2d5accb850a174cf5b0b22c16f9d54c6e88e5d1fb893107f2dfc6bfa1b570ef</small><pre id="topic">
+
+    
+        Dependant AP5131 - multiple store VLANs
+
+
+        
+      
+                        
+                    
+            I
+          
+          Ian Jobson
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            25
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  All,   I&#x27;ve hit a bit of a problem with a customer. We are trying to set up a new store wireless architecture using RFS7000s in the core and dependant AP5131&#x27;s in the stores.   The stores have two VLANs, a voice VLAN (4) which is tagged and the same across the estate, and a data VLAN which is untagged and is different for every store.   Historically with the WS5100, the HHTs went into a WLAN mapped to the store specific data VLAN and their Spectralink phones went into a WLAN mapped into the estate wide voice VLAN.   On the RFS7000 we have set up both these WLANs, we have mapped the voice into VLAN 4, and the data into the local VLAN in the core, but again its untagged.   When we bring an AP5131 up on the remote store network with a local static IP address it is seen on the switch and goes into the list of unadopted APs (we have set manual AP adoption). When we adopt the AP, it appears as adopted briefly then disappears off net again and is not pingable or reachable.   On checking the console the LAN 1 settings have changed from trunking disabled and native VLAN untagged, to trunking enabled and the native VLAN is tagged. Any time we change them back the switch resets them.   I don&#x27;t know if we are trying to do something that is never going to work or if we have just missed something in the config, but if we could just get the AP to retain the tagging and / or trunking settings it would work fine.   Does anyone have any ideas?   BTW we have upgraded the switch from 4.2.0 to 4.2.1, and the APs from 2.4.0 to 2.4.1 and still no joy.   Thanks   IJ 
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              I
+            
+          
+                
+          
+            Ian Jobson
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Guys,   Thanks for the detail, I will get this tested with the customer and let you know how we get on.   IJ
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              I
+            
+          
+                
+          
+            Ian Jobson
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Okay so that hasn&#x27;t don&#x27;t the job.   The APs now all adopt fine but we can&#x27;t seem to get over the problem of the WLAN being associated to the wrong VLAN so clients will associate but none of the traffic is being passed.   Can anyone help at all?? I really need a adaptive AP solution for multiple sites with different VLANs, surely this can&#x27;t be a gaping great hole in our Adaptive AP story!!!   IJ
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              I
+            
+          
+                
+          
+            Ian Jobson
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks Gents,
+Some how yesterday we managed to find a combination of configurations that actually worked.
+As per the original post we have two VLANs per store. One is the voice VLAN, is VLAN 4 in every location and is tagged on the network. The second is the data VLAN, the VLAN ID is different in every location (taking the format VLAN xxx, where xxx is a unique 3-digit ID per site) and is untagged on the network.
+The RFS7000s sit in the core on VLAN 202.
+On the RFS7000s we have configured two WLANs, one is mapped to VLAN 4, the other is mapped to VLAN 202.
+We then take a box fresh AP5131 and configure the following in the console;
+admin, network, LAN&amp;gt; set ip-mode 1 static admin, network, LAN&amp;gt; set ipadr 1 172.30.n.n admin, network, LAN&amp;gt; set mask 1 255.255.255.0 admin, network, LAN&amp;gt; set dgw 1 172.30.n.240
+admin, network, LAN, WLAN-mapping&amp;gt; create xxx VLAN_xxx admin, network, LAN, WLAN-mapping&amp;gt; set mgmt-tag xxx admin, network, LAN, WLAN-mapping&amp;gt; set native-tag xxx
+admin, system, aap-setup&amp;gt; set auto-discovery enable admin, system, aap-setup&amp;gt; set interface Lan1 admin, system, aap-setup set ipadr 1 172.20.20.242 admin, system, aap-setup set ipadr 2 172.20.20.243
+Where xxx is the store specific VLAN ID (e.g. in their test lab we change this to create 990 VLAN_990)
+The AP then appears in the unadopted list, and when we adopt it it gets both of the wireless LANs, mapped to VLAN 4 and VLAN 202 as configured on the RFS. However, the store network doesn&#x27;t know anything about VLAN 202 so just punts everything not in VLAN 4 into its untagged store specific VLAN.
+I&#x27;m sure we&#x27;re cheating a bit there, but it seems to work a treat!!
+IJ
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

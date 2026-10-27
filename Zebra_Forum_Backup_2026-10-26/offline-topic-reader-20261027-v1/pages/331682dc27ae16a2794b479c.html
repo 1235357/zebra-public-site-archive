@@ -1,0 +1,146 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>blank labels on big jobs</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>blank labels on big jobs</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/blank-labels-big-jobs; original snapshot: threads/00152.html; SHA-256: 8b1607d01a3ebb09834b4c1df6bd72ce61a9ad4871a9ff9aaf084bbef4ebf67e</small><pre id="topic">
+
+    
+        blank labels on big jobs
+
+
+        
+      
+                        
+                    
+            D
+          
+          David Beccue
+          1 year 12 months ago
+        
+        
+      
+        
+            
+                  
+            
+            177
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  If I print a batch of 200+ labels, sometimes they end up printing blanks.  Especially if paper runs out and replaced to continue the job.  I suspect that I&#x27;m overflowing the buffer.  And my solution is to query U1 getvar memory.ram_free and ram_size to see a precentage of available memory left and pause sending data if it drops below 20%.   Does all of this sound reasonable?
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            1 year 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The best way is to check the printer status with the following SGD before sending a label, and parse the return code based on the definition in the ~HS section in the ZPL Programming Guide, by checking on the flag f, which is the buffer full flag (1 = receive buffer full).
+! U1 getvar &quot;device.host_status&quot;
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

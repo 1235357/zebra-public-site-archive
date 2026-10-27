@@ -1,0 +1,318 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Print PDFs with BrowserPrint</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Print PDFs with BrowserPrint</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25874; original snapshot: threads/extra-02879.html; SHA-256: 98606b19c17ac392bf9c5d6cba8ad432a729ecff544a006512fad19e18127403</small><pre id="topic">
+
+    
+        Print PDFs with BrowserPrint
+
+
+        
+      
+                        
+                    
+            S
+          
+          Sebastian V
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            805
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We&#x27;re using BrowserPrint.js-3.0.216 to print labels on Zebra ZD420 devices and it works just fine.
+We also want to print our packaging slip in PDF format, but it seems a license key is required to do that (&quot;featureKey&quot;).
+How do we get a license key?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sebastian V
+          
+          
+            5 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Great, confirming that it works now after loading the PDF direct emulation and executing the SGD command.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Starting from Link-OS v6.3, the PDF Direct&amp;nbsp;is included in the printer&#x27;s firmware. See this blog for the details about PDF Print -&amp;nbsp;Announcement | Printers Include Free PDF Direct with Link-OS 6.3.
+Since the PDF Direct is included for free in the printer&#x27;s firmware, the printer will accept the PDF content and just prints directly, assuming the direct PDF print is enabled on the printer as well. So we can call the sendFile() in the BrowserPrint to send a PDF file directly to the printer without the need for&amp;nbsp;the featureKey for content conversion. Hope this helps.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              O
+            
+          
+                
+          
+            Ondrej Cienciala
+          
+          
+            2 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I have new printer Zebra ZD421 with Link-OS v6.7 (I even upgraded to v6.8.1) but BrowserPrint.js-3.1.250 still requres a license key when sending a PDF file via convertAndSendFile() function. Image printing works fine, but for PDF files, it returns &quot;The format conversion attempted requires a licensing key and none was provided.&quot;I activated PDF Direct according to PDF Direct Activation article and verified the settings and I get:apl.apl.enable : pdf , Choices: apl-d,apl-e,apl-i,apl-m,apl-s,pdf,noneapl.framework_version : 1.4 apl.version : 2.12 apl.installed_versions : apl-d:2.0,apl-e:2.07,apl-i:2.0,apl-m:1.18,apl-s:1.23,pdf:2.12, apl.settings :  apl.o.apl.o.graphics_byte_width : 104 , Choices: 0-255apl.i.apl.i.crop_to_length : off , Choices: on,offWhat is wrong? Why the license is still required?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Ondrej,
+The convertAndSendFile() is a legacy API prior to the PDF Direct made available for free. The convertAndSendFile() converts a PDF file into a bitmap image and then sends the bitmap image to the printer to print. Since the PDF Direct on your ZD421 is already activated, there is no need to use the convertAndSendFile() API to convert the PDF file anymore. Instead, please use the sendFile() API to send the PDF directly to the printer and let the PDF Direct on the ZD421 convert the PDF into bitmap and print. Here is a code snippet of using the sendFile() API.
+function sendFile(fileUrl){
+   url = window.location.href.substring(0, window.location.href.lastIndexOf(&quot;/&quot;));
+   url = url + &quot;/&quot; + fileUrl;
+   selected_device.sendFile(url, undefined, errorCallback)
+}For the PDF Direct enabled printers, the convertAndSendFile() is obsolete.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

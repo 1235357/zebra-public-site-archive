@@ -1,0 +1,286 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>I need to print on my Zebra (Lan/USB) from a CSV file using a PowerShell script.</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>I need to print on my Zebra (Lan/USB) from a CSV file using a PowerShell script.</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/i-need-print-my-zebra-lanusb-csv-file-using-powershell-script; original snapshot: threads/01030.html; SHA-256: f5090f7a0c7a6e4a278e1e9bf8ff6b9adf5fe883d607abbacc6a9141f07da75a</small><pre id="topic">
+
+    
+        I need to print on my Zebra (Lan/USB) from a CSV file using a PowerShell script.
+
+
+        
+      
+                        
+                    
+            A
+          
+          Angel Bolos
+          5 years 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            1428
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I tried something like this but it doesn&#x27;t work: 
+Get-Content -Path C:\Users\xxxx\Documents\print.csv | Out-Printer 
+Please, someone can help me?. Thank you.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Zebra printers do not support PowerShell. To print labels on Zebra printers, you would need to create an application with Link-OS Multiplatform SDK.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              W
+            
+          
+                
+          
+            Ward Christensen
+          
+          
+            4 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            What does your CSV look like?  Since CSV files are numbers and double-quoted strings, with comma separators, there is no way to &quot;send that to a Zebra&quot; as it contains no font, positioning, etc information!  
+I print to my TLP-3844-Z from Mansfield Software Kedit.  So &quot;Zebra doesn&#x27;t support Kedit&quot; is FALSE, because all the Zebra sees is the text stream coming from a character mode driver. 
+I found a &quot;text&quot; printer driver for my Zebra, and so the &quot;print&quot; command in Kedit is how I print ALL my labels. 
+SO if:
+1) your CSV file is in actuality a bunch of ZPL statements (unlikely by the very definition of CSV)
+ - and-
+2) you have a simple text driver set as your default printer,
+ -then-
+you should be able to print via power shell, because the Zebra printer doesn&#x27;t SEE powershell, it sees a character stream with ZPL commands.
+IF on the other hand, your CSV file is the raw data you want printed &quot;formatted&quot; on your printer, i.e. if it were &quot;name&quot;,&quot;streetaddr&quot;,&quot;City&quot;,&quot;State&quot;,&quot;zip&quot;
+and you wanted that printed as 3 lines, then you need a fair amount of ZPL code to send to a text-only driver to your Zebra printer. 
+Just to be sure, remember Out-Printer in PowerShell is the default printer, so you have to set the default printer to your text-output zebra printer. 
+Here&#x27;s a file that would print a name and address, but you&#x27;ve have to write a program in &quot;some language&quot; to parse the CSV and move the fields into the right places:
+^CF0,50
+^FWB
+^FO70,250
+^FDJewel/Osco^FS
+^FO134,250
+^FDM.S. 10501^FS
+^FO200,170
+^FDP.O. Box 29093^FS
+^FO270,100
+^FDPhoenix, AZ 85038^FS
+^XZ
+___________
+It would help if you show us the format of your CSV file, and a copy of what you want the output to look like. 
+/Ward Christensen
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              W
+            
+          
+                
+          
+            Ward Christensen
+          
+          
+            4 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            https://www.foldermill.com/kb/install-generic-text-driver-in-windows
+This is what I did, and now I can just set up my default printer and copy stuff to it which is a file of ZPL code. 
+/Ward Christensen
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

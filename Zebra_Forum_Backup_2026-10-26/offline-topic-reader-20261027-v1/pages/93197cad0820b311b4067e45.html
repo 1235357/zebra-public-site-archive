@@ -1,0 +1,305 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Best approach for GTIN-based tag locating with dynamic tag switching - Zebra RFID SDK</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Best approach for GTIN-based tag locating with dynamic tag switching - Zebra RFID SDK</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/best-approach-gtin-based-tag-locating-dynamic-tag-switching-zebra-rfid-sdk; original snapshot: threads/00320.html; SHA-256: 211f25fd0e47f64b9b62df69267a8aa8281d59a9ca79bd27c3d1d1b2aa9fdbeb</small><pre id="topic">
+
+    
+        Best approach for GTIN-based tag locating with dynamic tag switching - Zebra RFID SDK  
+
+
+        
+      
+                        
+                    
+            A
+          
+          Aman Arora
+          6 months 1 week ago
+        
+        
+      
+        
+            
+                  
+            
+            322
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We are building a locate-item feature in our store app using Zebra RFD40 readers with the Android and iOS RFID SDKs for the following requirement:Requirement: Reader should direct the associate to the closest unit of an item (identified by GTIN, not individual EPC). If while walking, another unit of the same item becomes closer, the reader should automatically switch and direct to that unit instead.Since we only have the GTIN at the point of locate (not individual EPCs), we need pattern-based matching. We are currently exploring the following approach:Approach: TagLocationing.Perform(epcID, epcMask, null) with SGTIN-96 maskWe encode the GTIN into an SGTIN-96 EPC prefix. Pass it with mask FFFFFFFFFFFFFFC000000000 (masks out the serial number, matches all units of that GTIN)In our initial testing, this appears to work, reader locks onto a matching tag, provides proximity feedback, and dynamically switches to a closer matching tag.Questions:Is TagLocationing.Perform with EPC mask the recommended approach for GTIN-based locating? Or is there a better out-of-the-box option we should consider?When multiple tags match the mask, how does the SDK/firmware decide which tag to track? Does it automatically switch to the strongest/closest matching tag, or does it lock onto the first match?Are there any known limitations or best practices when using mask-based locate e.g., mask alignment requirements, maximum number of matching tags, or performance considerations?Environment:Reader: Zebra RFD40Android SDK: v2.15iOS SDK: v1.1.94Tag encoding: SGTIN-96
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alex Lavie
+          
+          
+            6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            we actually have developped such a demo application called FindIt wich from ean13 will try to locate rfid atems related within the read distance.Detail, code and advice is here: FindIt Tutorial - Zebra Technologies Techdocs
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Aman Arora
+          
+          
+            6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            We tried it and setProfile(&quot;FASTEST_READ&quot;) always throws an exception. Tried debugging and it is going to ProtocolASCII class where the implementation of setProfile returns false always.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Aman,Your approach above is - from what I perceive from your use-case writeup - appears sound.FYI - since you are using a MATCH pattern - the Tag in closest detectable proximity - will give the Signal/Response in the Locate Operation.I would strongly recommend to do a Lab test with multiples of tags with similar SKU / (SGTIN-96) Prefixes as well as &quot;some&quot; uniqueness that this may allow - and conduct your test.  Then Sweep the room to detect the tags and find out what occurs when you goto tag-to-tag and how the Handoff - seems / appears.  This would provide you the greatest insight on the expectations from your App Perspective.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            5 months 3 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Aman.I would recommend to NOT use &quot;Fastest Read&quot; Profile for this use-case - please apply / use the &quot;Balanced Performance&quot; profile instead. &quot;Fastest Read&quot; is the default &quot;DEMO&quot; setting and is not constructive for use-cases where there may be more advanced RFID operations that need to take place.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

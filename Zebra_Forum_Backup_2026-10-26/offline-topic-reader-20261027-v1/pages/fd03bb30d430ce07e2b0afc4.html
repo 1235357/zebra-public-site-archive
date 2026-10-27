@@ -1,0 +1,487 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Problem with run app on FX9600</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Problem with run app on FX9600</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/problem-run-app-fx9600; original snapshot: threads/00754.html; SHA-256: 582506b7a77cae1dc9421c56b37f39d9ae7e7278d57c53ac673118c50c3d2af3</small><pre id="topic">
+
+    
+        Problem with run app on FX9600
+
+
+        
+      
+                        
+                    
+            R
+          
+          Roman Tolmchov
+          4 years 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            82
+          
+                
+                  
+            
+            7
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello!
+I am creating an application for the reader, and I have a problem with creating a .deb application package for fx9600 and fx7500 readers.
+I have implemented an application that successfully launches and works through the command console. Then I created a .deb package with this application. I have added start and stop scripts. This package installs successfully, but when I click on the start button in the gui reader, the application does not start.
+If I run the script through the console, the application starts and the button in the gui lights up in green. Also, the application successfully stops through the gui. I press the button and it lights red. But if I try to launch the app again by clicking the button, the app doesn&#x27;t start. Only manually through the console. What could be the problem? Are there any additional specifics when creating a .deb package for an application for a reader?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      7 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Roman Tolmchov
+          
+          
+            4 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Can anyone help me?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+Have you taken a look at our integration guide? There are some specific tips on creating .deb packages:
+To create packages for the FX Series readers, use any of the standard Debian package creation tools, or createthem manually. The FX Series SDK Programmers Guide provides details on creating application packages toinstall on the reader.
+
+The package must contain a binary executable compatible with ELF 32-bit LSB executable, ARM, version 1, GNU Linux.
+The name of the binary executable must match the name of the package, excluding the version name. For example, if the package name is package-1_2.1_all (package 1 version 2.1), the name of the binary executable must be package-1. There can be more than one binary in the package.
+The package must contain a startup script in the name of start_packageName.sh to start the binary or binaries in the package. For example, if the package name is package-1_2.1_all.deb (package 1 version 2.1), the name of the startup script must be start_package-1.sh.
+The package must contain a stop script in the name of stop_packageName.sh to stop the binary or binaries in the package. For example, if the package name is package-1_2.1_all.deb (package 1 version 2.1), the name of stop script must be stop_package-1.sh.
+
+The reader executes the packages with the privileges of rfidadm user account. See the user accounts section for information on the rfidadm user privileges. 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Christian Poly…
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            roman.tolmacho,
+  I can probably help you, I created a .deb package successfully in the past.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Robert Arneson
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            From the image provided on attachment, click on the red circle to select the start/stop button.- This should let the application start.
+it is defaulted to the red stop circle telling user the application has not been started yet.
+You can also select checkbox for auto start for when reader is powered cycled or loss of power.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Roman Tolmchov
+          
+          
+            4 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for your answer. I did exactly as described here and in the documentation. My package installs successfully but does not run through the Zebra GUI. The permissions of the files are &quot;-rwxrwxr-x 1 rfidadm  appsadms&quot;. As far as I understand, the file permissions are correct. What else could be the problem?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Perhaps you could try running the sample app included with the SDK to ensure that works as expected? And if so, then compare your script w/ the working one to see if there are any obvious differences or errors?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            Christian Poly…
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            please send an email to: christian.alejandro.amz@gmail.com
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

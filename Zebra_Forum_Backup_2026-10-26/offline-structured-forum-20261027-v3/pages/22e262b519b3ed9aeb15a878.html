@@ -1,0 +1,241 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Swift Xcode TcpPrinterConnection Remains open</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/swift-xcode-tcpprinterconnection-remains-open; snapshot threads/00530.html; SHA-256 b137bbec9f61888526b7e059369a1034d69076a49f3f83323feb4fdb966d15e9. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Swift Xcode TcpPrinterConnection Remains open</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            W
+          </div>
+          <div class="forum-topic__author-name">William Mays</div>
+          <div class="forum-topic__timestamp">3 years 3 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            150
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            2
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>I have successfully implemented the Link OS iOS SDK into my Xcode project.</p>
+
+<p>I created a bridging header for the .h files, and I am able to print successfully to our Zebra Printers</p>
+
+<p>I am having an issue where extra tags are being printed. Explained:</p>
+
+<ol>
+	<li>Connection is open with IP and port</li>
+	<li>ZPL data is sent to printer, and tag prints successfully </li>
+	<li>Connection is closed</li>
+</ol>
+
+<p>About 20% of the time, when the app is opened again to the main page, the zebra printer will open the tcp connection and print the same tag again. I am stumped and have no idea what is causing this. Any help is appreciated. I added a time stamp to print on the labels, when the extra tag is printed it's using the time stamp form the original tag printed. </p>
+
+<p>I have already tried the following but the issue is still happening:</p>
+
+<ol>
+	<li>Set the TcpPrinterConnection object to nil after closing</li>
+	<li>Wrapped the function in an autoreleasepool</li>
+</ol>
+
+<p>Code:</p>
+
+<pre><code>autoreleasepool {
+    var connection = TcpPrinterConnection.init(address: printerIP, andWithPort: 6101)
+    
+    if connection!.open() == true {
+        do {
+            try tool!.sendCommand(writeDate)
+            connection!.close()
+        } catch {
+            connection!.close()
+            print(error.localizedDescription)
+        }
+    }
+}</code></pre>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      2 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-51960" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 3 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Make sure the TCP connection open and its subsequent printing are done in a background thread. Secondly, tie the printing function with a UI event, such as a button press, etc. From what you described, it looks like the printing function is inadvertently launched when the UI is reopen. You should be able to trace the call flow in the debugger.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-52031" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              W
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>William Mays</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 years 3 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p> I added the following code when the connection is opened and tag printed and I am getting the same issue. The function is only called when a button is pressed, so that is why I am confused on how it's being called. </p>
+
+<p>I am not able to trace the call flow as this only occurs 20% of the time, I have left my phone connected via Xcode and can't replicate it. </p>
+
+<pre><code>DispatchQueue.global(qos: .userInitiated).async {</code></pre></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/swift-xcode-tcpprinterconnection-remains-open%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/swift-xcode-tcpprinterconnection-remains-open%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

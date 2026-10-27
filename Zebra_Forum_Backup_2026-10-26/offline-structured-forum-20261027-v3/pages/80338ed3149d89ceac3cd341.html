@@ -1,0 +1,147 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Falha na gravação de Tags RFID em determinados coletor</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/falha-na-gravacao-de-tags-rfid-em-determinados-coletor; snapshot threads/00293.html; SHA-256 41cda456c580fa56fd7331249eb9165f575f59283f63b1fd55687f9dfde9607a. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Falha na gravação de Tags RFID em determinados coletor</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            L
+          </div>
+          <div class="forum-topic__author-name">Luís Gustavo Nascimento</div>
+          <div class="forum-topic__timestamp">2 years 7 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            79
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Estou com um problema na gravação de Tags RFID.</p><p> </p><p>Tenho um coletor Zebra que esta na versão do Android 10 e outro no Android 11. Consigo realizar a gravação das tags com o coletor Android 10, mas quando tento realizar o memo processo no outro ocorre um erro que fecha a activity em questão e não consigo ter acesso ao erro.</p><p> </p><p>Segue trexo do codigo relacionado a configuração e gravação:</p><p> </p><p> </p><p><span>private void setAccessOperationConfiguration</span>() {<br><span>textInfo_GravAV_LGRFID</span>.setText(<span>"Configurando Antena"</span>)<span>;</span><br><br><span>// Define a potência da antena para 240dbm e configura outras definições</span><br>setAntennaPower(<span>300</span>)<span>;</span><br><span>//setSingulation(SESSION.SESSION_S0,INVENTORY_STATE.INVENTORY_STATE_A);</span><br><span>//reader.Config.setTriggerMode(START_TRIGGER_TYPE.START_TRIGGER_TYPE_IMMEDIATE);</span><br><br><span>// Desativa o DPO se o leitor for RFD8500</span><br><span>if </span>(<em>reader</em>.getHostName().contains(<span>"RFD8500"</span>))<br>setDPO(<span>false</span>)<span>;</span><br><span>// Define o tempo limite da operação de acesso para 1 segundo</span><br><span>try </span>{<br><em>reader</em>.<span>Config</span>.setAccessOperationWaitTimeout(<span>5000</span>)<span>;</span><br>} <span>catch </span>(InvalidUsageException | OperationFailureException e) {<br>e.printStackTrace()<span>;</span><br>}<br>}<br><br><span>// Método para configurar a potência da antena</span><br><span>private void setAntennaPower</span>(<span>int </span>power) {<br><span>textInfo_GravAV_LGRFID</span>.setText(<span>"Configurando Potencia"</span>)<span>;</span><br>Log.<em>d</em>(<em>TAG</em><span>, "setAntennaPower " </span>+ power)<span>;</span><br><span>try </span>{<br><span>// Configurações da antena</span><br>Antennas.AntennaRfConfig config = <em>reader</em>.<span>Config</span>.<span>Antennas</span>.getAntennaRfConfig(<span>1</span>)<span>;</span><br>config.setTransmitPowerIndex(power)<span>; // Define o índice de potência de transmissão</span><br>config.setrfModeTableIndex(<span>0</span>)<span>; // Define o índice da tabela de modo RF</span><br>config.setTari(<span>0</span>)<span>; // Define o valor de Tari</span><br><em>reader</em>.<span>Config</span>.<span>Antennas</span>.setAntennaRfConfig(<span>1, </span>config)<span>; // Aplica as configurações à antena</span><br><br>} <span>catch </span>(InvalidUsageException | OperationFailureException e) {<br>e.printStackTrace()<span>;</span><br>}<br>}<br><span>private void setSingulation</span>(SESSION session<span>, </span>INVENTORY_STATE state) {<br>Log.<em>d</em>(<em>TAG</em><span>, "setSingulation " </span>+ session)<span>;</span><br><span>try </span>{<br><span>// Set the singulation control</span><br>Antennas.SingulationControl s1_singulationControl = <em>reader</em>.<span>Config</span>.<span>Antennas</span>.getSingulationControl(<span>1</span>)<span>;</span><br>s1_singulationControl.setSession(session)<span>;</span><br>s1_singulationControl.<span>Action</span>.setInventoryState(state)<span>;</span><br>s1_singulationControl.<span>Action</span>.setSLFlag(SL_FLAG.<em>SL_ALL</em>)<span>;</span><br><em>reader</em>.<span>Config</span>.<span>Antennas</span>.setSingulationControl(<span>1, </span>s1_singulationControl)<span>;</span><br>} <span>catch </span>(InvalidUsageException e) {<br>e.printStackTrace()<span>;</span><br>} <span>catch </span>(OperationFailureException e) {<br>e.printStackTrace()<span>;</span><br>}<br>}<br><br><span>// Método para controlar o DPO</span><br><span>private void setDPO</span>(<span>boolean </span>bEnable) {<br><span>textInfo_GravAV_LGRFID</span>.setText(<span>"Configurando o DPO"</span>)<span>;</span><br>Log.<em>d</em>(<em>TAG</em><span>, "setDPO " </span>+ bEnable)<span>;</span><br><span>try </span>{<br><span>// Controla o DPO</span><br><em>reader</em>.<span>Config</span>.setDPOState(bEnable ? DYNAMIC_POWER_OPTIMIZATION.<em>ENABLE </em>: DYNAMIC_POWER_OPTIMIZATION.<em>DISABLE</em>)<span>;</span><br>} <span>catch </span>(InvalidUsageException | OperationFailureException e) {<br>e.printStackTrace()<span>;</span><br>}<br>}<br><br><span>// Método para realizar a operação de escrita na etiqueta</span><br><span>private void writeTag</span>(String sourceEPC<span>, </span>String password<span>, </span>MEMORY_BANK memoryBank<span>, </span>String data<span>, int </span>offset) {<br><span>try </span>{<br><span>textInfo_GravAV_LGRFID</span>.setText(<span>"Gravação iniciada"</span>)<span>;</span><br><br><em>reader</em>.<span>Config</span>.setDPOState(DYNAMIC_POWER_OPTIMIZATION.<em>DISABLE</em>)<span>;</span><br><br><span>// Constrói os parâmetros de acesso de escrita</span><br>TagData tagData = <span>null;</span><br>TagAccess tagAccess = <span>new </span>TagAccess()<span>;</span><br><br><span>final </span>TagAccess.WriteAccessParams writeAccessParams = tagAccess.<span>new </span>WriteAccessParams()<span>;</span><br>writeAccessParams.setAccessPassword(Long.<em>parseLong</em>(password<span>, 16</span>))<span>;</span><br>writeAccessParams.setMemoryBank(memoryBank)<span>;</span><br>writeAccessParams.setOffset(offset)<span>;</span><br>writeAccessParams.setWriteData(data)<span>;</span><br>writeAccessParams.setWriteRetries(<span>3</span>)<span>; // Define as tentativas</span><br>writeAccessParams.setWriteDataLength(data.length() / <span>4</span>)<span>; // Comprimento dos dados em palavras</span><br><span>boolean </span>useTIDfilter = memoryBank == MEMORY_BANK.<em>MEMORY_BANK_EPC</em><span>;</span><br><span>textInfo_GravAV_LGRFID</span>.setText(<span>"Antes do doInBackground"</span>)<span>;</span><br><span>new </span>AsyncTask&lt;Void<span>, </span>Void<span>, </span>String&gt;(){<br><span>@Override</span><br><span>protected </span>String <span>doInBackground</span>(Void... voids){<br><span>textInfo_GravAV_LGRFID</span>.setText(<span>"Antes do Try"</span>)<span>;</span><br><span>try </span>{<br><span>textInfo_GravAV_LGRFID</span>.setText(<span>"Inicio da gravação"</span>)<span>;</span><br><em>reader</em>.<span>Actions</span>.<span>TagAccess</span>.writeWait(<span>sourceEPC, writeAccessParams, null, tagData, true, useTIDfilter</span>)<span>;</span><br><br><span>textInfo_GravAV_LGRFID</span>.setText(<span>"Depois da gravação"</span>)<span>;</span><br><span>//reader.Config.setDPOState(DYNAMIC_POWER_OPTIMIZATION.ENABLE);</span><br>GravOk()<span>;</span><br><span>return "Success"; // Se não houver exceção, retornar "Success"</span><br>} <span>catch </span>(Exception e) {<br><span>textInfo_GravAV_LGRFID</span>.setText(<span>"Erro: " </span>+ e.getMessage())<span>;</span><br><span>// Se ocorrer uma exceção, retornar a mensagem de erro</span><br><span>return </span>e.getLocalizedMessage()<span>;</span><br>}<br>}<br><span>@Override</span><br><span>protected void onPostExecute</span>(String result) {<br><span>if </span>(result.equals(<span>"Success"</span>)) {<br><span>textInfo_GravAV_LGRFID</span>.setText(<span>"Gravação Concluída!"</span>)<span>;</span><br><span>ProcesseStats </span>= result<span>;</span><br>} <span>else </span>{<br><span>// Exibir o código e a descrição do erro na tela</span><br><span>textInfo_GravAV_LGRFID</span>.setText(<span>"Erro: " </span>+ result)<span>;</span><br><span>// Colocar o erro na área de transferência</span><br>ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.<em>CLIPBOARD_SERVICE</em>)<span>;</span><br>ClipData clip = ClipData.<em>newPlainText</em>(<span>"Error", </span>result)<span>;</span><br>clipboard.setPrimaryClip(clip)<span>;</span><br>}<br>}<br>}.execute()<span>;</span><br>} <span>catch </span>(InvalidUsageException | OperationFailureException e) {<br>e.printStackTrace()<span>;</span><br>}<br><br>}<br><span>private void WriteEPC</span>(){<br><span>// one time setup to suite the access operation, if reader is already in that state it can be avoided</span><br><span>//setAccessOperationConfiguration();</span><br><span>//</span><br><span>// EPC da etiqueta a ser escrita</span><br>String EPC = <span>old_tag;</span><br><span>// Dados a serem escritos na etiqueta</span><br>String dataToWrite = <span>newTag;</span><br><span>// Senha de acesso (se aplicável)</span><br>String password = <span>"00"; //nenhuma senha de acesso é usada</span><br><span>// Banco de memória onde os dados serão gravados</span><br>MEMORY_BANK memoryBank = MEMORY_BANK.<em>MEMORY_BANK_EPC</em><span>;</span><br><span>// Offset (deslocamento) a partir do qual os dados serão escritos</span><br><span>int </span>offset = <span>2;</span><br>setAccessOperationConfiguration()<span>;</span><br><br><span>// perform write, offset is two for EPC ID</span><br>writeTag(EPC<span>, </span>password<span>, </span>memoryBank<span>, </span>dataToWrite<span>, </span>offset)<span>;</span><br>}</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-52717" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              A
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Alex Lavie</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Normally it should work the same on both platforms.</p><p>On android 11 there might be new rules about where you save data and where you can access files etc...</p><p>easier if you send an apk with your sample or try to run the sample application from our site to check that it does work on both platforms and then correct.</p><p><span data-original-href="https://techdocs.zebra.com/dcs/rfid/android/2-0-2-124/samples/hellorfid/">https://techdocs.zebra.com/dcs/rfid/android/2-0-2-124/samples/hellorfid/</span></p><p> </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/falha-na-gravacao-de-tags-rfid-em-determinados-coletor%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/falha-na-gravacao-de-tags-rfid-em-determinados-coletor%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

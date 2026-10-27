@@ -1,0 +1,217 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>ZC350, linkos and ethernet connections</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>ZC350, linkos and ethernet connections</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zc350-linkos-and-ethernet-connections; original snapshot: threads/00916.html; SHA-256: 2015b2b8066f00ddfb4cbd26ddd9dcb9613d663c0abb0c1a0b6767ac54158210</small><pre id="topic">
+
+    
+        ZC350, linkos and ethernet connections
+
+
+        
+      
+                        
+                    
+            S
+          
+          Stephen Troup
+          4 years 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            114
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hey, I&#x27;ve been trying to get my encode over ethernet software to work with the ZC350 printer.
+I&#x27;ve got the Silex usb over ethernet to work but I&#x27;m having issues with keeping a stable connection with the printer. Over a usb connection I can encode and print multiple cards with no issues but when switching to Ethernet connections I&#x27;m getting errors and timeouts usually with an exception of &quot;Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host&quot; coming from the linkos sdk code.
+I&#x27;m building the connection like this where connection is &quot;TCP:xxx.xxx.xxx.xxx&quot;
+                this.ZebraPrinterConnection = Zebra.Sdk.Comm.ConnectionBuilder.Build(connector);
+                this.ZebraPrinterConnection.Open();
+                this.ZebraCardPrinter = Zebra.Sdk.Card.Printer.ZebraCardPrinterFactory.GetInstance(this.ZebraPrinterConnection);
+                this.ZebraCardPrinterZmotif = Zebra.Sdk.Card.Printer.ZebraCardPrinterFactory.GetZmotifPrinter(this.ZebraPrinterConnection);
+but after printing a few cards, mostly as few as two, it starts to throwing exceptions even when trying to get the current status of the printer. If I wait a few minutes the issue goes away but comes back after printing. 
+I&#x27;m compiling my projects in .Net 4.8 and the printer is the ZC350 on firmware v201.01.15 that was released on the 1 Dec 2021. Normally I&#x27;d be using the printer via usb but in one project I have to use the ethernet interface. The driver is v1.10.0.0
+Any ideas?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Stephen Troup
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Well I&#x27;ve answered my own question. After testing the same code on a ZXP 7 (it works perfectly and prints card after card) I&#x27;d say the ZC350 network stack has issues where it doesn&#x27;t close connections on the printer end and eventually crashes the stack and then the printer, I&#x27;ve had it lock up so badly even the power button doesn&#x27;t work.
+The only reliable way I&#x27;ve got of continuously printing to the ZC350 is after printing a single card I use the ResetNetwork call of the Zebra.Sdk.Card.Printer.ZebraPrinterZmotif object, this resets the network stack of the printer and for any further printing I have to rebuild the connection.
+The same code works perfectly when using a direct usb connection without having to reset anything, hence my belief it&#x27;s the network stack. With the previous firmware it was even worse.
+One undocumented feature I found during all of this is that the Linkos card sdk requires SNMP to be turned ON otherwise it will never build a connection to the printer as it queries the interface to determine the printer type, seeing as it&#x27;s an option on the printer to turn it off but with a bit of reflection I found a way to circumvent the requirement.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Stephen,
+Thanks for coming back to us with your own solution - I&#x27;m sure this will help other developers in future. As for your comment regarding the undocumented feature - I&#x27;ve passed this onto our documentation team to take a look at.
+Thanks again!
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

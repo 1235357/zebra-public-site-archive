@@ -1,0 +1,159 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>TC22R: TagAccess.writeWait() returns TIME OUT on EPC write (SDK 2.0.5.297)</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>TC22R: TagAccess.writeWait() returns TIME OUT on EPC write (SDK 2.0.5.297)</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/tc22r-tagaccesswritewait-returns-time-out-epc-write-sdk-205297-0; original snapshot: threads/00002.html; SHA-256: ff6bf1df332f85e6b6aaeded2e60e70d757a6946103f0f808c7dae4b0fbef9e0</small><pre id="topic">
+
+    
+        TC22R: TagAccess.writeWait() returns TIME OUT on EPC write (SDK 2.0.5.297)
+
+
+        
+      
+                        
+                    
+            Z
+          
+          Zebra User
+          3 days 19 hours ago
+        
+        
+      
+        
+            
+                  
+            
+            24
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi all,We are trying to write EPC tags from our Android store application on the Zebra TC22R, and the write fails with an OperationFailureException. getVendorMessage() returns TIME OUT. The same SDK version and the same tag write successfully on a TC52.EnvironmentDevice: TC22R (model TC2205-0G1250SS-US)(sled)Android OS version: 14RFID SDK: 2.0.5.297Current EPC length and format: SGTIN-96 (Example -303802CCC0E19A400000160D)What we are trying to doWe select the tag by its current EPC and write a new EPC.private void writeToTag(String oldEpc, String newEpc, String password) throws InvalidUsageException, OperationFailureException {
+    TagData tagData = null;
+    TagAccess tagAccess = new TagAccess();
+    TagAccess.WriteAccessParams writeAccessParams = tagAccess.new WriteAccessParams();
+    if (writeAccessParams != null) {
+        writeAccessParams.setAccessPassword(Long.decode(password));
+        writeAccessParams.setMemoryBank(MEMORY_BANK.MEMORY_BANK_EPC);
+        writeAccessParams.setOffset(2);
+        writeAccessParams.setWriteData(newEpc);
+        writeAccessParams.setWriteDataLength(newEpc.length() / 4);
+        if (reader != null &amp;&amp; reader.Actions != null &amp;&amp; reader.Actions.TagAccess != null) {
+            reader.Actions.TagAccess.writeWait(oldEpc, writeAccessParams, null, tagData);
+        }
+    }
+}Observed behaviorwriteWait throws OperationFailureException.getVendorMessage() returns TIME OUT.Access password: &quot;0&quot;(null)QuestionsIs this approach (TagAccess.writeWait with WriteAccessParams on the EPC bank) still the recommended approach on the TC22R with SDK 2.0.5.297, or is there a different method or setting for this device?Are the parameters passed to writeWait correct? Are there TC22R-specific RFID settings (power, session, sled firmware, or a minimum SDK or firmware level) that could cause TIME OUT where the TC52 succeeds?Any pointers or sample code for TC22R would be appreciated. Thanks in advance.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 days 13 hours ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            This is a duplicate posting - please refer to my Suggestions to the posting with the correct User Profile.  
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

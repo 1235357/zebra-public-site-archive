@@ -1,0 +1,276 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Set decoder selection via Datawedge API</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Set decoder selection via Datawedge API</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/set-decoder-selection-datawedge-api; original snapshot: threads/00383.html; SHA-256: 9b3f3c63a65d3f99f3f313d8c6a742534d2770e3d8803e62dd2ff3f59e1533cc</small><pre id="topic">
+
+    
+        Set decoder selection via Datawedge API
+
+
+        
+      
+                        
+                    
+            J
+          
+          Joeri Klomp
+          2 years 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            305
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+I am trying to modify the active profile to only enable certain decoders within particular screens in my application via the Datawedge API, but I can&#x27;t get it to work.
+It returns a RESULT of SUCCESS, that is the weird thing, but I can&#x27;t scan any of the barcodes.
+This is the code (it&#x27;s for a .NET MAUI application):
+Bundle mainBundle = new Bundle();
+mainBundle.PutString(&quot;PROFILE_NAME&quot;, &quot;MauiTest&quot;);
+mainBundle.PutString(&quot;CONFIG_MODE&quot;, &quot;UPDATE&quot;);
+
+Bundle configBundle = new Bundle();
+configBundle.PutString(&quot;PLUGIN_NAME&quot;, &quot;BARCODE&quot;);
+
+Bundle paramsBundle = new Bundle();
+paramsBundle.PutString(&quot;decoder_qrcode&quot;, &quot;true&quot;);
+paramsBundle.PutString(&quot;decoder_datamatrix&quot;, &quot;true&quot;);
+paramsBundle.PutString(&quot;decoder_ean8&quot;, &quot;true&quot;);
+paramsBundle.PutString(&quot;decoder_ean13&quot;, &quot;true&quot;);
+
+configBundle.PutBundle(&quot;PARAM_LIST&quot;, paramsBundle);
+mainBundle.PutBundle(&quot;PLUGIN_CONFIG&quot;, configBundle);
+
+Intent intent = new Intent();
+intent.SetAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+intent.PutExtra(&quot;SEND_RESULT&quot;, &quot;true&quot;);
+intent.PutExtra(&quot;com.symbol.datawedge.api.SET_CONFIG&quot;, mainBundle);
+
+SendBroadcast(intent);
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            David Garratt
+          
+          
+            2 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Did you make any progress with this. One of my customers just upgraded from a Windows Mobile MC92n0 Enterprise Browser 1.8 config to an Android MC9300 with Enterprise Brower and DataWedge combo and it proved extremely difficult. Zebra seems to want you to use DataWedge API from the browser (via EB) but it did not seem to work for me and with very little to go on when it comes to diagnosing the problem.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            2 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Quick Question.The profile in question &quot;MauiTest&quot; - when you send this enablement - do you see this change the state of these decoders in the &quot;MauiTest&quot; profile in Datawedge?I ask since this Maui sample - looks close to the &quot;Datacapture1&quot; sample app (Android Studio) but I think you may have missed the degree of freedom for the PARAM_LIST for the Bundle Property.Datacapture1 and the github repo can be found here:https://techdocs.zebra.com/datawedge/13-0/guide/samples/barcode1/    { Datacapture1 app}https://github.com/ZebraDevs/DataWedge-Android-Samples  { GitHib Repo } Take a look carefully in the GIT for &quot;MainActivity.java&quot; and look carefully at the &quot; btnSetDecoders.setOnClickListener();&quot; part.The Bundle Setup look s to me like:profileConfig (new bundle),barcodeConfig (new bundle),barcodeProps (new bundle).  ( So far with your sample, above this looks good )but... look further down.appConfig (new bundle).  ( this is the : Action - that Puts the parsable array into the app correspondent DW Profile for DW to process.)Its subtle - but this is why I ask if your code &quot;Actually&quot; changes anything.  I think the way you are intent-ing to the Broadcast Intent channel is not targeting Your Maui app DW profile, but may not be doing anything at all. Hope this helps with pointing you in the direction that &quot;Datacapture1&quot; sample app behaves / works - for your MAUI project.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            2 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            FYI: Nikola De Zolt - just published this in the blog.https://github.com/ZebraDevs/datawedge-MAUI-SampleApp/.From the posting here:https://developer.zebra.com/blog/developing-net-maui-zebra-androidtm-devicesEnjoy.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

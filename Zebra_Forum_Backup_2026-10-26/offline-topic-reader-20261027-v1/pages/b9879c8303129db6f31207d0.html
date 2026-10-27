@@ -1,0 +1,154 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>ZT411 RFID Printer</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>ZT411 RFID Printer</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zt411-rfid-printer; original snapshot: threads/00193.html; SHA-256: ffdd800b713eba6b89bce3212eff85fa79bf0893963d960f6695dea9b66688d2</small><pre id="topic">
+
+    
+        ZT411 RFID Printer
+
+
+        
+      
+                        
+                    
+            P
+          
+          Parashuram JAdhav
+          2 years 1 month ago
+        
+        
+      
+        
+            
+                  
+            
+            172
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi, Need Help Currently Working on Zebra ZT411 Printer, I need help on RFID command that only reads the TID without feeding the label,I am using Zebra.Printer.SDK Below is C# Code  string readCommand = &quot;^XA&quot; +     &quot;^RFR,H,0,12,2^FN1^FS^HV1,,Tag ID Data:^FS&quot; +     &quot;^XZ&quot;; byte[] readTIDByte = Encoding.UTF8.GetBytes(readCommand);connection.Write(readTIDByte);System.Threading.Thread.Sleep(500); byte[] response = connection.Read(); string result = Encoding.UTF8.GetString(response); After Execute of connection.Write(readTIDByte); Statement ,Printer feeding the Label and response data will be null 
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            When using the ZPL for the RFID read, the printer will feed one RFID tag at the end of the execution. This is because the ZPL (^XA....^XZ) also represents a label. If we only want to read the RFID without feeding an RFID tag, we have to use the RFID SGD commands, e.g., a few sample commands below. Please refer to the RFID Programming Guide 3 for details. 
+### Specify the content to be read.
+! U1 setvar &quot;rfid.tag.read.content&quot; &quot;value&quot;
+
+### Execute the read operation
+! U1 setvar &quot;rfid.tag.read.execute&quot;
+
+### Get the result
+! U1 getvar &quot;rfid.tag.read.result_line1&quot; 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

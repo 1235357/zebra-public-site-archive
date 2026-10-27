@@ -1,0 +1,490 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Print to ZQ610 Bluetooth from PHP/Javascript on Android with PrintConnect</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Print to ZQ610 Bluetooth from PHP/Javascript on Android with PrintConnect</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/print-zq610-bluetooth-phpjavascript-android-printconnect; original snapshot: threads/01027.html; SHA-256: b47e00398348bd389db2f3d2acbef332868289aa027e75d73fc7c7edd849e807</small><pre id="topic">
+
+    
+        Print to ZQ610 Bluetooth from PHP/Javascript on Android with PrintConnect
+
+
+        
+      
+                        
+                    
+            J
+          
+          Jerry Kowalewski
+          5 years 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            78
+          
+                
+                  
+            
+            7
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi there, is it possible to print from a basic PHP/JS website to a ZQ610 mobile printer connected via bluetooth? I was told by a developer to try PrintConnect, however I cannot get it to recognize the intent from a chrome URL. I am finding very little content on this topic. Any advice would be appreciated.
+Here is the source we had attempted to try by using a chrome url to load variable data to PrintConnect. (https://github.com/ltrudu/PrintConnectSample/blob/master/BrowserIntentU…) Every time we try it, it simply loads the app store. Has anyone else used this in a project?
+Thanks!
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      7 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jerry Kowalewski
+          
+          
+            5 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I was hoping it would be possible to use an href intent link to launch PrintConnect with the variable ZPL data encoded in the url, and it would print direct using ZPL, without using a template. I suppose doing this with a template would work at this point as well, if any of this is possible using PHP/JS.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Chrome can only launch an app through the intent. I don&#x27;t think you can call out the other intents associated with PrintConnect through Chrome.
+If you want to print from Chrome browser on Android, there are two options. The first option is to use BrowserPrint for Android. You need to install a BrowserPrint app on an Android device. Then you call the JavaScript API to pass the data from Chrome to the BrowserPrint and then to the printer.
+Another option is to use the cloud-based printing API - SendFileToPrinter API. It requires the printer to connect to the cloud. The SendFileToPrinter API is a REST API. So you can make a request through the JavaScript in Chrome.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jerry Kowalewski
+          
+          
+            5 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you! I just saw your reply. I am on the right track!
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jerry Kowalewski
+          
+          
+            5 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I think I found something with BrowserPrint.js and the Android apk that is unpublished. Not sure why it doesn&#x27;t exist in the play store. Going to give that a try.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jerry Kowalewski
+          
+          
+            5 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I went ahead and setup a demo environment using Browser Print for Windows with an apache server hosting the sample browserprint.js from the documentation. (https://developer.zebra.com/community/home/blog/2018/11/30/learn-how-to…). I think this is going to work, however, I just noticed a warning on the edge console: 
+[Deprecation] The website requested a subresource from a network that it could only access because of its users&#x27; privileged network position. These requests expose non-public devices and servers to the internet, increasing the risk of a cross-site request forgery (CSRF) attack, and/or information leakage. To mitigate these risks, Chrome deprecates requests to non-public subresources when initiated from non-secure contexts, and will start blocking them in Chrome 92 (July 2021). See https://chromestatus.com/feature/5436853517811712 for more details.
+Considering its beyond July 2021, I assume I am going to start seeing some issues in the near future. Does anyone have ay experieice with this? I downloaded the latest build of BrowserPrint (BrowserPrint-3.0.216.min.js). I&#x27;m hoping this project is not dead.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jerry Kowalewski
+          
+          
+            5 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I&#x27;ve managed to locate an android device to begin testing BrowserPrint. Does anyone know if this BrowserPrint solution is supported? I could not get it to pair with any bluetooth Zebra printers. The android device itself will pair, but BrowserPrint always returns: Bluetooth pairing error. Unable to connect to the device. The device will still be set as the defailt, but the application cannot retrieve information about it. Come to find out that none of my printers support Bluetooth Classic, which apparently BrowserPrint only supports. Are there any plans for BrowserPrint to support bluetooth LE?
+Backstory to my need...I have android devices that have no wifi/LTE internet available at this remote site, so Cloud print is out of the question, which is why I am looking for BrowserPrint as a local (device to bluetooth printer) solution.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The BrowserPrint app for Android supports both network and Bluetooth connected printers. For the Bluetooth connected printers, the BrowserPrint app only supports Bluetooth Classic. It doesn&#x27;t support Bluetooth LE and there is no plan for Bluetooth LE. In one of your posts above, you mentioned that you use ZQ610 printers. The ZQ610 supports both Bluetooth Classic and LE. Please make sure that Bluetooth Classic on this ZQ610 is configured to active. The following SGD commands can help you to check and set the Bluetooth configuration. These SGD commands can be sent to the printer via Printer Setup Utility for Windows tool. 
+### Check if Classic, LE or both is enabled
+! U1 getvar &quot;bluetooth.le.controller_mode&quot;
+
+### Enable Classic only
+! U1 setvar &quot;bluetooth.le.controller_mode&quot; &quot;classic&quot;
+
+### Enable both Classic &amp; LE
+! U1 setvar &quot;bluetooth.le.controller_mode&quot; &quot;both&quot;
+
+### Enable LE only
+! U1 setvar &quot;bluetooth.le.controller_mode&quot; &quot;le&quot;
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

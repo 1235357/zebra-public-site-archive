@@ -1,0 +1,462 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Print image with ZQ210 mobile printer</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Print image with ZQ210 mobile printer</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/print-image-zq210-mobile-printer-0; original snapshot: threads/00657.html; SHA-256: a14603b48bb9da0a7d7281608ccf0a799a67d317c803ce92dfac4fa816abe603</small><pre id="topic">
+
+    
+        Print image with ZQ210 mobile printer
+
+
+        
+      
+                        
+                    
+            P
+          
+          Peter Kolocz
+          3 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            221
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                          //Solved
+        
+  
+
+    
+    
+        
+      
+            
+                  I have a ZQ210 printer with which I want to print unique labels (which are an image) on a 35x30mm label. However, after printing, the printer creates an extra space and thus goes into the next label area. I would definitely need to be able to print on the entire label area, without the printer leaving more space. Is there any solution or option for this?
+              
+
+                    
+          
+      
+              
+ 20230203_102746.jpg
+
+          
+  
+        
+      
+                    
+          
+
+
+
+        
+      
+        ✓ Accepted Solution
+      
+      
+          
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            ZQ210 is a CPCL printer. I&#x27;d recommend to use ZebraDesigner 3 to help design the label with image and then output the *.prn file in CPCL. You can do a few test print to make sure it doesn&#x27;t exceed the label boundary before generating the output file. Of course, you need too calibrate the ZQ210 with the media first.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+      
+    
+  
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            ZQ210 is a CPCL printer. I&#x27;d recommend to use ZebraDesigner 3 to help design the label with image and then output the *.prn file in CPCL. You can do a few test print to make sure it doesn&#x27;t exceed the label boundary before generating the output file. Of course, you need too calibrate the ZQ210 with the media first.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Peter Kolocz
+          
+          
+            3 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            how can I calibrate the printer to detect the dimensions of the label?
+
+Implementation-Title: Link-OS Multiplatform SDK
+Implementation-Version: 2.14.5198
+
+I&#x27;m currently using this for printing:
+
+try {
+    if (null == printer) {
+        printer =
+            ZebraPrinterFactory.getInstance(
+                PrinterLanguage.CPCL,
+                connection
+            )
+    }
+} catch (e: ConnectionException) {
+    disconnectPrinter()
+    return PrinterDeviceStatus.NOT_CONNECTED
+}
+
+ 
+
+printer!!.printImage(ZebraImageAndroid(preview), 60, 0, 300, 164 /*200*/, false)
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You need to take out the ZQ210 User Guide and follow the instructions on the guide to calibrate the printer. The guide also has specifications about the types of the label media supported by the ZQ210 printers. You cannot detect the label length programmatically with ZQ210 printers. You may add a UI to allow the user to specify the label dimension for the app.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            Peter Kolocz
+          
+          
+            3 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            i would use this code to print the bitmap:
+
+I used the printImage method of GraphicsUtilCpcl and added the &quot;GAP-SENSE&quot; command, with which the printer can monitor the label boundaries, but my problem is that the printing fails, even though my code is built on the same basis as the original code. What could be the problem?
+
+ 
+
+@Throws(ConnectionException::class)
+private fun printImage(
+    printerConnection: BluetoothConnection,
+    bitmap: Bitmap,
+    quantity: Int
+) {
+    val bitmapPreview: Bitmap = scaleImage(250, 214, bitmap)
+    val ByteWidth: Int = (bitmap.width + 7) / 8
+
+    val byteArrayOutputStream = ByteArrayOutputStream()
+    val printParameters = &quot;! 0 200 200 ${bitmapPreview.height} $quantity\r\n&quot;;
+    byteArrayOutputStream.write(printParameters.toByteArray())
+    val tone = &quot;TONE 100\r\n&quot;
+    byteArrayOutputStream.write(tone.toByteArray())
+    //val speed = &quot;SPEED 2\r\n&quot;
+    //byteArrayOutputStream.write(speed.toByteArray())
+    // val onFeed = &quot;ON-FEED IGNORE\r\n&quot;
+    //byteArrayOutputStream.write(onFeed.toByteArray())
+    //val pace = &quot;NO-PACE\r\n&quot;
+    //byteArrayOutputStream.write(pace.toByteArray())
+    val barSense = &quot;GAP-SENSE\r\n&quot;
+    byteArrayOutputStream.write(barSense.toByteArray())
+
+
+    byteArrayOutputStream.write(&quot;COMPRESSED-GRAPHICS&quot;.toByteArray())
+    byteArrayOutputStream.write(ByteWidth.toString().toByteArray())
+    byteArrayOutputStream.write(&quot; &quot;.toByteArray())
+    byteArrayOutputStream.write(bitmapPreview.height.toString().toByteArray())
+    byteArrayOutputStream.write(&quot; &quot;.toByteArray())
+    byteArrayOutputStream.write(60.toString().toByteArray())
+    byteArrayOutputStream.write(&quot; &quot;.toByteArray())
+    byteArrayOutputStream.write(0.toString().toByteArray())
+    byteArrayOutputStream.write(&quot; &quot;.toByteArray())
+    printerConnection.write(byteArrayOutputStream.toByteArray())
+
+    val var12 = PrinterConnectionOutputStream(printerConnection)
+    val var13 = CompressedBitmapOutputStreamCpcl(var12)
+    DitheredImageProvider.getDitheredImage(ZebraImageAndroid(bitmapPreview), var13)
+    var13.close()
+    var12.close()
+
+    printerConnection.write(&quot;\r\n&quot;.toByteArray())
+
+
+    val formCommand = &quot;FORM\r\n&quot;
+    printerConnection.write(formCommand.toByteArray())
+    val printCommand = &quot;PRINT\r\n&quot;
+    printerConnection.write(printCommand.toByteArray())
+}
+
+private fun scaleImage(var1: Int, var2: Int, bitmap: Bitmap): Bitmap {
+    return if (var1 &gt; 0 &amp;&amp; var2 &gt; 0) {
+        Bitmap.createScaledBitmap(bitmap, var1, var2, true)
+    } else {
+        bitmap
+    }
+}
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

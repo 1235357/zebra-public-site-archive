@@ -1,0 +1,227 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Permission Denied for downloaded APK when performing Upgrade in Android 11</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Permission Denied for downloaded APK when performing Upgrade in Android 11</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/permission-denied-downloaded-apk-when-performing-upgrade-android-11; original snapshot: threads/00728.html; SHA-256: 81259f30afddcfd632b9e6302956c1915dadae39e4ae298328a1b9e0483120af</small><pre id="topic">
+
+    
+        Permission Denied for downloaded APK when performing Upgrade in Android 11
+
+
+        
+      
+                        
+                    
+            W
+          
+          WTG WTG
+          4 years ago
+        
+        
+      
+        
+            
+                  
+            
+            208
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I have been attempting to test my Android application to ensure it supports Android 11 but have been having trouble with our pre-existing In-App upgrade process.
+We make use of EMDK to call an upgrade instruction after downloading to our applications storage:
+Where apkPath = Path.Combine(context.GetExternalFilesDir(null).AbsolutePath, fileName);
+In Android 10 and prior, this instruction would succeed. However for Android 11, we are getting an error &quot;INSTALL_FAILED_INVALID_URI&quot;, even though the path is identical.
+Investigating via Logcat i discovered the following logs:
+10-05 00:49:03.079  6970  7019 I MXStorageManager: Received Path: /sdcard/Android/data/{PACKAGENAME}/files/{PACKAGENAME}.apk
+10-05 00:49:03.079  6970  7019 I MXStorageManager: Returned Path: /sdcard/Android/data/{PACKAGENAME}/files/{PACKAGENAME}.apk
+10-05 00:49:03.081  2954  2990 W ziparchive: Unable to open &#x27;/sdcard/Android/data/{PACKAGENAME}/files/{PACKAGENAME}.apk&#x27;: Permission denied
+10-05 00:49:03.081  2954  2990 E nstallerservic: Failed to open APK &#x27;/sdcard/Android/data/{PACKAGENAME}/files/{PACKAGENAME}.apk&#x27; I/O error
+10-05 00:49:03.081  2954  2990 W System.err: android.content.pm.PackageParser$PackageParserException: Failed to parse /sdcard/Android/data/{PACKAGENAME}/files/{PACKAGENAME}.apk
+10-05 00:49:03.082  2954  2990 W System.err: 	at android.content.pm.PackageParser.parseApkLiteInner(PackageParser.java:1449)
+10-05 00:49:03.082  2954  2990 W System.err: 	at android.content.pm.PackageParser.parseApkLite(PackageParser.java:1420)
+10-05 00:49:03.082  2954  2990 W System.err: 	at android.content.pm.PackageParser.parseMonolithicPackageLite(PackageParser.java:935)
+10-05 00:49:03.082  2954  2990 W System.err: 	at android.content.pm.PackageParser.parsePackageLite(PackageParser.java:928)
+10-05 00:49:03.082  2954  2990 W System.err: 	at c.b.b.a.c$a.onTransact(:11)
+10-05 00:49:03.082  2954  2990 W System.err: 	at android.os.Binder.execTransactInternal(Binder.java:1154)
+10-05 00:49:03.082  2954  2990 W System.err: 	at android.os.Binder.execTransact(Binder.java:1123)
+Why does EMDK not have permission to install this apk? I can manually install without issue, and this works for older versions of Android.
+How do I resolve this for Android 11?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+I think this is an issue w/ Scoped Storage in A11. Because you&#x27;re storing your file in your applications scoped storage, the EMDK can&#x27;t access the file for security reasons. We&#x27;ve a blog with some more detail here.
+I think you have a couple options:
+
+Store the APK in the /enterprise folder. This doesn&#x27;t require any additional permissions, however, the file will persist after an enterprise reset so make sure to delete it if you don&#x27;t need it any more.
+Use any other shared storage location (E.g. &quot;/sdcard/&quot;) by requesting the MANAGE_EXTERNAL_STORAGE permission. There&#x27;s a few drawbacks to this option, but the main one is that your app can&#x27;t be distributed via the public playstore (bar a few very small exceptions)
+
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Richard Venderbosch
+          
+          
+            4 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You can also use &quot;/data/tmp/public/&quot;.
+See &quot;Device File Location Rules&quot; on https://techdocs.zebra.com/emdk-for-android/11-0/mx/powermgr/.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

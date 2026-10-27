@@ -1,0 +1,155 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Zembra Xamarin EMDK ScannerException</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Zembra Xamarin EMDK ScannerException</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/36608; original snapshot: threads/resume-00310.html; SHA-256: 1dfccecbdeb4b385aa77f19d3e6177a06137182a10b5229f567ef9c998faebb5</small><pre id="topic">
+
+    
+        Zembra Xamarin EMDK ScannerException
+
+
+        
+      
+                        
+                    
+            A
+          
+          Alessandro Caliaro
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            177
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi.
+I am tring this code: http://techdocs.zebra.com/emdk-for-xamarin/3-0/tutorial/barcodeapitutor…
+Basic Scanning Tutorial using Barcode API - Zebra Technologies Techdocs 
+It seems to work but I have an exception here:
+   try   {   //Get the feature object such as BarcodeManager object for accessing the feature.  barcodeManager = (BarcodeManager)emdkManager.GetInstance(EMDKManager.FEATURE_TYPE.Barcode);  scanner = barcodeManager.GetDevice(BarcodeManager.DeviceIdentifier.Default);   if (scanner != null)   {   //Attahch the Data Event handler to get the data callbacks.  scanner.Data += scanner_Data;   //Attach Scanner Status Event to get the status callbacks.  scanner.Status += scanner_Status;  scanner.Enable();   //EMDK: Configure the scanner settings   ScannerConfig config = scanner.GetConfig();  config.SkipOnUnsupported = ScannerConfig.SkipOnUnSupported.None;  config.ScanParams.DecodeLEDFeedback = true;  config.ReaderParams.ReaderSpecific.ImagerSpecific.PickList = ScannerConfig.PickList.Enabled;  config.DecoderParams.Code39.Enabled = true;  config.DecoderParams.Code128.Enabled = false;  scanner.SetConfig(config);   }   else   {  displayStatus(&quot;Failed to enable scanner.\n&quot;);   }   }   catch (ScannerException e)   {  displayStatus(&quot;Error: &quot; + e.Message);   }
+ When the execution reach scanner.SetConfig, I receive an exception:
+Already scanning. Wait for current scanning to complete
+I don&#x27;t understand which could be the problem, but in this way the configuration is not accepted.
+Thanks
+Alessandro
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi, can you please try with the barcode sample: samples-emdkforxamarin-3_0/BarcodeSample1 at master · Zebra/samples-emdkforxamarin-3_0 · GitHub .&amp;nbsp; To get that sample to compile you will also need to include the EMDK component from Nuget.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

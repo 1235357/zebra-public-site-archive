@@ -1,0 +1,328 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Xamarin Forms - RFD8600 - TC52 Only able to scan RFID, not barcodes</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Xamarin Forms - RFD8600 - TC52 Only able to scan RFID, not barcodes</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/xamarin-forms-rfd8600-tc52-only-able-scan-rfid-not-barcodes; original snapshot: threads/00594.html; SHA-256: 2cd3c5a8159f0939223f40035f43ff18828168b3eaac25ef85ac8a574c370e4d</small><pre id="topic">
+
+    
+        Xamarin Forms - RFD8600 - TC52 Only able to scan RFID, not barcodes
+
+
+        
+      
+                        
+                    
+            K
+          
+          Kevin Meers
+          3 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            242
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+
+I managed to get the RFID scanner working using Xamarin Forms and I have started to implement the ability to scan barcodes within the same application, but have not been able to do so.
+
+I tried manually pressing the &quot;FN&quot; button on the sled to switch modes but that doesn&#x27;t seem to do anything, I tried changing the trigger mode in the sdk and again it didn&#x27;t seem to make any difference rfid is the only thing being read and the barcode reader doesn&#x27;t even light up. I tried adding the EMDK but that caused a conflict with the XamarinZebraRFID library. I&#x27;m stumped. Is it not possible to have a Xamarin app that can handle both Barcode from the TC52&#x27;s scanner and RFID from the RFD8600?
+
+The sample app (although not working) does have both Barcode and RFID, I had to fix the sample code for the RFID but haven&#x27;t been able to do so for barcode scanning, no events get fired at all, it just doesn&#x27;t seem to be wired up to anything.
+
+Thanks
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            This is a very common Misconception for the RFD8500 / RFD40 / RFD90 - and Zebra Android Devices that use Datawedge for the Built-in Barcode scanner.
+
+The RFD devices barcode scanner is not an explicitly DW - capable scanner on Zebra Android devices.
+
+On Non-Zebra android (Google Pixel Phone platform for example)  the Xamarin / 123RFID Mobile RFID demo apps can demonstrate the use of the &quot;Scanner Control module&quot; Library that can access these barcode scanners.
+
+The Best solutions for Zebra Android is to use the RFD that does not have the Enclosed Barcode scanner. 
+
+There is an exception to this - the RFD90 is always provisioned with the Barcode Scanner - since the RFD9091 has both the Long-Range Antenna for the RFID, but the ER range series Barcode Scanner to scan at longer distances for example.
+
+If this is the situation you are encountering Kevin - please file a Help Desk case so that the Technical Support team can provide you guidance on next steps you can take.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              K
+            
+          
+                
+          
+            Kevin Meers
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Ok, so just to confirm. There is no way to access the TC-52&#x27;s barcode scanner in the same application as the RFID Scanner, It&#x27;s a case of one or the other but not both?
+
+Thanks in advance.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              K
+            
+          
+                
+          
+            Kevin Meers
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,
+
+I have it working now, I found that I can actually use the Xamarin EMDK. I just have to make use of it in the Android project and add an interface in the shared project.
+
+Thanks.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Correct, The EMDK is an older option to get access to the On-Board scanner - this is now suggested to move/migrate to using Datawedge.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

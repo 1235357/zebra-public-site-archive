@@ -1,0 +1,197 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Migrating from DYMO: ZPL templating and label previews</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Migrating from DYMO: ZPL templating and label previews</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/migrating-dymo-zpl-templating-and-label-previews; original snapshot: threads/00041.html; SHA-256: 202eb3afc44497df461929f6e168d1cf32308cb11a899ac607efb2faca6506d5</small><pre id="topic">
+
+    
+        Migrating from DYMO: ZPL templating and label previews
+
+
+        
+      
+                        
+                    
+            C
+          
+          C. S.
+          1 year 3 months ago
+        
+        
+      
+        
+            
+                  
+            
+            736
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,quick overview: we are currently running a small logistics web application with multiple customers. There is a button that prints a label with article data. Every customer gets an individual label layout/template. We are using DYMO label printers with their Label Web Print service. This is basically the same thing as Zebra Browser Print: you install the service on your computer with the printer and then you send the print commands from the web frontend via JavaScript to the address+port of the computer to print.In our current solution, we create the label templates (.label files) in the DYMO label software, put it on the server and let PHP (i.e. Symfony+Twig) replace the placeholders with actual data and send it to the printing API to print the label. All this is done via DYMO&#x27;s Javascript framework.Question 1Now the plan is to migrate to Zebra printers in the future and I am trying to evaluate how it can be done in our application. Since I am new to the Zebra ecosystem, I found it quite hard to find the right keywords to google it myself. But somehow I stumbled upon this thread here:https://developer.zebra.com/content/creating-zpl-files-nlbl-template-using-netFrom what I understand here: we could do it basically the same way as with the DYMO printer.Design the label with placeholders in Zebra Designersave it as .prn file, containing ZPL dataput it on the server like the label files before and fill the placeholders with actual datasend the result as ZPL to the Browser Print service to print the labelWould this work?(note: I don&#x27;t want to store templates in the printers)Question 2The DYMO service has a nifty little feature that creates preview images of labels. That way you can send the XML of the label to the local service and get a base64 encoded PNG back.Is there something like that available in Browser Print?
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Hannah Xu
+          
+          
+            1 year 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Question 2: Is there a label preview API like DYMO’s base64 PNG return?Unfortunately, Zebra Browser Print does not support label preview generation natively.However, you have two main options to implement label previews:Option A: Zebra Designer + PDF Export (Manual)Design the label and export a static image or PDF for preview (e.g., during template creation).This doesn&#x27;t support dynamic data but can help show layout.Option B: Use Zebra&#x27;s Label Preview API (Cloud API – paid)Zebra has a cloud-based API (called ZebraDesigner Cloud API or Print DNA Label Preview) that can generate PNG previews of ZPL:API Input: ZPL stringAPI Output: Base64-encoded PNG or raw imageDocs: Zebra Label Preview API✅ Pros:Generates preview dynamically with live dataGreat for user-facing UIs❌ Cons:Requires Zebra DevConnect accountMay be paid depending on usage &lt;a href=&quot;https://limsimi.app&quot;&gt;&lt;span&gt;Limsimi&lt;/span&gt;&lt;/a&gt;
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              E
+            
+          
+                
+          
+            Emma Clark
+          
+          
+            1 year 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Moving from DYMO to ZPL gives us more control and configuration and expands our capabilities with labels. Exploring label previews warrants the best possible output. The same way that CIPD Level 3 Assignment Writing Services help students to get clarity and accuracy when completing HR tasks.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

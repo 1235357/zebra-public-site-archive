@@ -1,0 +1,155 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Barcode API - very slow</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Barcode API - very slow</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/32073; original snapshot: threads/resume-00083.html; SHA-256: d6c34af6adb5133a0c1a98c45248d8489c4a38e6dcaf2ac4560b7bdd5103642f</small><pre id="topic">
+
+    
+        Barcode API - very slow
+
+
+        
+      
+                        
+                    
+            P
+          
+          Petr Brant
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            98
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Good morning,
+ 
+we have Android Xamarin application with Barcode Scanner API. On every Activity we have InitScanner method OnResume event and DeinitScanner method on OnPause event.
+ 
+public void InitScanner(bool enableScannerOnStartup) {     if (emdkManager != null)     {         if (barcodeManager == null)         {             try             {                 barcodeManager = (BarcodeManager) emdkManager.GetInstance(EMDKManager.FEATURE_TYPE.Barcode);                 scanner = barcodeManager.GetDevice(BarcodeManager.DeviceIdentifier.Default);                 if (scanner != null)                 {                     scanner.Data += scanner_Data;                     scanner.Enable();                 }             }             catch (ScannerException e)             {                 //LOG             }             catch (Exception e)             {                 //LOG             }         }     } }public void DeinitScanner() {     if (emdkManager != null)     {         if (scanner != null)         {             try             {                 scanner.Data -= scanner_Data;                 scanner.Status -= scanner_Status;                 scanner.Disable();             }             catch (ScannerException e)             {                 //LOG             }         }         if (barcodeManager != null)         {             emdkManager.Release(EMDKManager.FEATURE_TYPE.Barcode);         }         barcodeManager = null;         scanner = null;     } } 
+ 
+InitScanner and DeinitScanner is called for every Activity. We have problem with speed (Init takes aproximately 4 seconds - on every StartActivity). What is the best solution how to speed up application (BarcodeAPI, DataWedge profile, create scanner singleton)?
+ 
+Thank you for advice.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Petr,
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Sorry for the delay in answering your question. Could you provide a full sample app that displays this issue? A full sample will help greatly in tracking down the issue.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

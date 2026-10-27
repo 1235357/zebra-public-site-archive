@@ -1,0 +1,797 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Printing label from TC25 (7.1.2 Android) to ZD620 (Bluetooth LE) via Xamarin Forms</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Printing label from TC25 (7.1.2 Android) to ZD620 (Bluetooth LE) via Xamarin Forms</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/printing-label-tc25-712-android-zd620-bluetooth-le-xamarin-forms; original snapshot: threads/00974.html; SHA-256: 3bef917933c5608693699441b5d89e1b157940ce2c681808704ddb11cff4260c</small><pre id="topic">
+
+    
+        Printing label from TC25 (7.1.2 Android) to ZD620 (Bluetooth LE) via Xamarin Forms
+
+
+        
+      
+                        
+                    
+            H
+          
+          Henryk L.
+          5 years ago
+        
+        
+      
+        
+            
+                  
+            
+            227
+          
+                
+                  
+            
+            12
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Our goal is to print labels (ZPL) from TC25 (7.1.2 Android) to ZD620 (Bluetooth LE) via Xamarin Forms.
+Unfortunatly nothing works. Some demos don&#x27;t even find the printer (Tried even the BLE Demo on Android in Android Studio). Plus the SDKs are years old.
+The biggest ironie is, your &quot;Printer Setup Utility&quot; App finds/discovers the printer and successfully prints the &quot;Test&quot; label. Your SDKs don&#x27;t.
+Do you have the source code for the &quot;Printer Setup Utility&quot; app?
+Do you have a current example on how to accomplish this task?
+We need a bluetooth solution for some remote location without network access.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      12 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 12 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There is a developer demo app that comes with the release of the Link-OS SDK for Android. It&#x27;s called ZSDK_DemosAndroid, which is in a subfolder under the installation path, i.e. link_os_sdk/android/v2.14.5198/demos/androidstudio/ZSDK_DemosAndroid.zip. Just unzip the ZSDK_DemosAndroid.zip and open it in Android Studio. It should compile and run on TC25. You can also install the apk file that comes with the SDK release - link_os_sdk/android/v2.14.5198/demos/release/DeveloperDemo_Android-debug.apk directly on TC25.
+For the developer demo of Link-OS SDK for Xamarin, it&#x27;s in link_os_sdk/PC-.NET/v2.15.2634/demos_xamarin fold. You can find the source code and the apk files in the Source and the Release folder respectively.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Henryk L.
+          
+          
+            4 years 12 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I tried the APKs. They don&#x27;t work. The ZD620 isn&#x27;t discovered via Bluetooth LE.
+Connecting the printer to the local network, the apps work. However, like I mentioned it, we need the Bluetooth connection.
+Even PrintConnect (from the Play Store) doesn&#x27;t find the printer via Bluetooth LE.
+Only Printer Setup Utility (from the Play Store) works. The printer gets discovered and a test label can be printed.
+What can be done?
+Does anybode have a current Xamarin Forms (version 5; .NET Standard/Code) example?
+We really need just to send simple ZPL code via Bluetooth LE from an Android device.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 12 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            First of all, in factory default, the Bluetooth Classic on ZD620 is undiscoverable, but the Bluetooth LE is discoverable. The developer demo (and its *.apk file) does not use BLE and won&#x27;t be able to discover the Bluetooth Classic if the ZD620 is still in factory default. You will have to make the Bluetooth Classic discoverable first.
+The Printer Setup Utility app can discover both Bluetooth Classic and BLE, if the Bluetooth is enabled and the Classic is discoverable.
+The PrintConnect app doesn&#x27;t use BLE. I think the ZD620 is still in it&#x27;s factory default. That&#x27;s why the PrintConnect cannot discover the printer. You can use the Printer Setup Utility app to make the Classic discoverable via the Connectivity feature in the app.
+I don&#x27;t we have BLE Xamarin demo. But the BLE demo in the Link-OS Android BTLE SDK should work. There is also a BLE demo for iOS on the GitHub.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Henryk L.
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you for your replay, however...
+Are you sure the ZD620 has a classic bluetooth radio?
+I tried to switch it to &quot;classic&quot; or &quot;both&quot; via the windows &quot;Zebra Setup Utilities&quot; app. Didn&#x27;t work.
+I also tried it via ZPL code: ! U1 setvar &quot;bluetooth.le.controller_mode&quot; &quot;classic&quot;. Didn&#x27;t work ether.
+It always stays on &quot;le&quot;.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Could you run the following SGD command via the Zebra Setup Utilities for Windows and share the output, so that we can be sure whether your ZD620 has Bluetooth classic or not. We can also see how Bluetooth is configured.
+! U1 getvar &quot;bluetooth&quot; 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Henryk L.
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Result of ! U1 getvar &quot;bluetooth&quot;:
+bluetooth.
+bluetooth.discoverable : on , Choices: on,off
+bluetooth.friendly_name : Zed620
+bluetooth.version : 1.4.1.0
+bluetooth.date : 05/25/2016
+bluetooth.local_name : Zed620
+bluetooth.address : 48:70:1E:86:D2:EB
+bluetooth.bluetooth_pin : *
+bluetooth.short_address : 48701E86D2EB
+bluetooth.radio_version : 4.0
+bluetooth.enable : on , Choices: on,off
+bluetooth.connected : no
+bluetooth.minimum_security_mode : 1 , Choices: 1,2,3,4
+bluetooth.connected_security_mode : nc
+bluetooth.bonding : on , Choices: on,off
+bluetooth.clear_bonding_cache
+bluetooth.enable_reconnect : off , Choices: off,iOS_only
+bluetooth.allow_non_display_numeric_comparison : off , Choices: off,print,no print
+bluetooth.le.
+bluetooth.le.controller_mode : le , Choices: le
+bluetooth.json_config_channel_enable : on , Choices: on,off
+bluetooth.page_scan_window : 60 , Choices: 15,60
+bluetooth.power_class : 2 , Choices: 2-2
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The output confirms that this ZD620 printer only has the Bluetooth LE. See the line in the output below. This ZD620 doesn&#x27;t have the classic.
+bluetooth.le.controller_mode : le , Choices: le
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Henryk L.
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            So back to square one.
+Why does the &quot;Printer Setup Utility&quot; App (from the Play Store) works via Bluetooth LE, but not the Xamarin SDK or Print Connect App and so on.
+Zebra seemingly has Bluetooth LE source code, but it&#x27;s not public in the SDK.
+Will Zebra update the old SDK? Or maybe post the source code of the &quot;Printer Setup Utility&quot; App?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Bluetooth LE on the printer is designed to be used for the printer configuration, i.e. used for sending the configuration commands to the printer. It&#x27;s not designed for handling the print jobs, because of its low data rate. Therefore, the Printer Setup Utility app works with Bluetooth LE, but the PrintConnect app doesn&#x27;t work with Bluetooth LE. This is because the PrintConnect app is not used for printer configuration. The Link-OS SDK for Xamarin doesn&#x27;t support Bluetooth LE yet, therefore, the Xamarin developer demo doesn&#x27;t work with Bluetooth LE. We have requested the engineering team to add the LE support in Xamarin SDK. However, the request has not been prioritized yet.
+If you want to use Bluetooth LE in your Xamarin project, I&#x27;d suggest to use the Link-OS SDK for Android-BTLE as the base and bridge it from Xamarin through the Java library binding for the time being. 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Henryk L.
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you for the clarification.
+If Bluetooth LE on Zebra printers isn&#x27;t designed for productive usage (printing dozen labels during the day), then we need to change the printer model ;-)
+We don&#x27;t need to force it with the ZD620.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Henryk L.
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Can you recommand zebra printers with bluetooth classic and compatibility to xamarin forms (android) similar to the ZD620?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            A comparable model to ZD620 is ZD420. Both are 4&quot; printers and have the Wi-Fi &amp; Bluetooth Classic as an option. When you make a purchase, you can check if the Wi-Fi &amp; Bluetooth Classic is already installed. When place a pre-order, you can require the Wi-Fi &amp; Bluetooth Classic to be installed at the factory. Both ZD620 &amp; ZD420 are excellent quality printers. but ZD620 has a faster print speed. If the print speed is not a concern, I would go with ZD420. Please check out the spec of ZD600 Series &amp; ZD400 Series for more info.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

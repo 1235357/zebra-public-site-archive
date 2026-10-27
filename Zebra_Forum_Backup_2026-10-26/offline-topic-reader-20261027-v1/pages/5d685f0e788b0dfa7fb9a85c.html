@@ -1,0 +1,199 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to get logs from printer?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to get logs from printer?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/how-get-logs-printer; original snapshot: threads/00147.html; SHA-256: 04151542b67e2c87d2904c0350f452b7916411db38e2f41e2adfd1c3ff7f46a4</small><pre id="topic">
+
+    
+        How to get logs from printer?
+
+
+        
+      
+                        
+                    
+            W
+          
+          Willian Pacheco
+          1 year 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            1161
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi I need to get all the logs from a ZTC ZT411-203dpi ZPL printer under tcp connection. I have been trying to get the logs with:! U1 setvar &quot;device.syslog.enable&quot; &quot;yes&quot;! U1 setvar &quot;device.syslog.save_local_file&quot; &quot;yes&quot;! U1 setvar &quot;device.syslog.configuration&quot; &quot;info,local;notice,local;debug,local;emerg,local;alert,local;crit,local;err,local;warning,local;&quot; (to configure the type of logs)! U1 getvar &quot;device.syslog.entries&quot; but its always returning an empty string and I don&#x27;t understand why.Other commands like this works (but I still cant see the logs of this):! U1 DO &quot;device.pause&quot; &quot;&quot;! U1 DO &quot;device.unpause&quot; &quot;&quot;What am I doing wrong?
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            1 year 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The command used to enable the syslog was wrong. To enable/disable device.syslog.enable, use &quot;on&quot; or &quot;off&quot; (not &quot;yes&quot; or &quot;no&quot;, which is wrong)
+! U1 setvar &quot;device.syslog.enable&quot; &quot;on&quot;
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Dino Gregorich
+          
+          
+            10 months 1 week ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I attempted multiple times, using several different printers, to get syslog working without success. After reviewing the documentation (zpl-zbi2-pg-en.pdf) and researching online, I discovered that the configuration string must have become case-sensitive (possibly after firmware upgrades?), when before it was not. The configuration shown in the example in this Thread did not work for me, even after resetting the printer.However, in the following post within this forum, the keys are shown in uppercase, which contradicts all other examples I found:https://developer.zebra.com/community/home/blog/2015/12/02/link-os-printer-operating-system-syslogWhen I changed the configuration string to uppercase(&quot;INFO,LOCAL;NOTICE,LOCAL;DEBUG,LOCAL;EMERG,LOCAL;ALERT,LOCAL;CRIT,LOCAL;ERR,LOCAL;WARNING,LOCAL;&quot;)and then reset the printer, syslog began working as expected.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

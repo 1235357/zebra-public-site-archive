@@ -1,0 +1,265 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Get TID into SGTIN96 string</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Get TID into SGTIN96 string</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/get-tid-sgtin96-string; original snapshot: threads/00451.html; SHA-256: c001c81c1126a6bafd8483f55fde593c2855fce4e1737876e3edcec3d062917f</small><pre id="topic">
+
+    
+        Get TID into SGTIN96 string
+
+
+        
+      
+                        
+                    
+            S
+          
+          St Th
+          2 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            212
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                          //Solved
+        
+  
+
+    
+    
+        
+      
+            
+                  Hello,I&#x27;m trying to get the TID into the SGTIN96 since we don&#x27;t have our own serial number.If I enter the number firmly into the ^FD, it works, but in the ^FD it doesn&#x27;t resolve any other commands.How do I do this so that each label has its own serial number, even with multiple copies?I pass the data from List&amp;Label through the driver.Do I need a stored format in the printer that I call or can it be done in one call?What does the code have to look like for this?Does the new ^FE command mentioned in the latest firmware help?Best regardsStefanMy try:&quot;${^RU&quot; + chr$(13) + &quot;^FN1^FH\^CI28^FD#S^FS^CI27&quot; + chr$(13) + &quot;^RB96,8,3,3,24,20,38^FS&quot; + chr$(13) + &quot;^RFW,E^FD48,1,5,&quot; + Left$(@MyBarcode,7,False) + &quot;,&quot; + Right$(@MyBarcode,6,False) + &quot;,&quot; + &quot;^FN1^FS}$&quot;
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+        
+      
+        ✓ Accepted Solution
+      
+      
+          
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            St Th
+          
+          
+            2 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello, so after a lot of attempts I think it should now work so that you can integrate the TID as a serial number into the SGTIN-96:&quot;${^SLT&quot; + chr$(13) +&quot;^RB96,8,3,3,24,20,38^FS&quot; + chr$(13) + &quot;^RFW,E^RU^FH\^CI28^FD48,1,5,&quot; + Left$(@MeinBarcode,7,False) + &quot;,&quot; + Right$(@MeinBarcode,6,False) + &quot;,#S^CI27^FS}$&quot; Best regardsStefan
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+      
+    
+  
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Here is an example ZPL to read the TID from the tag, create a serial number based on the tag type, write serial number to the 96-bit EPC field, and print the serial number (in hex format) onthe label. Copied from the RFID Programming Guide 3.
+^XA
+^RU
+^FO10,10^A0N,50,50^FDSerial Number: #H^FS
+^RFW,H^FD12#H^FS
+^XZ
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            St Th
+          
+          
+            2 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello, so after a lot of attempts I think it should now work so that you can integrate the TID as a serial number into the SGTIN-96:&quot;${^SLT&quot; + chr$(13) +&quot;^RB96,8,3,3,24,20,38^FS&quot; + chr$(13) + &quot;^RFW,E^RU^FH\^CI28^FD48,1,5,&quot; + Left$(@MeinBarcode,7,False) + &quot;,&quot; + Right$(@MeinBarcode,6,False) + &quot;,#S^CI27^FS}$&quot; Best regardsStefan
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

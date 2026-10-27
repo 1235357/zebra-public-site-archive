@@ -1,0 +1,286 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Print on ZD621 using BT from iOS</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Print on ZD621 using BT from iOS</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/print-zd621-using-bt-ios; original snapshot: threads/01029.html; SHA-256: bec02c435aadb59b8a0f2d12879a8138314377a71007dafe660358fb867e79f2</small><pre id="topic">
+
+    
+        Print on ZD621 using BT from iOS
+
+
+        
+      
+                        
+                    
+            F
+          
+          Forrest Faber
+          5 years 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            174
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m trying to print to a ZD621 label printer with BLE. Is there a way to do this without using the Link-OS SDK. I would prefer using Swift instead of Objective C.
+I&#x27;m using the Swift way of connecting to the printer using Core Bluetooth with the CBCentralManager.
+I get a connection using:
+ let PRINTER_SERVICE = CBUUID(string: &quot;0xFE79&quot;)
+However, when I query for services, I get an empty list:
+central.state is .poweredOn
+2021-08-04 10:22:57.403049-0400 EquipLabelPrinter[319:6039] Metal API Validation Enabled
+Connected!
+Services size = 0
+func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+      print(&quot;Connected!&quot;)
+//The following call returns 0 services.
+      printerPeripheral.discoverServices([PRINTER_SERVICE])
+    }
+}
+extension PrinterViewController: CBPeripheralDelegate {
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        guard let services = peripheral.services else { return }
+        print(&quot;Services size = \(services.count)&quot;)
+        for service in services {
+          print(service)
+        peripheral.discoverCharacteristics(nil, for: service)
+        }
+    }
+Any help would be appreciated!
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            We&#x27;ve a BLE demo for iOS. Though the demo is based on Objective-C, the underneath essence is the same for both Objective-C and Swift. The demo and its related references are on the GitHub - https://github.com/ZebraDevs/LinkOS-iOS-Samples/tree/ZebraPrinterBLEDem…
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              F
+            
+          
+                
+          
+            Forrest Faber
+          
+          
+            5 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks, I&#x27;ll take a look.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Justin Leger
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Forrest,
+
+I seem to be in the same boat as you were. Did you ever make any headway in this? Would you have any swift sample projects you could share? Any help would be greatly appreciated.
+
+Thanks,
+
+Justin
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

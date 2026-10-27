@@ -1,0 +1,202 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>SilentAppInstaller fails to upgrade APK from SSM due to incorrect /user_de/data/user_de/... path</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>SilentAppInstaller fails to upgrade APK from SSM due to incorrect /user_de/data/user_de/... path</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/silentappinstaller-fails-upgrade-apk-ssm-due-incorrect-userdedatauserde-path; original snapshot: threads/00126.html; SHA-256: 870e327828330d541d108b63b5e60590662b6aec068dc3a27302b60bfa1d67d5</small><pre id="topic">
+
+    
+        SilentAppInstaller fails to upgrade APK from SSM due to incorrect /user_de/data/user_de/... path
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anton Yashin
+          3 months 1 week ago
+        
+        
+      
+        
+            
+                  
+            
+            315
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,We are experiencing a problem when silently upgrading an installed APK through StageNow/MX using Secure Storage Manager and AppMgr.Environment:Device: Zebra CC600/CC605Android: 14 GMSBSP: 14-41-13.00-UG-U03-STD-HEL-04MX/MXMF: 15.2.0.17Secure Storage Manager: 15.1.0.4SilentAppInstaller: 15.1.0.0Operation: AppMgr UpgradeWorkflow:FileMgr copies the APK into the recommended SSM destination:com.zebra.devicemanager/persist_apk/&lt;application&gt;.apkSSM successfully stores the file and returns a content:// URI through its FileProvider.AppMgr passes this URI to SilentAppInstaller for the upgrade.The upgrade fails with INSTALL_FAILED_INTERNAL_ERROR.Logcat shows that SilentAppInstaller attempts to open:/user_de/data/user_de/0/com.zebra.securestoragemanager/cache/persist_apk/&lt;application&gt;.apkThe actual file is located at:/data/user_de/0/com.zebra.securestoragemanager/cache/persist_apk/&lt;application&gt;.apkIt appears that SilentAppInstaller uses Uri.getPath() as a filesystem path. In the returned content URI, the first user_de is the FileProvider root alias, but it is incorrectly treated as a real filesystem directory. This results in ENOENT / FileNotFoundException.The same behavior was also observed on an MC3300x running:Android 14 GMSMX 15.0.0.6SilentAppInstaller 14.1.1.0Using a direct /enterprise/usr/persist/... filesystem path bypasses this particular error, confirming that the APK itself and its signing certificate are valid. However, that approach then invokes an interactive Google Play Protect dialog, so it cannot be used for an unattended upgrade.Questions:Is this a known issue in SilentAppInstaller or Device Manager?Is it fixed in a newer BSP, LifeGuard update, or MX component version?Is there a supported workaround that preserves the recommended SSM + AppMgr workflow?Can AppMgr/SilentAppInstaller be configured to open the returned content:// URI through ContentResolver instead of treating Uri.getPath() as a filesystem path?Thank you.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              I
+            
+          
+                
+          
+            Ian Hatton
+          
+          
+            3 months 1 week ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Mx AppMgr is not able to supress the Google Play messages regardless of whether the APK file is stored via SSM or just copied to /enterprise/usr (which is the easier way to persist the storage of the file). The workaround for this is to disable Play services just before installing the APK and re-enable afterwards - you can do this via Mx AppMgr/idisable app e.g in XML:
+   &lt;!--DISABLE--&gt;   &lt;characteristic version=&quot;4.2&quot; type=&quot;AppMgr&quot;&gt;   &lt;parm name=&quot;Action&quot; value=&quot;DisableApplication&quot; /&gt;   &lt;parm name=&quot;Package&quot; value=&quot;com.android.vending&quot; /&gt; &lt;/characteristic&gt;
+ &lt;!--INSTALL APP HERE--&gt;
+   &lt;!--ENABLE--&gt;   &lt;characteristic version=&quot;4.2&quot; type=&quot;AppMgr&quot;&gt;   &lt;parm name=&quot;Action&quot; value=&quot;EnableApplication&quot; /&gt;   &lt;parm name=&quot;Package&quot; value=&quot;com.android.vending&quot; /&gt; &lt;/characteristic&gt;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anton Yashin
+          
+          
+            3 months 1 week ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you very much for your help and for providing a working solution. We tested it on our Zebra devices, and the issue has been resolved. Your assistance is greatly appreciated! 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

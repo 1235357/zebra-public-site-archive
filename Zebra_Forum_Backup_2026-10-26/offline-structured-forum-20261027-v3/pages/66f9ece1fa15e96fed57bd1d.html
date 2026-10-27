@@ -1,0 +1,203 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Saving connection details to use for auto connection</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/forum/25373; snapshot threads/resume-00474.html; SHA-256 9ab4bc4a319af6f98a9b4449de7020dced92621e6e39fa977888ccd57fbf5e8e. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Saving connection details to use for auto connection</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            S
+          </div>
+          <div class="forum-topic__author-name">System Admin</div>
+          <div class="forum-topic__timestamp">5 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            40
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi,<br>
+Im working on the Link OS SDK (previous generation) and can successfully connect via USB &gt; select printer &gt; print demo ZPL using the demo application.<br>
+the printer.Address = "/dev/bus/usb/001/002".<br>
+the model im using is the ZD420 with USB interface only.<br>
+Given the address, how can I create a Connection object using connection builder?<br>
+So that i can simply print the data after the first printer selection.</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-47258" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            6 years ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>The ConnectionBuilder class does not support USB connection.<br>
+It's recommended to use UsbDiscover to find the USB connected printer, rather than using hardcoded USB connection string.</p>
+<p>// Request for USB Host Permission<br>
+@Override<br>
+protected void findUsbPrinter() {<br>
+    new Thread(new Runnable() {</p>
+<p>        public void run() {</p>
+<p>            // Find printer on USB<br>
+            UsbDiscoveryHandler handler = new UsbDiscoveryHandler();<br>
+            UsbDiscoverer.findPrinters(getApplicationContext(), handler);</p>
+<p>            try {<br>
+                while (!handler.discoveryComplete) {<br>
+                        Thread.sleep(100);<br>
+                }</p>
+<p>                if (handler.printers != null &amp;amp;&amp;amp; handler.printers.size() &amp;gt; 0) {<br>
+                    discoveredPrinterUsb = handler.printers.get(0);</p>
+<p>                    // Check for permission<br>
+                    if (!usbManager.hasPermission(discoveredPrinterUsb.device)) {<br>
+                        usbManager.requestPermission(discoveredPrinterUsb.device, permissionIntent);<br>
+                    } else {<br>
+                        hasPermissionToCommunicate = true;<br>
+                    }</p>
+<p>                } else {<br>
+                    // No printer found on USB.<br>
+                }<br>
+            } catch (Exception e) {<br>
+                // Do something<br>
+            }<br>
+        }<br>
+    }).start();<br>
+}&amp;nbsp;</p>
+<p>// Handles USB device discovery<br>
+class UsbDiscoveryHandler implements DiscoveryHandler {<br>
+    public List printers;<br>
+    public boolean discoveryComplete = false;</p>
+<p>    public UsbDiscoveryHandler() {<br>
+        printers = new LinkedList();<br>
+    }</p>
+<p>    public void foundPrinter(final DiscoveredPrinter printer) {<br>
+        printers.add((DiscoveredPrinterUsb) printer);<br>
+    }</p>
+<p>    public void discoveryFinished() {<br>
+        discoveryComplete = true;<br>
+    }</p>
+<p>    public void discoveryError(String message) {<br>
+        discoveryComplete = true;<br>
+    }<br>
+}Once the USB connected printer is discovered, then we can get the connection as shown below. You can save&amp;nbsp;discoveredPrinterUsb object for close/open later without discovering again.</p>
+<p>Connection conn = discoveredPrinterUsb.getConnection();<br>
+&amp;nbsp;</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/forum/25373%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/forum/25373%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

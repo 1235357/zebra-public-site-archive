@@ -1,0 +1,311 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Link-OS Multiplatform SDK</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Link-OS Multiplatform SDK</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/link-os-multiplatform-sdk; original snapshot: threads/00545.html; SHA-256: 71e7b042522b498469d17f8da4d9007c9a50683cb0128205ef9f51960b63b917</small><pre id="topic">
+
+    
+        Link-OS Multiplatform SDK
+
+
+        
+      
+                        
+                    
+            J
+          
+          Jordan Cyr
+          3 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            120
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Recently with trying to implement the Link-OS Multiplatform SDK for our application we have been running into an issue where on IOS the app cannot successfully execute NetworkDiscoverer.localBroadcast() without running into a ZSDK_API_ERROR_DOMAIN.
+
+This error only seems to happen on IOS 16.5 and not any of the previous versions of IOS.
+
+ 
+
+The full error in question:
+
+findNetworkPrinters failed: Error Domain=ZSDK_API_ERROR_DOMAIN Code=5 &quot;Network error during discovery&quot; UserInfo={NSLocalizedDescription=Network error during discovery}
+
+ 
+
+The Method:
+
+public func discoverNetworkPrinters(port: Int) -&gt; [CustomDiscoveredPrinter]{
+
+    
+
+      print(&quot;Searching for Zebra network printers...&quot;)
+
+      do {
+
+        let discoveredPrinters = try NetworkDiscoverer.localBroadcast()
+
+        if let networkPrinters = discoveredPrinters as? [DiscoveredPrinterNetwork] {
+
+          print(&quot;Found \(networkPrinters.count) Zebra network printers.&quot;)
+
+          let printers = networkPrinters.map { dp inCustomDiscoveredPrinter(name: dp.dnsName, address:dp.address)}
+
+          return printers
+
+        } else {
+
+          print(&quot;findNetworkPrinters failed to cast discoveredPrinters to [DiscoveredPrinterNetwork].&quot;)
+
+          return []
+
+        }
+
+      } catch let err as NSError {
+
+        print(&quot;findNetworkPrinters failed: \(err.description)&quot;)
+
+        return []
+
+      } 
+
+  }
+
+SDK version:
+
+1.5.1049
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            For the network printer discovery on iOS 14.5 and higher, we need to have the Multicast Network Entitlement granted from Apple Developer Program. The network printer discovery uses the multicast to obtain the printer’s information on the network. By default, the multicast is disabled on iOS 14.5 and higher due to Apple enhanced security &amp; privacy policy. Please follow the article below to request the entitlement and then add the entitlement to the info.plist of the Xcode project. Link-OS SDK for iOS – Printer Network Discovery API impacted by iOS 14.5 and higher.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jordan Cyr
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Steven
+Im not sure if its the link thats broken or i need to be the account holder to open the link but Multicast Network Entitlement request opens up for me as unauthorized.
+For reference my account is listed as developer.
+
+ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 4 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Only the account owner has the access to the request form. You will need to ask the account owner of the Apple Developer Account to raise the request.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

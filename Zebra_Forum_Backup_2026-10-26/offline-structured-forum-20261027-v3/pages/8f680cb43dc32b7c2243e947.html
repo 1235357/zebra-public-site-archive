@@ -1,0 +1,204 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>SilentAppInstaller fails to upgrade APK from SSM due to incorrect /user_de/data/user_de/... path</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/silentappinstaller-fails-upgrade-apk-ssm-due-incorrect-userdedatauserde-path; snapshot threads/00126.html; SHA-256 870e327828330d541d108b63b5e60590662b6aec068dc3a27302b60bfa1d67d5. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">SilentAppInstaller fails to upgrade APK from SSM due to incorrect /user_de/data/user_de/... path</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            A
+          </div>
+          <div class="forum-topic__author-name">Anton Yashin</div>
+          <div class="forum-topic__timestamp">3 months 1 week ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            315
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            2
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello,</p><p>We are experiencing a problem when silently upgrading an installed APK through StageNow/MX using Secure Storage Manager and AppMgr.</p><p>Environment:</p><ul><li>Device: Zebra CC600/CC605</li><li>Android: 14 GMS</li><li>BSP: <code>14-41-13.00-UG-U03-STD-HEL-04</code></li><li>MX/MXMF: <code>15.2.0.17</code></li><li>Secure Storage Manager: <code>15.1.0.4</code></li><li>SilentAppInstaller: <code>15.1.0.0</code></li><li>Operation: AppMgr <code>Upgrade</code></li></ul><p>Workflow:</p><ol><li><p>FileMgr copies the APK into the recommended SSM destination:</p><p><code>com.zebra.devicemanager/persist_apk/&lt;application&gt;.apk</code></p></li><li>SSM successfully stores the file and returns a <code>content://</code> URI through its FileProvider.</li><li>AppMgr passes this URI to SilentAppInstaller for the upgrade.</li><li>The upgrade fails with <code>INSTALL_FAILED_INTERNAL_ERROR</code>.</li></ol><p>Logcat shows that SilentAppInstaller attempts to open:</p><pre><code class="language-plaintext">/user_de/data/user_de/0/com.zebra.securestoragemanager/cache/persist_apk/&lt;application&gt;.apk</code></pre><p>The actual file is located at:</p><pre><code class="language-plaintext">/data/user_de/0/com.zebra.securestoragemanager/cache/persist_apk/&lt;application&gt;.apk</code></pre><p>It appears that SilentAppInstaller uses <code>Uri.getPath()</code> as a filesystem path. In the returned content URI, the first <code>user_de</code> is the FileProvider root alias, but it is incorrectly treated as a real filesystem directory. This results in <code>ENOENT</code> / <code>FileNotFoundException</code>.</p><p>The same behavior was also observed on an MC3300x running:</p><ul><li>Android 14 GMS</li><li>MX <code>15.0.0.6</code></li><li>SilentAppInstaller <code>14.1.1.0</code></li></ul><p>Using a direct <code>/enterprise/usr/persist/...</code> filesystem path bypasses this particular error, confirming that the APK itself and its signing certificate are valid. However, that approach then invokes an interactive Google Play Protect dialog, so it cannot be used for an unattended upgrade.</p><p>Questions:</p><ol><li>Is this a known issue in SilentAppInstaller or Device Manager?</li><li>Is it fixed in a newer BSP, LifeGuard update, or MX component version?</li><li>Is there a supported workaround that preserves the recommended SSM + AppMgr workflow?</li><li>Can AppMgr/SilentAppInstaller be configured to open the returned <code>content://</code> URI through <code>ContentResolver</code> instead of treating <code>Uri.getPath()</code> as a filesystem path?</li></ol><p>Thank you.</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      2 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-54461" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              I
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Ian Hatton</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 months 1 week ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Mx AppMgr is not able to supress the Google Play messages regardless of whether the APK file is stored via SSM or just copied to /enterprise/usr (which is the easier way to persist the storage of the file). The workaround for this is to disable Play services just before installing the APK and re-enable afterwards - you can do this via Mx AppMgr/idisable app e.g in XML:</p>
+<p>   &lt;!--DISABLE--&gt;<br>   &lt;characteristic version="4.2" type="AppMgr"&gt;<br>   &lt;parm name="Action" value="DisableApplication" /&gt;<br>   &lt;parm name="Package" value="com.android.vending" /&gt;<br> &lt;/characteristic&gt;</p>
+<p> &lt;!--INSTALL APP HERE--&gt;</p>
+<p>   &lt;!--ENABLE--&gt;<br>   &lt;characteristic version="4.2" type="AppMgr"&gt;<br>   &lt;parm name="Action" value="EnableApplication" /&gt;<br>   &lt;parm name="Package" value="com.android.vending" /&gt;<br> &lt;/characteristic&gt;</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-54463" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              A
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Anton Yashin</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            3 months 1 week ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thank you very much for your help and for providing a working solution. We tested it on our Zebra devices, and the issue has been resolved. Your assistance is greatly appreciated!</p><p> </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/silentappinstaller-fails-upgrade-apk-ssm-due-incorrect-userdedatauserde-path%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/silentappinstaller-fails-upgrade-apk-ssm-due-incorrect-userdedatauserde-path%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

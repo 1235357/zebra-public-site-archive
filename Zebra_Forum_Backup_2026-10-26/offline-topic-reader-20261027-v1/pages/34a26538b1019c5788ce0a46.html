@@ -1,0 +1,212 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Programmatically calibrate with LinkOS</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Programmatically calibrate with LinkOS</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/36977; original snapshot: threads/01076.html; SHA-256: f94918019063f1ec8fc33b80a9e5795a7103264df708f806ac777fe3fc509711</small><pre id="topic">
+
+    
+        Programmatically calibrate with LinkOS
+
+
+        
+      
+                        
+                    
+            S
+          
+          Stacie Sulak
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            290
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I created an iOS app that prints labels to a QLn320 and ZQ620 mobile printer.  If the printer is not calibrated, it rolls out 3 labels for every one I try to print.
+This app will be in 100 different locations that already have uncalibrated printers; obviously I can&#x27;t drive to 100 locations to plug them into the Zebra Setup Utility.  
+If I programmatically send ~jc^xa^jus^xz to the printer, it prints out about 8 completely black labels plus a few more.  If I continue to send the calibration command, it will send 3 labels for every 1 I intend to print.  If I remove the calibration command, it will subsequently print properly.  In other words, it seems if I send the calibration command just once, it will actually work.  The question is, is there a way for the app to know when to send the calibration command?  Is there a way to query the device to see if it&#x27;s calibrated?
+I notice if I send this in the Zebra Setup Utility:
+! U1 getvar &quot;media.type&quot;
+! U1 getvar &quot;media.sense_mode&quot;
+I already get a return of &quot;label&quot; and &quot;bar&quot; even though it&#x27;s not truly calibrated to my needs.  It seems to require the ~jc^xa^jus^xz command.
+Any advice would be appreciated. I prefer to not confuse the users and require some sort of one time &quot;Calibrate&quot; button.  Thanks!
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Usually, the label calibration takes 2-3 labels at most, even when calibrating from an app. Looks like there might be something else going on when the calibration command is sent from your app. Make sure that your app only sends the calibration commend once.
+Once the calibration is done, the zpl.label_length will be set to whatever the label length detected by the calibration. If you know the label length beforehand, then you can use the following command to check if the printer has been calibrated or not from your app.
+! U1 getvar “zpl.label_length”
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Usually, the label calibration takes 2-3 labels at most, even when calibrating from an app. Looks like there might be something else going on when the calibration command is sent from your app. Make sure that your app only sends the calibration commend once.
+Once the calibration is done, the zpl.label_length will be set to whatever the label length detected by the calibration. If you know the label length beforehand, then you can use the following command to check if the printer has been calibrated or not from your app.
+! U1 getvar “zpl.label_length”
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

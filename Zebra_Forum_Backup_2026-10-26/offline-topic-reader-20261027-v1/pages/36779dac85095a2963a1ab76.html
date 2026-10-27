@@ -1,0 +1,629 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>EnterpriseHomeScreen and WFC service at startup interfere with my app</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>EnterpriseHomeScreen and WFC service at startup interfere with my app</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/enterprisehomescreen-and-wfc-service-startup-interfere-my-app; original snapshot: threads/00768.html; SHA-256: 5f4cc41be2e9d0372e4379debbb575c83f7080a0b7a5c88677713b063b42681e</small><pre id="topic">
+
+    
+        EnterpriseHomeScreen and WFC service at startup interfere with my app
+
+
+        
+      
+                        
+                    
+            M
+          
+          Mattia Durli
+          4 years 3 months ago
+        
+        
+      
+        
+            
+                  
+            
+            282
+          
+                
+                  
+            
+            9
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+I&#x27;m developing an app on a TC52AX using Xamarin.
+The app is auto started by Enterprise Home Screen when the device is turned on or restarts, and is used in kiosk mode.
+The first image in attachment shows the display  when the app is started, the camera is in autofocus mode.
+In second image, approximately after 32 seconds from reboot, an icon appears in the notification bar, and the camera goes out of focus (I haven&#x27;t switched to any other app or pressed any button, just the notification appears)
+In third image, the notification icon, WFC Manager Service.
+From this point, I&#x27;m unable to regain focus on the camera, even reconfiguring it while the app is working. I have to exit the app, and restart it manually, then it works (no interference from the WFC Manager Service anymore.
+I workarounded it this way, by waiting 40s before actually initializing the camera, waiting the WFC service to start.
+internal class AndroidInitializer : IPlatformInitializer
+    {
+        private IScanner _scanner = null;
+        public void RegisterTypes(IContainerRegistry containerRegistry)
+        {
+            Thread.Sleep(40000);
+            _scanner = new Scanner_Android();
+            containerRegistry.RegisterInstance(_scanner);
+        }
+    }
+I had another 2 issues similar to this:
+before the camera issue, I had a scanner issue, where I had to wait 3s at startup before initializing the scanner, and the same with EMDK
+Thread.Sleep(3000);
+_scanner = new Scanner_Android();
+At startup, Enterprise Home Screen launches my app before the emdk or datawedge services are started, and if I initialize the scanner before that, I receive no errors, but the scanner doesn&#x27;t work.
+I&#x27;d love a way to be able to let EHS to start my app ONLY when all services are running.
+But my main problem is with the camera and with the WFC service, what can I do that is not waiting 40s? Why it interferes with the camera? how can I disable that service?
+Thanks
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      9 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              E
+            
+          
+                
+          
+            Edward Correia
+          
+          
+            4 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            For situations like this, EHS has a delay feature that can be applied to apps and services.
+Here&#x27;s a link to the relevant docs: 
+https://techdocs.zebra.com/ehs/4-2/guide/settings/#optionalfeaturetags
+Good luck and thank you for using Zebra products. 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mattia Durli
+          
+          
+            4 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks,  but what about the WFC service that interferes with the camera focus? The service starts after 32s
+Is there a way to disable that Zebra service?
+And why it interferes in such a weird way with the camera focus?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Mattia,
+If you&#x27;re not using WFC you can disable it via our AppMgr MX: https://techdocs.zebra.com/mx/appmgr/
+Thanks,
+James
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mattia Durli
+          
+          
+            4 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks James, can you elaborate on how to do that?
+Should I use EMDK, choose App Manager among the features, and specify Disable Application? for which APK?
+Or is there another way?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Swinton-Bland
+          
+          
+            4 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You can read a bit more about MX here: https://techdocs.zebra.com/mx/overview/
+Essentially, you create an XML profile with your desired configurations (i.e. disabling WFC) and then you apply that XML profile to the device using either an EMM, StageNow or the EMDK Profile Manager APIs.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mattia Durli
+          
+          
+            4 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Ok, but what is the name of the WFC item to disable? I can&#x27;t find any reference on WFC on those links.
+should I refer it to com.zebra.wfc.service?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              E
+            
+          
+                
+          
+            Edward Correia
+          
+          
+            4 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Using AppMgr&#x27;s &quot;Action&quot; parameter, select &quot;DisableApplication&quot; (option 6) and specify WFC&#x27;s package name. Package Name(s) must be specified exactly, and can be acquired from the application developer, by extracting the Package Name from the .apk file or by finding it in the device.
+ACTION
+https://techdocs.zebra.com/mx/appmgr/#action
+PACKAGE NAME
+https://techdocs.zebra.com/mx/appmgr/#package-name
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mattia Durli
+          
+          
+            4 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            As far as I understand, this WFC is a Zebra application/service preinstalled on the device
+Is is not in the Application list, I can&#x27;t see it in running services
+The only hint I have of its existence is in the notification you can see the third screenshot of my original message
+Is &quot;com.zebra.wfc.service&quot; the package name?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              E
+            
+          
+                
+          
+            Edward Correia
+          
+          
+            4 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Yes, I believe that &quot;com.zebra.wfc.service&quot; is the package name of the Zebra Workforce Connect service. 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

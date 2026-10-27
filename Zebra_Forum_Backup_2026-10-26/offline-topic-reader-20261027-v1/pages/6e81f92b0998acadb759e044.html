@@ -1,0 +1,411 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Exception setting config on scanner using EMDK for Xamarin</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Exception setting config on scanner using EMDK for Xamarin</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/32975; original snapshot: threads/resume-00130.html; SHA-256: f440b716e74d6e8630ab6838e8b002c1693cbae34d287de1833c838cda3b8975</small><pre id="topic">
+
+    
+        Exception setting config on scanner using EMDK for Xamarin
+
+
+        
+      
+                        
+                    
+            M
+          
+          Mike Bedford
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            766
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello all, as the title suggests, I have been having an issue with setting the config for the scanner. It generates an exception (at bottom of this thread) EVERY SINGLE TIME:
+ 
+Therefore, I have to also believe that the config I am trying to specify is not actually getting applied.
+ 
+As a last resort, before I posted this issue, I downloaded the sample barcode app (BarcodeScanningTutorial) and made NO changes to the code and sure enough, the same thing is happening to the sample provided on the site. Here is the code snippet that is failing, this is inside of initScanner(); As you can see, the only change I did make, which does not affect the code, is I wrapped the problem child which is the call scanner.SetConfig(config); in a try catch block so I can trap that call and exception by itself.
+ 
+                            //EMDK: Configure the scanner settings
+                            ScannerConfig config = scanner.GetConfig();
+                            config.SkipOnUnsupported = ScannerConfig.SkipOnUnSupported.None;
+                            config.ScanParams.DecodeLEDFeedback = true;
+                            config.ReaderParams.ReaderSpecific.ImagerSpecific.PickList = ScannerConfig.PickList.Enabled;
+                            config.DecoderParams.Code39.Enabled = true;
+                            config.DecoderParams.Code128.Enabled = false;
+                            try
+                            {
+                                scanner.SetConfig(config);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(string.Format(&quot;Exception setting config. Exception: {0}&quot;, ex.ToString()));
+                            }
+ 
+Here is the error (Stack Trace) that I got from the console output from that try catch exception:
+ 
+09-21 16:10:23.110 I/mono-stdout(15081): com.symbol.emdk.barcode.ScannerException: Already scanning. Wait for current scanning to complete.
+09-21 16:10:23.120 I/mono-stdout(15081): at com.symbol.emdk.barcode.Scanner.setConfig(Scanner.java:303)
+com.symbol.emdk.barcode.ScannerException: Already scanning. Wait for current scanning to complete.
+  at com.symbol.emdk.barcode.Scanner.setConfig(Scanner.java:303)
+  at md5bb34e478d867dfa25d7f85c991bd27cf.MainActivity.n_onOpened(Native Method)
+  at md5bb34e478d867dfa25d7f85c991bd27cf.MainActivity.onOpened(MainActivity.java:75)
+09-21 16:10:23.120 I/mono-stdout(15081): at md5bb34e478d867dfa25d7f85c991bd27cf.MainActivity.n_onOpened(Native Method)
+09-21 16:10:23.120 I/mono-stdout(15081): at md5bb34e478d867dfa25d7f85c991bd27cf.MainActivity.onOpened(MainActivity.java:75)
+09-21 16:10:23.120 I/mono-stdout(15081): at com.symbol.emdk.EMDKServiceConnection.notifyonConnected(EMDKServiceConnection.java:113)
+09-21 16:10:23.120 I/mono-stdout(15081): at com.symbol.emdk.EMDKServiceConnection.onServiceConnected(EMDKServiceConnection.java:93)
+  at com.symbol.emdk.EMDKServiceConnection.notifyonConnected(EMDKServiceConnection.java:113)
+  at com.symbol.emdk.EMDKServiceConnection.onServiceConnected(EMDKServiceConnection.java:93)
+  at android.app.LoadedApk$ServiceDispatcher.doConnected(LoadedApk.java:1101)
+  at android.app.LoadedApk$ServiceDispatcher$RunConnection.run(LoadedApk.java:1118)
+  at android.os.Handler.handleCallback(Handler.java:733)
+  at android.os.Handler.dispatchMessage(Handler.java:95)
+  at android.os.Looper.loop(Looper.java:136)
+  at android.app.ActivityThread.main(ActivityThread.java:5002)
+09-21 16:10:23.120 I/mono-stdout(15081): at android.app.LoadedApk$ServiceDispatcher.doConnected(LoadedApk.java:1101)
+09-21 16:10:23.120 I/mono-stdout(15081): at android.app.LoadedApk$ServiceDispatcher$RunConnection.run(LoadedApk.java:1118)
+09-21 16:10:23.120 I/mono-stdout(15081): at android.os.Handler.handleCallback(Handler.java:733)
+09-21 16:10:23.120 I/mono-stdout(15081): at android.os.Handler.dispatchMessage(Handler.java:95)
+09-21 16:10:23.120 I/mono-stdout(15081): at android.os.Looper.loop(Looper.java:136)
+09-21 16:10:23.120 I/mono-stdout(15081): at android.app.ActivityThread.main(ActivityThread.java:5002)
+  at java.lang.reflect.Method.invokeNative(Native Method)
+  at java.lang.reflect.Method.invoke(Method.java:515)
+  at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:785)
+  at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:601)
+  at dalvik.system.NativeStart.main(Native Method)
+09-21 16:10:23.120 I/mono-stdout(15081): at java.lang.reflect.Method.invokeNative(Native Method)
+09-21 16:10:23.120 I/mono-stdout(15081): at java.lang.reflect.Method.invoke(Method.java:515)
+09-21 16:10:23.120 I/mono-stdout(15081): at com.android.internal.os.ZygoteInit$MethodAndArgsCaller.run(ZygoteInit.java:785)
+09-21 16:10:23.120 I/mono-stdout(15081): at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:601)
+09-21 16:10:23.120 I/mono-stdout(15081): at dalvik.system.NativeStart.main(Native Method)
+ 
+Please advise how to fix this. I am certain that it is happening to everybody since I used the sample program provided by Zebra which also is written per the documentation as well.
+ 
+Thanks!
+ 
+Mike
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              K
+            
+          
+                
+          
+            Kanagal Raj Ra…
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The scanner configuration can be set only when the scanner is IDLE and no reads pending. Otherwise the calling the scannet.setConfig will result in failure with error as “Scanning in progress”.
+As per the code, you are&amp;nbsp; trying to call the scanner.setConfig without waiting for scanner go to IDLE state and no pending reads. This results failure to set configuration.&amp;nbsp; 
+You can do something like below:
+@Override
+public void onStatus(StatusData statusData) {
+&amp;nbsp; ScannerStates state = statusData.getState();
+&amp;nbsp; switch (state) {
+&amp;nbsp; case IDLE:
+&amp;nbsp; if (!scanner.isReadPending()) {
+&amp;nbsp; //Set the configuration required if user requested
+&amp;nbsp; if (isUserRequestedToSetConfig) {
+&amp;nbsp; setConfig(); //Set the scanner configuration in setConfig.
+&amp;nbsp; }
+&amp;nbsp; //Submit scanner read to start scanning if needed
+&amp;nbsp; }
+&amp;nbsp; else {
+&amp;nbsp; //Previous read is still pending.. please wait for next IDLE state
+&amp;nbsp; }
+&amp;nbsp; break;
+&amp;nbsp; case WAITING:
+&amp;nbsp; // &quot;Scanner is waiting for trigger press...&quot;;
+&amp;nbsp; break;
+&amp;nbsp; case SCANNING:
+&amp;nbsp; // &quot;Scanning...&quot;;
+&amp;nbsp; break;
+&amp;nbsp; case DISABLED:
+&amp;nbsp; //disabled.&quot;;
+&amp;nbsp; break;
+&amp;nbsp; case ERROR:
+&amp;nbsp; // &quot;An error has occurred.&quot;;
+&amp;nbsp; break;
+&amp;nbsp; default:
+&amp;nbsp; break;
+&amp;nbsp; }
+}
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mike Bedford
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Okay, I tried your suggestion the sample barcode demo application and this resolves the issue. I saw your last response as well and am glad to hear it was already sent to the team because there is apparently an issue with the docs and sample as your suggestion has resolved it. Thank you very much for the help and of course, I will always help report and improve when I can. Along those lines, I also have another thread posted with another big issue (that also happened again right now while testing your recommendations on the demo app). Hopefully we can get going on that thread as well.
+As for this issue, here is exactly what I did, based on your recommendations:
+In the demo app, in the InitScanner method, take out these lines:
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ScannerConfig config = scanner.GetConfig();
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; config.SkipOnUnsupported = ScannerConfig.SkipOnUnSupported.None;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; config.ScanParams.DecodeLEDFeedback = true;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; config.ReaderParams.ReaderSpecific.ImagerSpecific.PickList = ScannerConfig.PickList.Enabled;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; config.DecoderParams.Code39.Enabled = true;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; config.DecoderParams.Code128.Enabled = false;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; scanner.SetConfig(config);
+And wrap them in a new method call, you can name it what you want but this is what mine now looks like:
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; private void setScannerConfig()
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; try
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; //EMDK: Configure the scanner settings
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; ScannerConfig config = scanner.GetConfig();
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; config.SkipOnUnsupported = ScannerConfig.SkipOnUnSupported.None;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; config.ScanParams.DecodeLEDFeedback = true;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; config.ReaderParams.ReaderSpecific.ImagerSpecific.PickList = ScannerConfig.PickList.Enabled;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; config.DecoderParams.Code39.Enabled = true;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; config.DecoderParams.Code128.Enabled = false;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; scanner.SetConfig(config);
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Console.WriteLine(string.Format(&quot;Config set properly.&quot;));
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; catch (Exception ex)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Console.WriteLine(string.Format(&quot;Exception setting config. Exception: {0}&quot;, ex.ToString()));
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+Now, find the scanner_Status method. Look for if (state == StatusData.ScannerStates.Idle). You are going to add your method call to set the config in there, so we ensure the scanner is idle and not doing a read before applying the config. There should also be a flag of some sort (I used a bool) so that you only set it one time on startup, or anytime after by setting the flag. So, it should look like this, where scanConfigChangeNeedsSet is your flag.
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; if (state == StatusData.ScannerStates.Idle)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; statusStr = &quot;Scanner is idle and ready to submit read.&quot;;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; try
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; if (scanner.IsEnabled &amp;amp;&amp;amp; !scanner.IsReadPending)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; if (scanConfigChangeNeedsSet)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; setScannerConfig();
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; scanConfigChangeNeedsSet = false;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; scanner.Read();
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; catch (ScannerException e1)
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; {
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; statusStr = e1.Message;
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; }
+Hope this helps others until the docs are updated. Thanks again for the support Kanagal!
+Mike
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mike Bedford
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you for the response. 
+I understand what you are saying and it makes sense that the scanner would not apply a config if it is in the middle of a read. HOWEVER, I think it is important to note, as I also pointed out in my first post, that I am doing the exact same thing as all of the documentation AND the sample barcode scanning application published by Zebra, which also has the exception by the way. 
+Furthermore, this happens (again as does the barcode scanning demo application) during the initialization of the scanner. I have not asked it to do a read. So, I don&#x27;t know why the scanner would be reading.
+That said, I can see how maybe it needs to be idle before setting the config, I will try that based on your suggestions above and if that is the case, I believe the Zebra documentation and sample barcode app is also flawed and should be updated.
+I will report back my findings. In the meantime, I encourage you or anybody to simply run the demo barcode application provided by Zebra. You don&#x27;t need to make any changes to it. Observe what happens when it tries to set the config and you will see this is an issue.
+Thanks!
+Mike
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

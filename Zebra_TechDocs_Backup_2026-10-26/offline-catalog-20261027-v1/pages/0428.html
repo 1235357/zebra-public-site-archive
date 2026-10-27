@@ -1,0 +1,375 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Using Delegation Scopes - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/flux/delegation</code><br>Observed final URL: <code>https://techdocs.zebra.com/flux/delegation/</code><br>Raw source: <code>raw/24d1110285d9952c46d7391f.html</code><br>Raw SHA-256: <code>ec92fb9fdd11e3e29f8cbaf41edc1b68fa3c134508c6df2b8d3eef77b6122319</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            Android Platform Transition
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About Transition
+                            
+                        
+                        
+                            
+                                    About MX
+                            
+                        
+                        
+                            
+                                    MX Feature Matrix
+                            
+                        
+                        
+                            
+                                    Setup
+                            
+                        
+                        
+                            
+                                    Query Device
+                            
+                        
+                        
+                            
+                                    Delegate Access
+                            
+                        
+                        
+                            
+                                    Architecture
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Using Delegation Scopes
+                        
+                    OverviewDelegation Scopes and ZDMUsage NotesDelegation Scopes - Zebra AppsDelegation Scopes - Third-party AppsAlso See
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Using Delegation Scopes
+                                    
+                                            Android Platform Transition
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+Delegation Scopes is a method by which the Android Device Policy Manager (DPM) APIs allow a device owner (DO) such as an Enterprise Mobility Management (EMM) agent to enable other apps to use some DPM functions. Apps targeting Android 11 (API 30) and later can declare that access to one or more of their interfaces should be controlled, and that an administrator can be allowed to delegate access to other apps within a given scope. The Android DPM implementation of Delegation Scopes covers package and certificate management and a few other categories. Zebra has adopted and expanded Delegation Scopes to allow applications to control access to their interfaces by limiting their use to applications to which the administrator has granted a suitable Delegation Scope. Zebra Device Manager (ZDM), a new service developed as part of the transition to Android 11 and 13, handles Delegation Scopes on the device. 
+
+Required Actions:
+
+
+Developers that currently protect their app interfaces using MX/AccessMgr must switch to using Delegation Scopes and ZDM. 
+
+Administrators formerly granting access using MX/AccessMgr must switch to using Delegation Scopes and Zebra OEMConfig. 
+
+
+
+  NOTE: Apps that use protected services require NO modifications for these changes.
+
+
+
+
+Delegation Scopes and ZDM
+
+
+Click images to enlarge; ESC to exit.
+
+
+The relationship between Delegation Scopes and ZDM is usually transparent to the developer. Apps calling for access to another app&#x27;s interface(s) must be explicitly granted permission by the implementing app; ZDM manages those permissions. When an app attempts to use an interface that the implementing app has chosen to protect using a Delegation Scope, the implementing app must query ZDM to determine whether the calling app has been granted (by the administrator) a Delegation Scope that allows access to that interface. When a given function supported by ZDM or a Zebra app is controlled by a Delegation Scope, it allows only direct use of that function by a genuine instance of an app that has been explicitly granted that Delegation Scope.
+
+The exception is when the calling app attempts to access an interface indirectly, such as through an intent. As in the MX/AccessMgr model, the calling app must acquire a token, which in the new model comes from ZDM. The token is sent by the calling app via intent to the implementing app, which checks with ZDM to determine whether the token was issued to an app entitled to access the protected API. When a genuine instance of an app is allowed direct use of a function controlled by a Delegation Scope, that app might choose to allow indirect use of that function by another application through a defined interface such as AIDL or a JavaScript callback. In such cases, the app that&#x27;s allowed to use the function becomes responsible for ensuring that any use of that by another app is appropriately controlled.
+
+Usage Notes
+
+
+Each Delegation Scope must have a unique name. 
+
+Delegation Scope names must be in the form delegation-zebra-[app name]-[API, component or service].
+
+The underlined section above is a mandatory prefix that must remain unchanged. 
+ Example: delegation-zebra-bind-zebradevicemanager-config-service. 
+
+Delegation Scope status can be determined using ZDM queries,
+
+Apps with functions controlled by Delegation Scopes are assumed to be trustworthy for identifying apps trusted to use them.
+
+Apps created using EMDK are automatically trusted to access Zebra apps. 
+
+Customer apps created using EMDK must be granted access to non-Zebra apps by an EMM administrator. 
+
+
+
+
+
+
+
+
+Delegation Scopes - Zebra Apps
+
+The following Delegation Scopes can be used to grant third-party apps access to Zebra-app interfaces designated as accessible for use by non-Zebra apps. 
+
+
+
+
+  
+    Zebra App to Access
+    Delegation Scope Name
+  
+
+
+  DataWedge Configuration (intent APIs for Set Config, Create Profile, etc.) 
+  delegation-zebra-datawedge-api-access-config
+
+
+
+  DataWedge Notification (intent APIs for Scanner Status, Profile Switch, etc.)
+  delegation-zebra-datawedge-api-access-notification
+
+
+
+  DataWedge Query (intent APIs for Enumerate Scanners,
+  Get DataWedge Status, etc.)
+  delegation-zebra-datawedge-api-access-query
+
+
+
+  DataWedge Runtime (intent APIs for Enable/Disable DataWedge, Soft Scan Trigger, etc.)
+  delegation-zebra-datawedge-api-access-control
+
+
+
+  EMDK-built customer apps*
+  delegation-zebra-emdk-access
+
+
+
+  Secure Storage Manager
+  delegation-zebra-file-deployment
+
+
+
+  Wi-Fi API Access Service Provider
+  delegation-zebra-wifi-api-access-control
+
+
+
+  Zebra License Manager (ZLicenseMgr)
+  delegation-zebra-zsl-api-access-query
+
+
+
+  Zebra Workstation Connect
+  delegation-zebra-workstationconnect-api-access-configuration-service
+
+
+
+
+* All EMDK Delegation Scopes are currently allowed by default. A future version of EMDK will allow only EMDK-built apps with an EMDK Delegation Scope to be allowed to submit JavaScript/JSON to ZDM using EMDK ProfileManager APIs.
+
+Delegation Scopes - Third-party Apps
+
+The following Delegation Scopes can be used to grant EMM agents and other third-party apps permission to access other apps and app resources running on Zebra devices. 
+
+
+
+
+  
+    App Function
+    Delegation Scope Name
+  
+
+
+  Key Touch Injection**: Grants permission to an app on the device (i.e. an EMM agent) to access KTI services and APIs
+  delegation-zebra-kti-eventinjection
+
+
+
+  Key Touch Injection**: Grants permission to an app to search and delete files in sandboxes of other apps on the device
+  delegation-zebra-kti-fileops
+
+
+
+  Key Touch Injection**: Grants permission to an app to suppress display of the media projection pop-up message on the device, which might otherwise prevent remote control of an unattended device
+  delegation-zebra-kti-remotedisplay
+
+
+
+  Key Touch Injection**: Grants permission to an app on the device to list the tasks and services of third-party apps running on the device, and to force-stop those apps
+  delegation-zebra-kti-remotetroubleshooting
+
+
+
+
+** All four (4) KTI Delegation Scopes are required for remote control operation.
+
+
+
+Also See
+
+Android Developer Docs
+
+
+Android Content Provider Basics | An Introduction
+
+Creating a content provider | Why and how to share an app&#x27;s data
+
+Android Cursor docs | How to interface with a result data set
+
+Content Observer | Get a callback when data changes
+
+
+Articles by Zebra Engineers
+
+
+How to display serial and IMEI numbers on device | Sample app, instructions, source code
+
+Save OEM identifiers to a file on the device | Sample app, source code
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2025 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

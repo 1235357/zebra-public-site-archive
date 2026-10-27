@@ -1,0 +1,159 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra printer get status takes too long</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Zebra printer get status takes too long</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25369; original snapshot: threads/resume-00473.html; SHA-256: 1a5637cd494ad9bb1b84d799773e5624d9d035f98b982c2023a6f9508fc51960</small><pre id="topic">
+
+    
+        Zebra printer get status takes too long
+
+
+        
+      
+                        
+                    
+            S
+          
+          System Admin
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            219
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,
+We have a ZT230 connected to USB port and have been using ZSDK_API.jar to access Zebra printer.
+It works, but it takes almost 30s to que status response before printing,
+To discover the VID/PID of connected USB printer, we use:
+&quot;printer&quot; = java -jar ZSDK_API.jar discover -u
+Then, to get printer status:
+java -jar ZSDK_API.jar status -p &quot;printer&quot;
+This command takes 30s to return.
+Is there a way to get a quick status using the .jar file?
+I just need to check if it is ready to print, otherwise it throws an error.
+By the way, is there any Python example to access the printer?
+Thanks!
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            6 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There are two types of USB connections, a ZDesigner Printer Driver based USB connections and raw USB connections, which are discovered with different API in the SDK (UsbDiscoverer.getZebraDriverPrinters() &amp;amp; UsbDiscoverer.getZebraUsbPrinters()). It&#x27;s known to us that the Printer Driver based USB connections have a few performance issues, which will be addressed in the future releases. If you use the raw USB connections, the performance will be much better, i.e. the status returns within 1 or 2 seconds.
+Regarding the last question, unfortunately, we don&#x27;t have Python examples to show the access to the printers.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,371 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Crashing Xcode Application</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Crashing Xcode Application</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/crashing-xcode-application; original snapshot: threads/00951.html; SHA-256: 5a9bc211eaa6f8bca12ac5dee19b837f84cf5c89bbcacfc8e62cad10eecb4147</small><pre id="topic">
+
+    
+        Crashing Xcode Application
+
+
+        
+      
+                        
+                    
+            W
+          
+          William Mays
+          4 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            78
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  -[TcpPrinterConnection waitForStreamsToFinishOpening]
+Crashed: com.apple.root.background-qos
+EXC_BAD_ACCESS KERN_INVALID_ADDRESS 0x0000000000000000
+EXC_BAD_ACCESS KERN_INVALID_ADDRESS 0x0000000000000048
+ var printerConnection = TcpPrinterConnection()
+printerConnection = TcpPrinterConnection.init(address: &quot;192.168.0.74&quot;, andWithPort: 6101)
+printerConnection.open() &amp;lt;--- crashing here sometimes
+printerConnection.write(data, error: &amp;amp;error) &amp;lt;--- crashing here sometimes also
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Are  you using the UI thread to call the printerConnection.open() and printerConnection.write()? The Zebra printers are considered as slow accessories. Therefore, the API in the Link-OS SDK for iOS should be called by non-UI thread. Please use a background thread or spawn a new thread to call the APIs in the SDK.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              W
+            
+          
+                
+          
+            William Mays
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I am using: DispatchQueue.global(qos: .userInteractive).async
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Not sure what else could be wrong. But I suggest to test the Developer Demo project that comes with the release package of the Link-OS SDK for iOS. The Developer Demo has the sample code for a TCP connection that works as expected. It will give you a sense about how the API works in the Objective-C. Then go from there to debug your code further.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              W
+            
+          
+                
+          
+            William Mays
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The issue is the code is in Object C. Swift came out in 2014, will Zebra every update their code?
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I&#x27;ve just tested the Developer Demo project in Objective-C on my iOS 14 &amp; 15 devices. The TCP connection.open() and connection.write() works as expected. Though the SDK for iOS has not been updated for sometime, we have not seen any issues. For Swift, we expect the users to use the bridge header. There is no plan to create a Swift specific SDK.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

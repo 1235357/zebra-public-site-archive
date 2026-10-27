@@ -1,0 +1,286 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Import datawedge profile via Intent</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/import-datawedge-profile-intent; snapshot threads/00347.html; SHA-256 df8a3be325e6bb2fd108178ffb1fc55604df384e1d6d74bb7c956c28d3402080. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Import datawedge profile via Intent</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            J
+          </div>
+          <div class="forum-topic__author-name">Jordan Faucher</div>
+          <div class="forum-topic__timestamp">9 months 3 weeks ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            366
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            3
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello,</p><p>I am currently trying to automatically upload a dataWedge profile from my android mobile application to the dataWedge application via the Intent <span data-original-href="https://techdocs.zebra.com/datawedge/latest/guide/api/importconfig/"><code>IMPORT_CONFIG</code> </span></p><p>My profile is in the folder <code>raw</code> inside the application and I copy it to the external directory available for my application (<code>sdcard/data/com.myapplication.app/files</code>). </p><p>I enable logging for dataWedge and don't have any error when the profile is send and can't be seen inside the  datawedge application. </p><p>Since Android restricted writing in external storage, i can't upload the file elsewhere (except if I missed something, I tried with asking <code>READ_EXTERNAL_STORAGE</code> and <code>WRITE_EXTERNAL_STORAGE</code> permission at runtime but nothing change , same with <code>MEDIA</code> permissions)</p><p> </p><pre><code class="language-java"> private fun autoImportDataWedgeProfile() {
+
+        val outFile = File(getExternalFilesDir(null), "dwprofile_profilename.db")
+        outFile.setWritable(true, false)
+        outFile.setExecutable(true, false)
+        outFile.setReadable(true, false)
+
+        resources.openRawResource(R.raw.dwprofile_profilename).use { input -&gt;
+            FileOutputStream(outFile).use { output -&gt;
+                exportFile(input, output)
+            }
+        }
+
+        Log.e("DataWedge", "Profile copied successfully")
+        importConfig()
+    }
+
+ private fun importConfig() {
+        val bMain = Bundle()
+        bMain.putString("FOLDER_PATH", getExternalFilesDir(null)?.path)
+        val fileNames = ArrayList&lt;String&gt;()
+
+        fileNames.add("dwprofile_profilename.db")
+
+        bMain.putStringArrayList("FILE_LIST", fileNames)
+
+        // send the intent
+        val i = Intent()
+        i.setAction("com.symbol.datawedge.api.ACTION")
+        i.putExtra("com.symbol.datawedge.api.IMPORT_CONFIG", bMain)
+
+        this.sendBroadcast(i)
+    }</code></pre><p> </p><p>Maybe I missed something in the documentation but did anyone tried with the intent and have you succeed ? </p><p> </p><p>Thanks in advance for your help </p><p> </p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      3 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-54279" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              M
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Marc Fluhrer</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            9 months 2 weeks ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Jordan, I have not used the Intent method, but maybe as a first test, if you copied your profile file to <span>/enterprise/device/settings/datawedge/autoimport/</span>dwprofile_profilename.db</p><p>Do you see it appear in the DataWedge application as a new profile?</p><p>I am just wondering with the Scope storage if it is not letting you read from the <span>/data directory.</span></p><p><span>Otherwise, you may want to open a case.</span></p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-54280" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Jordan Faucher</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            9 months 2 weeks ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Unfortunatly I can't automatically upload to the <code>/enterprise</code> since i can't have the proper permission and the application can't be a admin </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-54300" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              Y
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Yuli Sun</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            8 months 3 weeks ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Jordan,<br><br>I have a workaround but not directly import .db profile:<br><br>1. export the profile into sdcard in JSON format using:<br><span>com.symbol.datawedge.api.GET_CONFIG</span><br>and you have to implement utils to covert android bundle into JSON object and write the raw string into .json file on sdcard<br><br>2. import the .json format profile:<br>you can read the .json file into JSON object and covert it back to android bundle. then you use <br><span>com.symbol.datawedge.api.SET_CONFIG</span><br><span>to create profile by the android bundle.</span><br><br>you can reference to the methods:<br>DataWedgeHelper.<span>getProfile()</span><br>DataWedgeHelper.<span>configWithJSON()</span><br><br><span>in my open-sourced non-official sample code</span><br><span data-original-href="https://github.com/ys2714/zebra-sdk-kotlin-wrapper">https://github.com/ys2714/zebra-sdk-kotlin-wrapper</span><br><br>Hoping this can help.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/import-datawedge-profile-intent%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/import-datawedge-profile-intent%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

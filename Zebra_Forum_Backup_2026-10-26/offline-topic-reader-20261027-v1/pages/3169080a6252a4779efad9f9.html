@@ -1,0 +1,214 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Java SDK getCurrentStatus on USB direct takes 10 seconds to return</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Java SDK getCurrentStatus on USB direct takes 10 seconds to return</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/java-sdk-getcurrentstatus-usb-direct-takes-10-seconds-return; original snapshot: threads/00956.html; SHA-256: 736950d794e7057f7d496b217fa54d7312d5214c8cad7f0c1c795b0beb045138</small><pre id="topic">
+
+    
+        Java SDK getCurrentStatus on USB direct takes 10 seconds to return
+
+
+        
+      
+                        
+                    
+            I
+          
+          Ivano Luberti
+          4 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            115
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I have downloaded the JAVA SDK and tried to pritn to a ZEBRA ZD620 using direct USB communication without driver
+Printing labels is immediate while getting the printer status take about 10 seconds.
+As you can see in the code I have used two ways to get the Host Status:
+Connection.sendAndWaitForResponse(&quot;~Hs&quot;.getBytes(), 2000, 2000, &quot;V&quot;);
+and
+ZebraPrinter.getCurrentStatus();
+Any suggestion?
+public static void usbDriverlessTest() throws ConnectionException {
+        System.out.println(&quot;Discovered USB printer list:\r\n&quot;);
+        DiscoveredUsbPrinter discoveredPrinter = null;
+        for (DiscoveredUsbPrinter printer : UsbDiscoverer.getZebraUsbPrinters(new ZebraPrinterFilter())) {
+            System.out.println(printer);
+            discoveredPrinter = printer;
+        }
+        System.out.println(&quot;End USB printer list\r\n&quot;);
+        Connection imz = ConnectionBuilder.build(discoveredPrinter.address);
+        try {
+            imz.open();
+            byte[] hi_return = null;
+            ZebraPrinter printer = ZebraPrinterFactory.getInstance(imz);
+            String label = &quot;^XA^FO17,16^GB379,371,8^FS^FT65,255^A0N,135,134^FDTEST^FS^PQ1,0,1,N^XZ&quot;;
+            // printer.sendCommand(label);
+            SimpleDateFormat sdf = new SimpleDateFormat(&quot;HH:mm:ss&quot;);
+            System.out.println(sdf.format(new Date()));
+            // https://live-zebratechnologies.devportal.apigee.io/thread/35973
+            PrinterStatus printerStatus = printer.getCurrentStatus();
+            System.out.println(&quot;printerStatus.labelLengthInDots=&quot; + printerStatus.labelLengthInDots);
+            System.out.println(&quot;printerStatus.labelsRemainingInBatch=&quot; + printerStatus.labelsRemainingInBatch);
+            System.out.println(&quot;printerStatus.numberOfFormatsInReceiveBuffer=&quot; + printerStatus.numberOfFormatsInReceiveBuffer);
+            System.out.println(&quot;printerStatus.isReadyToPrint=&quot; + printerStatus.isReadyToPrint);
+            System.out.println(&quot;printerStatus.isReceiveBufferFull=&quot; + printerStatus.isReceiveBufferFull);
+            System.out.println(sdf.format(new Date()));
+            hi_return = imz.sendAndWaitForResponse(&quot;~Hs&quot;.getBytes(), 2000, 2000, &quot;V&quot;);
+            System.out.println(new String(hi_return));
+            System.out.println(sdf.format(new Date()));
+            hi_return = imz.sendAndWaitForResponse(&quot;~HQES&quot;.getBytes(), 2000, 2000, &quot;V&quot;);
+            System.out.println(new String(hi_return));
+            System.out.println(sdf.format(new Date()));
+        } catch (ZebraPrinterLanguageUnknownException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            imz.close();
+        }
+    }
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Using the getCurrentStatus() is the correct way to obtain the printer status. Instead of using printer.getCurrentStatus(), I&#x27;d suggest to use either PrinterUtil.getCurrentStatus() or printerLinkOs.getCurrentStatus(). This way, you save about 5 seconds. See the code snippet below.
+imz.open();
+
+ZebraPrinter printer = ZebraPrinterFactory.getInstance(PrinterLanguage.ZPL, imz);
+
+...
+
+// Take 10sec to return. Slowest
+PrinterStatus printerStatus = printer.getCurrentStatus();
+
+... 
+
+// Take 5sec to return. Saved 5sec over printer.getCurrentStatus()
+PrinterStatus printerStatus = PrinterUtil.getCurrentStatus(imz, PrinterLanguage.ZPL);
+
+...
+
+// To use Link-OS printer object
+ZebraPrinterLinkOs printerLinkOs = ZebraPrinterFactory.createLinkOsPrinter(printer);
+
+// Take 5sec to return. Same as PrinterUtil.getCurrentStatus()
+PrinterStatus printerStatus = printerLinkOs.getCurrentStatus();Alternatively, we can modify the MaxTimeoutForRead on the connection object. The default is 5 seconds. To shorten the value, we call the setMaxTimeoutForRead() on the connection object. For example, if we want to change the default 5 seconds to a half second, we do the following. So that we shorten the time of the return from getCurrentStatus() .
+// Shorten the timeout to 0.5 second.
+imz.setMaxTimeoutForRead(500) 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

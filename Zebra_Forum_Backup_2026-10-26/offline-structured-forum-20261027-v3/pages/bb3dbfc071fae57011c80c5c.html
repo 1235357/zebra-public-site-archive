@@ -1,0 +1,150 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra ZD621 MFi Bluetooth prints only first image when using GraphicsUtil printImage multiple times</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/zebra-zd621-mfi-bluetooth-prints-only-first-image-when-using-graphicsutil-printimage-multiple-times-0; snapshot threads/00310.html; SHA-256 c83fa4342b3f7c83d298976585b66d79016039ea40d95a5d7091fb283fedda89. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Zebra ZD621 MFi Bluetooth prints only first image when using GraphicsUtil printImage multiple times</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            M
+          </div>
+          <div class="forum-topic__author-name">Mog pa</div>
+          <div class="forum-topic__timestamp">5 months 1 week ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            280
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hello,</p><p>We are using Zebra Link-OS iOS SDK with a Zebra ZD621 printer over MFi Bluetooth.</p><p>Use case:<br>Our app generates multiple badge images first, then prints them one by one using <code>GraphicsUtil printImage</code>.</p><p>Current code flow:</p><p><code>self.connection = [[MfiBtPrinterConnection alloc] initWithSerialNumber:serialNumber];</code><br><code>[self.connection open];</code></p><p><code>if ([self.connection isConnected])</code><br><code>{</code><br><code>   self.printer = [ZebraPrinterFactory getInstance:self.connection error:&amp;connectionError];</code><br><code>   id&lt;GraphicsUtil, NSObject&gt; graphicsUtil = [self.printer getGraphicsUtil];</code></p><p><code>   for (UIImage *image in arrAllPrints)</code><br><code>   {</code><br><code>       NSError *error = nil;</code><br><code>       BOOL success = [graphicsUtil printImage:[image CGImage]</code><br><code>                                           atX:x</code><br><code>                                           atY:y</code><br><code>                                     withWidth:width</code><br><code>                                    withHeight:height</code><br><code>                             andIsInsideFormat:NO</code><br><code>                                         error:&amp;error];</code></p><p><code>       if (!success)</code><br><code>           break;</code><br><code>   }</code><br><code>}</code></p><p><strong>Problem:</strong><br>When printing multiple badges, only the first badge physically prints on the Zebra ZD621. The same badge images print correctly using iOS native print, so image generation is not the issue. The issue appears only in the Zebra MFi Bluetooth print flow.</p><p>Printer details:</p><ul><li>Printer model: Zebra ZD621</li><li>Connection: MFi Bluetooth</li></ul><p>Questions:</p><ol><li>For Zebra Link-OS iOS SDK, what is the recommended way to print multiple images sequentially over MFi Bluetooth to a ZD621 in Cutter mode?</li><li>Does <code>GraphicsUtil printImage</code> return only after the image data is sent to the printer, or after the printer has fully printed/cut the label?</li><li>Is it necessary to wait for <code>PrinterStatus</code> between each <code>printImage</code> call? If yes, which <code>PrinterStatus</code> fields should we rely on for “safe to send next label” in Cutter mode?</li></ol>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-54412" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Shreyas Purohit</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 months 3 weeks ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Mog,<br><br>The SDK is functioning as designed. The tight for loop in your code sends heavy image data too fast, overflowing the printer's receive buffer.</p>
+<p><strong>1. Recommended way:</strong> Move your print loop to a background thread to prevent UI freezing. Send one image, pause and poll the status, and only proceed to the next iteration when the printer is ready.<br><br><strong>2. Return timing:</strong> <em>printImage</em> returns immediately once data enters the iOS buffer, not after the physical print/cut.<br><br><strong>3. Required polling:</strong> Yes. After each print in your loop, poll <em><strong>PrinterStatus</strong></em> and wait until <em><strong>numberOfFormatsInReceiveBuffer == 0</strong></em> and <em><strong>isReadyToPrint == true</strong></em> before sending the next image.</p>
+<p>Refer this documentation for more details: <span data-original-href="https://techdocs.zebra.com/link-os/latest/ios/">https://techdocs.zebra.com/link-os/latest/ios/</span><br><br>If you face further issues, you can submit a support case through the Zebra Support Center here: <span data-original-href="https://support.zebra.com/">https://support.zebra.com/</span></p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/zebra-zd621-mfi-bluetooth-prints-only-first-image-when-using-graphicsutil-printimage-multiple-times-0%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/zebra-zd621-mfi-bluetooth-prints-only-first-image-when-using-graphicsutil-printimage-multiple-times-0%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

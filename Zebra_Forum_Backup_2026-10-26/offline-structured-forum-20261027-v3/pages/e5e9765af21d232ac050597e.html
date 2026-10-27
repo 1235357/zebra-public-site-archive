@@ -1,0 +1,229 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Permission Denied for downloaded APK when performing Upgrade in Android 11</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/permission-denied-downloaded-apk-when-performing-upgrade-android-11; snapshot threads/00728.html; SHA-256 81259f30afddcfd632b9e6302956c1915dadae39e4ae298328a1b9e0483120af. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Permission Denied for downloaded APK when performing Upgrade in Android 11</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            W
+          </div>
+          <div class="forum-topic__author-name">WTG WTG</div>
+          <div class="forum-topic__timestamp">4 years ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            208
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            2
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>I have been attempting to test my Android application to ensure it supports Android 11 but have been having trouble with our pre-existing In-App upgrade process.</p>
+<p>We make use of EMDK to call an upgrade instruction after downloading to our applications storage:</p>
+<p>Where apkPath = Path.Combine(context.GetExternalFilesDir(null).AbsolutePath, fileName);</p>
+<p>In Android 10 and prior, this instruction would succeed. However for Android 11, we are getting an error "INSTALL_FAILED_INVALID_URI", even though the path is identical.</p>
+<p>Investigating via Logcat i discovered the following logs:<br>
+10-05 00:49:03.079  6970  7019 I MXStorageManager: Received Path: /sdcard/Android/data/{PACKAGENAME}/files/{PACKAGENAME}.apk<br>
+10-05 00:49:03.079  6970  7019 I MXStorageManager: Returned Path: /sdcard/Android/data/{PACKAGENAME}/files/{PACKAGENAME}.apk<br>
+10-05 00:49:03.081  2954  2990 W ziparchive: Unable to open '/sdcard/Android/data/{PACKAGENAME}/files/{PACKAGENAME}.apk': Permission denied<br>
+10-05 00:49:03.081  2954  2990 E nstallerservic: Failed to open APK '/sdcard/Android/data/{PACKAGENAME}/files/{PACKAGENAME}.apk' I/O error<br>
+10-05 00:49:03.081  2954  2990 W System.err: android.content.pm.PackageParser$PackageParserException: Failed to parse /sdcard/Android/data/{PACKAGENAME}/files/{PACKAGENAME}.apk<br>
+10-05 00:49:03.082  2954  2990 W System.err: 	at android.content.pm.PackageParser.parseApkLiteInner(PackageParser.java:1449)<br>
+10-05 00:49:03.082  2954  2990 W System.err: 	at android.content.pm.PackageParser.parseApkLite(PackageParser.java:1420)<br>
+10-05 00:49:03.082  2954  2990 W System.err: 	at android.content.pm.PackageParser.parseMonolithicPackageLite(PackageParser.java:935)<br>
+10-05 00:49:03.082  2954  2990 W System.err: 	at android.content.pm.PackageParser.parsePackageLite(PackageParser.java:928)<br>
+10-05 00:49:03.082  2954  2990 W System.err: 	at c.b.b.a.c$a.onTransact(:11)<br>
+10-05 00:49:03.082  2954  2990 W System.err: 	at android.os.Binder.execTransactInternal(Binder.java:1154)<br>
+10-05 00:49:03.082  2954  2990 W System.err: 	at android.os.Binder.execTransact(Binder.java:1123)</p>
+<p>Why does EMDK not have permission to install this apk? I can manually install without issue, and this works for older versions of Android.<br>
+How do I resolve this for Android 11?</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      2 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-50973" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>James Swinton-Bland</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi,</p>
+<p>I think this is an issue w/ Scoped Storage in A11. Because you're storing your file in your applications scoped storage, the EMDK can't access the file for security reasons. We've a blog with some more detail <span data-original-href="https://developer.zebra.com/blog/scoped-storage-enterprise-applications">here</span>.</p>
+<p>I think you have a couple options:</p>
+<ul>
+<li>Store the APK in the /enterprise folder. This doesn't require any additional permissions, however, the file will persist after an enterprise reset so make sure to delete it if you don't need it any more.</li>
+<li>Use any other shared storage location (E.g. "/sdcard/") by requesting the MANAGE_EXTERNAL_STORAGE permission. There's a few drawbacks to this option, but the main one is that your app can't be distributed via the public playstore (bar a few very small exceptions)</li>
+</ul>
+<p> </p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-51014" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              R
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Richard Venderbosch</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>You can also use "/data/tmp/public/".<br>
+See "Device File Location Rules" on <span data-original-href="https://techdocs.zebra.com/emdk-for-android/11-0/mx/powermgr/">https://techdocs.zebra.com/emdk-for-android/11-0/mx/powermgr/</span>.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/permission-denied-downloaded-apk-when-performing-upgrade-android-11%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/permission-denied-downloaded-apk-when-performing-upgrade-android-11%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

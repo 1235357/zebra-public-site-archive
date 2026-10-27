@@ -1,0 +1,558 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Strange battery capacity values read an ET45</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Strange battery capacity values read an ET45</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/strange-battery-capacity-values-read-et45; original snapshot: threads/00510.html; SHA-256: 1510003e0a429c5d414465ffd778d0277c22a451ac4960f4c05ba73f92e8ae68</small><pre id="topic">
+
+    
+        Strange battery capacity values read an ET45
+
+
+        
+      
+                        
+                    
+            R
+          
+          Richard Venderbosch
+          3 years 3 months ago
+        
+        
+      
+        
+            
+                  
+            
+            402
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                          //Solved
+        
+  
+
+    
+    
+        
+      
+            
+                  Our MDM agent reads some strange battery capacity values on a ET45 running Android 11.
+
+&quot;present_capacity&quot; and &quot;present_charge&quot; values (read as integer extras of the &quot;ACTION_BATTERY_CHANGED&quot; intent) seem to be way too high:
+
+    &quot;BatteryStatus&quot;: {
+      &quot;DateTime&quot;: &quot;2023-07-27T09:08:14Z&quot;,
+      &quot;Level&quot;: 92,
+      &quot;Status&quot;: &quot;DISCHARGING&quot;,
+      &quot;Plugged&quot;: &quot;NOTPLUGGED&quot;,
+      &quot;Health&quot;: &quot;GOOD&quot;,
+      &quot;Temperature&quot;: 23.7,
+      &quot;Voltage&quot;: 4.242
+    },
+    &quot;AddBatteryStatus&quot;: {
+      &quot;CapacityPercent&quot;: 92,
+      &quot;CapacityMAH&quot;: 3545,
+      &quot;Charging&quot;: false,
+      &quot;PowerSaveMode&quot;: false,
+      &quot;NotOptimized&quot;: true,
+      &quot;IdleMode&quot;: false,
+      &quot;ThermalStatus&quot;: &quot;none&quot;
+    },
+    &quot;AddBatteryInformations&quot;: {
+      &quot;SerialNumber&quot;: &quot;G6154&quot;,
+      &quot;PartNumber&quot;: &quot;BT-000455-30&quot;,
+      &quot;ManufacturingDate&quot;: &quot;20220725&quot;,
+      &quot;RatedCapacity&quot;: &quot;6000 mAh&quot;,
+      &quot;PresentCapacity&quot;: &quot;600000 mAh&quot;,
+      &quot;PresentCharge&quot;: &quot;5465000 mAh&quot;,
+      &quot;BaseCumCharge&quot;: &quot;42000 mAh&quot;,
+      &quot;TtlCumCharge&quot;: &quot;42000 mAh&quot;,
+      &quot;LoadingCycles&quot;: 7,
+      &quot;SecsSince1stUse&quot;: &quot;0 secs&quot;,
+      &quot;HealthPercent&quot;: &quot;100 %&quot;,
+      &quot;BattDecom&quot;: &quot;good&quot;,
+      &quot;BackUpBatteryVoltage&quot;: &quot;0 mV&quot;
+    },
+
+    &quot;OsInformations&quot;: {
+      &quot;Version&quot;: &quot;Android 11 (30)&quot;,
+      &quot;BuildNumber&quot;: &quot;11-23-29.00-RG-U01-STD-GSE-04&quot;,
+      &quot;BuildDate&quot;: &quot;2023-07-08T16:25:08Z&quot;,
+
+ 
+
+Reading the same capacity values for example on a TC78 running Android 11 show reasonable values:
+
+    &quot;BatteryStatus&quot;: {
+      &quot;DateTime&quot;: &quot;2023-07-24T10:04:10Z&quot;,
+      &quot;Level&quot;: 55,
+      &quot;Status&quot;: &quot;DISCHARGING&quot;,
+      &quot;Plugged&quot;: &quot;NOTPLUGGED&quot;,
+      &quot;Health&quot;: &quot;GOOD&quot;,
+      &quot;Temperature&quot;: 28,
+      &quot;Voltage&quot;: 3.791
+    },
+    &quot;AddBatteryStatus&quot;: {
+      &quot;CapacityPercent&quot;: 55,
+      &quot;CapacityMAH&quot;: 2598,
+      &quot;Charging&quot;: false,
+      &quot;PowerSaveMode&quot;: false,
+      &quot;NotOptimized&quot;: true,
+      &quot;IdleMode&quot;: false,
+      &quot;ThermalStatus&quot;: &quot;none&quot;
+    },
+    &quot;AddBatteryInformations&quot;: {
+      &quot;SerialNumber&quot;: &quot;T0276&quot;,
+      &quot;PartNumber&quot;: &quot;BT-000442-0020 R.B&quot;,
+      &quot;ManufacturingDate&quot;: &quot;2022-12-28&quot;,
+      &quot;RatedCapacity&quot;: &quot;4600 mAh&quot;,
+      &quot;PresentCapacity&quot;: &quot;4408 mAh&quot;,
+      &quot;PresentCharge&quot;: &quot;2413 mAh&quot;,
+      &quot;BaseCumCharge&quot;: &quot;10081 mAh&quot;,
+      &quot;TtlCumCharge&quot;: &quot;4450 mAh&quot;,
+      &quot;LoadingCycles&quot;: 0,
+      &quot;SecsSince1stUse&quot;: &quot;3048215 secs&quot;,
+      &quot;HealthPercent&quot;: &quot;100 %&quot;,
+      &quot;BattDecom&quot;: &quot;good&quot;
+    },
+
+ 
+
+Same situation on a TC77:
+
+   &quot;AddBatteryInformations&quot;: {
+      &quot;SerialNumber&quot;: &quot;T1069&quot;,
+      &quot;PartNumber&quot;: &quot;BT-000318-01 R.C&quot;,
+      &quot;ManufacturingDate&quot;: &quot;2018-11-05&quot;,
+      &quot;RatedCapacity&quot;: &quot;4500 mAh&quot;,
+      &quot;PresentCapacity&quot;: &quot;4227 mAh&quot;,
+      &quot;PresentCharge&quot;: &quot;2350 mAh&quot;,
+      &quot;BaseCumCharge&quot;: &quot;151016 mAh&quot;,
+      &quot;TtlCumCharge&quot;: &quot;186136 mAh&quot;,
+      &quot;LoadingCycles&quot;: 41,
+      &quot;SecsSince1stUse&quot;: &quot;14184062 secs&quot;,
+      &quot;HealthPercent&quot;: &quot;97 %&quot;,
+      &quot;BattDecom&quot;: &quot;good&quot;
+    },
+
+ 
+
+Can you please check what is wrong here?
+
+Regards, Richard.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+        
+      
+        ✓ Accepted Solution
+      
+      
+          
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Daniel Neamtu
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            By the look of the picture and the information, it seems to be a normal Power Precision battery.
+You can actually confirm that by lifting it and look on the back what it&#x27;s written.
+If that&#x27;s the case, unfortunately those 2 parameters can&#x27;t be retrieved for these type of batteries, they&#x27;re available only for the PP+ ones.
+You can have a look here on the available params for each type of battery.
+ 
+Daniel
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+      
+    
+  
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Daniel Neamtu
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Richard,
+What type of battery are you using on the ET45, is it a Power Precision Plus or a Power Precision one?
+Regards,
+Daniel
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Richard Venderbosch
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I don&#x27;t know which type it is.
+
+From the Android intent we read these data:
+
+      &quot;SerialNumber&quot;: &quot;G6154&quot;,
+      &quot;PartNumber&quot;: &quot;BT-000455-30&quot;
+
+And here is a photo of the battery:
+
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Daniel Neamtu
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            By the look of the picture and the information, it seems to be a normal Power Precision battery.
+You can actually confirm that by lifting it and look on the back what it&#x27;s written.
+If that&#x27;s the case, unfortunately those 2 parameters can&#x27;t be retrieved for these type of batteries, they&#x27;re available only for the PP+ ones.
+You can have a look here on the available params for each type of battery.
+ 
+Daniel
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Richard Venderbosch
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            On the back side of the battery it says &quot;PowerPrecision&quot;. So indeed it is no PP+ one.
+
+But I wonder why these values are present as extras in the battery intent ;-)
+
+Thanks a lot for your help.
+
+Regards, Richard.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Daniel Neamtu
+          
+          
+            3 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Richard,
+I&#x27;m not sure actually, I&#x27;ve worked before with the Battery Intents and these parameters if accessed on a PP battery should&#x27;ve returned -1 as value so it&#x27;s quite interesting what happened over there in your case.
+Regards,
+Daniel
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

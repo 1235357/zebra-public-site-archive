@@ -1,0 +1,174 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra ZQ320 Plus Image pringing, .NET MAUI</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/zebra-zq320-plus-image-pringing-net-maui; snapshot threads/00111.html; SHA-256 3578f73dc62526eafb168b334e66e7b2134ca1e20aa9e9239eeb014820a8cc38. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Zebra ZQ320 Plus Image pringing, .NET MAUI </span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            C
+          </div>
+          <div class="forum-topic__author-name">Claudio Vasquez</div>
+          <div class="forum-topic__timestamp">1 year 10 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            276
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Currently, I am engaged in the development of an Android app utilizing .NET Maui.</p><p>However, I am encountering an issue with my Zebra ZQ320 Plus printer, which is currently running Link OS.</p><p>The problem arises when I attempt to print an image using the printing function provided by the Zebra Link OS Sdk. Instead of printing the actual image content, the printer outputs a lengthy string that, while accurately describing the image in string format, does not actually print out the actual image.</p><p>Does the Zebra ZQ3320+ have the necessary support to address this issue and print the image content as intended?</p><pre><code class="language-cs">				var connection = new BluetoothConnection(deviceAddress);
+
+                connection.Open();
+
+
+                using var stream = await FileSystem.OpenAppPackageFileAsync("logo_cobranza2.png");
+
+                Debug.Write(stream);
+                var tempFilePath = Path.Combine(FileSystem.CacheDirectory, "temp_logo_cobranza2.png");
+
+
+                using (var fileStream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write))
+                {
+                    await stream.CopyToAsync(fileStream);
+                }
+                var printerInstance = ZebraPrinterFactory.GetInstance(connection);
+
+                int x = 0;
+                int y = 0;
+
+                printerInstance.PrintImage(tempFilePath, x, y);
+
+                byte[] bytBuffer = System.Text.Encoding.GetEncoding(0).GetBytes(textContent);
+
+                connection.Write(bytBuffer);
+
+                connection.Close();</code></pre><p>Everything that comes after the printerInstance.PrintImage prints correctly and as intended. Its just that one that prints out as a huge String instead of the image.</p><p> </p><p> </p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-53691" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 10 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>If the printerInstance.PrintImage() prints a garbage like text string, it's most likely the device.languages setting on the ZQ320 is set to line_print model. You can use the Zebra Printer Setup app to verify the device.langauges setting on the printer. By default, the ZebraPrinterFactory.GetInstance(connection) returns a ZPL printer instance, and the subsequent statement of printerInstance.PrintImage(tempFilePath, x, y) tries to convert the image file into ZPL format before sending the converted ZPL to the ZQ320 to print. If the device.languages setting on the ZQ320 is set to line_print, then the ZQ320 prints everything it receives as text on the label instead of image.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/zebra-zq320-plus-image-pringing-net-maui%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/zebra-zq320-plus-image-pringing-net-maui%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

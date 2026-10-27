@@ -1,0 +1,454 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Register/Unregister for Notification - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/registerfornotification</code><br>Observed final URL: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/registerfornotification/</code><br>Raw source: <code>raw/350ab3b2fee814af8a4c7205.html</code><br>Raw SHA-256: <code>4f1505d44c0388a4b400ecd5a0b257963ad9e9f259006bfc297a5c584e416f7e</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs Home
+                        
+                                            DataWedge
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Get Started
+                            
+                        
+                        
+                            
+                                    Profiles
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Feature Matrix
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            US - English
+                          
+                          
+                                 CN - 普通话
+                                 JP - 日本語
+                          
+                                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Register/Unregister for Notification
+                        
+                    REGISTER_FOR_NOTIFICATIONFunction PrototypeParametersReturn ValuesExample Code
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Register/Unregister for Notification
+                                    
+                                            DataWedge
+                                            15.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        REGISTER_FOR_NOTIFICATION
+
+Introduced in DataWedge 6.4. WORKFLOW_STATUS introduced in DataWedge 11.2.
+
+Enable apps to register or unregister to receive notifications for status changes related to configuration, scanner, profile switching, Barcode Highlighting and Workflow Input. These status changes can result from DataWedge API calls (such as IMPORT_CONFIG, SWITCH_TO_PROFILE, and SCANNER_INPUT_PLUGIN) or DataWedge profile changes (such as profile Auto Import).
+
+
+
+Function Prototype
+
+Bundle b = new Bundle();
+    b.putString(&quot;com.symbol.datawedge.api.APPLICATION_NAME&quot;,&quot;com.example.MyApp&quot;);
+    b.putString(&quot;com.symbol.datawedge.api.NOTIFICATION_TYPE&quot;,&quot;PROFILE_SWITCH&quot;);
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.putExtra(&quot;com.symbol.datawedge.api.REGISTER_FOR_NOTIFICATION&quot;, b);
+    this.sendBroadcast(i);
+
+Parameters
+
+ACTION [String]: &quot;com.symbol.datawedge.api.ACTION&quot;
+
+EXTRA_DATA [String]: &quot;com.symbol.datawedge.api.REGISTER_FOR_NOTIFICATION&quot;
+
+BUNDLE:
+
+
+APPLICATION_NAME - Package name of the app to register
+
+NOTIFICATION_TYPE - Supported types:
+
+
+
+CONFIGURATION_UPDATE
+
+PROFILE_SWITCH
+
+SCANNER_STATUS
+
+WORKFLOW_STATUS - status changes to Workflow Input; also applies to Barcode Highlighting
+
+
+
+Return Values
+
+Returns a bundle with status of the requested DataWedge NOTIFICATION_TYPE
+
+EXTRA NAME: &quot;com.symbol.datawedge.api.NOTIFICATION&quot;
+
+BUNDLE:
+
+
+CONFIGURATION_UPDATE [String]:
+
+
+
+&quot;PROFILE_IMPORTED&quot; &quot;FULL_DB_IMPORTED&quot;
+
+&quot;PROFILE_NAME&quot;: &quot;&lt;Application package name&gt;&quot;
+
+
+PROFILE_SWITCH:
+
+
+
+&quot;PROFILE_IMPORTED&quot; &quot;FULL_DB_IMPORTED&quot;
+
+&quot;PROFILE_NAME&quot;: &quot;&lt;name of Profile now in use&gt;&quot;
+
+
+SCANNER_STATUS:
+
+
+
+WAITING - Scanner is enabled and ready to scan using a physical trigger or SOFT_SCAN_TRIGGER intent.
+
+SCANNING - Scanner has emitted the scan beam and scanning is in progress. This event does not prevent the application from disabling other controls as necessary.
+
+CONNECTED - A Bluetooth scanner has connected with the device and can now be enabled (or disabled) by the application. Scanner selection should be set to Auto in the currently active profile.
+
+DISCONNECTED - A Bluetooth scanner has disconnected from the device. Sending an intent to enable or disable the scanner in this state will enable/disable the current default scanner.
+
+IDLE - Scanner is in one of the following states: enabled but not yet in the waiting state, in the suspended state by an intent (e.g. SUSPEND_PLUGIN) or disabled due to the hardware trigger.
+
+DISABLED - Scanner is disabled. This is broadcasted by the scanner plug-in when the active profile becomes disabled manually or the scanner is disabled with an intent (e.g. DISABLE_PLUGIN).
+
+
+WORKFLOW_STATUS - &quot;Workflow&quot; refers to usage related to Workflow Input (e.g. scanning identification documents, reading license plates, etc.) or Barcode Highlighting:
+
+
+
+PLUGIN_READY - Workflow Input plug-in or Barcode Highlighting is ready to scan. This state notifies the user that DataWedge is ready to accept Intent API calls related to Workflow Input. Any intent API calls sent to DataWedge before this state will encounter undefined behavior. When a device is rebooted, sometimes it may take few seconds to initialize Workflow Input.
+
+DISABLED - Selected workflow is disabled. This is broadcasted by the Workflow Input plug-in when the active profile becomes disabled manually or the workflow is disabled with an intent.
+
+WORKFLOW_READY - Workflow Input plug-in or Barcode Highlighting is enabled and the selected workflow is in the process of being enabled, but not fully enabled yet.
+
+WORKFLOW_ENABLED - Workflow Input plug-in or Barcode Highlighting is enabled and the selected workflow is enabled, waiting for the session to start.
+
+SESSION_STARTED - Workflow is ready and waiting for the user to press the trigger to scan.
+
+CAPTURING_STARTED - Viewfinder has started - the user can place the subject in the field of view to capture data.
+
+CAPTURING_STOPPED - Viewfinder has stopped and the status immediately returns to the SESSION_STARTED state.
+
+
+
+
+  Scanner status notifications are sent only if the scanner in the active Profile is enabled.
+
+
+Note: The PROFILE_NAME (of the currently active profile) is returned with SCANNER_STATUS to allow the developer to filter scanner events for the required Profile only.
+
+Example Code
+
+void registerUnregister() {
+    // TO REGISTER AN APP TO RECIEVE NOTIFICATIONS
+
+    // Register for notifications - PROFILE_SWITCH
+    Bundle b = new Bundle();
+    b.putString(&quot;com.symbol.datawedge.api.APPLICATION_NAME&quot;, &quot;com.example.intenttest&quot;);
+    b.putString(&quot;com.symbol.datawedge.api.NOTIFICATION_TYPE&quot;, &quot;PROFILE_SWITCH&quot;);
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.putExtra(&quot;com.symbol.datawedge.api.REGISTER_FOR_NOTIFICATION&quot;, b); // (1)
+    this.sendBroadcast(i);
+
+
+    // To unregister, change only the iPutExtra command
+    Bundle b = new Bundle();
+    b.putString(&quot;com.symbol.datawedge.api.APPLICATION_NAME&quot;, &quot;com.example.intenttest&quot;);
+    b.putString(&quot;com.symbol.datawedge.api.NOTIFICATION_TYPE&quot;, &quot;PROFILE_SWITCH&quot;);
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.putExtra(&quot;com.symbol.datawedge.api.UNREGISTER_FOR_NOTIFICATION&quot;, b);
+    this.sendBroadcast(i);
+
+
+    // Register for notifications - SCANNER_STATUS
+    Bundle b = new Bundle();
+    b.putString(&quot;com.symbol.datawedge.api.APPLICATION_NAME&quot;, &quot;com.example.intenttest&quot;);
+    b.putString(&quot;com.symbol.datawedge.api.NOTIFICATION_TYPE&quot;, &quot;SCANNER_STATUS&quot;);
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.putExtra(&quot;com.symbol.datawedge.api.REGISTER_FOR_NOTIFICATION&quot;, b);//(1)
+    this.sendBroadcast(i);
+
+    // To unregister, change only the iPutExtra command
+    Bundle b = new Bundle();
+    b.putString(&quot;com.symbol.datawedge.api.APPLICATION_NAME&quot;, &quot;com.example.intenttest&quot;);
+    b.putString(&quot;com.symbol.datawedge.api.NOTIFICATION_TYPE&quot;, &quot;SCANNER_STATUS&quot;);
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.putExtra(&quot;com.symbol.datawedge.api.UNREGISTER_FOR_NOTIFICATION&quot;, b);
+    this.sendBroadcast(i);
+
+    // Register for notifications - WORKFLOW_STATUS
+    Bundle b = new Bundle();
+    b.putString(&quot;com.symbol.datawedge.api.APPLICATION_NAME&quot;, &quot;com.example.intenttest&quot;);
+    b.putString(&quot;com.symbol.datawedge.api.NOTIFICATION_TYPE&quot;, &quot;WORKFLOW_STATUS&quot;);
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.putExtra(&quot;com.symbol.datawedge.api.REGISTER_FOR_NOTIFICATION&quot;, b);//(1)
+    this.sendBroadcast(i);
+
+    // Unregister for notifications - WORKFLOW_STATUS
+    Bundle b = new Bundle();
+    b.putString(&quot;com.symbol.datawedge.api.APPLICATION_NAME&quot;, &quot;com.example.intenttest&quot;);
+    b.putString(&quot;com.symbol.datawedge.api.NOTIFICATION_TYPE&quot;, &quot;WORKFLOW_STATUS&quot;);
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.putExtra(&quot;com.symbol.datawedge.api.UNREGISTER_FOR_NOTIFICATION&quot;, b);
+    this.sendBroadcast(i);
+
+}
+
+// TO RECIEVE NOTIFICATIONS
+public static final String NOTIFICATION_ACTION = &quot;com.symbol.datawedge.api.NOTIFICATION_ACTION&quot;;
+public static final String NOTIFICATION_TYPE_SCANNER_STATUS = &quot;SCANNER_STATUS&quot;;
+public static final String NOTIFICATION_TYPE_PROFILE_SWITCH = &quot;PROFILE_SWITCH&quot;;
+public static final String NOTIFICATION_TYPE_WORKFLOW_STATUS = &quot;WORKFLOW_STATUS&quot;;
+public static final String NOTIFICATION_TYPE_CONFIGURATION_UPDATE = &quot;CONFIGURATION_UPDATE&quot;;
+
+private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String action = intent.getAction();
+        Log.d(TAG, &quot;#DataWedge-APP# Action: &quot; + action);
+
+        if (action.equals(NOTIFICATION_ACTION)) {
+
+            if (intent.hasExtra(&quot;com.symbol.datawedge.api.NOTIFICATION&quot;)) {
+                Bundle b = intent.getBundleExtra(&quot;com.symbol.datawedge.api.NOTIFICATION&quot;);
+                String NOTIFICATION_TYPE = b.getString(&quot;NOTIFICATION_TYPE&quot;);
+                if (NOTIFICATION_TYPE != null) {
+                    switch (NOTIFICATION_TYPE) {
+                        case NOTIFICATION_TYPE_SCANNER_STATUS:
+                            Log.d(TAG, &quot;SCANNER_STATUS: status: &quot; + b.getString(&quot;STATUS&quot;) + &quot;, profileName: &quot; + b.getString(&quot;PROFILE_NAME&quot;));
+                            break;
+
+                        case NOTIFICATION_TYPE_PROFILE_SWITCH:
+                            Log.d(TAG, &quot;PROFILE_SWITCH: profileName: &quot; + b.getString(&quot;PROFILE_NAME&quot;) + &quot;, profileEnabled: &quot; + b.getBoolean(&quot;PROFILE_ENABLED&quot;));
+                            break;
+
+                        case NOTIFICATION_TYPE_CONFIGURATION_UPDATE:
+                            break;
+                        case NOTIFICATION_TYPE_WORKFLOW_STATUS:
+                            Log.d(TAG, &quot;WORKFLOW_STATUS: status: &quot; + b.getString(&quot;STATUS&quot;) + &quot;, profileName: &quot; + b.getString(&quot;PROFILE_NAME&quot;));
+                            break;
+
+                    }
+                }
+            }
+        }
+    }
+};
+
+void registerReceivers() {
+    //to register the broadcast receiver
+    IntentFilter filter = new IntentFilter();
+    filter.addAction(NOTIFICATION_ACTION);
+    registerReceiver(broadcastReceiver, filter);//Android method
+}
+
+void unRegisterReceivers() {
+    //to unregister the broadcast receiver
+    unregisterReceiver(broadcastReceiver); //Android method
+}
+
+
+
+SEE ALSO:
+
+Zebra Support Central | Integrator Guides, Product Manuals, Software Downloads and Support
+
+LaunchPad | Zebra Developer Community
+
+Intent | Android Developers
+
+Intents and Intent Filters | Android Developers
+
+Android Intents | Tutorial
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2024 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+      
+
+
+
+Back to Top</pre></body></html>

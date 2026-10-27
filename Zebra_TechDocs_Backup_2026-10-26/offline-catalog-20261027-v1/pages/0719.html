@@ -1,0 +1,471 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Locking SmartCradle APIs - TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/emdk-for-android/latest/intents/cradle</code><br>Observed final URL: <code>https://techdocs.zebra.com/emdk-for-android/latest/intents/cradle/</code><br>Raw source: <code>raw/533a181d49b0dc659922164e.html</code><br>Raw SHA-256: <code>3f3b8e22010574ed5fcac050c501fb6a2a7fee53517131bb8be56a401e50953d</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                           EMDK For Android 15.1
+                          
+                          
+                                EMDK For Android 4.2
+                                EMDK For Android 4.0
+                          
+                                            
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Set Up
+                            
+                        
+                        
+                            
+                                    Tutorials
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Profile Manager
+                            
+                        
+                        
+                            
+                                    FAQs
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Locking SmartCradle APIs
+                        
+                    OverviewRequirementsAlso SeeSmartCradle Intent ActionCradle IntentCradle ActionsReturn ValuesSample CodeUnlock Cradle:Unlock Cradle with LED:Blink Cradle LED:Broadcast Receiver:Also See
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Locking SmartCradle APIs
+                                    
+                                            EMDK For Android
+                                            15.1
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+EMDK for Android 7.4 (and later) contains interfaces for controlling the EC30 Locking SmartCradle (model CRD-EC30-10SLC1-01), a 10-slot cradle used for securing, charging and individually dispensing Zebra EC30 ultra-compact enterprise companion devices. Interfaces provide programmatic, one-way communication from apps on EC30 devices to the SmartCradle for activating the cradle functions listed below.
+
+Supported Cradle Functions
+
+
+Unlock a device from its individual charging slot
+
+Illuminate a slot&#x27;s LED to shine solid or to &quot;blink&quot;
+
+Set LED color to red, green or blue
+
+Set a Timeout (in sec.) for expiration of an Action (i.e. Unlock)
+
+
+Notes
+
+
+Device slots lock automatically when a device is inserted
+
+Communications are one-way; from device to cradle only
+
+Apps operate with or without a user kiosk
+
+APIs NOT supported on ShareCradles (see below)
+
+
+Requirements
+
+Use of SmartCradle intent APIs requires experience with Java, with Android app development and with usage of Android intents. A supported cradle also is required.
+
+Supported Cradle(s):
+
+
+EC30 10-slot Locking SmartCradle (model CRD-EC30-10SLC1-01)
+
+
+Cradles NOT Supported:
+
+
+EC30 2-slot Charge ShareCradle (model CRD-EC30-2SCHG1-01)
+
+EC30 10-slot Charge ShareCradle (model CRD-EC30-10SC1-01)
+
+
+
+
+Also See
+
+
+EC30 Programmer&#x27;s Guide
+
+PS20 Product Page on Zebra.com
+
+Detecting PS20 Device State (docked/undocked)
+
+Data capture intent APIs
+
+Battery intent APIs
+
+Native APIs
+
+
+
+
+SmartCradle Intent Action
+
+The API currently implements a single intent with individual cradle Actions executed as intent extras. Supported Actions are listed below.
+
+Cradle Intent
+
+com.symbol.cradle.api.ACTION_DO
+
+Cradle Actions
+
+Actions are implemented as intent extras. See sample code for syntax.
+
+Unlock Cradle Slot
+
+Extra: &quot;UNLOCK&quot;
+Type: Bundle
+Parameters: LED, Timeout
+
+
+&quot;LED&quot;: Boolean
+
+&quot;true&quot;: Unlock cradle slot and light its LED solid green
+
+&quot;false&quot;: Unlock cradle lighting LED (default)
+
+&quot;TIMEOUT&quot;: Integer
+
+Range: 5–20 (seconds)
+
+Step value: 1
+
+Default: 0
+
+
+Blink (flash) LED
+
+Extra: &quot;BLINK&quot;
+Type: Bundle
+Parameters: Color, Solid, Timeout
+
+
+&quot;COLOR&quot;: Integer
+
+0 -Off (default)
+
+1 - Green
+
+16 - Red
+
+17 - Blue
+
+&quot;SOLID&quot;: Boolean
+
+&quot;true&quot;: Solid LED
+
+&quot;false&quot;: Blink LED (default)
+
+&quot;TIMEOUT&quot;: Integer
+
+Range: 0–120 (seconds)
+
+Step value: 1
+
+Default: 0
+
+
+Note: The cradle LED blink rate is NOT programmable.
+
+Return Values
+
+Callback
+
+Extra: &quot;CALLBACK_RESPONSE&quot;
+Type: Pending intent
+Function: Indicates status of &quot;UNLOCK&quot; and &quot;BLINK&quot; intents (NOT of the client ability to execute)
+Result codes and messages:
+
+
+&quot;RESULT_CODE&quot; 
+
+&quot;SUCCESS&quot;
+
+&quot;FAILURE&quot;
+
+&quot;RESULT_MESSAGE&quot;
+
+&quot;INVALID_PARAMETERS&quot;
+
+&quot;DEVICE_NOT_READY&quot;
+
+&quot;GENERAL_FAILURE&quot;
+
+&quot;SENDING_COMMAND_FAILED&quot;
+
+&quot;DEVICE_BUSY&quot;
+
+
+
+
+Sample Code
+
+Unlock Cradle:
+
+private void CradleUnlock() {
+        Intent intent = new Intent();
+        intent.setAction(&quot;com.symbol.cradle.api.ACTION_DO&quot;);
+        Bundle unlockBundle = new Bundle();
+        unlockBundle.putInt(&quot;TIMEOUT&quot;, 5);
+        unlockBundle.putBoolean(&quot;LED&quot;, false);
+        intent.putExtra(&quot;UNLOCK&quot;, unlockBundle);
+        Intent responseIntent = new Intent(getApplicationContext(), MyBroadcastReceiver.class);
+        responseIntent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+        responseIntent.putExtra(&quot;COMMAND&quot;, &quot;CRADLE_UNLOCK&quot;);
+        PendingIntent piResponse = PendingIntent.getBroadcast(getApplicationContext(), REQUEST_CODE, responseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        intent.putExtra(&quot;CALLBACK_RESPONSE&quot;, piResponse);
+        sendBroadcast(intent);
+    }
+
+Unlock Cradle with LED:
+
+private void CradleUnlockWithLED() {
+    Intent intent = new Intent();
+    intent.setAction(&quot;com.symbol.cradle.api.ACTION_DO&quot;);
+    Bundle unlockBundle = new Bundle();
+    unlockBundle.putInt(&quot;TIMEOUT&quot;, 5);
+    unlockBundle.putBoolean(&quot;LED&quot;, true);
+    intent.putExtra(&quot;UNLOCK&quot;, unlockBundle);
+    Intent responseIntent = new Intent(getApplicationContext(),  MyBroadcastReceiver.class);
+    responseIntent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+    responseIntent.putExtra(&quot;COMMAND&quot;, &quot;CRADLE_UNLOCK_WITH_LED&quot;);
+    PendingIntent piResponse = PendingIntent.getBroadcast(getApplicationContext(), REQUEST_CODE, responseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+    intent.putExtra(&quot;CALLBACK_RESPONSE&quot;, piResponse);
+    sendBroadcast(intent);
+}
+
+Blink Cradle LED:
+
+private void CradleLEDBlink() {
+    Intent intent = new Intent();
+    intent.setAction(&quot;com.symbol.cradle.api.ACTION_DO&quot;);
+    Bundle blinkBundle = new Bundle();
+    blinkBundle.putInt(&quot;TIMEOUT&quot;, 5);
+    blinkBundle.putInt(&quot;COLOR&quot;, color); //1-Green,16-Red,17-Blue
+    blinkBundle.putBoolean(&quot;SOLID&quot;, isSolid); // true OR false
+    intent.putExtra(&quot;BLINK&quot;, blinkBundle);
+    Intent responseIntent = new Intent(getApplicationContext(), MyBroadcastReceiver.class);
+    responseIntent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+    responseIntent.putExtra(&quot;COMMAND&quot;, &quot;CRADLE_BLINK_LED&quot;);
+    PendingIntent piResponse = PendingIntent.getBroadcast(getApplicationContext(), REQUEST_CODE, responseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+    intent.putExtra(&quot;CALLBACK_RESPONSE&quot;, piResponse);
+    sendBroadcast(intent);
+}
+
+Broadcast Receiver:
+
+/*The broadcast receiver below receives the responseIntent defined in the above functions. Once any of the above API calls have been processed, register this broadcast receiver by adding the code below in the &lt;application&gt; section of the manifest:
+
+        &lt;receiver
+        android:name=&quot;.MainActivity$MyBroadcastReceiver&quot;&gt;
+        &lt;/receiver&gt;
+*/
+
+public static class MyBroadcastReceiver extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        String status = &quot;&quot;;
+        String command = intent.getStringExtra(&quot;COMMAND&quot;);
+        String resultCode = intent.getStringExtra(&quot;RESULT_CODE&quot;);
+        String resultMessage = intent.getStringExtra(&quot;RESULT_MESSAGE&quot;);
+        if (command != null) {
+            status += &quot;\n* &quot; + command;
+        }
+        if (resultCode != null) {
+            status += &quot;\n* ResultCode= &quot; + resultCode;
+        }
+        if (resultMessage != null) {
+            status += &quot;\n* Message= &quot; + resultMessage + &quot; \n&quot;;
+        }
+        Log.d(MyBroadcastReceiver.class.getSimpleName(), status);
+    }
+}
+
+
+
+Also See
+
+
+EC30 Programmer&#x27;s Guide
+
+PS20 Product Page on Zebra.com
+
+Detecting PS20 Device State (docked/undocked)
+
+Data capture intent APIs
+
+Battery intent APIs
+
+Native APIs
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. Some content or images may have been created with the assistance of AI. ©2026 Zebra Technologies Corp. and/or its affiliates. Legal | Terms of Use | Privacy Policy 
+                    
+                     
+                 
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

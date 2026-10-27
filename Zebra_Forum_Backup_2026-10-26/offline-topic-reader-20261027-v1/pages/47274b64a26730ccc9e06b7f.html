@@ -1,0 +1,155 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Generate zpl file to send to print server</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Generate zpl file to send to print server</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25446; original snapshot: threads/resume-00488.html; SHA-256: 84d3c0f32e88ec1faeaeb7801e721ebbabbc2e6d570c83517eb8e510bff6b115</small><pre id="topic">
+
+    
+        Generate zpl file to send to print server
+
+
+        
+      
+                        
+                    
+            S
+          
+          System Admin
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            216
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I have a java application that currently sends postscript, PCL or PDF files to a Unix Print Server for printing. I am looking at extending this to support Zebra printers.
+It would be a trivial change to get the application to produce an image output.
+I can see in the Link-OS SDK API I can see that printing an image directly to a printer would be simple, using com.zebra.sdk.printer.GraphicsUtil.printImage.
+However the application cannot talk directly to the printers.
+Instead I need to access the ZPL that is generated, as a file, and send this to the Print Server. This will talk to the printer.
+The SDK appears to assume there is a direct connection to the printer.
+Is there some way of getting the output file? Or is there a different API or SDK I should be looking at?
+Thanks.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            6 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The Link-OS SDK is meant for applications&amp;nbsp;that have connection (TCP, USB or Bluetooth) to the printer. We cannot use the Link-OS SDK API if there is no connection to the printer.
+In the usecase described above, you can have your application to convert an image into based64 or binary data format. Then you can create your own ZPL with the ^GF command for printing on Zebra printer.&amp;nbsp;Then this ZPL text file can be sent to the print server for printing.&amp;nbsp;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

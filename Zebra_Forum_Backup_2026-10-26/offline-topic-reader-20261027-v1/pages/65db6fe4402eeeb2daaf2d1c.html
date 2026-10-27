@@ -1,0 +1,150 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Connecting to Zebra ZC 100 via Linkos failed</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Connecting to Zebra ZC 100 via Linkos failed</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/connecting-zebra-zc-100-linkos-failed; original snapshot: threads/00044.html; SHA-256: 464fcdedb07cf29a83e515ff5170cc2ff8a6f4022ad277a5ba2fe6f3a1ede8f0</small><pre id="topic">
+
+    
+        Connecting to Zebra ZC 100 via Linkos failed
+
+
+        
+      
+                        
+                    
+            Z
+          
+          zed zhou
+          1 year 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            158
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Subject: Urgent - SDK Fails to Initialize After Packaging Content: Issue Description:Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Handler dispatch failed; nested exception is java.lang.UnsatisfiedLinkError: &#x27;java.lang.String[] com.zebra.sdk.comm.internal.NativeUsbAdapter.EnumeratePrinters()&#x27;] with root cause Environment Information:Java Version: 8Operating System: WindowsSDK Version: [v2.15.5376]Printer Model: [zc100] Attempted Solutions:Multiple packaging methods Local library loading approaches Class loading verification Network diagnostics Requests:Official recommended packaging guidelines Any known packaging issues Provide a minimal reproducible example I can print locally, but after packaging into a JAR, I get an error ，I checked the situation inside the jar package and found that ZSDK-API.JAR, ZSDK-CARD-API.JAR, and 64 bit DLL files have all been successfully packaged，How can I solve this problemHere&#x27;s my connection method:printers = UsbDiscoverer.getZebraUsbPrinters(); System.out.println(printers.toString()); if (printers == null || printers.length == 0) {     throw new IllegalStateException(&quot;No available devices&quot;); } DiscoveredPrinter selectedPrinter = printers[0]; System.out.println(&quot;已选择打印机: &quot; + selectedPrinter); connection = selectedPrinter.getConnection(); connection.open(); System.out.println(&quot;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; success&quot;); zebraCardPrinter = ZebraCardPrinterFactory.getInstance(connection); List&lt;GraphicsInfo&gt; graphicsData = new ArrayList&lt;GraphicsInfo&gt;();
+              
+
+                    
+          
+      
+              
+ PixPin_2025-06-20_10-42-20.jpg
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            George Martin
+          
+          
+            1 year 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Your `java.lang.UnsatisfiedLinkError` when connecting USB devices via the Zebra SDK after packaging indicates that the JVM cannot find or load required native DLLs from inside your JAR. The solution is to **deploy these DLL files externally, alongside your executable JAR**, rather than embedding them. The JVM requires DLLs to be accessible on the file system at runtime, not within an archive.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

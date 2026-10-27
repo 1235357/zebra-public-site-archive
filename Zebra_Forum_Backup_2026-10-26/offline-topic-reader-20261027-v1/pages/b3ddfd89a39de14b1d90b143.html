@@ -1,0 +1,244 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>EMDK service is not closed, next startup takes a long time</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>EMDK service is not closed, next startup takes a long time</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/32976; original snapshot: threads/resume-00129.html; SHA-256: 1c700ab463b0b9b77f73d46a9ce2d19c0cc3111f9e8dfc8ec9dbccc2437a3bc7</small><pre id="topic">
+
+    
+        EMDK service is not closed, next startup takes a long time
+
+
+        
+      
+                        
+                    
+            M
+          
+          Mike Bedford
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            423
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello all, this is not so much of an issue that I need help with but more, an observation I had and I wanted to point it out for others as well as start a discussion. Of course, if there is something I can do better OR there is a possibility for Zebra to enhance the EMDK to correct this, then that would be appreciated too.
+ 
+At first, I was having issues where the scanner would not return any results. The lights would light up but no beep, no barcode results. While troubleshooting with breakpoints, I noticed that one of the first things you should do is get the EMDK manager, which I was doing right away.
+ 
+When the EMDK manager returns, it raises a callback, called:
+ 
+void EMDKManager.IEMDKListener.OnOpened(EMDKManager emdkManager)
+ 
+which in turn, will call InitScanner(); and at that point, you will be good to go, ready to scan, fully initialized.
+ 
+However, when I was having issues, I noticed that the callback, OnOpened, would not raise at all or sometimes would eventually raise but take 30+ seconds or even minutes which of course delays the InitScanner by that amount of time and you cannot scan during this time.
+ 
+The culprit that I found is OnPause and OnDestroy must get raised to DeinitScanner and release the EMDK manager, which makes sense. But, guess what, when you are debugging in Visual Studio and you hit stop, it instantly stops and from what I can tell, OnPause and OnDestroy do not get called. This leaves the EMDK manager out there.
+ 
+How can you tell? Go to Android Settings &gt; Apps &gt; Running and you will see &quot;EMDK Service&quot; is running even when your app is closed or you are not debugging. If the EMDK Service is running, it causes this slowdown of the callback the next time you try to run your app. So, you have to do one of two things:
+1. When debugging, make sure to hit back arrow on the android device BEFORE you stop the debugger.
+2. You can go to apps &gt; Running and select the EMDK Service and then click &quot;Force Stop&quot;. This will kill it and you will be good.
+ 
+If you shutdown the app gracefully (number 1 above) you will see that the EMDK service is removed from the running apps.
+ 
+This happens even on the BarcodeScanningTutorial provided by Zebra for the EMDK. You can see this happen by loading the tutorial into Visual Studio and start debugging. The first time, all will be fine. Now, click the stop button to stop debugging and try to start back up. While you were stopped, you could note that the EMDK service never closes. You could also note the delay on the callback OnOpened. When the demo is started back up, you will note it is stuck on &quot;Status: EMDK Opened successfully ...&quot; and doesn&#x27;t go to this status &quot;Scanner is idle and ready to submit read.&quot; like it should. Finally, you will note that you cannot scan a barcode during all of this.
+ 
+While this seems to be an issue with debugging in Visual Studio, it has me concerned. What happens if my app gets in a weird state in production and the service does not get stopped properly?
+ 
+That said, I believe that Zebra should look at this. It seems that even if the EMDK service IS still running when the app is started and the EMDK manager tries to GetEMDKManager on startup, it should be able to either return the currently running instance or kill and restart or something in a more timely manner rather than sitting there doing nothing.
+ 
+Hope this helps some people and hopefully there is a workaround or something to ensure this won&#x27;t be an issue.
+ 
+Thanks!
+ 
+Mike
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mike Bedford
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The answer to this original post was to get the EMDK service updated to the latest version, which at this time is 4.1.2.
+The method to update the EMDK service on a one device at a time basis is to follow the guide that Bill posted above.
+Aside from that, I need to work with my team to check the EMDK service version of each new device we receive and either update it or look in to using something like StageNow (which I have not used yet).
+Thank you all for the help.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mike Bedford
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            This has taken on a whole new life, it has now become an issue and a major bug. Again, when I call GetEMDKManager, if the EMDKService is already running, it takes forever for the IEMDKListener to return OnOpened. It seems like, in my experience, most calls like this should work as follows:
+1. Is the service already running? If so, grab the service instance. (Note this is the part not working or working slowly).
+2. If the service is already running but we cannot grab the instance, start a new one for this call.
+3. If the service is not running, start it.
+4. When it is necessary (ie setting emdkManager to null, dispose or with GC) then stop the service.
+It appears that the only thing in that list working reliably is number 3. I would say maybe number 4 but I don&#x27;t know if the times the service is left running is because of the Android lifecycles not firing or if there is also an issue with number 4.
+All that said, today, there was a whole new but related issue.
+We were doing extensive testing and not using Visual Studio debugging. Therefore, we were closing the app gracefully and as such, the onStop and onDestroy Android lifecycles SHOULD have been firing and ultimately stopping the EMDK service. But, this was not the case. Randomly, after a few hours of testing fine, the scanner stopped working. Multiple graceful shutdowns and startups of the app would not recover the scanner. When I looked in running services, EMDK service did not appear to be running at any time (whether when it should have been or not, meaning whether my app was running or not). This was odd and different behavior. However, on a whim, I noticed that while you are viewing the running services, there is a link at the top that says &quot;Show Cached Services&quot;. I clicked that and there was the EMDK service. I manually killed it and suddenly, my app starting working, meaning the scanner started working again. 
+So now, this still is similar to yesterday where when the service is already running, things just are not happy. However, the new question is what is this new state it can also get into where the service is cached as well?
+This is now causing major reliability problems. I hope somebody has some feedback and can help me get this resolved. Otherwise, I am not looking into ways to force stop the EMDK service from inside my app, though I fear Android will not allow me to do so.
+Thanks!
+Mike
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

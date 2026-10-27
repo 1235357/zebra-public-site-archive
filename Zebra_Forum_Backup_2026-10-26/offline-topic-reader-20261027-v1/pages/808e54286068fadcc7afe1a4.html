@@ -1,0 +1,162 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Difficulty connecting to ZQ510 over BLE on iOS</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Difficulty connecting to ZQ510 over BLE on iOS</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25692; original snapshot: threads/resume-00536.html; SHA-256: d265d1009839d69325cbdb8beb2ad9751b5f578d5b03f3c43d1e336d2dbcb1c4</small><pre id="topic">
+
+    
+        Difficulty connecting to ZQ510 over BLE on iOS
+
+
+        
+      
+                        
+                    
+            O
+          
+          Oscar Goh
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            109
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi, I&#x27;m trying to connect my iOS app to a Zebra ZQ510 printer over CoreBluetooth, but not having much luck locating the printer. Looking at the sample code from https://github.com/ZebraDevs/LinkOS-iOS-Samples/tree/ZebraPrinterBLEDemo, I call scanForPeripherals( ) to locate the printer:
+central.scanForPeripherals(withServices: services, options: [
+    CBCentralManagerScanOptionAllowDuplicatesKey : false
+])
+The callbacks for centralManager(_, didDiscover:, advertisementData:, rssi:) all differ depending on what I pass in for services in the call above, but none of them let me get to the Zebra printer.
+If I set services to nil, I get a number of nameless peripherals with no way to determine which one is the printer without connecting to each peripheral individually.
+If I set services like so:
+let services = [CBUUID(string: ZPRINTER_SERV_ID_FOR_CONNECTION)]
+I do not get a response.
+I&#x27;m not sure what else I&#x27;m missing to try to find my printer. Can someone please point me in the right direction? Thanks in advance.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            6 years ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Make sure that the particular sub-model of the ZQ510 printer has the BLE equipped and enabled. If the BLE is equipped and enabled on the ZQ510, you can use the demo (https://github.com/ZebraDevs/LinkOS-iOS-Samples/tree/ZebraPrinterBLEDemo) to test it out first before preceeding to create you own app. Use the following commands to check and enable the BLE. The printer needs a reset after issuing the commands.
+// Check if BLE is equipped
+! U1 getvar &quot;bluetooth.le.controller_mode&quot;
+// Enable BLE
+! U1 setvar &quot;bluetooth.le.controller_mode&quot; &quot;le&quot;
+! U1 setvar &quot;bluetooth.le.controller_mode&quot; &quot;both&quot;
+&amp;nbsp;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

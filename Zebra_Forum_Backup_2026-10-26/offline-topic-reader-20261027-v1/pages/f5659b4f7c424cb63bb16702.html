@@ -1,0 +1,266 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Android/LinkOS (v2.14.5198) - Malformed status response - unable to determine printer status</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Android/LinkOS (v2.14.5198) - Malformed status response - unable to determine printer status</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/26090; original snapshot: threads/resume-00401.html; SHA-256: 8ec257574ba4093df37319e0390bda4f672336306f7b92881363dbef15ceeff8</small><pre id="topic">
+
+    
+        Android/LinkOS (v2.14.5198) - Malformed status response - unable to determine printer status
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 4 months ago
+        
+        
+      
+        
+            
+                  
+            
+            167
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,
+I am trying to print a PDF file on a ZQ521 printer from a native (kotlin) Android app running on Zebra TC26 (Android 10 OS).
+I&#x27;ve followed the official documentation and also used https://github.com/ZebraDevs/LinkOS-Android-Samples as a reference, but I am getting an error while checking printer status:
+W/System.err: com.zebra.sdk.comm.ConnectionException: Malformed status response - unable to determine printer status
+W/System.err:     at com.zebra.sdk.printer.internal.PrinterStatusZpl.getPrinterStatus(Unknown Source:65)
+W/System.err:     at com.zebra.sdk.printer.internal.PrinterStatusZpl.updateStatus(Unknown Source:0)
+W/System.err:     at com.zebra.sdk.printer.PrinterStatus.getStatusFromPrinter(Unknown Source:4)
+W/System.err:     at com.zebra.sdk.printer.PrinterStatus.(Unknown Source:22)
+W/System.err:     at com.zebra.sdk.printer.internal.PrinterStatusZpl.(Unknown Source:0)
+W/System.err:     at com.zebra.sdk.printer.internal.ZebraPrinterZpl.getCurrentStatus(Unknown Source:4)
+I&#x27;ve established a connection between a printer and a mobile device successfully but this error still occurs.
+Here is code snippet of my current implementation:
+            val printer: DiscoveredPrinter = data.first
+            val file: Uri = data.second.filePath
+            GlobalScope.launch(Dispatchers.IO) {
+                try {
+                    object : BluetoothConnection(printer.address) {
+                        override fun open() {
+                            super.open()
+                            val zebraPrinter: ZebraPrinter = ZebraPrinterFactory.getInstance(this)
+                            val isReady: Boolean = checkPrinterStatus(zebraPrinter, file.path)
+                            val scale: String = scalePrint(this, file)
+                            SGD.SET(&quot;apl.settings&quot;, scale, this);
+                            if (isReady) {
+                                if (!file.path.isNullOrEmpty()) {
+                                    zebraPrinter.sendFileContents(file.path)
+                                } else {
+                                    logger.d(TAG, &quot;Container label file is empty&quot;)
+                                }
+                            } else {
+                                logger.d(TAG,
+                                    &quot;Zebra printer is not ready, current status: ${zebraPrinter.currentStatus}&quot;)
+                            }
+                        }
+                    }.open()
+                } catch (ex: ConnectionException) {
+                    logger.e(TAG, ex)
+                } catch (ex: ZebraPrinterLanguageUnknownException) {
+                    logger.e(TAG, ex)
+                } finally {
+                    value = Unit
+                    try {
+                        connection?.close()
+                    } catch (ex: ConnectionException) {
+                        logger.e(TAG, ex)
+                    }
+                }
+            }
+    private fun checkPrinterStatus(printer: ZebraPrinter, filePath: String?): Boolean {
+        if (printer.connection.isConnected) {
+            try {
+                val printerStatus: PrinterStatus = printer.currentStatus
+                if (printerStatus.isReadyToPrint &amp;&amp; filePath != null) {
+                    return true
+                }
+            } catch (e: ConnectionException) {
+                e.printStackTrace()
+            }
+        }
+        return false
+    }
+Version of LinkOs: link_os_sdk\android\v2.14.5198
+Thanks in advance!
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              N
+            
+          
+                
+          
+            Nikola Sofronovic
+          
+          
+            5 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            linkOsPrinter.sendFileContents(&quot;/storage/emulated/0/Download/containerLabel1925002806.pdf&quot;)
+This line on code worked, but got really weird print, check it out here:
+https://ibb.co/DbZRv1P
+https://ibb.co/nPWMnYL
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            How often do you get this &quot;Malformed status response&quot; error msg thrown out in ConnectionException? If it happens every time, then we need to make sure that&amp;nbsp;the Bluetooth connection is open before calling&amp;nbsp;ZebraPrinterFactory.getInstance(connection). If it happens occasionally, then we can add a retry to see if we can get a complete response again.&amp;nbsp;The underneath implementation of this getCurrentStatus() is to parse a string returned from the SGD of&amp;nbsp;&quot;device.host_status&quot;. If the received string is incomplete or corrupted, then we would see &quot;Malformed status response&quot; error msg.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

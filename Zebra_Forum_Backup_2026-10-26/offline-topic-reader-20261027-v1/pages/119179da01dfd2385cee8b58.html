@@ -1,0 +1,201 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Something unexpected with provisioning policies</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Something unexpected with provisioning policies</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/26735; original snapshot: threads/01613.html; SHA-256: 3b69b94cb968a7783ba64832a35ac11d117282d0fffde2b224044418c34842f7</small><pre id="topic">
+
+    
+        Something unexpected with provisioning policies
+
+
+        
+      
+                        
+                    
+            S
+          
+          Sean Wheatley
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            16
+          
+                
+                  
+            
+            2
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi,   Today whilst staging a number of devices I witnessed some unexpected and weird behaviour. Perhaps its my lack of understanding of MSP I dont know but this is what happened.   I have a staging bundle that updates the agent on the MC5574, attaches debug30, sets a siteID setting and starts smart staging. What follows is succession of provisioning policies that follow one another.From policy 1 through to 10. This is controlled by an applicability rule in each policy that checks inventory.xxxx exists (from the previous package install) It works very well.   During the testing phase I ended up with several terminals in various states of staging which wasnt a problem, I just did a clean boot and blank and started over. I deleted the devices from MSP device status.   We started staging from scratch with new devices (never seen before by MSP) and a number of &quot;cleaned&quot; units. The ones that were new followed the policies in order from start to finish. However with the clean devices I noticed that the policies started out of the normal order. Policy number 1 would start as normal but also in parallel policy number 7 would also start. Even when policies 2,3 4,5,6 were not compliant yet. When I checked the package inventory on these devices it showed a package that should not have been loaded yet. This package was not on the device before staging started so MSP must have remembered the device had previously been staged with it.   I thought deleting the device from the status screen would clear this sort of information but it didnt appear to. After all it did delete the other packages from the previous install just not this one.  A new device previously unknown to this MSP server runs through normally so I know that I&#x27;m not adding it in the first bundle.   What is deleting the device from status screen doing? Do I need to do a purge somewhere else?     
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      2 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Sean,   are you really sure that the application folder on the device was completely wiped and set back to default. Could you check that the folder \application\airbeam\pkg is empty.   Any successful installed package on the device stores&amp;nbsp;a package apd file into this folder. If an apd&amp;nbsp;file exists it tells MSP that the package is installed on the device regardless of if the package components are on the device or not.   Thomas
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Wheatley
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Quite sure yes although I didnt check each terminal. At first I thought I must have just been doing a clean and not a clean boot and blank. But I did check some units and the Application folder was empty except the standard folders and the ones I did check the pkg folder was empty.   The device must have cleared down otherwise other policies would have started and subsequently registered compliant status. Its as if MSP kept a record of just this one package and remembered the device from the last time that it was staged. Maybe a clear down of the relay server would have helped but I give that a go next time.   Its no longer an issue because I simply deactivated the last few policies and waited for all of the devices and earlier policies&amp;nbsp;to catch up then re-activated the last few policies again.   Just weird that the previously staged (and then cleaned) units jumped to the 7th policy when it should not have been applicable.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,159 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Set Page Width and Height Programmatically</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Set Page Width and Height Programmatically</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25864; original snapshot: threads/resume-00569.html; SHA-256: 2f671b1823509843c5d3c4324276378edd5f46522488fd6590734c5ffbf3965b</small><pre id="topic">
+
+    
+        Set Page Width and Height Programmatically
+
+
+        
+      
+                        
+                    
+            D
+          
+          Derek Russell
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            472
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Is there any way to set the page width and height within the driver? Or possibly choose the stock. I have a service that prints labels (created as Crystal Reports) and I need a way to change the size of the label in the driver. My only other option is to create a several printers instances with different sizes for each physical printer. For reference I am using .net with c#.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Robin West
+          
+          
+            5 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You can use the PrintDocument class to set the page size.&amp;nbsp; Specifically the PrintDocument.PrinterSettings.PaperSizes&amp;nbsp;allows you to access standard sizes and create custome page sizes.
+From https://docs.microsoft.com/en-us/dotnet/api/system.drawing.printing.pri…
+// Add list of supported paper sizes found on the printer.
+// The DisplayMember property is used to identify the property that will provide the display string.
+comboPaperSize.DisplayMember = &quot;PaperName&quot;;
+PaperSize pkSize;
+for (int i = 0; i &amp;lt; printDoc.PrinterSettings.PaperSizes.Count; i++){
+    pkSize = printDoc.PrinterSettings.PaperSizes[i];
+    comboPaperSize.Items.Add(pkSize);
+}
+// Create a PaperSize and specify the custom paper size through the constructor and add to combobox.
+PaperSize pkCustomSize1 = new PaperSize(&quot;First custom size&quot;, 100, 200);
+comboPaperSize.Items.Add(pkCustomSize1);&amp;nbsp;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,252 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Send ZPL to a shared ZD220 (no network capability) using SDK</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Send ZPL to a shared ZD220 (no network capability) using SDK</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/send-zpl-shared-zd220-no-network-capability-using-sdk; original snapshot: threads/00427.html; SHA-256: 4377d2c3b06c136256d0124fda7a1916cc01263b529f24f47f6a94cd88fbf332</small><pre id="topic">
+
+    
+        Send ZPL to a shared ZD220 (no network capability) using SDK
+
+
+        
+      
+                        
+                    
+            H
+          
+          Humberto Mockel
+          2 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            653
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello! I&#x27;m currently developing an application where I need to send ZPL commands to the printer. I successfully discovered the printer and printed labels via either Direct USB and Driver Discovery methods in the host computer using the SDK (same as in the demo program), but I need to also use the printer from other computers in the network. I tried the approach of sharing the printer via the traditional Windows printer share method and installing the ZDesigner driver in the remote computer, wich gives access to the printer via the &quot;\\host.name\printer&quot; name. Now in the remote ocmputer, Windows apps can still print to the label printer (notepad as an example) but sending the ZPL commands via the method:        thePrinterConn-&gt;Write(System::Text::Encoding::UTF8-&gt;GetBytes(data));Doesn&#x27;t work on the remote computers, only in the host computer. Is there an alternative to send ZPL commands from a remote computer, if traditional Windows sharing isn&#x27;t supported on the SDK? My printer is a normal ZD220 with direct USB connection, no network option.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            2 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Instead of using the USB connection, connect the ZD220 printer on the network. The printer can be discovered and connected from all computers on the same network via the TCP connection. Then the computers on the same network can send ZPL to the printer via the TCP connection. Check out the API in the SDK for the details of the TCP connection. The developer demo that comes with the SDK has the sample code for the TCP connection. If your printer doesn&#x27;t have the network option, you can order a network card for it.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Humberto Mockel
+          
+          
+            2 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I searched online but couldn&#x27;t find which add-on card I need for a ZD220, also it would be nearly impossible to find or uneconomical to get (it&#x27;s the Argentinian market, the printer itself sells for rocket prices). Also there are no USB to Ethernet print servers available unless I import them, so also not an option.My only reachable solution would be using a PC as a server. Is there a way to configure Windows, or a third party app to get the PC working as a print server and let me share the USB ZD220 as a network printer? Then I could use network discovery on the SDK.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              H
+            
+          
+                
+          
+            Humberto Mockel
+          
+          
+            2 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I ended up bypassing the driver and sending the ZPL using this method: https://learn.microsoft.com/en-us/troubleshoot/windows/win32/win32-raw-data-to-printerIt works also if using the shared printer driver in a remote computer, so great. Thanks anyway for the help, definitely it&#x27;s the last time I buy a printer without network capabilities!
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

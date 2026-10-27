@@ -1,0 +1,165 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Tomcat link-os Java native libraries error on reload</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Tomcat link-os Java native libraries error on reload</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/36252; original snapshot: threads/resume-00284.html; SHA-256: a849dff76f09bec2d7531cde8e8783edb145eaa7e0e8c17968519315aeffd522</small><pre id="topic">
+
+    
+        Tomcat link-os Java native libraries error on reload
+
+
+        
+      
+                        
+                    
+            T
+          
+          Tobia Scapin
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            262
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m using LinkOS Java libraries to print from my webapp to USB printers running in a Tomcat 8 java container in Windows environment.
+The ZSDK_API.jar is included in the webapp libraries and zDriverAdapter and ZebraNativeUsbAdapter_32 files are stored in tomcat /bin directory.
+With this configuration, I can print and linkOS works as required.
+But when I have to reload or update my project, Tomcat reloads the web application and after this process I get
+com.zebra.sdk.comm.UsbNativeCodeConnectionException: The native code dll is not loaded.    at com.zebra.sdk.printer.discovery.UsbDiscoverer.getZebraUsbPrinters(Unknown Source) ~[ZSDK_API.jar]
+And I cannot use LinkOs anymore.
+The only solution for me is to restart tomcat service, after this the linkOS libraries work again.
+I found that the inner error is:
+java.lang.UnsatisfiedLinkError: Native Library ZebraNativeUsbAdapter_32.dll already loaded in another classloader
+I should avoid the server reload because I have to stop all my applications instead of just the updated one.
+Do you have any suggestion?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Javier Molina
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Have you checked if enabling antiJARLocking or antiResourceLocking in your context.xml has any effect? Apache Tomcat 7 Configuration Reference (7.0.92) - The Context Container 
+If that doesn&#x27;t help, you could put (for development only, not recommended for production) the ZSDK_API and all other .jar files inside a location loaded by the common class loader so that the classes in ZSDK_API are not reloaded and therefore they don&#x27;t attempt to load the DLL more than once. Note that this is considered a hack and it may cause problems if different webapps use different versions of some dependency.
+If initial tests work with that configuration, I would suggest creating a new directory and adding that to common.loader in tomcat/conf/catalina.properties. By default it will look similar to this:
+common.loader=${catalina.base}/lib,${catalina.base}/lib/*.jar,${catalina.home}/lib,${catalina.home}/lib/*.jar
+If you create tomcat/lib/zsdk and put all the jars there, you would update common.loader as such:
+common.loader=${catalina.base}/lib,${catalina.base}/lib/*.jar,${catalina.home}/lib,${catalina.home}/lib/*.jar,${catalina.home}/lib/zsdk/*.jar
+By doing that, you make it easier for yourself to update the ZSDK-specific files because you know they are confined to that specific directory, instead of having to check which files belong to tomcat and which ones belong to ZSDK.
+Javier Molina
+Technical Architect, Kutir Mobility
+Posted on behalf of Zebra Technologies
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

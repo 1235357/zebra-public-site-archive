@@ -1,0 +1,451 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Android 12 (API Level 31) Issue: App crashes due to missing flag on PendingIntent</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Android 12 (API Level 31) Issue: App crashes due to missing flag on PendingIntent</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/android-12-api-level-31-issue-app-crashes-due-missing-flag-pendingintent; original snapshot: threads/00690.html; SHA-256: 1fc4e7dfd8c2067060f8431034a1065a677f77565b1e9c1e1229d493ab20aa75</small><pre id="topic">
+
+    
+        Android 12 (API Level 31) Issue: App crashes due to missing flag on PendingIntent
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          3 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            99
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I have an app that uses the DS457 to scan QR codes. This has all been working perfectly but the Google Play store now requires that apps target an API level of 31. I&#x27;ve updated our app to target this, but I&#x27;m now getting issues with the scanner. When the scanner is plugged in I get the following error:
+11-22 11:51:37.468 24725 24725 E AndroidRuntime: java.lang.RuntimeException: Error receiving broadcast Intent { act=android.hardware.usb.action.USB_DEVICE_ATTACHED flg=0x11000010 (has extras) } in com.zebra.scannercontrol.SDKHandler$1@8038304
+11-22 11:51:37.468 24725 24725 E AndroidRuntime:        at android.app.LoadedApk$ReceiverDispatcher$Args.lambda$getRunnable$0$LoadedApk$ReceiverDispatcher$Args(LoadedApk.java:1689)
+11-22 11:51:37.468 24725 24725 E AndroidRuntime:        at android.app.LoadedApk$ReceiverDispatcher$Args$$ExternalSyntheticLambda0.run(Unknown Source:2)
+11-22 11:51:37.468 24725 24725 E AndroidRuntime:        at android.os.Handler.handleCallback(Handler.java:938)
+11-22 11:51:37.468 24725 24725 E AndroidRuntime:        at android.os.Handler.dispatchMessage(Handler.java:99)
+11-22 11:51:37.468 24725 24725 E AndroidRuntime:        at android.os.Looper.loopOnce(Looper.java:201)
+11-22 11:51:37.468 24725 24725 E AndroidRuntime:        at android.os.Looper.loop(Looper.java:288)
+11-22 11:51:37.468 24725 24725 E AndroidRuntime:        at android.app.ActivityThread.main(ActivityThread.java:7842)
+11-22 11:51:37.468 24725 24725 E AndroidRuntime:        at java.lang.reflect.Method.invoke(Native Method)
+11-22 11:51:37.468 24725 24725 E AndroidRuntime:        at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:548)
+11-22 11:51:37.468 24725 24725 E AndroidRuntime:        at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:1003)
+11-22 11:51:37.468 24725 24725 E AndroidRuntime: Caused by: java.lang.IllegalArgumentException: id.reath.spoke.debug: Targeting S+ (version 31 and above) requires that one of FLAG_IMMUTABLE or FLAG_MUTABLE be specified when creating a PendingIntent.
+11-22 11:51:37.468 24725 24725 E AndroidRuntime: Strongly consider using FLAG_IMMUTABLE, only use FLAG_MUTABLE if some functionality depends on the PendingIntent being mutable, e.g. if it needs to be used with inline replies or bubbles.
+11-22 11:51:37.468 24725 24725 E AndroidRuntime:        at android.app.PendingIntent.checkFlags(PendingIntent.java:375)
+11-22 11:51:37.468 24725 24725 E AndroidRuntime:        at android.app.PendingIntent.getBroadcastAsUser(PendingIntent.java:645)
+11-22 11:51:37.468 24725 24725 E AndroidRuntime:        at android.app.PendingIntent.getBroadcast(PendingIntent.java:632)
+11-22 11:51:37.468 24725 24725 E AndroidRuntime:        at com.zebra.scannercontrol.USBManager.getAvailableScannersList(USBManager.java:81)
+11-22 11:51:37.468 24725 24725 E AndroidRuntime:        at com.zebra.scannercontrol.SDKHandler.handleUSBDeviceAttach(SDKHandler.java:1684)
+11-22 11:51:37.468 24725 24725 E AndroidRuntime:        at com.zebra.scannercontrol.SDKHandler.access$800(SDKHandler.java:52)
+11-22 11:51:37.468 24725 24725 E AndroidRuntime:        at com.zebra.scannercontrol.SDKHandler$1.onReceive(SDKHandler.java:1643)
+11-22 11:51:37.468 24725 24725 E AndroidRuntime:        at android.app.LoadedApk$ReceiverDispatcher$Args.lambda$getRunnable$0$LoadedApk$ReceiverDispatcher$Args(LoadedApk.java:1679)
+11-22 11:51:37.468 24725 24725 E AndroidRuntime:        ... 9 more
+I&#x27;ve tried upgrading to use the v2.6.10 version of the barcode scanner library, but this issue still persists. Has the library been updated to support this? As part of this upgrade, Google have said &quot;Pending intent mutability: You must specify the mutability of each PendingIntent object that your app creates.&quot; (Ref: https://developer.android.com/google/play/requirements/target-sdk#pre12). If this has been updated, do you have any advice on what to look at to get this to stop crashing our app?
+Thanks.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Richard Venderbosch
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Change your code to something like this:
+        PendingIntent pendingIntent=PendingIntent.getService(this.appContext,sessionId,intent,
+                                                             (android.os.Build.VERSION.SDK_INT&amp;gt;=android.os.Build.VERSION_CODES.S?
+                                                                PendingIntent.FLAG_MUTABLE:0));
+See https://developer.android.com/reference/android/app/PendingIntent#FLAG_…
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Richard Venderbosch
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The comment above does not show the &quot;greater than&quot; symbol correctly: instead &amp;gt;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              K
+            
+          
+                
+          
+            Kimberley McCann
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for getting back to me! We don&#x27;t actually call PendingIntent in our code so I&#x27;m not sure what I need to change. I think this might be called within the Zebra Scanner Control library in the USBManager based on the stack trace that we are getting back.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Richard Venderbosch
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Are you using the latest SDK version 2.6.10?
+&quot;Version History
+Version 2.6.10 – 07/2022
+1. Added Android 12 and 13 support. Note Android 10 and older versions no longer supported by Zebra’s SDK&quot;
+https://www.zebra.com/us/en/support-downloads/software/developer-tools/…
+https://www.zebra.com/content/dam/zebra_new_ia/en-us/software/developer…
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              K
+            
+          
+                
+          
+            Kimberley McCann
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I have upgraded to v2.6.10 but still got the same error and stack trace, unfortunately.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              R
+            
+          
+                
+          
+            Richard Venderbosch
+          
+          
+            3 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            If updating the SDK doesn&#x27;t help, you should open a support case at Zebra.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

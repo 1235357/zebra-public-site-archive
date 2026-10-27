@@ -1,0 +1,148 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra ZD621 MFi Bluetooth prints only first image when using GraphicsUtil printImage multiple times</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Zebra ZD621 MFi Bluetooth prints only first image when using GraphicsUtil printImage multiple times</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zebra-zd621-mfi-bluetooth-prints-only-first-image-when-using-graphicsutil-printimage-multiple-times-0; original snapshot: threads/00310.html; SHA-256: c83fa4342b3f7c83d298976585b66d79016039ea40d95a5d7091fb283fedda89</small><pre id="topic">
+
+    
+        Zebra ZD621 MFi Bluetooth prints only first image when using GraphicsUtil printImage multiple times
+
+
+        
+      
+                        
+                    
+            M
+          
+          Mog pa
+          5 months 1 week ago
+        
+        
+      
+        
+            
+                  
+            
+            280
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,We are using Zebra Link-OS iOS SDK with a Zebra ZD621 printer over MFi Bluetooth.Use case:Our app generates multiple badge images first, then prints them one by one using GraphicsUtil printImage.Current code flow:self.connection = [[MfiBtPrinterConnection alloc] initWithSerialNumber:serialNumber];[self.connection open];if ([self.connection isConnected]){   self.printer = [ZebraPrinterFactory getInstance:self.connection error:&amp;connectionError];   id&lt;GraphicsUtil, NSObject&gt; graphicsUtil = [self.printer getGraphicsUtil];   for (UIImage *image in arrAllPrints)   {       NSError *error = nil;       BOOL success = [graphicsUtil printImage:[image CGImage]                                           atX:x                                           atY:y                                     withWidth:width                                    withHeight:height                             andIsInsideFormat:NO                                         error:&amp;error];       if (!success)           break;   }}Problem:When printing multiple badges, only the first badge physically prints on the Zebra ZD621. The same badge images print correctly using iOS native print, so image generation is not the issue. The issue appears only in the Zebra MFi Bluetooth print flow.Printer details:Printer model: Zebra ZD621Connection: MFi BluetoothQuestions:For Zebra Link-OS iOS SDK, what is the recommended way to print multiple images sequentially over MFi Bluetooth to a ZD621 in Cutter mode?Does GraphicsUtil printImage return only after the image data is sent to the printer, or after the printer has fully printed/cut the label?Is it necessary to wait for PrinterStatus between each printImage call? If yes, which PrinterStatus fields should we rely on for “safe to send next label” in Cutter mode?
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Shreyas Purohit
+          
+          
+            4 months 3 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Mog,The SDK is functioning as designed. The tight for loop in your code sends heavy image data too fast, overflowing the printer&#x27;s receive buffer.
+1. Recommended way: Move your print loop to a background thread to prevent UI freezing. Send one image, pause and poll the status, and only proceed to the next iteration when the printer is ready.2. Return timing: printImage returns immediately once data enters the iOS buffer, not after the physical print/cut.3. Required polling: Yes. After each print in your loop, poll PrinterStatus and wait until numberOfFormatsInReceiveBuffer == 0 and isReadyToPrint == true before sending the next image.
+Refer this documentation for more details: https://techdocs.zebra.com/link-os/latest/ios/If you face further issues, you can submit a support case through the Zebra Support Center here: https://support.zebra.com/
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

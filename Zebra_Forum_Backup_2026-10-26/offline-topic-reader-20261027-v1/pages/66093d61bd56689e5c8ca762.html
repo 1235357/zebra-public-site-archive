@@ -1,0 +1,391 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>RFID_COMM_OPEN_ERROR for reader connect on zebra device</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>RFID_COMM_OPEN_ERROR for reader connect on zebra device</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/rfidcommopenerror-reader-connect-zebra-device; original snapshot: threads/00622.html; SHA-256: 0ba146b9b4cb60df655856ffc09f11082f2842ac27af5c24aa9501fa4a45a653</small><pre id="topic">
+
+    
+        RFID_COMM_OPEN_ERROR for reader connect on zebra device
+
+
+        
+      
+                        
+                    
+            P
+          
+          prashant prashant
+          3 years 7 months ago
+        
+        
+      
+        
+            
+                  
+            
+            483
+          
+                
+                  
+            
+            4
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I am trying to connect to the reader on the zebra device you shipped to us last week.
+
+I face below issue when trying to connect to the reader.
+
+RFID_COMM_OPEN_ERROR
+
+I ran some search on google and it says probably port 5084 is blocked by windows firewall.
+
+I checked with our team in USA and they did not have this port blocked for the devices they are using
+
+Exception Trace :
+
+W/System.err: com.zebra.rfid.api3.OperationFailureException
+W/System.err:     at com.zebra.rfid.api3.j1.a(SourceFile:4)
+W/System.err:     at com.zebra.rfid.api3.RFIDReader.connect(SourceFile:26)
+W/System.err:     at com.gm.mfg.gmsat201299.smartassettracking.RFIDLocationHandler.connect(RFIDLocationHandler.java:282)
+W/System.err:     at com.gm.mfg.gmsat201299.smartassettracking.RFIDLocationHandler.access$800(RFIDLocationHandler.java:29)
+W/System.err:     at com.gm.mfg.gmsat201299.smartassettracking.RFIDLocationHandler$ConnectionTask.doInBackground(RFIDLocationHandler.java:222)
+W/System.err:     at com.gm.mfg.gmsat201299.smartassettracking.RFIDLocationHandler$ConnectionTask.doInBackground(RFIDLocationHandler.java:216)
+W/System.err:     at android.os.AsyncTask$2.call(AsyncTask.java:333)
+W/System.err:     at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+W/System.err:     at android.os.AsyncTask$SerialExecutor$1.run(AsyncTask.java:245)
+W/System.err:     at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1162)
+W/System.err:     at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:636)
+W/System.err:     at java.lang.Thread.run(Thread.java:764)
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      4 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            An excellent method to confirm if your HOST-BASED RFID SDK Solution should be able to see the RFID Fixed Reader across the network, using the 123RFID Desktop app (For Windows PC&#x27;s) will quickly confirm if located on the same network segment - that you are able to perform RFID Inventory.
+
+123RFID Desktop can be found here to download:
+
+https://www.zebra.com/us/en/support-downloads/software/utilities/123rfid.html
+
+Don&#x27;t forget to view the videos on how to operate this App.
+
+If you are able to perform a Read with the FX-Series reader - after you have attached to the reader - then the networking should be Good to go.
+
+CAVEAT:  If in 123RFID Desktop app you are unable to perform an inventory / read, there may be another function turned on in the Reader 
+Examples include Zebra IoT for FX-Series reader.  An embedded application operating on the FX-Series reader Like the Network Connect technologies, or a 3rd party Application.   - If this is possible and you are not expecting this (and are not working with a Partner who may have an embedded solution in-place.  Please contact the Zebra Help Desk to review - since this may need more in-depth assessment to get the FX-Series reader in a State to work with as a developer.
+
+ 
+
+If using the HOST-BASED RFID SDK to access the FX-Series reader - the CAVEAT technologies cannot be run at the same time - the FX-Series device is not able to Multiplex on-board applications with Network-Connected SDK sessions.
+
+ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mazhar Iqbal
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Can you please provide more details on your setup and the model no of the device being used? Are you testing the Zebra Fixed reader e.g FX9600, FX7500 or a RFID Mobile device e.g MC3300?
+
+As I understand the MC339U-GE4EG4EU had been shipped to you for testing and validation. Are you trying to access this MC3390 RFID device remotely from a PC or Laptop.?
+
+As I understand you will need a Mobile RFID  App on the device to access the MC3390 RFID reader. You can try the Zebra 123RFID Mobile app to test the MC3390.
+
+Can you please confirm if your app has been written for the Zebra RFID Mobile device? Or has it been written for the Fixed reader?
+
+Thx,
+
+Maz
+
+ 
+
+ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              P
+            
+          
+                
+          
+            prashant prashant
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            hi Mazhar,
+
+its the MC339R - MC339U-GE4EG4EU that has been shipped to us.
+
+App has been written for the Zebra RFID Mobile device.
+
+RFID app is available on this device and we can see that its able to locate the rfid tags we have with us.
+
+But when try to connect to the reader, it throws the aforementioned exception.
+
+(Please note that we are testing the app by connecting the device to our windows laptop using USB cable and enabled the USB debugging. we have the entire project on the Android Studio and passing the updated APK to the device using the USB). The app launches fine but as soon as it tried to connect to the reader it throws the error.
+
+minSdkVersion = 26
+
+targetSdkVersion = 28
+
+ 
+
+ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Sean Kennedy
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Prashant
+
+The MC33 RFID Unit - can you confirm what the Build Number is from Settings menu - About Phone--Build Number?
+
+Can you test the 123RFID Mobile app - from the google play store. As well.  
+
+The Most up-to-date version from Google Play is 1.0.2.114 - but if this version does not run and the Build Number identifies one of the Older Model MC33 RFID devices from the demo pool - than Mazhar will need to assist you in getting the MC3390XR (Android 10 / Android 11 capable device) from the Demo Pool.
+
+The Up-To-Date MC33RFID devices (MC33x0XR platform) is designed to operate with the up-to-date V2.0.2.114 Android Studio RFID SDK for Android. And V2.0.1.114 Xamarin SDK for Android.
+
+ 
+
+ 
+
+ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

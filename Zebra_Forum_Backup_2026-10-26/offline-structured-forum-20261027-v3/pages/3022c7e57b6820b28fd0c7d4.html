@@ -1,0 +1,232 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Accessing fields in a template loaded from the printer on Android via java</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/accessing-fields-template-loaded-printer-android-java; snapshot threads/00035.html; SHA-256 9203f8d0860b7bbfc436d519aae8813dc282ea2dda53f0aa9434ef6e2979cc39. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Accessing fields in a template loaded from the printer on Android via java</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            T
+          </div>
+          <div class="forum-topic__author-name">Tony Bass</div>
+          <div class="forum-topic__timestamp">1 year 2 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            145
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            2
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>I am loading a template (zpl) from a ZQ511 mobile printer via bluetooth. I am scanning a barcode (UPC) into the first field. I need to grab that barcode and use it to get data out of a csv file (no problem doing that) and put the data into the other fields in the template for the label.</p><p>My question is how do i access the fields (variables?) in the template via java?</p><p> </p><p> </p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      2 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-54141" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              L
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Lavakush Verma</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 2 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Dear Customer, Thank you for your inquiry about using ZPL templates with your ZQ511 mobile printer via Bluetooth. I understand you’re looking to insert data from a CSV file into specific fields of a ZPL template after scanning a barcode.</p><p>Here’s a general approach to achieve this using Java on Android:</p><ol><li><strong>Understand the Template Structure</strong>:<br>Begin by ensuring your ZPL template includes placeholders or variables for each field where data will be inserted. These are typically denoted with identifiers or specific markers in the ZPL syntax.</li><li><strong>Load the ZPL Template</strong>:<br>Use the appropriate method to load your ZPL template into your Android application. If you’re using Zebra’s SDK, refer to the documentation provided in <span data-original-href="https://techdocs.zebra.com/link-os/2-14/pc/">Link-OS SDK</span>.</li><li><p><strong>Parse and Manipulate the Template</strong>:<br>In Java, you can access and replace the template placeholders with actual data using standard string manipulation techniques. Here is a simplified example:</p><pre><code class="language-java">String zplTemplate = "^XA^FO50,50^ADN,36,20^FD{{barcode}}^FS^XZ"; // Example template with a placeholder
+String scannedBarcode = "123456789012"; // Barcode value obtained from scanning
+String updatedZpl = zplTemplate.replace("{{barcode}}", scannedBarcode);
+
+// Print a stored format with the given variables. This ZPL will store a format on a printer, for use with example1.
+     // ^XA
+     // ^DFE:FORMAT1.ZPL
+     // ^FS
+     // ^FT26,243^A0N,56,55^FH\^FN12"First Name"^FS
+     // ^FT26,296^A0N,56,55^FH\^FN11"Last Name"^FS
+     // ^FT258,73^A0N,39,38^FH\^FDVisitor^FS
+     // ^BY2,4^FT403,376^B7N,4,0,2,2,N^FH^FDSerial Number^FS
+     // ^FO5,17^GB601,379,8^FS
+     // ^XZ
+ 
+     private void example1() throws ConnectionException {
+         Connection connection = new TcpConnection("192.168.1.32", TcpConnection.DEFAULT_ZPL_TCP_PORT);
+         try {
+             connection.open();
+             ZebraPrinter printer = ZebraPrinterFactory.getInstance(connection);
+             Map&lt;Integer, String&gt; vars = new HashMap&lt;Integer, String&gt;();
+             vars.put(12, "John");
+             vars.put(11, "Smith");
+             printer.printStoredFormat("E:FORMAT1.ZPL", vars);
+         } catch (ConnectionException e) {
+             e.printStackTrace();
+         } catch (ZebraPrinterLanguageUnknownException e) {
+             e.printStackTrace();
+         } finally {
+             connection.close();
+         }
+     }</code></pre></li><li><strong>Retrieve Data from CSV</strong>:<br>Once the barcode is scanned, use it to query your CSV file and retrieve the necessary data. Ensure your CSV parsing logic is robust enough to handle various scenarios.</li><li><strong>Update Remaining Fields</strong>:<br>Use similar string replacement techniques to update other fields in the template with data retrieved from the CSV file.</li><li><strong>Send the Modified Template to the Printer</strong>:<br>After updating the template with all necessary data, send the modified ZPL to your ZQ511 printer over Bluetooth. Ensure your application has the correct Bluetooth permissions and is set up for connection.</li><li><strong>Utilize Zebra’s SDK</strong>:<br>If available, leverage Zebra’s Link-OS SDK, as it may provide more streamlined methods for handling templates and variables. Refer to the <span data-original-href="https://techdocs.zebra.com/link-os/2-14/pc/content/com/zebra/sdk/printer/formatutil">FormatUtil Class</span> for more advanced operations.</li></ol><p>I hope this provides a clear path forward for accessing and updating fields in your ZPL template. Please feel free to reach out if you need further clarification or assistance.</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-54145" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              T
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Tony Bass</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            1 year 2 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thanks for the reply and info,</p><p>I am using code from PrintStation demo app to grab the template but i can't seem to find where it is storing the variable data to grab the barcode when it is scanned and then load the data i get from the csv file into the remaining fields?</p><p>Any ideas on where it would be?</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/accessing-fields-template-loaded-printer-android-java%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/accessing-fields-template-loaded-printer-android-java%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

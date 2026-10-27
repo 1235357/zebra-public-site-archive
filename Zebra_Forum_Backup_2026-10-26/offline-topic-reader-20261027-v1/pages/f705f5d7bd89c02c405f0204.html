@@ -1,0 +1,177 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>USB Permission &amp; “device does not exist or is restricted” Error on Some Android Devices (Zebra GK420d)</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>USB Permission &amp; “device does not exist or is restricted” Error on Some Android Devices (Zebra GK420d)</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/usb-permission-device-does-not-exist-or-restricted-error-some-android-devices-zebra-gk420d; original snapshot: threads/00360.html; SHA-256: c2a22214df0d56e3d117510671b96eb7a6ce552e051d7714e8d47f3f8d58588c</small><pre id="topic">
+
+    
+        USB Permission &amp; “device does not exist or is restricted” Error on Some Android Devices (Zebra GK420d)
+
+
+        
+      
+                        
+                    
+            P
+          
+          Pete Bekos
+          12 months ago
+        
+        
+      
+        
+            
+                  
+            
+            95
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hi everyone,I’m running into a strange issue connecting to a Zebra GK420d (ZTC GK420d) printer over USB from an Android app.On some Android devices, the printer connects and prints perfectly fine. However, on other devices, I consistently get this error when attempting to open the USB connection: E exception in UsbManager.openDevice
+java.lang.IllegalArgumentException: device /dev/bus/usb/001/006 does not exist or is restricted
+Here’s the relevant log output: On Request USB Permissions:
+(UsbPermissionProvider.java:45)[Binder:2185_8]: Device: UsbDevice[mName=/dev/bus/usb/001/006,
+mVendorId=2655,mProductId=128,mClass=0,mSubclass=0,mProtocol=0,
+mManufacturerName=Zebra Technologies,mProductName=ZTC GK420d,mVersion=17.11,
+mSerialNumberReader=android.hardware.usb.IUsbSerialReader$Stub$Proxy@3079863,
+mConfigurations=[UsbConfiguration[mId=1,mAttributes=192,mMaxPower=0,
+mInterfaces=[UsbInterface[mId=0,mClass=7,mSubclass=1,mProtocol=2,
+mEndpoints=[UsbEndpoint[mAddress=130,mAttributes=2,mMaxPacketSize=64,mInterval=0],
+UsbEndpoint[mAddress=1,mAttributes=2,mMaxPacketSize=64,mInterval=0]]]]],
+package: com.forleaf.app (10081), allowed? true Even though the permission dialog is accepted and shows allowed? true, the app throws the exception above when calling UsbManager.openDevice().What I’ve TriedVerified that android.hardware.usb.host is declared in the manifest.Confirmed the app requests and receives permission correctly.Verified the printer works fine on another Android device using the same app build and cable.Tested different USB cables and ports.Reproduced on multiple devices from different manufacturers.QuestionsAre there specific Android permission or SELinux restrictions on certain OEM devices that could cause this?Does Zebra recommend using a particular USB communication mode (HID vs CDC/ACM) for the GK420d on Android?Has anyone else encountered the device ... does not exist or is restricted error when using UsbManager.openDevice() with Zebra printers?Any insight or suggestions would be greatly appreciated.Thanks,Pete B.Android Developer
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Amar Byrisetty
+          
+          
+            11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Pete,
+Can you please try the following
+
+Add xml file to specify USB devices your application is indented to interact with? e.g., res/xml/device_filter.xml
+
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;resources&gt;
+
+    &lt;usb-device vendor-id=&quot;2655&quot;/&gt;
+
+&lt;/resources&gt;
+Mention this xml in the manifest as meta-data along with USB events
+
+&lt;intent-filter&gt;
+    &lt;action android:name=&quot;android.hardware.usb.action.USB_DEVICE_ATTACHED&quot; /&gt;
+&lt;/intent-filter&gt;
+&lt;meta-data android:name=&quot;android.hardware.usb.action.USB_DEVICE_ATTACHED&quot;
+                   android:resource=&quot;@xml/device_filter&quot; /&gt;
+Request for USB permission - While the intent filter can grant permission automatically upon device attachment if the user allows the app to handle the intent, explicit permission requests may be necessary in some scenarios or if the intent filter isn&#x27;t working as expected. This is handled programmatically within the application code using UsbManager.requestPermission().
+
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

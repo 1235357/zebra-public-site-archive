@@ -1,0 +1,313 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Get Scanner Status - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/getscannerstatus</code><br>Observed final URL: <code>https://techdocs.zebra.com/datawedge/latest/guide/api/getscannerstatus/</code><br>Raw source: <code>raw/f8ce46d86020ec95fb73c99c.html</code><br>Raw SHA-256: <code>c5946f7d42297caa648a910d8f19c77d502893acb6f026d5bac71279f7c7f92d</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs Home
+                        
+                                            DataWedge
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Get Started
+                            
+                        
+                        
+                            
+                                    Profiles
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Feature Matrix
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            US - English
+                          
+                          
+                                 CN - 普通话
+                                 JP - 日本語
+                          
+                                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            Get Scanner Status
+                        
+                    GET_SCANNER_STATUSFunction PrototypeParametersReturn ValuesExample CodeQuery Scanner StatusRegister to Receive Query ResultsReceive Query ResultsUnregister (to Release Resources)
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    Get Scanner Status
+                                    
+                                            DataWedge
+                                            15.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        GET_SCANNER_STATUS
+
+Introduced in DataWedge 6.5.
+
+Returns the status of the scanner currently selected by DataWedge as the default.
+
+Function Prototype
+
+Intent i = new Intent();
+i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+i.putExtra(&quot;com.symbol.datawedge.api.GET_SCANNER_STATUS&quot;, &quot;&quot;);
+
+Parameters
+
+ACTION [String]: &quot;com.symbol.datawedge.api.ACTION&quot;
+
+EXTRA_DATA [String]: &quot;com.symbol.datawedge.api.GET_SCANNER_STATUS&quot;
+
+EXTRA VALUE: Empty string
+
+Return Values
+
+Returns a String of the name of the active DataWedge Profile
+
+EXTRA NAME: &quot;com.symbol.datawedge.api.RESULT_SCANNER_STATUS&quot;
+
+EXTRA TYPE [String]: [ ] Possible values:
+
+
+WAITING - Scanner is ready to be triggered
+
+SCANNING - Scanner is emitting a scanner beam
+
+IDLE - Scanner is in one of the following states: enabled but not yet in the waiting state, in the suspended state by an intent (e.g. SUSPEND_PLUGIN) or disabled due to the hardware trigger
+
+DISABLED - Scanner is disabled
+
+CONNECTED - An external (Bluetooth or serial) scanner is connected
+
+DISCONNECTED - The external scanner is disconnected
+
+
+Example Code
+
+Query Scanner Status
+
+//Sending the intent to query scanner status
+    Intent i = new Intent();
+    i.setAction(&quot;com.symbol.datawedge.api.ACTION&quot;);
+    i.putExtra(&quot;com.symbol.datawedge.api.GET_SCANNER_STATUS&quot;,&quot;&quot;);
+    i.putExtra(&quot;SEND_RESULT&quot;,&quot;true&quot;);
+    i.putExtra(&quot;com.symbol.datawedge.api.RESULT_CATEGORY&quot;,&quot;android.intent.category.DEFAULT&quot;);
+    this.sendBroadcast(i);
+
+
+
+Register to Receive Query Results
+
+private void registerReceivers(){
+    IntentFilter filter = new IntentFilter();
+    filter.addAction(&quot;com.symbol.datawedge.api.RESULT_ACTION&quot;);
+    filter.addCategory(Intent.CATEGORY_DEFAULT);
+    registerReceiver(receiver,filter);
+}
+
+Receive Query Results
+
+// Receiving the results
+
+ResultIntentReceiver receiver = new ResultIntentReceiver();
+
+class ResultIntentReceiver extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+            if(intent.hasExtra(&quot;com.symbol.datawedge.api.RESULT_SCANNER_STATUS&quot;)) {
+                String scannerStatus = intent.getStringExtra(&quot;com.symbol.datawedge.api.RESULT_SCANNER_STATUS&quot;);
+                Log.d(TAG,&quot;Scanner status:&quot;+scannerStatus);
+            }
+    }
+}
+
+
+
+Unregister (to Release Resources)
+
+private void unRegisterReceivers(){
+    unregisterReceiver(receiver);
+}
+
+
+
+SEE ALSO:
+
+Zebra Support Central | Integrator Guides, Product Manuals, Software Downloads and Support
+
+LaunchPad | Zebra Developer Community
+
+Intent | Android Developers
+
+Intents and Intent Filters | Android Developers
+
+Android Intents | Tutorial
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2024 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+      
+
+
+
+Back to Top</pre></body></html>

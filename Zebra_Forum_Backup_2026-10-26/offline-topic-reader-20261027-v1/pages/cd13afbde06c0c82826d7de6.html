@@ -1,0 +1,384 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>ZebraNativeUsbAdapter_64.dll and jdk 9</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>ZebraNativeUsbAdapter_64.dll and jdk 9</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/zebranativeusbadapter64dll-and-jdk-9; original snapshot: threads/00921.html; SHA-256: e34300eaf6cef2edd3b3b5953cef69f7c463cea8ea926aacfd7f141efef99a62</small><pre id="topic">
+
+    
+        ZebraNativeUsbAdapter_64.dll and jdk 9
+
+
+        
+      
+                        
+                    
+            I
+          
+          Ivano Luberti
+          4 years 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            695
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I have downloaded and used successfully the developer demo provided as part of the Zebr SDK. I&#x27;m able to print using direct usb connection from a Windows 10 PC to a Zebra ZD620 printer using the java demo application running on a jdk 1.8 runtime.
+But when I try a version of java from 9 and over , the java runtime crashes. Here is what java reports:
+# Java VM: OpenJDK 64-Bit Server VM (9+181, mixed mode, tiered, compressed oops, g1 gc, windows-amd64)
+# Problematic frame:
+# C  [ZebraNativeUsbAdapter_64.dll+0x25be]
+#
+# No core dump will be written. Minidumps are not enabled by default on client versions of Windows
+#
+# An error report file with more information is saved as:
+# D:\ivano\Met\EclipseWorkspace202109\DeveloperDemo_Desktop\hs_err_pid34584.log
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+Does Zebra SDK supports JDK over 1.8?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The Java 1.8 is supported by the Link-OS SDK for PC Java. I have the Java v1.8.0_161 installed on my Windows 10 desktop and the ZebraNativeUsbAdapter_64.dll works just fine for me. Try uninstall and reinstall the Java v1.8 to see if the issue goes away.
+[Update] I&#x27;ve another Windows 10 PC (64-Bit) with Java v13.0.2 installed. The Developer Demo that comes with the SDK release works just fine with the ZebraNativeUsbAdapter_64.dll. Though, I don&#x27;t have a PC with Java v1.9, I am pretty certain that the ZebraNativeUsbAdapter_64.dll should work with Java v1.9 too. 
+[Update] The above update was wrong so to cross it out. After further investigation, it was found that the ZebraNativeUsbAdapter_64.dll will cause various exceptions with the Java that is beyond the version v1.8.0_251. You are right that we cannot use the USB direct with the ZebraNativeUsbAdapter_64.dll in JDK 9 or beyond.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              V
+            
+          
+                
+          
+            Vincent Bonamy
+          
+          
+            3 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I have the same problem with JDK 64 bit and Zebra SDK on a ZXP3.
+
+But the problem doesn&#x27;t seem to be java 8 vs java 9 and above, it&#x27;s more like 32 bit vs 64 bit.
+
+By using a JDK 32-bit, the JVM does not crash and it is even possible to use recent JDKs (JDK 17 for example).
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            John Deer
+          
+          
+            2 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi,I was running into the same issue and I&#x27;ve managed to patch the existing DLL so it works correctly under Java x64.Here are the patch details: https://github.com/7c5eea120b/zxp-native-usb-adapter-64bit-hackPlease note this is an unofficial community patch. If it still doesn&#x27;t work, you can submit an issue on GitHub and I will look at it :)
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              V
+            
+          
+                
+          
+            Vincent Bonamy
+          
+          
+            2 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you  for providing the patch.I tested it with JDK 1 7 (64 bits), and it seems to be working well. However, I encountered a crash this time, and I suspect it might be related to the Close method now.We hope that Zebra will provide a more stable DLL soon.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            John Deer
+          
+          
+            2 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Vincent,In general, the most popular issue might be that the crash occurs when Close() is called twice on the same printer handle. That would indicate a programming bug somewhere on the Java side (either in the SDK library itself or within the custom code).Can you post the crash log in the repository&#x27;s GitHub Issues or here? I&#x27;m curious to review what the problem is. Are you using the most recent version of the patch DLL? Also, does it happen after some time or pretty much immediately?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

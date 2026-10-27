@@ -1,0 +1,417 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>Basic Intent in Java - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/datawedge/15-0/guide/samples/basicintent1/</code><br>Observed final URL: <code>https://techdocs.zebra.com/datawedge/15-0/guide/samples/basicintent1/</code><br>Raw source: <code>raw/1943c5ed97918a6fb0ae0f0d.html</code><br>Raw SHA-256: <code>327717434af1d94afec9037a34be4b507a31b08f0cca5fdf1036546d3788bc67</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs Home
+                        
+                                            DataWedge
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Get Started
+                            
+                        
+                        
+                            
+                                    Profiles
+                            
+                        
+                        
+                            
+                                    Guides
+                            
+                        
+                        
+                            
+                                    Feature Matrix
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    Samples
+                            
+                        
+                        
+                            
+                                    FAQ
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            US - English
+                          
+                          
+                                 CN - 普通话
+                                 JP - 日本語
+                          
+                                            
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+                
+                    Basic Intent in Java
+                    Shows how to receive scanned barcode data through an Android intent.
+                    
+                
+                
+		            
+    				 Download
+		            
+    				 Source
+
+					
+						
+						    Available Downloads
+						
+
+						
+						
+  							Sample Projects
+						
+						
+					
+					
+						
+						    Available Source 
+						
+
+						
+						
+  							Github Repo
+						
+						
+					
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+	                    
+	                        
+	                            Product
+	                            DataWedge - 15.0
+	                        
+	                    
+	                    
+	                        
+	                            Devices
+	                            
+	                            	All supported Zebra Android devices
+	                            	
+	                            
+	                        
+	                    
+	                    
+	                        
+	                            
+	                            Overview
+
+ This sample application is only intended for educational purposes, demonstrating the use of DataWedge intent API(s).
+
+
+This sample demonstrates how to use DataWedge to receive scanned barcode data through an Android intent. The high level steps are:
+
+
+Configure DataWedge. Set the input (barcode scanner) and output (intent).
+
+Create a profile and associate the app with the profile.
+
+Run the app and scan a barcode. The following information is displayed:
+
+
+
+scan source
+
+scan data
+
+decoder type
+
+
+
+This is the minimal code approach using a generic Android intent rather than DataWedge APIs. To develop an app with finer control of DataWedge settings and data capture, refer to the DataWedge API guide and best practices in the Get Started guide.
+
+APIs Used
+
+
+  
+    DataWedge API
+    App Functionality
+  
+
+  
+      None
+      None
+  
+
+
+
+Requirements
+
+
+DataWedge (built-in all Zebra devices) is running on the device.
+
+DataWedge profile created and associated with this sample app. See instructions below.
+
+
+Configuration
+
+Configure DataWedge to output scans via intent:
+
+
+Launch DataWedge via Apps &gt; DataWedge.
+
+Select a profile (e.g. Profile0 which is used for all apps not explicitly assigned a profile), or create a new profile.
+
+Associate the profile with this sample app:
+     a. Tap Associated Apps.
+     b. In the top right menu, select New app/activity.
+     c. Select com.zebra.basicintent1.
+     d. Select *.
+
+
+Confirm the following settings:
+
+
+The profile is enabled
+
+Barcode input is enabled
+
+Intent output is enabled
+
+Configure the intent output as follows:
+
+
+Intent action: com.dwbasicintent1.ACTION (Must match the value defined in the strings.xml file. This is an implicit intent that is sent by DataWedge. The application must register a broadcast receiver with the given action in order to receive the intent.)
+
+Intent category: (leave blank)
+
+Intent delivery: Broadcast intent
+
+
+
+Refer to the DataWedge Intent Output guide for more information about these settings.
+
+
+Using This Sample
+
+To use the app:
+
+
+Download, build, and launch the BasicIntent1 sample app.
+
+
+Scan a barcode. The data fields are populated.
+
+
+
+Sample code walk-through
+
+Refer to BasicIntent1 sample app source code.
+
+There are several important points to ensure that the app receives the intent data sent from DataWedge:
+
+
+Pre-define some of the strings in the application project for ease of use when extracting the scanned data. The intent action is defined as `activity_intent_filter_action` in the sample app. When received, the intent’s action contains extras with the scanned data for source, type, and data as described in the DataWedge Intent Output guide. Content from Strings.xml in the sample app:
+
+
+&lt;resources&gt;
+    &lt;string name=&quot;app_name&quot;&gt;DW BasicIntent1&lt;/string&gt;
+    &lt;string name=&quot;activity_intent_filter_action&quot;&gt;com.dwbasicintent1.ACTION&lt;/string&gt;
+    &lt;string name=&quot;datawedge_intent_key_source&quot;&gt;com.symbol.datawedge.source&lt;/string&gt;
+    &lt;string name=&quot;datawedge_intent_key_label_type&quot;&gt;com.symbol.datawedge.label_type&lt;/string&gt;
+    &lt;string name=&quot;datawedge_intent_key_data&quot;&gt;com.symbol.datawedge.data_string&lt;/string&gt;
+&lt;/resources&gt;
+
+Register a broadcast receiver. Since DataWedge is configured to send a broadcast intent, the application must register a broadcast receiver. This is done in the onCreate() method in the sample app:
+
+protected void onCreate(Bundle savedInstanceState) {
+    IntentFilter filter = new IntentFilter();
+    filter.addCategory(Intent.CATEGORY_DEFAULT);
+    filter.addAction(getResources().getString(R.string.activity_intent_filter_action));
+    registerReceiver(myBroadcastReceiver, filter);
+}
+
+Note that the action being filtered matches the action configured in the DataWedge profile. In a production application, for efficiency the register/unregister would likely be done in the onResume()/onPause() methods.
+
+Define the broadcast receiver. This is done in MainActivity.java in the sample app:
+
+private BroadcastReceiver myBroadcastReceiver = new BroadcastReceiver()
+{
+
+@Override
+public void onReceive(Context context, Intent intent)
+{
+
+    String action = intent.getAction();
+    Bundle b = intent.getExtras();
+
+    if (action.equals(getResources().getString(R.string.activity_intent_filter_action)))
+    {
+            //  Received a barcode scan
+            try
+            {
+                displayScanResult(intent, &quot;via Broadcast&quot;);
+            }
+            catch (Exception e) {
+                //  Catch if the UI does not exist when we receive the broadcast
+            }
+    }
+}
+
+
+};
+
+Extract the scanned data and display it on the screen. This is done in method displayScanResult() in the sample app:
+
+private void displayScanResult(Intent initiatingIntent, String howDataReceived)
+{
+    String decodedSource = initiatingIntent.getStringExtra(getResources().getString(R.string.datawedge_intent_key_source));
+    String decodedData = initiatingIntent.getStringExtra(getResources().getString(R.string.datawedge_intent_key_data));
+    String decodedLabelType = initiatingIntent.getStringExtra(getResources().getString(R.string.datawedge_intent_key_label_type));
+
+final TextView lblScanSource = (TextView) findViewById(R.id.lblScanSource);
+final TextView lblScanData = (TextView) findViewById(R.id.lblScanData);
+final TextView lblScanLabelType = (TextView) findViewById(R.id.lblScanDecoder);
+
+lblScanSource.setText(decodedSource + &quot; &quot; + howDataReceived);
+lblScanData.setText(decodedData);
+lblScanLabelType.setText(decodedLabelType);
+
+
+}
+
+
+Note that the extra keys were defined earlier in the strings.xml file. This code assumes a UI exists in which to place the data, as performed in the sample app.
+
+
+
+Related guides:
+
+
+The original tutorial by Zebra engineer Darryn Campbell
+
+DataWedge Intent Output guide for profile settings and details
+
+DataWedge APIs for intent-based functions
+
+	                        
+	                    
+
+                    
+                
+                
+                	
+                		
+						    
+						        
+						            
+						            	
+						                
+						            
+						            	
+						                
+						            
+						            
+						        
+						    
+
+
+            			
+                	
+
+				                
+            
+        
+        
+
+ 
+         
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2025 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                        
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+      
+
+
+
+Back to Top</pre></body></html>

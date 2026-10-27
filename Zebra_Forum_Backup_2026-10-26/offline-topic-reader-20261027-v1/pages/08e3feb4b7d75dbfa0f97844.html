@@ -1,0 +1,409 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Link-OS SDK Emulator</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Link-OS SDK Emulator</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/link-os-sdk-emulator; original snapshot: threads/00664.html; SHA-256: 830902c9315d129d94dfa66e25bb857624fbd66b1f614a6e61e5a9dec12273e0</small><pre id="topic">
+
+    
+        Link-OS SDK Emulator
+
+
+        
+      
+                        
+                    
+            M
+          
+          Mike Whalen
+          3 years 9 months ago
+        
+        
+      
+        
+            
+                  
+            
+            376
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We have a Zebra ZXP Series 7 card printer that currently uses the Link-OS SDK to print from a VB.NET project. We have another project that integrates with the Non-Link OS SDK (ZMotif SDK (32/64 bit) v. 3.6.0.55) and we’re able to connect to the emulator (ZXP Printer Software Emulator Application v05.00.36.00) and test locally.
+
+However, when attempting to connect to the emulator using the Link-OS SDK, we receive an unable to determine printer type error.
+
+Is there a way that we can connect to the ZXP emulator using the Link-OS SDK (v 2.14.1917)?
+
+Thanks,
+
+Mike
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alfred Teixeira
+          
+          
+            3 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Mike,
+
+May I ask how you were able to get the Link-OS SDK to communicate with the ZXP-7 card printer? The Link-OS SDK does not support the ZXP-7 so it should not be possible to use it with the ZXP-7; in fact, it should not be possible to open a connection to the ZXP-7 through this SDK.
+
+Because the ZXP emulator, like the ZXP-7, is not supported by the Link-OS SDK, you will not be able to use the emulator with this SDK. Instead, you will need to use the ZMotif SDK, specifically the ZMotifPrinter.dll, to communicate with the ZXP emulator.
+
+Regards,
+
+ 
+
+AT
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mike Whalen
+          
+          
+            3 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Alfred,
+
+Thank you for the quick reply. So, we&#x27;ve been using the Link-OS SDK to print to our ZXP-7 printers in production for about five years now using the GetZmotifPrinter method. This program was written before I came to the company.
+
+While troubleshooting timeout issues with the GetJobStatus() method we recently tried to switch our program over to the ZMotif SDK after discovering that it was the correct SDK to use. However, the ZMotif SDK does not seem to offer the same performance as the Link-OS SDK, and performance is a big factor for our program since we print about 2,000-4,000 cards daily on a handful of ZXP-7 printers. Ultimately, we were unable to achieve the same performance as the Link-OS SDK, so we decided to keep using the Link-OS SDK for now.
+
+ 
+
+Thanks,
+
+Mike
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alfred Teixeira
+          
+          
+            3 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Mike,
+
+ 
+
+I am very surprised to learn that you believe the Link-OS SDK provides better throughput. Using the ZMotif SDK should not hinder the throughput whatsoever given its design. I would be quite interested to learn where the problems/bottle-necks were encountered when you tried uing the ZMotif SDK.
+
+Regards,
+
+Al
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Dean Gordonwood
+          
+          
+            3 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I have been using the NetworkDiscoveryHandler API, specifically the SubnetSearch method.    I was successful in getting a list of the Zebra printers on the subnet.  But, soon after this happened, we experienced a number of printing issues across our enterprise. The investigation of this issue showed that corrupted drivers for our Zebra printers that were looping in the other printers to error out.  My question is this: could the SubnetSearch have corrupted the drivers?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Alfred Teixeira
+          
+          
+            3 years 9 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Dean,
+
+No: I do not believe it is possible for NetworkDiscoveryHandler nor the SubnetSarch to corrupt the drivers.
+
+As I mentioned previously, you cannot use the Link-OS SDK with the ZXP-7 card printer; it is not supported by that SDK; instead, you will need to use the ZMotif SDK (printer and graphics) if you are developing your own custom application to communicate with the printer for purposes of printing a card. Alternatively, you can use the ZXP-7 printer driver directly without the need for the SDK.
+
+If you know the IP address of the ZXP-7, you can use the ZMotif Printer SDK to open a network connection directly to the printer. I would recommend you download the ZMotif SDK installer, if you have not done so already, and install the SDK; included with the SDK is a C# sample application that demonstrates how to use the SDK for USB and TCP-based communication with the printer, including how to send print jobs to the printer directly from the SDK.
+
+ 
+
+Regards,
+
+ 
+
+Al
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

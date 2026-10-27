@@ -1,0 +1,196 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>ZQ620 do not bluetooth connection from Chrome (JavaScript)</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/zq620-do-not-bluetooth-connection-chrome-javascript; snapshot threads/00196.html; SHA-256 f6efb163727743d34892eb12d61c28a3ab84df43dcd1f0766493ba2a3e4d583f. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">ZQ620 do not bluetooth connection from Chrome (JavaScript)</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            M
+          </div>
+          <div class="forum-topic__author-name">Makoto Uno</div>
+          <div class="forum-topic__timestamp">2 years 2 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            241
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>I want to connection ZQ620(this is verification machine) and print, use bluetooth from Android Chrome browser JavaScript (pure or jQuery) only.</p><p>My sample source.</p><pre><code class="language-javascript">const DEVICE_UUID = '0000fe79-0000-1000-8000-00805f9b34fb';
+const SERVICE_UUID = '38eb4a84-c570-11e3-9507-0002a5d5c51b';
+var printer = null;
+var printRes = null;
+function sendText(s) {
+	let encoder = new TextEncoder("utf-8");
+	let txt     = encoder.encode(s+ '\u000A\u000D\u000A\u000D\u000A\u000D\u000A\u000D\u000A\u000D');
+	return printer.writeValue(txt);
+}
+
+function fnc(eve){
+	navigator.bluetooth.requestDevice({
+		filters: [{
+			namePrefix: 'X',
+		}],
+		optionalServices: [SERVICE_UUID]
+	})
+	.then(device =&gt; {
+		console.log('connect device start');
+		return device.gatt.connect();
+	})
+	.then(server =&gt; {
+		console.log('start primary servicies');
+		return server.getPrimaryServices();
+	})
+	.then(services =&gt; {
+		console.log(services);
+	})/*
+	.then(service =&gt; {
+		console.log('start characteristic');
+		return service.getCharacteristic(SERVICE_UUID);
+	})
+	.then(characteristic =&gt; {
+		printer = characteristic;
+		printRes = sendText($("#_textarea").val());
+	})
+	*/
+	.catch(error =&gt; {
+		console.err('error occurred', error);
+	});
+}</code></pre><p>But, error occurrd. Throws error is 'NotFoundError: No Services found in device.' from '<code>return server.getPrimaryServices();</code>'<br>nRF Connect app said service is exist, but can not access(screeenshot). </p><p>So, how connect and print? This printer not supported?Can I use it on other devices?<br>I'm sorry if my English is strange.</p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+      <div class="field field--name-field-attachment field--type-file field--label-hidden field__items">
+              <div class="field__item">
+<span class="file file--mime-image-jpeg file--image"> <span data-original-href="/sites/default/files/user-uploads/2024/08/26/%E3%83%A1%E3%83%87%E3%82%A3%E3%82%A2.jpg">メディア.jpg</span></span>
+</div>
+          </div>
+  
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-53082" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Looks like the UUID for the service is wrong. The service UUID should be "38eb4a80-c570-11e3-9507-0002a5d5c51b", i.e., starting with 38eb4a80, not 38eb4a84.</p>
+<pre><code class="language-java">const SERVICE_UUID = '38eb4a84-c570-11e3-9507-0002a5d5c51b';</code></pre><p>See the example project for more info on how to connect to printer's BLE - <span data-original-href="https://github.com/ZebraDevs/LinkOS-iOS-Samples/tree/ZebraPrinterBLEDemo/ZebraPrinterBLEDemo">zebraPrinterBLEDemo</span> and the <span data-original-href="https://www.zebra.com/content/dam/support-dam/en/documentation/unrestricted/application-notes/AppNote-BlueToothLE-v4.pdf">Link-OS Environment Bluetooth Low Energy AppNote</span> for the currect UUIDs.</p>
+<p> </p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/zq620-do-not-bluetooth-connection-chrome-javascript%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/zq620-do-not-bluetooth-connection-chrome-javascript%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

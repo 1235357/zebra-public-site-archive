@@ -1,0 +1,163 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Print IP Label</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Print IP Label</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/print-ip-label; original snapshot: threads/00351.html; SHA-256: 507ab06b4e9eb58781c6966853a5469071ff1e75250dc71461ac27f0a5da9bd2</small><pre id="topic">
+
+    
+        Print IP Label
+
+
+        
+      
+                        
+                    
+            J
+          
+          Jonathan Nicolau
+          11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            147
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello! I am fairly new to ZBI (if that&#x27;s what I even need here) and I was wondering if what I&#x27;m trying to do is even possible. On my mobile printer (QLN320 for testing) I have a field that when a user selects it, it should print the printer&#x27;s current IP address, but here&#x27;s the catch. I can&#x27;t have any decimals because they take up too much space and our app was made to decipher the ipv4 octets by knowing each will always be three digits long, if that makes sense. Ex: if the IP is 10.12.0.372, it should print out as, 010012000372. Is this possible to be done right on the printer? Here is what I had so far. It doesn&#x27;t seem to be printing correctly? I pieced this together with what I could get from the manuals, so I&#x27;m not expecting it to be anywhere close to good.001 REM --- Get printer IP ---
+002 LET IPADDR$ = GETVAR$(&quot;interface.network.active.ip_addr&quot;)
+003 REM --- Split into octets ---
+004 DECLARE STRING OCTS$(4)
+005 LET COUNT = SPLIT(OCTS$, IPADDR$, &quot;.&quot;, 4)
+006 REM --- Pad octets ---
+007 LET OCT1P$ = RIGHT$(&quot;00&quot; + OCTS$(0), 3)
+008 LET OCT2P$ = RIGHT$(&quot;00&quot; + OCTS$(1), 3)
+009 LET OCT3P$ = RIGHT$(&quot;00&quot; + OCTS$(2), 3)
+010 LET OCT4P$ = RIGHT$(&quot;00&quot; + OCTS$(3), 3)
+011 REM --- Build padded IP ---
+012 LET PADIP$ = OCT1P$ + OCT2P$ + OCT3P$ + OCT4P$
+013 REM --- Build ZPL string ---
+014 LET ZPL$ = &quot;^XA^PW355^LL161^LS0&quot; + &quot;^FT215,97^A0I,51,50^FDIP:^FS&quot; + &quot;^FT215,130^A0I,51,50^FD&quot;;PADIP$;&quot;^FS&quot; + &quot;^BY2,3,58^FT278,25^BCN,,N,N^FD&gt;;&quot;;PADIP$;&quot;^FS&quot; + &quot;^PQ1,0,1,Y^XZ&quot;
+015 REM --- Print directly to ZPL port ---
+016 OPEN #2: NAME &quot;ZPL&quot;
+017 PRINT #2: ZPL$
+018 CLOSE #2
+019 END
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mike Masotti
+          
+          
+            10 months 1 week ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You should be concatenating the string with &quot;&amp;&quot; and not &quot;+&quot;.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

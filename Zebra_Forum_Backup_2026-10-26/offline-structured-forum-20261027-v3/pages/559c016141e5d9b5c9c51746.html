@@ -1,0 +1,607 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Support with VB.NET SDK</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/support-vbnet-sdk; snapshot threads/00450.html; SHA-256 ee952f30636362e78b42be8aa26149b545e2ded7d65608cc5535656df1d353fb. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Support with VB.NET SDK</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            E
+          </div>
+          <div class="forum-topic__author-name">Eduardo Romero</div>
+          <div class="forum-topic__timestamp">2 years 11 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            1798
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            6
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi,</p><p>I'm currently in the process of developing a desktop application in VB.NET to interface with Zebra Printers, specifically the ZT410 model. So far, I've managed to achieve printing functionality using ZXing and System.Drawing.Printing in a Windows environment. However, I'm now exploring an alternative approach, which involves accessing a predefined format stored in the printer's memory using ZebraDesigner for Developers. This format contains various variables that I need to populate programmatically.</p><p><strong>My challenge at the moment is incorporating the Zebra.SDK for this purpose, and I've encountered some roadblocks in the process. I've included my code below for reference.</strong></p><p>Imports System<br>Imports Zebra.Sdk.Comm<br>Imports Zebra.Sdk.Printer</p><pre><code class="language-plaintext">Imports System
+Imports Zebra.Sdk.Comm
+Imports Zebra.Sdk.Printer
+
+Public Class Form1
+
+    Private Sub PrintLabel()
+
+
+        Dim printerFactory As ZebraPrinterFactory = ZebraPrinterFactory.GetInstance()
+
+        Dim printer As ZebraPrinter = printerFactory.CreateZebraPrinter("ZDesigner ZT410-300dpi ZPL")
+
+        ' Abre la conexión con la impresora
+        printer.Open()
+
+        ' Carga el formato de etiqueta guardado localmente en la impresora
+        Dim labelFormat As LabelFormat = printer.LoadStoredFormat("R:TEST.ZPL")
+
+Public Class Form1
+
+        Private Sub PrintLabel()
+            Dim printerFactory As ZebraPrinterFactory = ZebraPrinterFactory.GetInstance()
+            Dim printer As ZebraPrinter = printerFactory.CreateZebraPrinter("ZDesigner ZT410-300dpi ZPL")
+            printer.Open()
+
+            Dim labelFormat As LabelFormat = printer.LoadStoredFormat("E:FORMAT1.ZPL")
+
+            labelFormat.SetVariableValue("BARCODE", "1234567890")
+            labelFormat.SetVariableValue("LOT", "ABCD")
+            labelFormat.SetVariableValue("PARTNUMBER", "1234567890")
+            labelFormat.SetVariableValue("REV", "A")
+            labelFormat.SetVariableValue("SUPPLIER", "Zebra")
+
+
+            printer.PrintLabel(labelFormat)
+
+        End Sub
+
+    End Class</code></pre><p> </p><p>I would greatly appreciate it if someone could provide a VB code example demonstrating how to establish communication with the printer and send the required variables to the stored format.</p><p>Thank you in advance for any assistance you can offer!<br><br> </p>
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      6 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-52241" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>The Zebra.Sdk.Printer module in the Zebra.Printer.SDK library contains a few methods to achieve the objective.</p>
+<p>1. <span data-original-href="https://techdocs.zebra.com/link-os/2-14/pc_net/content/html/1c00bd86-826d-aa51-5a4b-5818ae53f76b">FormatUtil.RetrieveFormatFromPrinter()</span> - To retrieve the format stored on the printer.</p>
+<p>2. <span data-original-href="https://techdocs.zebra.com/link-os/2-14/pc_net/content/html/802d41e0-67ce-a914-3657-6601a03407dd">FormatUtil.GetVariableFields()</span> - To get the variables from the format.</p>
+<p>3. <span data-original-href="https://techdocs.zebra.com/link-os/2-14/pc_net/content/html/5ea9d228-ae31-1d1f-5f2b-34b3b6ea5e07">FormatUtil.PrintStoredFormat()</span> - To print the label by passing the variable values to the stored format</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-52271" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              E
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Eduardo Romero</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Thank you, Steve, I have followed your reply and used those methods, but I'm stuck trying to retrieve the formats from the printer. Could you please give me a hand looking to my methods? <br> </p><p>I used ZebraDesigner for developers and stored the format in the internal flash. As a reference, this was the ZPL generated (which I think should be the same stored in the printer):</p><p> </p><pre><code class="language-plaintext">CT~~CD,~CC^~CT~
+^XA
+^DFE:SHIPPING.ZPL^FS
+~TA000
+~JSN
+^LT0
+^MNW
+^MTT
+^PON
+^PMN
+^LH0,0
+^JMA
+^PR6,6
+~SD30
+^JUS
+^LRN
+^CI27
+^PA0,1,1,0
+^MMT
+^PW900
+^LL600
+^LS0
+^FT42,128^A0N,38,38^FH\^CI28^FDSupplier:^FS^CI27
+^FT42,215^A0N,38,38^FH\^CI28^FDPart Number:^FS^CI27
+^FT42,320^A0N,38,38^FH\^CI28^FDRev:^FS^CI27
+^FT42,434^A0N,38,38^FH\^CI28^FDLot:^FS^CI27
+^FT293,128^A0N,38,38^FH\^CI28^FN1"SUPPLIER"^FS^CI27
+^FT293,215^A0N,38,38^FH\^CI28^FN2"PARTNUMBER"^FS^CI27
+^FT293,320^A0N,38,38^FH\^CI28^FN3"REV"^FS^CI27
+^FT293,434^A0N,38,38^FH\^CI28^FN4"LOT"^FS^CI27
+^BY4,15^FT515,432^B7N,15,2,0,0,N
+^FH\^FN5"BARCODE"^FS
+^XZ
+^XA
+^XFE:SHIPPING.ZPL^FS
+^CI27^FN1^FH\^FD^FS
+^CI27^FN2^FH\^FD^FS
+^CI27^FN3^FH\^FD^FS
+^CI27^FN4^FH\^FD^FS
+^CI27^FN5^FH\^FD^FS
+^PQ1,0,1
+^XZ</code></pre><p><br><br>Attached is my method to get the variable fields from the printer. <br><br> </p><pre><code class="language-plaintext">    Private Sub PrintBarcodeImage()
+        Try
+            Dim connection As New UsbConnection("\\?\usb#vid_0a5f&amp;pid_00fa#18j152704918#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}")
+            connection.Open()
+
+            Dim getZebraUsbPrinters As List(Of DiscoveredUsbPrinter) = UsbDiscoverer.GetZebraUsbPrinters()
+
+            Console.WriteLine(getZebraUsbPrinters)
+
+            Dim printer As ZebraPrinter = ZebraPrinterFactory.GetInstance(connection)
+
+            Dim printerStatus As PrinterStatus = printer.GetCurrentStatus()
+
+            If printerStatus.isReadyToPrint Then
+                Console.WriteLine("Ready to print")
+            Else
+                Console.WriteLine("Not ready to print")
+            End If
+
+
+
+            Dim formatData As Byte() = printer.RetrieveFormatFromPrinter("E:SHIPPING.ZPL")
+            Console.WriteLine("formatdata: " &amp; formatData.ToString)
+            Dim formatString = formatData.ToString
+            Dim variableFields As FieldDescriptionData() = printer.GetVariableFields(formatString)
+
+
+
+
+            For Each field As FieldDescriptionData In variableFields
+                Console.WriteLine("Field number: " &amp; field.FieldNumber)
+                Console.Write("Variable name: " &amp; field.FieldName)
+            Next
+
+
+            connection.Close()
+
+        Catch ex As Exception
+            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub FindPrinters()
+        Try
+            For Each printer As DiscoveredPrinterDriver In UsbDiscoverer.GetZebraDriverPrinters()
+                Console.WriteLine(printer)
+            Next
+
+            For Each usbPrinter As DiscoveredUsbPrinter In UsbDiscoverer.GetZebraUsbPrinters(New ZebraPrinterFilter())
+                Console.WriteLine(usbPrinter)
+            Next
+        Catch e As ConnectionException
+            Console.WriteLine($"Error discovering local printers: {e.Message}")
+        End Try
+
+        Console.WriteLine("Done discovering local printers.")
+        Console.WriteLine()
+    End Sub</code></pre><p>Thank you!! <br>Eduardo</p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-52278" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p><span>What is the issue with the RetrieveFormatFromPrinter() API call? Does it return the content of the E:SHIPPING.ZPL template?</span></p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-52284" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              E
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Eduardo Romero</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I don't see it returns something, or in the worst case I'm not accessing correctly to the return. The printer returns <strong>True </strong>for printerStatus.isReadyToPrint. For the API call of <span>RetrieveFormatFromPrinter() I have this in console: </span></p><p><br>The thread 0x691c has exited with code 0 (0x0).<br>ZDesigner ZT410-300dpi ZPL<br>\\?\usb#vid_0a5f&amp;pid_00fa#18j152704918#{28d78fad-5a12-11d1-ae5b-0000f803a8c2}<br>Done discovering local printers.</p><p>System.Collections.Generic.List`1[Zebra.Sdk.Printer.Discovery.DiscoveredUsbPrinter]<br><strong>Ready to print</strong><br><strong>formatdata: System.Byte[]                               (RETRIEVE API)</strong><br><strong>System.Byte[]                    </strong><br>Zebra.Sdk.Printer.FieldDescriptionData[]<br>The thread 0x3634 has exited with code 0 (0x0).<br>The thread 0x4c4 has exited with code 0 (0x0).<br> </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-52298" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>There is a developer demo app that comes with the Link-OS Multiplatform SDK for .NET. It's called DeveloperDemo_Windows under the demos-desktop folder. It has the souce code calling the RetrieveFormatFromPrinter() API. Though the code is in .NET, it provides an example on how the RetrieveFormatFromPrinter() is called. You can actually run the demo in Visual Studio and watch the action. Below is the code snippet.</p>
+<pre><code class="language-cs">        private void CreateFormatTableDialog() {
+            SetButtonState(retrieveFormatsButton, false);
+            SetFormatListState(false);
+
+            string formatName = (string)storedFilesList.SelectedValue;
+            Connection printerConnection = null;
+
+            Task.Run(() =&gt; {
+                try {
+                    printerConnection = connectionSelector.GetConnection();
+                    printerConnection.Open();
+
+                    ZebraPrinter printer = ZebraPrinterFactory.GetInstance(printerConnection);
+                    byte[] formatData = printer.RetrieveFormatFromPrinter(formatName);
+
+                    fieldDescDataVars = printer.GetVariableFields(Encoding.UTF8.GetString(formatData)).ToList();
+                    fieldDescDataVars = FormatFieldDescriptionDataVars(fieldDescDataVars);
+
+                    formatVariables = new ObservableCollection&lt;FormatVariable&gt;();
+                    for (int i = 0; i &lt; fieldDescDataVars.Count; ++i) {
+                        formatVariables.Add(new FormatVariable { FieldName = fieldDescDataVars[i].FieldName, FieldValue = "" });
+                    }
+
+                    try {
+                        if (printerConnection != null) {
+                            printerConnection.Close();
+                        }
+                    } catch (ConnectionException) { }
+
+                    ShowStoredFormatDialog(formatName);
+                } catch (Exception e) {
+                    MessageBoxCreator.ShowError(e.Message, "Communication Error");
+                    SetButtonState(retrieveFormatsButton, true);
+                    SetFormatListState(true);
+                } finally {
+                    try {
+                        if (printerConnection != null &amp;&amp; printerConnection.Connected) {
+                            printerConnection.Close();
+                        }
+                    } catch (ConnectionException) { }
+                }
+            });
+        }</code></pre></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div></div></div></div>  
+
+
+
+<article id="comment-52308" class="comment forum-topic__reply js-comment by-node-author forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              E
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Eduardo Romero</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            2 years 11 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hey Steven, I really appreciate your time following this thread, thank you! I adapted the code from the demo you shared and is now working correctly! The printer works, the label is printed with the variable values that I send, just 1 issue to solve; the last variable is a PDF-417 barcode format which will have these values: <span>Variable1#<strong>TAB</strong>Variable2#<strong>TAB</strong>Variable3<strong>TAB</strong>Variable4#<strong>TAB</strong></span></p><p>All the variables are stored into a dictionary and then passed to the PrintStoredFormat function, which looks like this: <br> </p><pre><code class="language-cs">            Dim variablesDictionary As New Dictionary(Of Integer, String) From {
+    {1, TextBoxSupplierID.Text},
+    {2, TextBoxClientNumber.Text},
+    {3, TextBoxRevision.Text},
+    {4, TextBoxWorkOrder.Text},
+    {5, $"^FH^FN1^FD{TextBoxSupplierID.Text}^FS^FH^FN2^FD{TextBoxClientNumber.Text}^FS^FH^FN3^FD{TextBoxRevision.Text}^FS^FH^FN4^FD{TextBoxWorkOrder.Text}^FS^FH^FN5^FD{vbTab}^FS"}
+}</code></pre><p>The issue is with the 5th variable, which is the concatenation of the other variables. The barcode is printed with the correct values, but no tab is included on the printing. </p><p> </p><p>Once again, thank you for your help! <br><br> </p></div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/support-vbnet-sdk%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/support-vbnet-sdk%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

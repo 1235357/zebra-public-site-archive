@@ -1,0 +1,168 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Issue with converting the Base64String to ZPL command</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/forum/25270; snapshot threads/resume-00465.html; SHA-256 1105add489156a617e21c03edbd569b1d61deacc0837f9ba98f59418eab42cf4. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden"> Issue with converting the Base64String to ZPL command</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            S
+          </div>
+          <div class="forum-topic__author-name">System Admin</div>
+          <div class="forum-topic__timestamp">5 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            1926
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>We have the Label in Base64String format stored in our DB/Table. Please refer “Base64String_LabelData.Txt” in the attachment.<br>
+We are converting this Base64 string to a ZPL command (by first converting Base64 string to a monochrome/.bmp Image, and then converting that image to the ZPL command).<br>
+Please refer “ZPLCommand_LabelData.txt” for the ZPL command output. You can paste that in online ZPL viewer.<br>
+I have validated the ZPL command in the Online ZPL Viewer: <span data-original-href="http://labelary.com/viewer.html">http://labelary.com/viewer.html</span> and this works fine.<br>
+Another word document “.NET code to convert the BMP Monochrome to ZPL command.txt”  contains the .NET C# code which we used to convert from “BMP /Monochrome” to ZPL command.<br>
+Below are the challenges which we have currently.<br>
+1.	The current ZPL output file is around 248KB which is way larger than our input file, and is causing performance issues when sent to Zebra printer.<br>
+Is there a way we can generate the file of lesser size by using some compression technique?<br>
+2.	Other than this label, we are appending additional fields to the lower section in the label. Once I try this in the ZPL viewer, the text is getting added but is inverted.<br>
+Please refer OnlineZPLViewer_Output.jpg in the attached.<br>
+3.	Once we validate this data in ZPL viewer, able to see the label but when we actually send this label to the Zebra printer, nothing is coming out from the printer.<br>
+And we have ZT230  model of Zebra printer.<br>
+Can you please help me, how can I convert the base64String to Zebra printing Language command ?</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-47094" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            6 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Anuj,<br>
+Probably you may have already figured out the solutions. If not, here are the suggestions or answers.</p>
+<p>You will have to look up on the internet for tools to reduce the size of Base64 or Bitmap.<br>
+The inverted text is because of ^PMY &amp;amp; ^POI commands, to instruct the printer to print the entire label as mirrored and inverted. You may consider to generate an image without using the ^PMY &amp;amp; ^POI, so that the text will be in correct orientation.<br>
+When you see nothing comes out from the printer with the correct ZPL input, it is most likely that the media size settings on the printer were incorrect. For example, the media length was set to 100 dots, while the ^XA^FO2,200^AND,36,20^FDHello World!^FS^XZ intends to print at 200 dots in Y direction. There will be nothing comes out from the printer, because it cannot print the “Hello World!” because of the mis-match of media settings.</p>
+<p>Suggestions: Not sure how you get the label in Base64 at&amp;nbsp;the first place. Maybe the Base64 string was converted from the label in PDF format. Starting with Link-OS v6.3 (released in August, 2020), we can send the PDF directly to the printer without the needs to convert into bitmap. This is called PDF Direct and is Free. (Prior to August, 2020, the PDF Direct was licensed with fees.) If you upgrade the firmware on your ZT230 printer, your application may bypass the issues discussed above. For more info about PDF Direct, refer to&amp;nbsp;Announcement | Printers Include Free PDF Direct with Link-OS 6.3. Hope this helps.<br>
+Regards,<br>
+Steven Si</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/forum/25270%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/forum/25270%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

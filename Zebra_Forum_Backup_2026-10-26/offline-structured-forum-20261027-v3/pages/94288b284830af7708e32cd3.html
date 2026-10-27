@@ -1,0 +1,238 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Zebra CC6000 LC</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/zebra-cc6000-lc; snapshot threads/00912.html; SHA-256 1e3b7a52d70eeac6eb03c13e8f66ed101f73bbd7dcaabb2114e7f47f050ac464. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Zebra CC6000 LC</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            A
+          </div>
+          <div class="forum-topic__author-name">Anna Evdokimova</div>
+          <div class="forum-topic__timestamp">4 years 9 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            165
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Good afternoon. When working with the scanner, and specifically for the scanner.read() - onStatus, scanner.disable(), scanner.release() - deInitScanner methods, a ScannerException occurs periodically without details, only with the message Failure.<br>
+After that, the scanner either stops working or stops responding to any actions.<br>
+There is no case for reproduction, the code is similar to the example from the documentation.</p>
+<p>Can you suggest what could be the cause of the problem? Why does a ScannerException occur when working with a scanner?<br>
+_____________________________________________________________________________________________________________________________________________________<br>
+override fun onStatus(statusData: StatusData) {<br>
+        val state: StatusData.ScannerStates? = statusData.state<br>
+        when (state) {<br>
+            StatusData.ScannerStates.IDLE -&amp;gt; {<br>
+                if (bSoftTriggerSelected) {<br>
+                    scanner.triggerType = Scanner.TriggerType.SOFT_ONCE<br>
+                    bSoftTriggerSelected = false<br>
+                } else {<br>
+                    scanner.triggerType = Scanner.TriggerType.HARD<br>
+                }<br>
+                if (bDecoderSettingsChanged) {<br>
+                    setDecoders()<br>
+                    bDecoderSettingsChanged = false<br>
+                }<br>
+                if (!scanner.isReadPending &amp;amp;&amp;amp; !bExtScannerDisconnected) {<br>
+                    try {<br>
+                         scanner.read()<br>
+                    } catch (exception: ScannerException) {<br>
+                        reportError(SCANNER_READ_EXCEPTION)<br>
+                    }<br>
+                }<br>
+            }</p>
+<p>Exception: com.symbol.emdk.barcode.ScannerException: Failure<br>
+	at com.symbol.emdk.barcode.Scanner.read(Scanner.java:541)<br>
+	at app.price_checker.android.mobile_ui.delegates.BarcodeDelegate.onStatus(BarcodeDelegate.kt:171)<br>
+	at com.symbol.emdk.barcode.StatusCallbackInternal$StatusCallbackThread.run(StatusCallbackInternal.java:74)<br>
+_____________________________________________________________________________________________________________________________________________________<br>
+private fun deInitScanner() {<br>
+        if (scanner != null) {<br>
+            try {<br>
+                scanner?.disable()<br>
+            } catch (exception: Exception) {<br>
+                reportError(DISABLE_SCANNER_EXCEPTION)<br>
+            }<br>
+            try {<br>
+                scanner?.removeDataListener(this)<br>
+                scanner?.removeStatusListener(this)<br>
+            } catch (exception: Exception) {<br>
+                reportError(REMOVE_SCANNER_EXCEPTION)<br>
+            }<br>
+            try {<br>
+                scanner?.release()<br>
+            } catch (exception: Exception) {<br>
+                reportError(RELEASE_SCANNER_EXCEPTION)<br>
+            }<br>
+            scanner = null<br>
+        }<br>
+    }</p>
+<p>Exception: com.symbol.emdk.barcode.ScannerException: Failure<br>
+	at com.symbol.emdk.barcode.Scanner.disable(Scanner.java:407)<br>
+	at app.price_checker.android.mobile_ui.delegates.BarcodeDelegate.deInitScanner(BarcodeDelegate.kt:214)<br>
+	at app.price_checker.android.mobile_ui.delegates.BarcodeDelegate.pause(BarcodeDelegate.kt:74)<br>
+	at java.lang.reflect.Method.invoke(Native Method)<br>
+	at androidx.lifecycle.ClassesInfoCache$MethodReference.invokeCallback(ClassesInfoCache.java:216)<br>
+	at androidx.lifecycle.ClassesInfoCache$CallbackInfo.invokeMethodsForEvent(ClassesInfoCache.java:194)<br>
+	at androidx.lifecycle.ClassesInfoCache$CallbackInfo.invokeCallbacks(ClassesInfoCache.java:185)<br>
+	at androidx.lifecycle.ReflectiveGenericLifecycleObserver.onStateChanged(ReflectiveGenericLifecycleObserver.java:37)<br>
+	at androidx.lifecycle.LifecycleRegistry$ObserverWithState.dispatchEvent(LifecycleRegistry.java:361)<br>
+	at androidx.lifecycle.LifecycleRegistry.backwardPass(LifecycleRegistry.java:316)<br>
+	at androidx.lifecycle.LifecycleRegistry.sync(LifecycleRegistry.java:334)<br>
+	at androidx.lifecycle.LifecycleRegistry.moveToState(LifecycleRegistry.java:145)<br>
+	at androidx.lifecycle.LifecycleRegistry.handleLifecycleEvent(LifecycleRegistry.java:131)<br>
+	at androidx.lifecycle.ReportFragment.dispatch(ReportFragment.java:68)<br>
+	at androidx.lifecycle.ReportFragment$LifecycleCallbacks.onActivityPrePaused(ReportFragment.java:193)<br>
+	at android.app.Activity.dispatchActivityPrePaused(Activity.java:1294)<br>
+	at android.app.Activity.performPause(Activity.java:7997)<br>
+	at android.app.Instrumentation.callActivityOnPause(Instrumentation.java:1508)<br>
+	at android.app.ActivityThread.performPauseActivityIfNeeded(ActivityThread.java:4494)<br>
+	at android.app.ActivityThread.performPauseActivity(ActivityThread.java:4455)<br>
+	at android.app.ActivityThread.handlePauseActivity(ActivityThread.java:4407)<br>
+	at android.app.servertransaction.PauseActivityItem.execute(PauseActivityItem.java:46)<br>
+	at android.app.servertransaction.TransactionExecutor.executeLifecycleState(TransactionExecutor.java:176)<br>
+	at android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:97)<br>
+	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:2017)<br>
+	at android.os.Handler.dispatchMessage(Handler.java:107)<br>
+	at android.os.Looper.loop(Looper.java:214)<br>
+	at android.app.ActivityThread.main(ActivityThread.java:7397)<br>
+	at java.lang.reflect.Method.invoke(Native Method)<br>
+	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:492)<br>
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:935)</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-49917" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>James Swinton-Bland</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 9 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Anna,</p>
+<p>This typically occurs when the scanner is in the wrong state when trying to call one of the methods you mention (read / disable etc...). We have a diagram illustrating the different scanner states here: <span data-original-href="https://techdocs.zebra.com/emdk-for-android/4-0/guide/scanner/">https://techdocs.zebra.com/emdk-for-android/4-0/guide/scanner/</span></p>
+<p>I appreciate this diagram is rather complicated, which is why we recommend all developers migrate to DataWedge APIs instead of the EMDK as DataWedge will take care of these issues for you. I would recommend migrating to DataWedge to resolve this issue, or raising a support ticket if that is not possible. </p>
+<p>Migrating to DataWedge should be relatively easy as it is an intent based platform. Please see here for more info: <span data-original-href="https://techdocs.zebra.com/datawedge/11-2/guide/about/">https://techdocs.zebra.com/datawedge/11-2/guide/about/</span></p>
+<p>Additionally, DataWedge is prioritized for new features over the EMDK, so you will be future proofing your application by migrating.</p>
+<p>Hope this helps,<br>
+James</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/zebra-cc6000-lc%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/zebra-cc6000-lc%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

@@ -1,0 +1,182 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Printing StoredFormat With passing vars including new hex EPC Using Link-OS (ZT411)</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Printing StoredFormat With passing vars including new hex EPC Using Link-OS (ZT411)</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/printing-storedformat-passing-vars-including-new-hex-epc-using-link-os-zt411; original snapshot: threads/01008.html; SHA-256: 0f0a62eb498ce3884263415272914d37f03de8de029378dd964fcfc28fd167e2</small><pre id="topic">
+
+    
+        Printing StoredFormat With passing vars including new hex EPC Using Link-OS (ZT411) 
+
+
+        
+      
+                        
+                    
+            A
+          
+          ahmad zaid
+          5 years 1 month ago
+        
+        
+      
+        
+            
+                  
+            
+            49
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m trying to Printing StoredFormat With passing vars including new hex EPC Using Link-OS (ZT411)
+this is my code :
+ Connection printerConnection = null;
+            try
+            {
+                 printerConnection = new TcpConnection(&quot;192.168.11.110&quot;, TcpConnection.DEFAULT_ZPL_TCP_PORT);
+                printerConnection.Open();
+                Dictionary formatVars = new Dictionary();
+                formatVars.Add(1,&quot;ahmad&quot;);//var company
+                formatVars.Add(2, &quot;12345&quot;);//var barcode
+                formatVars.Add(3, &quot;468889eefd4ff38000000001&quot;);//var EPC
+                ZebraPrinterFactory.GetInstance(PrinterLanguage.ZPL, printerConnection).PrintStoredFormat(&quot;R:LabelAhmad.zpl&quot;, formatVars, &quot;UTF-8&quot;);
+            }
+            catch (ArgumentException ex)
+            {
+            }
+            catch (ConnectionException ex)
+            {
+            }
+            catch (ZebraPrinterLanguageUnknownException ex)
+            {
+            }
+            finally
+           {
+                if (printerConnection != null)
+                {
+                    try
+                    {
+                        printerConnection.Close();
+                    }
+                    catch (ConnectionException) { }
+                }
+            }
+I creating the label and Store it to the printer.
+when I execute the code the printer print three labels fill with &quot;Void&quot;
+any Help?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The three void labels indicate that the RFID tags cannot be read or encoded correctly. The printer has tried 3 times (by the way, the number of retries is configurable). It&#x27;s most likely that the ZT411 printer has not been calibrated with the RFID tags. A calibration is required for the printer in order to detect the antenna position and signal strength properly on the tag.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

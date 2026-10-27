@@ -1,0 +1,307 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>ZQ310 bluetooth error not intercept</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/zq310-bluetooth-error-not-intercept; snapshot threads/00836.html; SHA-256 525b9479cab0b935d6586d8710027265b17404590aa7ee977cba74e9edca65ab. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">ZQ310 bluetooth error not intercept</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            A
+          </div>
+          <div class="forum-topic__author-name">Andrea Greggio</div>
+          <div class="forum-topic__timestamp">4 years 7 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            51
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            2
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                  <span class="forum-expert-replied">//Expert user has replied.</span>
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>Hi, we are working on Android 11 with link-os SDK 2.14.5198.<br>
+The system developed to print travel tickets is based on the fact that the printer prints and does not return any printing errors.<br>
+We check the printer status before printing, send it to print, wait 500ms and double check the printer status to verify that no errors have occurred.</p>
+<p>A user sent the print, the printer did not print, did not return any errors and the title ended up in the purchase table and should not have seen it did not print but I did not catch any errors.<br>
+What could have happened and why was I unable to intercept the problem?<br>
+At the code level I took the one provided in the documentation of the sdk for checking the printer status.<br>
+We use variable status to register the error or the status 1 that is printed.<br>
+So this is the code:<br>
+1) Method to start Print:</p>
+<p>private int connectAndSendLabel(final String mac, String dataPass, String type, String url, String printerType) {</p>
+<p>        printerConnection = new BluetoothConnection(mac);</p>
+<p>        int Status = 0;<br>
+        try {<br>
+            printerConnection.open();<br>
+            ZebraPrinter printer = null;</p>
+<p>            if (printerConnection.isConnected()) {<br>
+                printer = ZebraPrinterFactory.getInstance(printerConnection);</p>
+<p>                if (printer != null) {</p>
+<p>                    Status = sendTestLabel(dataPass, type, url, printerType);<br>
+                    printerConnection.close();<br>
+                }<br>
+            } else {<br>
+                Status = -5;<br>
+            }<br>
+        } catch (ConnectionException e) {<br>
+            Status = -2;<br>
+        } catch (Exception e) {<br>
+            e.printStackTrace();<br>
+            Status = -4;<br>
+        } finally {<br>
+            return Status;<br>
+    }<br>
+}</p>
+<p>2) Method to sent title to printer:</p>
+<p>private int sendTestLabel(String dataPass, String type, String url, String printerType) throws Exception {<br>
+    int Status = 0;<br>
+    Status=checkPrinterStatus(printerConnection);</p>
+<p>    if (Status == 1) {<br>
+        try {<br>
+            String s = createZplReceipt(dataPass, type, url, printerType);</p>
+<p>            byte[] configLabel = s.getBytes();</p>
+<p>            printerConnection.write(configLabel);</p>
+<p>            if (printerConnection instanceof BluetoothConnection) {<br>
+                DemoSleeper.sleep(500);</p>
+<p>                Status=checkPrinterStatus(printerConnection);<br>
+            }</p>
+<p>            //buffer reset to deny reprint<br>
+            if (Status == 2 || Status == 3 || Status ==4 || Status == -1 || Status == -2 || Status == -3) {<br>
+                String reset ="~JA";<br>
+                byte[] buffreset = reset.getBytes();<br>
+                printerConnection.write(buffreset);<br>
+            }</p>
+<p>        } catch (ConnectionException e) {<br>
+            Status = -2;<br>
+        }<br>
+    }<br>
+    return Status;<br>
+}</p>
+<p>3) method to check printer status.</p>
+<p>public int checkPrinterStatus(Connection conn) throws Exception {</p>
+<p>        int status = 0;<br>
+        try {<br>
+            ZebraPrinter printer = ZebraPrinterFactory.getInstance(conn);</p>
+<p>            PrinterStatus printerStatus = printer.getCurrentStatus();</p>
+<p>            Boolean paused = false;<br>
+            Boolean HeadOpen = false;<br>
+            Boolean PaperOut = false;<br>
+            Boolean PrintOk = false;</p>
+<p>            if(printerStatus.isReadyToPrint){<br>
+                PrintOk = true;<br>
+            }</p>
+<p>            if(printerStatus.isPaused){<br>
+                paused = true;<br>
+            }<br>
+            if(printerStatus.isHeadOpen){<br>
+                HeadOpen = true;<br>
+            }<br>
+            if(printerStatus.isPaperOut){<br>
+                PaperOut = true;<br>
+            }</p>
+<p>            if (PrintOk) {   //print ok<br>
+                status = 1;<br>
+            } else if (paused &amp;amp;&amp;amp; !HeadOpen &amp;amp;&amp;amp; !PaperOut){  //pause print<br>
+                status = 2;<br>
+            } else if (paused &amp;amp;&amp;amp; HeadOpen &amp;amp;&amp;amp; !PaperOut){   //<br>
+                status = 3;<br>
+            } else if (paused &amp;amp;&amp;amp; !HeadOpen &amp;amp;&amp;amp; PaperOut){   //paper empty<br>
+                status = 4;<br>
+            }  else {           //all other cases<br>
+                status = -1;<br>
+            }</p>
+<p>        } catch (ConnectionException e) {<br>
+            e.printStackTrace();<br>
+            status = -2;<br>
+        } catch (ZebraPrinterLanguageUnknownException e) {<br>
+            e.printStackTrace();<br>
+            status = -3;<br>
+        } finally {  }<br>
+        return status;<br>
+}</p>
+<p>Have you some suggestions ?<br>
+Thanks</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      2 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-50266" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              J
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>James Swinton-Bland</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi,</p>
+<p>It's possible that the file was sent to the printer, but the connection was closed before the file transfer was complete. When the error occurred, was the file larger than usual?</p>
+<p>Perhaps try increasing the sleep time in your application to see if this resolves the issue.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+  
+
+
+
+<article id="comment-50270" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              S
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Steven Si</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 6 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>As James has pointed put, the connection is closed right after the call to the sendTestLabel() without checking the Status variable in your connectAndSendLabel() function. Suggest to check the printer status or add some delay before calling the printerConnection.close().</p>
+<p>Without checking the status after calling the printerConnection.write(buffreset) or add some delay before calling the printerConnection.close() is likely the root cause of the issue you've described.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/zq310-bluetooth-error-not-intercept%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/zq310-bluetooth-error-not-intercept%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

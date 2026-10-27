@@ -1,0 +1,452 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to align the printing with a label with EPL:</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to align the printing with a label with EPL:</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/how-align-printing-label-epl; original snapshot: threads/00949.html; SHA-256: 2e53c875d8ca6098de9ceeef95e7aa717a012eafaf104bae8423645e22bc772f</small><pre id="topic">
+
+    
+        How to align the printing with a label with EPL:
+
+
+        
+      
+                        
+                    
+            W
+          
+          Wen Mo
+          4 years 11 months ago
+        
+        
+      
+        
+            
+                  
+            
+            588
+          
+                
+                  
+            
+            6
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m programming a new label printing with 1.5x0.5 sticky with blank mark label with EPL.
+I could not align the printing. The width and the height and gap are measured by dots EPL. How do I convert the measures in inches to dots?
+Here is the EPL codes:
+N
+q300
+Q70,22
+B290,65,2,UA0,2,2,40,B,&quot;607845011293&quot;
+P0003,1
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      6 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              W
+            
+          
+                
+          
+            Wen Mo
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I have tried different values for Q and q and still could not make it work. The printer always shows flashing red light.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            To convert the inches to dots, you need to know the resolution of the printer heads. If the resolution of the printer heads is 203 dpi or 300 dpi (dots per inch), then the conversion would be 203 x the inches, or 300 x the inches. Please note, 203 dpi is a common resolution for most of Zebra label printers.
+Regarding the red flashing light, please refer to the user&#x27;s manual of the specific printer model for the explanation.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              W
+            
+          
+                
+          
+            Wen Mo
+          
+          
+            4 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks!
+It seems ZPL provided more control on &quot;black mark&quot; detection. Could you provide the corresponding ZPL with black mark detection for my EDL:
+N
+q300
+Q100,22
+B290,65,2,UA0,2,2,40,B,&quot;607845011293&quot;
+P0003,1
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Instead of setting the label dimension with EPL command, I would suggest to do a printer calibration on the media. Please refer to the User&#x27;s Manual of this particular printer on the procedures or steps on the media calibration. One the printer is calibrated for the media, you can remove these label dimension related commands from the EPL. The printer should align the label prints automatically for you.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              W
+            
+          
+                
+          
+            Wen Mo
+          
+          
+            4 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you so much, SSi1!
+I will give a try.
+Do you happen to know how to print British Pound sign and Euro Currency sign with EPL?
+I&#x27;ve tried many ways, but, could not figure out. It always prints two other characters. Here is my codes to print -
+N
+q300
+Q100,22
+B297,80,2,1,2,2,30,N,&quot;607845011293&quot;
+A270,42,2,2,1,1,N,&quot;607845011293&quot;
+A290,20,2,2,1,1,N,&quot;12345678901234567890&quot;
+A90,70,2,1,1,1,N,&quot;£199.99&quot;
+A100,42,2,2,1,1,N,&quot;€299.99&quot;
+P0003,1
+But, it doesn&#x27;t print £ and € correctly.
+Thanks!
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              W
+            
+          
+                
+          
+            Wen Mo
+          
+          
+            4 years 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I&#x27;ve used the Zebra Setup Utilites -&amp;gt; Configer Printer Settings -&amp;gt; .. &quot;Media Type&quot; set to &quot;Mark Sensing&quot;.
+and take out
+q300
+Q100,22
+it works perfectly; thank you very much!
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,176 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Issue with event listener when device is trying to locate an asset</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Issue with event listener when device is trying to locate an asset</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/issue-event-listener-when-device-trying-locate-asset; original snapshot: threads/00640.html; SHA-256: 2f57ccfbb4c477f3e076488726037f6056f8bb261b9db670b6adc988d905f83c</small><pre id="topic">
+
+    
+        Issue with event listener when device is trying to locate an asset
+
+
+        
+      
+                        
+                    
+            P
+          
+          prashant prashant
+          3 years 7 months ago
+        
+        
+      
+        
+            
+                  
+            
+            101
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We have been working on the development of an Android application that tracks RFID-trackable assets based on their tag ids. This Android app will be installed on the zebra hand-held reader device. We have a couple of queries. Could you please have a look and answer them.
+
+In the event that the zebra device is supposed to start locating a single asset, we have set up an event handler that goes to sleep for about 5 seconds and then we stop the event handling session. During this time, the event listener scans the device and attempts to locate the asset and if captured it returns the Peak RSSI value and shows up on the screen. ( we have followed the below document for tracking assets:
+
+https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/barcode-scanners/software/sdk-for-android-dg-en.pdf )
+
+There are a few challenges here :
+
+
+	Now the challenge is that the app fails quite a lot of time and we have no idea what happened under the hood. We should be able to capture of the logs of the application. Can you plz tell us if it&#x27;s possible to capture the logs? 
+	The app gets slow and takes time to respond. Could it be due to the 5 seconds sleep time introduced when setting up the event handler?
+	So far, we have been managing the development remotely, we will have the device with us soon. Is it possible to connect to the device through a USB and we could fetch the logs on our development environment?
+
+
+I have attached the piece of code which is trying to establish a locate asset event handling session. Is this the best way to achieve the same?
+
+Thanks
+
+Prashant
+              
+
+                    
+          
+      
+              
+ HHR_LocateSIngleAsset.png
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              D
+            
+          
+                
+          
+            Daniel Neamtu
+          
+          
+            3 years 7 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Prashant,
+I see the link you&#x27;ve mentioned in the post is not working, could you please share it back again?
+- It is totally possible to debug the application and check what&#x27;s happening also under the hood of the SDK.
+- First thing I&#x27;ve noticed from the Screenshot is that you guys are trying to listen for the events but this task should be done on a IO Thread so either with an AsyncTask, ExecutorService or Coroutines if using Kotlin. Yes, the cause could also be because of the 5 seconds sleep which shouldn&#x27;t be required anymore if using one of the suggested methods.
+- Yes, absolutely. You&#x27;ll be able to get better insights after you get the physical device.
+Also, check out this guide (if not already) as a further reference, it contains more examples:
+https://techdocs.zebra.com/dcs/rfid/android/2-0-2-94/samples/hellorfid/…;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

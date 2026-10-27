@@ -1,0 +1,267 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Using ^MU ZPL Command to have 1 template for 203 and 600 dpi printer</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Using ^MU ZPL Command to have 1 template for 203 and 600 dpi printer</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/using-mu-zpl-command-have-1-template-203-and-600-dpi-printer; original snapshot: threads/01038.html; SHA-256: d76a6f44da8792eb9a4b899606e0021384dbec9f509b19ec2a41569e5756efdf</small><pre id="topic">
+
+    
+        Using ^MU ZPL Command to have 1 template for 203 and 600 dpi printer
+
+
+        
+      
+                        
+                    
+            F
+          
+          Francois Charron
+          5 years 3 months ago
+        
+        
+      
+        
+            
+                  
+            
+            5102
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Templates created in ZebraDesigner for Developers are send to 2 types of printers, 203 dpi and 600 dpi. How can I use the ^MU ZPL command to have 1 template for both types of printer ? It&#x27;s possible to print at lower resolution so template will be build for 600 dpi and the ZPL command will be send to the 203 dpi printers.
+^MUd,600,200
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            When using ZebraDesigner for Developers, the label layout is based on the resolution of the chosen printer. There are three types of resolutions: 200dpi, 300dpi and 600dpi. Ideally, a template should be used for its designated resolution.
+With ^MU command, we could use the template designed for a lower resolution for a higher resolution printer. For example, if the template is designed for 200dpi, we can add the following command at the beginning of the template, so that the template can be used for a 600dpi printer.
+### Convert a 200 dpi format to a 600 dpi format with a base in dots:
+^MUd,200,600The ^MUd,600,200 is illegal, because ZPL doesn&#x27;t allow to convert a higher resolution format to a lower resolution format.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              F
+            
+          
+                
+          
+            Francois Charron
+          
+          
+            5 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thank you for your response. What you mention is understood.
+Is it possible to use the conversion command ^MU for a printer instead of a template ? If yes, I could send the ZPL command ^MUd,200,600 to all 600 dpi printer and create template for 200 dpi without needing to add the conversion command for every template.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 3 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Yes, you can use the following command to tell the printer to start the 200dpi to 600dpi conversion for all ZPL formats going forward.
+^XA
+^MUd, 200, 600
+^XZAfter you are done, remember to use the following command to restore the printer resolution back to 600dpi.
+^XA
+^MUd, 600, 600
+^XZ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,144 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>FX9600 Secure Mode and C Host SDK for Win</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>FX9600 Secure Mode and C Host SDK for Win</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/fx9600-secure-mode-and-c-host-sdk-win; original snapshot: threads/00306.html; SHA-256: 72f3fa1eda97cb55e28af93be69a4505464928aabe218b8f18f47272d0c437cc</small><pre id="topic">
+
+    
+        FX9600 Secure Mode and C Host SDK for Win
+
+
+        
+      
+                        
+                    
+            M
+          
+          Mogens Beltoft
+          2 years 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            112
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I have problems connecting to an FX9600 RFID reader configured to Secure Mode.I can connect using RFID_Login() but RFID_Connect fails.Code for RFID_Login:printf(&quot;RFID_Login 1 to %s %s:%s unsecure\n&quot;, loginInfo.hostName, loginInfo.userName, loginInfo.password);RFID_STATUS status = RFID_Login(&amp;pAdminHandle, &amp;loginInfo, FX, FALSE, NULL);if (status != RFID_API_SUCCESS) {   printf(&quot;RFID_Login 2 to %s %s:%s secure\n&quot;, loginInfo.hostName, loginInfo.userName, loginInfo.password);   status = RFID_Login(&amp;pAdminHandle, &amp;loginInfo, FX, TRUE, NULL);   if (status != RFID_API_SUCCESS) {       printf(&quot;RFID_Login failure: %s\n&quot;, RFID_GetErrorDescription(status));   }   else {       printf(&quot;RFID_Login 2 success\n&quot;);   }}else {   printf(&quot;RFID_Login 1 success\n&quot;);}Code for RFID_Connect:printf(&quot;RFID_Connect to %s:%d\n&quot;, readerIP_.c_str(), readerPort_);res = RFID_Connect(&amp;readerHandle_, const_cast&lt;char *&gt;(readerIP_.c_str()), readerPort_, 10000, &amp;connectionInfo);if (res == RFID_API_SUCCESS) {   printf(&quot;RFID_Connect success\n&quot;);} else {   printf(&quot;RFID_Connect failure: %s\n&quot;, RFID_GetErrorDescription(res));}Output connecting to port 5084:RFID_Login 1 to 10.93.30.25 admin:xxx unsecureRFID_Login 2 to 10.93.30.25 admin:xxx secureRFID_Login 2 successRFID_Connect to 10.93.30.25:5084RFID_Connect failure: Unable to open connection to readerOutput connecting to port 4085:RFID_Login 1 to 10.93.30.25 admin:Default1! unsecureRFID_Login 2 to 10.93.30.25 admin:Default1! secureRFID_Login 2 successRFID_Connect to 10.93.30.25:5085RFID_Connect failure: Command TimeoutTo me it was unexpected that a login can be made to a secure mode reader without setting the secure mode flag, but I can login, but I can&#x27;t connect.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              M
+            
+          
+                
+          
+            Mogens Beltoft
+          
+          
+            2 years 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I have also tried adding the SEC_CONNECTION_INFO struct to CONNECTION_INFO:CONNECTION_INFO connectionInfo;connectionInfo.version = RFID_API3_5_1;connectionInfo.lpSecConInfo = new SEC_CONNECTION_INFO;memset(connectionInfo.lpSecConInfo, 0, sizeof(SEC_CONNECTION_INFO));connectionInfo.lpSecConInfo-&gt;secureMode = TRUE;connectionInfo.lpSecConInfo-&gt;validatePeerCert = FALSE;connectionInfo.lpSecConInfo-&gt;sizeCertBuff = 0;connectionInfo.lpSecConInfo-&gt;sizeKeyBuff = 0;connectionInfo.lpSecConInfo-&gt;sizePhraseBuff = 0;connectionInfo.lpSecConInfo-&gt;sizeRootCertBuff = 0;printf(&quot;RFID_Connect to %s:%d\n&quot;, readerIP_.c_str(), readerPort_);res = RFID_Connect(&amp;readerHandle_, const_cast&lt;char *&gt;(readerIP_.c_str()), readerPort_, 10000, &amp;connectionInfo);if (res == RFID_API_SUCCESS) {   printf(&quot;RFID_Connect success\n&quot;);} else {   printf(&quot;RFID_Connect failure: %s\n&quot;, RFID_GetErrorDescription(res));} Same result:RFID_Login 1 to 10.93.30.25 admin:Default1! unsecureRFID_Login 2 to 10.93.30.25 admin:Default1! secureRFID_Login 2 successRFID_Connect to 10.93.30.25:5085RFID_Connect failure: Unable to open connection to reader
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

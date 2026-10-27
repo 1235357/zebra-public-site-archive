@@ -1,0 +1,146 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>How to remove the Menu Bar (in .NET)</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>How to remove the Menu Bar (in .NET)</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/29048; original snapshot: threads/01987.html; SHA-256: bb168d77896727472051722304599668d774c5ae1d8be070a2587a69e41e39cb</small><pre id="topic">
+
+    
+        How to remove the Menu Bar (in .NET)
+
+
+        
+      
+                        
+                    
+            M
+          
+          Mark Mann
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            25
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Team,   Have a customer that has an existing .NET application running fine on a MC75 WM6.5.3 but now testing on a new device with CE.7.  Issue with CE.7 is that the Menu bar is on top.  Question: Do you know if it&#x27;s possible to have them make a call which hides the Menu bar on all their screens.  I believe it&#x27;s possible since Wavelink has the ability to hide the menu bar so I&#x27;m making that assumption that the customer could do the same with their custom application of just making a call that would do that (hopefully they would not have to do it on each screen but that&#x27;s what I suspect) while in their application.   Any feedback on this is welcomed.   Cheers,   Mark
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            There are some device wide reg settings that you could use to do this. &amp;nbsp;If you do Start/Settings/Taskbar and Start Menu, you can see the options. &amp;nbsp;Auto Hide works for some customers who want users to be able to use task bar when needed. &amp;nbsp;It will hide the task bar, but if you tap bottom of screen, you can get it back. &amp;nbsp;If you really want to do it from the Dot Net app, I will paste in some code below. &amp;nbsp;They will want to hide it during app startup, then show it when the app exits.   using System.Runtime.InteropServices;   &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; [DllImport(&quot;CoreDll&quot;)]  &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; public static extern int FindWindow(char[] className, char[] WindowsName);     &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; [DllImport(&quot;CoreDll&quot;)]  &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; public static extern bool ShowWindow(int hWnd, int iShowType);    &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; public void HideTaskBar()  &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; {  &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; int hWndTaskBar;  &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; string WindowName = &quot;HHTaskBar&quot;;    &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; hWndTaskBar = FindWindow(WindowName.ToCharArray(), null);    &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; if (hWndTaskBar != 0)  &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; ShowWindow(hWndTaskBar, 0 /*SW_HIDE*/);    &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; }  &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; public static void ShowTaskBar()  &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; {  &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; int hWndTaskBar;  &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; string WindowName = &quot;HHTaskBar&quot;;    &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; hWndTaskBar = FindWindow(WindowName.ToCharArray(), null);    &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; if (hWndTaskBar != 0)  &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; ShowWindow(hWndTaskBar, 1);    &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; }
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

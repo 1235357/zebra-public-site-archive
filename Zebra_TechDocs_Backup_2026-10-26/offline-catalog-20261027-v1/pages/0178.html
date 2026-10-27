@@ -1,0 +1,1412 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TechDocs local catalog</title><style>body{font:16px system-ui;max-width:1050px;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}code{overflow-wrap:anywhere}li{margin:.5rem 0}.notice{border-left:4px solid #8a5700;padding:.5rem 1rem;background:#fff2cc}section{margin:2rem 0}</style></head><body><h1>RxLogger APIs - Zebra Technologies TechDocs</h1><p class="notice"><strong>Offline index, incomplete.</strong> Derived from locally captured browser DOM, not original HTTP bytes. Source content, current server status, completeness, rendering and permissions are unverified. Captured error, challenge and truncated pages are excluded from text previews. Raw sources are preserved separately.</p><p>Requested: <code>https://techdocs.zebra.com/rxlogger/latest/guide/apis/</code><br>Observed final URL: <code>https://techdocs.zebra.com/rxlogger/latest/guide/apis/</code><br>Raw source: <code>raw/fea7ccbfaeb650cb116d4ea8.html</code><br>Raw SHA-256: <code>6d30191b1067b6186a60bcbd5b0f94c4259751167dd570067421972e6af120b8</code></p><p>Extracted text only; markup, images, code formatting and interactive features can be lost. See original saved DOM for source material.</p><p><a href="../index.html">Back to catalog</a></p><pre>
+
+    
+        
+            
+                
+                    
+                        Toggle navigation
+                        
+                        
+                        
+                    
+                     
+                    
+                   
+                
+                
+                    
+                        TechDocs
+                        
+                                            RxLogger
+                                            15.0
+                        
+
+                    
+                
+                
+                    
+                        
+
+
+                        
+                            
+                                    About
+                            
+                        
+                        
+                            
+                                    Settings
+                            
+                        
+                        
+                            
+                                    User Guide
+                            
+                        
+                        
+                            
+                                    APIs
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                            
+                                    
+                            
+                        
+                        
+                        
+                    
+                
+            
+        
+    
+
+    
+        
+            
+            
+                
+                    
+                    
+                    
+                        
+                        
+                            RxLogger APIs
+                        
+                    OverviewAPI ReferencePermissions MethodI. Generate App Signature CertificateII. AllowList Your AppIII. Grant App PermissionsIV. Broadcast RxLogger IntentTokenization MethodI. Generate App Signature CertificateII. AllowList Your AppIII. Obtain App TokenIV. Broadcast RxLogger IntentEnable RxLoggerStandard Method (Secure Mode Off)Secure Methods (Secure Mode On)Enable StatusDisable RxLoggerStandard Method (Secure Mode Off)Secure Methods (Secure Mode On)Disable StatusBackupNowStandard Method (Secure Mode Off)Secure Methods (Secure Mode On)BackupNow StatusDeploy ConfigStatusGet RxLogger StateStatusDelete LogsStandard Method (Secure Mode Off)Secure Methods (Secure Mode On)StatusBug ReportStandard Method (Secure Mode Off)Secure Methods (Secure Mode On)StatusReset to DefaultStandard Method (Secure Mode Off)Secure Methods (Secure Mode On)StatusRelated Links
+                    
+                    	
+                    		
+                    			
+                    				X
+                    			
+                    			
+                    				
+                    			
+                    	
+                      
+                    
+                    
+                    
+                    
+                    
+                                
+                
+                    
+                        
+                            
+                                
+                                    RxLogger APIs
+                                    
+                                            RxLogger
+                                            15.0
+                                    
+                                
+                                                
+                        
+                    
+                    
+                        
+                            
+                            
+                                
+                                    
+
+                                        Overview
+
+The functionality of RxLogger is managed through Android intents sent from third-party applications. The method required to interact with RxLogger depends on whether Secure Mode is on or off.
+
+
+When Secure Mode is ON: Use one of the following secure methods:
+
+
+
+Permissions Method (Recommended) - Uses Android&#x27;s AppOpsManager to control access to RxLogger. This provides enhanced security by managing permissions for RxLogger operations.
+
+Tokenization Method - Requires a security token to be passed as an extra parameter within each intent to authorize the action.
+
+
+When Secure Mode is OFF: Standard Android intents are used without requiring an extra token or permission check. Refer to specific intent documentation for its required structure.
+
+
+ IMPORTANT: Default Secure Mode Behavior by Version 
+The default state of Secure Mode depends on the RxLogger version:
+
+
+For RxLogger versions 15.0.13.00 through 15.0.14.70: Secure Mode is on by default and cannot be turned off. One of the secure methods (Permissions or Tokenization) must be used.
+
+For RxLogger v15.0.14.71 and later (and for v14 and earlier): Secure Mode is off by default and standard intents are used. For v15.0.14.71 and later, OEMConfig can be used to turn Secure Mode on or off via the Control Secure Logging option. 
+
+
+
+
+API Reference
+
+Note: The Legacy category applies when Secure Mode is turned off.
+
+
+    
+        Operation
+        Category
+        Intent
+        Extra
+        Value
+    
+    
+    
+        BackupNow
+        RxLogger (Legacy)
+        com.symbol.rxlogger.intent.action.BACKUP_NOW
+        None
+        None
+    
+    
+        Secure RxLogger (Token Based)
+        com.symbol.rxlogger.intent.action.BACKUP_NOW
+        token
+        &lt;token&gt;
+    
+    
+        password
+        &lt;password&gt;
+    
+    
+        Secure RxLogger (Permission Based)
+        com.zebra.rxlogger.intent.action.BACKUP_NOW_ZSX
+        password
+        &lt;password&gt;
+    
+    
+    
+        Bug Report
+        RxLogger (Legacy)
+        com.symbol.rxlogger.intent.action.RX_BUGREPORT
+        None
+        None
+    
+    
+        Secure RxLogger (Token Based)
+        com.symbol.rxlogger.intent.action.RX_BUGREPORT
+        token
+        &lt;token&gt;
+    
+    
+        Secure RxLogger (Permission Based)
+        com.zebra.rxlogger.intent.action.RX_BUGREPORT_ZSX
+        None
+        None
+    
+    
+    
+        Disable
+        RxLogger (Legacy)
+        com.symbol.rxlogger.intent.action.DISABLE
+        None
+        None
+    
+    
+        Secure RxLogger (Token Based)
+        com.symbol.rxlogger.intent.action.DISABLE
+        token
+        &lt;token&gt;
+    
+    
+        Secure RxLogger (Permission Based)
+        com.zebra.rxlogger.intent.action.DISABLE_ZSX
+        None
+        None
+    
+    
+    
+        Delete Logs
+        RxLogger (Legacy)
+        com.symbol.rxlogger.intent.action.DELETE_LOGS
+        logType
+        0, 1, or 2
+    
+    
+        Secure RxLogger (Token Based)
+        com.symbol.rxlogger.intent.action.DELETE_LOGS
+        token
+        &lt;token&gt;
+    
+    
+        logType
+        0, 1, or 2
+    
+    
+        Secure RxLogger (Permission Based)
+        com.zebra.rxlogger.intent.action.DELETE_LOGS_ZSX
+        logType
+        0, 1, or 2
+    
+    
+    
+        Deploy Config
+        RxLogger (Legacy)
+        com.symbol.rxlogger.intent.action.DEPLOY_CONFIG
+        None
+        None
+    
+    
+        Secure RxLogger (Token Based)
+        com.symbol.rxlogger.intent.action.DEPLOY_CONFIG
+        token
+        &lt;token&gt;
+    
+    
+        Secure RxLogger (Permission Based)
+        com.zebra.rxlogger.intent.action.DEPLOY_CONFIG_ZSX
+        None
+        None
+    
+    
+    
+        Enable
+        RxLogger (Legacy)
+        com.symbol.rxlogger.intent.action.ENABLE
+        None
+        None
+    
+    
+        Secure RxLogger (Token Based)
+        com.symbol.rxlogger.intent.action.ENABLE
+        token
+        &lt;token&gt;
+    
+    
+        Secure RxLogger (Permission Based)
+        com.zebra.rxlogger.intent.action.ENABLE_ZSX
+        None
+        None
+    
+    
+    
+        Get RxLogger State
+        RxLogger (Legacy)
+        com.zebra.rxlogger.intent.action.GET_RX_STATE
+        None
+        None
+    
+    
+        Secure RxLogger (Token Based)
+        com.zebra.rxlogger.intent.action.GET_RX_STATE
+        None
+        None
+    
+    
+        Secure RxLogger (Permission Based)
+        com.zebra.rxlogger.intent.action.GET_RX_STATE_ZSX
+        None
+        None
+    
+    
+    
+        Reset to Default
+        RxLogger (Legacy)
+        com.symbol.rxlogger.intent.action.RESET_TO_DEFAULT
+        None
+        None
+    
+    
+        Secure RxLogger (Token Based)
+        com.symbol.rxlogger.intent.action.RESET_TO_DEFAULT
+        token
+        &lt;token&gt;
+    
+    
+        Secure RxLogger (Permission Based)
+        com.zebra.rxlogger.intent.action.RESET_TO_DEFAULT_ZSX
+        None
+        None
+    
+
+
+
+
+Status Intents:
+
+The following status intents are broadcast by the system as an acknowledgement to confirm the outcome of a command sent.
+
+
+    
+        Operation
+        Status Intent
+    
+    
+        Enable
+        com.symbol.rxlogger.intent.action.ENABLE_STATUS
+    
+    
+        Disable
+        com.symbol.rxlogger.intent.action.DISABLE_STATUS
+    
+    
+        BackupNow
+        com.symbol.rxlogger.intent.action.BACKUP_NOW_STATUS
+    
+    
+        Delete Logs
+        com.symbol.rxlogger.intent.action.DELETE_LOGS_STATUS
+    
+    
+        Get RxLogger State
+        com.symbol.rxlogger.intent.action.GET_RX_STATE_STATUS
+    
+    
+        Bug Report
+        com.symbol.rxlogger.intent.action.RX_BUGREPORT_STATUS
+    
+    
+        Deploy Config
+        com.symbol.rxlogger.intent.action.DEPLOY_CONFIG_STATUS
+    
+    
+        Reset to Default
+        com.symbol.rxlogger.intent.action.RESET_TO_DEFAULT_STATUS
+    
+
+
+
+
+Permissions Method
+
+The Permissions Method extends Android&#x27;s standard AppOps framework, offering a secure and controlled mechanism for interacting with RxLogger. It allows authorized applications to broadcast intents securely by granting custom permissions. Zebra recommends the Permissions Method over the Tokenization Method due to its simplicity and enhanced security.
+
+
+
+I. Generate App Signature Certificate
+
+An application signature for app certification is required for StageNow to configure Access Manager for your app. For reference and steps to generate the certificate, refer to App Signature in Access Manager.
+
+For example, use the following steps to generate an app signature certificate encoded as a binary DER (.crt):
+
+
+Download the App Signature Tool as a .zip file and extract the .jar file.
+
+Open the command line interface (CLI). Navigate to the directory where the extracted .jar file is located.
+
+Generate the certificate. Execute the following command in the CLI to generate the certificate file encoded as a binary DER (.crt). Replace &lt;app_name&gt;.apk with the file path to your application&#x27;s .APK and &lt;cert_name&gt;.crt with the desired name of the output certificate file:
+
+java -jar SigTools.jar getcert -inform apk -outform der -in &lt;app_name&gt;.apk -outfile &lt;cert_name&gt;.crt
+
+The .crt file is created in the folder specified in the command.
+
+
+
+   Important Notes:
+
+
+
+Ensure that the paths for SigTools.jar and &lt;app_name&gt;.apk are correctly specified. Incorrect paths will result in errors.
+
+The generated .crt file can be assigned any name by modifying &lt;cert_name&gt;.crt in the command.
+
+
+
+
+II. AllowList Your App
+
+Once the app signature certificate is generated, use StageNow to configure Access Manager and allowlist your app for RxLogger API access.
+
+Steps to generate the StageNow profile:
+
+
+Launch StageNow on the host computer.
+
+In the StageNow home screen, click Create New Profile from the left menu.
+
+
+Perform the following:
+
+
+Select MX version 14.1 or higher. The MX version on the device should match this version selected. See MX documentation for instructions on how to check the version.
+
+Select Xpert Mode.
+
+Click Create.
+
+
+Enter the desired profile name and click Start.
+
+
+Scroll down and click the plus (+) sign next to AccessMgr. This adds AccessMgr to the Config tab on the right side. Click Add.
+
+
+In the AccessMgr settings, enter/select the following, then scroll down and click Continue.:
+
+
+Permission Access Action: Grant Permission to an Application (To deny permission, select: &quot;Deny Permission to an Application&quot;)
+
+Permission Name: Access RxLogger
+
+Application Package Name: [Enter your app package name]
+
+Application Signature: [Browse to your app signature certificate created from Step I above]
+
+
+
+Click Complete Profile.
+
+
+The device must be connected to the network during deployment. Use one of the following methods based on the desired tool to deploy your application access permission:
+
+
+Barcode Staging: Generate the barcode from the StageNow profile. Open StageNow client on the device and scan the barcode.
+
+Local File Staging: Generate the .BIN file from the StageNow profile (NFC/SD/USB). Deploy the .BIN file to the device. Use StageNow client on the device to browse to the .BIN file and stage the device.
+
+EMM: Export the StageNow XML file from the StageNow installation. Send the XML using either OEMConfig or MX.
+
+
+
+
+III. Grant App Permissions
+
+For an application to broadcast secure intents to RxLogger, it must meet the following requirements:
+
+
+The app must target Android API 33 or higher.
+
+The following permission must be added to the AndroidManifest.xml file:
+
+&lt;uses-permission android:name=&quot;com.zebra.permission.ACCESS_RXLOGGER&quot; /&gt;
+
+
+Once this permission is granted, the application is authorized to send secure intents to RxLogger.
+
+
+
+IV. Broadcast RxLogger Intent
+
+Once the app token is created, Intent Manager can be leveraged to broadcast secure intents to RxLogger; see Intent Manager for more details.
+
+
+Launch StageNow on the host computer.
+
+In the StageNow home screen, click Create New Profile from the left menu.
+
+
+Perform the following:
+
+
+Select MX version 14.1 or higher. The MX version on the device should match this version selected. See MX documentation for instructions on how to check the version.
+
+Select Xpert Mode.
+
+Click Create.
+
+
+Enter the desired profile name and click Start.
+
+
+Scroll down and click the plus (+) sign next to Intent. This adds Intent to the Config tab on the right side. Click Add.
+
+
+In the Intent settings, enter the following then click Continue:
+
+
+Android Action Name: [Enter the RxLogger intent, e.g., com.zebra.rxlogger.intent.action.ENABLE_ZSX]
+
+
+
+Click Complete Profile.
+
+
+The device must be connected to the network during deployment. Use one of the following methods based on the desired tool to deploy your application signature certificate:
+
+
+Barcode Staging: Generate the barcode from the StageNow profile. Open StageNow client on the device and scan the barcode.
+
+Local File Staging: Generate the .BIN file from the StageNow profile (NFC/SD/USB). Deploy the .BIN file to the device. Use StageNow client on the device to browse to the .BIN file and stage the device.
+
+EMM: Export the StageNow XML file from the StageNow installation. Send the XML using either OEMConfig or MX.
+
+
+
+
+Tokenization Method
+
+The Tokenization Method allows an app to access to RxLogger APIs by utilizing an app token. To implement this method, the app&#x27;s signature certificate must first be created and deployed to devices via Access Manager using StageNow. This process adds your app to RxLogger&#x27;s allowlist, granting permission to invoke RxLogger APIs. An app token must be generated and included as a parameter when invoking RxLogger APIs.
+
+
+
+
+
+I. Generate App Signature Certificate
+
+An application signature certificate is required for StageNow to configure Access Manager for your app. For reference and steps to generate the certificate, refer to App Signature in Access Manager.
+
+For example, use the following steps to generate an app signature certificate encoded as a binary DER (.crt):
+
+
+Download the App Signature Tool as a .zip file and extract the .jar file.
+
+Open the command line interface (CLI). Navigate to the directory where the extracted .jar file is located.
+
+Generate the certificate. Execute the following command in the CLI to generate the certificate file encoded as a binary DER (.crt). Replace &lt;app_name&gt;.apk with the file path to your application&#x27;s .APK and &lt;cert_name&gt;.crt with the desired name of the output certificate file:
+
+java -jar SigTools.jar getcert -inform apk -outform der -in &lt;app_name&gt;.apk -outfile &lt;cert_name&gt;.crt
+
+The .crt file is created in the folder specified in the command.
+
+
+
+   Important Notes:
+
+
+
+Ensure that the paths for SigTools.jar and &lt;app_name&gt;.apk are correctly specified. Incorrect paths will result in errors.
+
+The generated .crt file can be assigned any name by modifying &lt;cert_name&gt;.crt in the command.
+
+
+
+
+II. AllowList Your App
+
+Once the app signature certificate is generated, use StageNow to configure Access Manager and allowlist your app for RxLogger API access.
+
+Steps to generate the StageNow profile:
+
+
+Launch StageNow on the host computer.
+
+In the StageNow home screen, click Create New Profile from the left menu.
+
+
+Perform the following:
+
+
+Select MX version 14.1 or higher. The MX version on the device should match this version selected. See MX documentation for instructions on how to check the version.
+
+Select Xpert Mode.
+
+Click Create.
+
+
+Enter the desired profile name and click Start.
+
+
+Scroll down and click the plus (+) sign next to AccessMgr. This adds AccessMgr to the Config tab on the right side. Click Add.
+
+
+In the AccessMgr settings, enter/select the following:
+
+
+Service Access Action: Allow Caller to Call Service
+
+Service Identifier: delegation-zebra-com-symbol-secure-rxlogger
+
+Caller Package Name: [Enter your app package name]
+
+Caller Signature: [Browse to your app signature certificate created from Step I above]
+
+
+   
+       
+          
+       
+   
+   
+       After selecting Allow Caller to Call Service, additional fields are made visible (e.g. Service Identifier, etc.).
+   
+
+
+Scroll down and click Continue.
+
+
+Click Complete Profile.
+
+
+The device must be connected to the network during deployment. Use one of the following methods based on the desired tool to deploy your application signature certificate:
+
+
+Barcode Staging: Generate the barcode from the StageNow profile. Open StageNow client on the device and scan the barcode.
+
+Local File Staging: Generate the .BIN file from the StageNow profile (NFC/SD/USB). Deploy the .BIN file to the device. Use StageNow client on the device to browse to the .BIN file and stage the device.
+
+EMM: Export the StageNow XML file from the StageNow installation. Send the XML using either OEMConfig or MX.
+
+
+
+
+III. Obtain App Token
+
+After allowlisting your app, generate an app token to use with RxLogger APIs:
+
+
+Download and import the library BroadcastProtectionLibrary.aar into your application project.
+
+import com.zebra.security.broadcastprotection.BroadCastAuthenticator;
+
+Instantiate BroadCastAuthenticator in your activity, fragment or service.
+
+BroadCastAuthenticator vIntentprotect = new BroadCastAuthenticator();
+
+In the onCreate() method, add the following:
+
+vIntentprotect.initialize(getApplicationContext(), new OnInitCallback() {
+    @Override
+    public void onInitialized() {}
+});
+
+Request the app token using the getToken() method:
+
+String token = vIntentprotect.getToken(&quot;delegation-zebra-com-symbol-secure-rxlogger&quot;);
+
+
+
+
+IV. Broadcast RxLogger Intent
+
+Once the app token is created, RxLogger APIs can be invoked by sending intents with the token included as a parameter. Ensure your app targets Android API 33 or higher:
+
+
+Broadcast the intent shown below, replacing &lt;your-app-token&gt; with your application&#x27;s security token and &lt;rxlogger_intent&gt; with the specific intent to invoke, such as com.symbol.rxlogger.intent.action.ENABLE.
+
+Intent intent = new Intent();
+intent.setAction(&quot;&lt;rxlogger_intent&gt;&quot;);
+intent.putExtra(&quot;token&quot;, &quot;&lt;your-app-token&quot;);
+sendBroadcast(intent);
+
+Terminate the BroadCastAuthenticator in the onDestroy() method:
+
+vIntentprotect.terminate();
+
+
+
+
+Enable RxLogger
+
+This initiates the data collection for all enabled modules. It is equivalent to tapping the Start button in the app.
+
+Standard Method (Secure Mode Off)
+
+Use the following intent:
+
+    intent.setAction(&quot;com.symbol.rxlogger.intent.action.ENABLE&quot;); 
+    intent.setPackage(&quot;com.symbol.dd&quot;); 
+    sendBroadcast(intent);
+
+Secure Methods (Secure Mode On)
+
+Use one of the following authorized methods:
+
+
+Permissions (Recommended) - Use the following intent:
+
+intent.setAction(&quot;com.zebra.rxlogger.intent.action.ENABLE_ZSX&quot;); 
+intent.setPackage(&quot;com.symbol.dd&quot;); 
+sendBroadcast(intent);
+
+Tokenization - This method requires a security token; see III. Obtain App Token. Broadcast the intent shown below, replacing &lt;your-app-token&gt; with your application&#x27;s security token.
+
+intent.setAction(&quot;com.symbol.rxlogger.intent.action.ENABLE&quot;); 
+intent.setPackage(&quot;com.symbol.dd&quot;); 
+intent.putExtra(&quot;token&quot;, &quot;&lt;your-app-token&gt;&quot;); 
+sendBroadcast(intent);
+
+
+
+
+Enable Status
+
+The ENABLE_STATUS intent notifies the third-party app that RxLogger has started capturing logs. This acknowledgment is sent by RxLogger once it transitions to the running state.
+
+Intent:
+
+    com.symbol.rxlogger.intent.action.ENABLE_STATUS
+
+Extras included in the intent:
+
+
+  
+    Extra
+    Values
+  
+  
+    result
+   0-1
+  
+  
+    status
+    successfailure
+  
+  
+    error_code
+    01
+  
+  
+    message
+    Enable RxLogger SuccessIntent failed, RxLogger already in running state
+  
+
+
+
+
+Disable RxLogger
+
+This stops data collection for all modules. It is the equivalent of tapping the Stop button in the app.
+
+Standard Method (Secure Mode Off)
+
+Use the following intent:
+
+    intent.setAction(&quot;com.symbol.rxlogger.intent.action.DISABLE&quot;); 
+    intent.setPackage(&quot;com.symbol.dd&quot;); 
+    sendBroadcast(intent);
+
+Secure Methods (Secure Mode On)
+
+Use one of the following authorized methods:
+
+
+Permissions (Recommended) - Use the following intent:
+
+intent.setAction(&quot;com.zebra.rxlogger.intent.action.DISABLE_ZSX&quot;); 
+intent.setPackage(&quot;com.symbol.dd&quot;); 
+sendBroadcast(intent);
+
+Tokenization - This method requires a security token; see III. Obtain App Token. Broadcast the intent shown below, replacing &lt;your-app-token&gt; with your application&#x27;s security token.
+
+intent.setAction(&quot;com.symbol.rxlogger.intent.action.DISABLE&quot;); 
+intent.setPackage(&quot;com.symbol.dd&quot;); 
+intent.putExtra(&quot;token&quot;, &quot;&lt;your-app-token&gt;&quot;); 
+sendBroadcast(intent);
+
+
+
+
+Disable Status
+
+This informs the third-party app that RxLogger has stopped capturing logs. RxLogger sends this acknowledgment intent once it stops log capture.
+
+Intent:
+
+    com.symbol.rxlogger.intent.action.DISABLE_STATUS
+
+Extras included in the intent:
+
+
+  
+    Extra
+    Values
+  
+  
+    result
+   0-1
+  
+  
+    status
+    successfailure
+  
+  
+    error_code
+    01
+  
+  
+    message
+    Disable RxLogger SuccessIntent failed, RxLogger already in running state
+  
+
+
+
+
+BackupNow
+
+BackupNow initiates the collection of log files compressed into a password-protected .zip file with the naming format SecureBackup-&lt;date&gt;-&lt;HHMMSS&gt;.zip, where &lt;date&gt;-&lt;HHMMSS&gt; represents the timestamp of the backup and stores it in the RxLogger folder.
+
+The password for the .zip file must meet the following requirements:
+
+
+At least 8 characters long
+
+Contain at least one uppercase letter
+
+Contain at least one lowercase letter
+
+Include at least one digit
+
+Include at least one special character, such as @#$%^&amp;*+-=!.
+
+
+To trigger a backup, an intent can be sent from a third-party application using one of the methods below. When accessing the backup .zip file, users are prompted to enter the password initially set for the file.
+
+Standard Method (Secure Mode Off)
+
+Use the following intent:
+
+    intent.setAction(&quot;com.symbol.rxlogger.intent.action.BACKUP_NOW&quot;); 
+    intent.setPackage(&quot;com.symbol.dd&quot;); 
+    sendBroadcast(intent);
+
+Secure Methods (Secure Mode On)
+
+Use one of the following authorized methods, replacing &lt;password&gt; with a string that meets the password requirements stated above:
+
+
+Permissions (Recommended) - Use the following intent,.
+
+intent.setAction(&quot;com.zebra.rxlogger.intent.action.BACKUP_NOW_ZSX&quot;); 
+intent.setPackage(&quot;com.symbol.dd&quot;); 
+intent.putExtra(&quot;password&quot;, &quot;&lt;password&gt;&quot;); 
+sendBroadcast(intent);
+
+Tokenization - This method requires a security token; see III. Obtain App Token. Broadcast the intent shown below, replacing &lt;your-app-token&gt; with your application&#x27;s security token.
+
+intent.setAction(&quot;com.symbol.rxlogger.intent.action.BACKUP_NOW&quot;); 
+intent.setPackage(&quot;com.symbol.dd&quot;); 
+intent.putExtra(&quot;token&quot;, &quot;&lt;your-app-token&gt;&quot;); 
+intent.putExtra(&quot;password&quot;, &quot;&lt;password&gt;&quot;); 
+sendBroadcast(intent);
+
+
+
+
+BackupNow Status
+
+This provides the status of the backup operation. RxLogger sends an acknowledgment intent to convey the backup status.
+
+Intent:
+
+    com.symbol.rxlogger.intent.action.BACKUP_NOW_STATUS
+
+Extras returned from the intent include: result, status, error_code, message &amp; filepath.
+
+
+  
+    error_code
+    result
+    status
+    message
+    filepath
+  
+  
+      0
+    0
+    success
+    Rx Backup Success
+    /&lt;RxLogger_Path&gt;/SecureBackup-&lt;date&gt;-&lt;HHMMSS&gt;.zipThe &lt;RxLogger_Path&gt; placeholder represents one of the following:
+        Internal path: /sdcard/RxLogger
+        External path: /storage/&lt;UUID&gt;/RxLogger (&lt;UUID&gt; is the unique device identifier).
+    
+  
+  
+      1
+    -1
+    failure
+    Intent failed, Backup is currently running
+    N/A
+  
+  
+    2
+    -1
+    failure
+    Invalid/Empty Password
+    N/A
+  
+  
+    3
+    -1
+    failure
+    Failed to get User Handle from dd service
+    N/A
+  
+  
+    4
+    -1
+    failure
+    Failed to copy backup file to U10 storage
+    N/A
+  
+  
+    5
+    -1
+    failure
+    Failed to delete file in U0 path
+    N/A
+  
+  
+    6
+    -1
+    failure
+    Zipping of secure files failed
+    N/A
+  
+
+
+
+
+Deploy Config
+
+To deploy a custom configuration file to RxLogger, an application must first broadcast an intent for deployment. After the broadcast, the file must be copied to the RxLogger storage path within 60 seconds, otherwise the operation may time out and fail. The successful application of the new configuration can be validated in the RxLogger Settings user interface.
+
+Deployment Workflow:
+
+
+Broadcast Deployment Intent - Use one of the following methods:
+
+
+Permissions (Recommended) - This is the simpler method. Use the following intent action:
+
+com.zebra.rxlogger.intent.action.DEPLOY_CONFIG_ZSX
+
+Tokenization - This method requires a security token; see III. Obtain App Token. Broadcast the intent shown below, replacing &lt;your-app-token&gt; with your application&#x27;s security token.
+
+intent.setAction(&quot;com.symbol.rxlogger.intent.action.DEPLOY_CONFIG&quot;); 
+intent.putExtra(&quot;token&quot;, &quot;&lt;your-app-token&gt;&quot;); 
+sendBroadcast(intent);
+
+Deploy the file - Within 60 seconds of the broadcast, copy the configuration file to the appropriate RxLogger storage path.
+
+
+
+
+    Storage Type
+    Android API to Retrieve Path
+    Example Final Path
+
+
+    Internal Storage
+    Environment.getExternalStorageDirectory()
+    /storage/emulated/0/RxLogger
+
+
+    External Storage (e.g., SD Card)
+    ContextCompat.getExternalFilesDirs()
+    /storage/1A2B-3C4D/RxLogger
+
+
+
+Status
+
+This informs the third-party app that RxLogger has deployed the configuration file.
+
+Intent:
+
+    com.symbol.rxlogger.intent.action.DEPLOY_CONFIG_STATUS
+
+Extras returned from the result include the following:
+
+
+  
+    error_code
+    result
+    status
+    message
+  
+  
+      0
+    0
+    success
+    Rx Deploy Config Success
+  
+  
+      1
+    -1
+    failure
+    Deploy Config already received waiting for config file to push
+  
+  
+    2
+    -1
+    failure
+    Deploy Config timeout, no config found after 1 min
+  
+  
+    3
+    -1
+    failure
+    Failed to deploy config file
+  
+
+
+
+
+
+
+Get RxLogger State
+
+Get RxLogger State retrieves the current security state of RxLogger, allowing applications to determine which intent method to use. The returned state is one of the following values:
+
+
+secure-cope - Indicates the device is in Work Profile or Corporate-Owned, Personally-Enabled (COPE) mode. Intents must be sent using either secure method: Permissions or Tokenization.
+
+secure - Indicates the device requires secure communication from all apps. Intents must be sent securely using either the the Permissions or Tokenization method.
+
+legacy - Indicates RxLogger Secure Mode is off, where intent authentication is not required. Use standard intents.
+
+
+To get the RxLogger state, use one of the following methods:
+
+
+Permissions (Recommended) - Use the following intent:
+
+com.zebra.rxlogger.intent.action.GET_RX_STATE_ZSX
+
+Tokenization - This method requires a security token; see III. Obtain App Token. Broadcast the intent shown below, replacing &lt;your-app-token&gt; with your application&#x27;s security token.
+
+intent.setAction(&quot;com.symbol.rxlogger.intent.action.GET_RX_STATE&quot;); 
+intent.putExtra(&quot;token&quot;, &quot;&lt;your-app-token&gt;&quot;); 
+sendBroadcast(intent);
+
+
+Status
+
+This informs the third-party app that RxLogger has retrieved the RxLogger state.
+
+Intent:
+
+    com.symbol.rxlogger.intent.action.GET_RX_STATE_STATUS
+
+Extras returned from the result include the following:
+
+
+  
+    error_code
+    result
+    status
+    message
+  
+  
+      0
+    0
+    success
+    secure-cope
+  
+  
+      0
+    0
+    success
+    secure
+  
+  
+    0
+    0
+    success
+    legacy
+  
+  
+    3
+    -1
+    failure
+    Failed to get RxLogger State
+  
+
+
+
+
+
+
+Delete Logs
+
+Delete Logs removes all logs stored in the RxLogger folder.
+
+To delete logs, send an intent using one of the methods below.
+
+Standard Method (Secure Mode Off)
+
+Use the following intent:
+
+    intent.setAction(&quot;com.symbol.rxlogger.intent.action.DELETE_LOGS &quot;); 
+    intent.setPackage(&quot;com.symbol.dd&quot;); 
+    sendBroadcast(intent);
+
+Secure Methods (Secure Mode On)
+
+To delete logs using a secure method, the intent must include a &lt;logtype&gt; parameter. This determines which files are deleted. If the parameter is omitted or an invalid value is used, the action defaults to deleting all files. The &lt;logtype&gt; parameter aaccepts one of the following values:
+
+
+0 - Deletes all files in the RxLogger folder (logs and backups), except for config.json and RxInfo.txt.
+
+1 - Deletes only the log files, retaining all backup files.
+
+2 - Deletes only the backup files, retaining all log files.
+
+
+Use one of the following authorized methods, including the required &lt;logType&gt;:
+
+
+Permissions (Recommended) - Use the following intent
+
+    
+            intent.setAction(&quot;com.zebra.rxlogger.intent.action.DELETE_LOGS_ZSX&quot;); 
+            intent.setPackage(&quot;com.symbol.dd&quot;);
+            intent.putExtra(&quot;logType&quot;, &quot;&quot;); 
+            sendBroadcast(intent);
+        
+
+
+Tokenization - This method requires a security token; see III. Obtain App Token. Broadcast the intent shown below, replacing &lt;your-app-token&gt; with your application&#x27;s security token.
+
+intent.setAction(&quot;com.symbol.rxlogger.intent.action.DELETE_LOGS&quot;); 
+intent.setPackage(&quot;com.symbol.dd&quot;); 
+intent.putExtra(&quot;token&quot;, &quot;&lt;your-app-token&gt;&quot;);
+intent.putExtra(&quot;logType&quot;, &quot;&lt;logType&gt;&quot;); 
+sendBroadcast(intent);
+
+
+Status
+
+This intent notifies the third-party app that the RxLogger logs have been deleted. RxLogger issues this acknowledgment after completing the deletion process.
+
+Intent:
+
+    com.symbol.rxlogger.intent.action.DELETE_LOGS_STATUS
+
+Extras returned from the result include the following:
+
+
+  
+    error_code
+    result
+    status
+    message
+  
+  
+      0
+    0
+    success
+    N/A
+  
+  
+      1
+    -1
+    failure
+    Intent failed, Delete Logs currently running
+  
+  
+    2
+    -1
+    failure
+    RxLogger running, Cannot delete its log
+  
+
+
+
+
+Bug Report
+
+Generate a Bug Report containing comprehensive diagnostic information to aid in troubleshooting and performance analysis. The report is saved as a .ZIP file in a secure storage location that is not directly accessible. To access it, use BackupNow, which exports the file as a password-protected and accessible version.
+
+To create a bug report, send an intent using one of the methods below.
+
+Standard Method (Secure Mode Off)
+
+Use the following intent:
+
+    intent.setAction(&quot;com.symbol.rxlogger.intent.action.RX_BUGREPORT&quot;); 
+    intent.setPackage(&quot;com.symbol.dd&quot;); 
+    sendBroadcast(intent);
+
+Secure Methods (Secure Mode On)
+
+Use one of the following authorized methods:
+
+
+Permissions (Recommended) - Use the following intent:
+
+intent.setAction(&quot;com.zebra.rxlogger.intent.action.RX_BUGREPORT_ZSX&quot;); 
+intent.setPackage(&quot;com.symbol.dd&quot;); 
+sendBroadcast(intent);
+
+Tokenization - This method requires a security token; see III. Obtain App Token. Broadcast the intent shown below, replacing &lt;your-app-token&gt; with your application&#x27;s security token.
+
+intent.setAction(&quot;com.symbol.rxlogger.intent.action.RX_BUGREPORT&quot;); 
+intent.setPackage(&quot;com.symbol.dd&quot;);
+intent.putExtra(&quot;token&quot;, &quot;&lt;your-app-token&gt;&quot;); 
+sendBroadcast(intent);
+
+
+Status
+
+This intent alerts the third-party app that RxLogger has successfully generated the bug report. RxLogger issues this acknowledgment once the bug report is generated.
+
+Intent:
+
+    com.symbol.rxlogger.intent.action.RX_BUGREPORT_STATUS
+
+Extras returned from the result include the following:
+
+
+  
+    error_code
+    result
+    status
+    message
+  
+  
+      0
+    0
+    success
+    N/A
+  
+  
+      1
+    -1
+    failure
+    Intent failed, Bugreport currently running
+  
+  
+    2
+    -1
+    failure
+    Copy Bugreport file from source to RxLogger folder failed
+  
+  
+    3
+    -1
+    failure
+    Bugreport file not generated at source
+  
+
+
+Reset to Default
+
+Reset to Default restores all RxLogger settings to their default values across all modules.
+
+To perform a reset to default RxLogger settings, send an intent using one of the methods below.
+
+Standard Method (Secure Mode Off)
+
+Use the following intent:
+
+    intent.setAction(&quot;com.symbol.rxlogger.intent.action.RESET_TO_DEFAULT&quot;); 
+    intent.setPackage(&quot;com.symbol.dd&quot;); 
+    sendBroadcast(intent);
+
+Secure Methods (Secure Mode On)
+
+Use one of the following authorized methods:
+
+
+Permissions (Recommended) - Use the following intent:
+
+intent.setAction(&quot;com.zebra.rxlogger.intent.action.RESET_TO_DEFAULT_ZSX&quot;); 
+intent.setPackage(&quot;com.symbol.dd&quot;); 
+sendBroadcast(intent);
+
+Tokenization - This method requires a security token; see III. Obtain App Token. Broadcast the intent shown below, replacing &lt;your-app-token&gt; with your application&#x27;s security token.
+
+intent.setAction(&quot;com.symbol.rxlogger.intent.action.RESET_TO_DEFAULT&quot;); 
+intent.setPackage(&quot;com.symbol.dd&quot;); 
+intent.putExtra(&quot;token&quot;, &quot;&lt;your-app-token&gt;&quot;); 
+sendBroadcast(intent);
+
+
+Status
+
+This intent notifies the third-party app that RxLogger settings have been restored to their default state. RxLogger dispatches this acknowledgment intent upon completing the reset process.
+
+Intent:
+
+    com.symbol.rxlogger.intent.action.RESET_TO_DEFAULT_STATUS
+
+Extras returned from the result include the following:
+
+
+  
+    error_code
+    result
+    status
+    message
+  
+  
+      0
+    0
+    success
+    N/A
+  
+  
+      1
+    -1
+    failure
+    Intent failed, Reset to default currently running
+  
+  
+    2
+    -1
+    failure
+    RxLogger running, cannot do reset to default
+  
+
+
+
+
+Related Links
+
+
+About RxLogger - Provides an overview of RxLogger
+
+Settings - Guides how to configure settings and modules
+
+User Guide - Provides instrucdtions on using RxLogger
+
+                                        
+
+
+                                    
+                                
+
+                            
+                        
+                    
+                
+            
+            
+        
+        
+
+
+			
+				
+					
+						X
+					
+					
+						
+						
+						
+					
+			
+		  
+		 
+    
+       
+            
+                
+                    
+                        ZEBRA and the stylized Zebra head are trademarks of Zebra Technologies Corp., registered in many jurisdictions worldwide. All other trademarks are the property of their respective owners. ©2026 Zebra Technologies Corp. and/or its affiliates.Legal | Terms of Use | Privacy Policy 
+                    
+                    
+                
+            
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+    
+
+
+ 
+
+         
+
+
+Back to Top</pre></body></html>

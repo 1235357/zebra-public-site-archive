@@ -1,0 +1,174 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>getEMDKManager method - EMDKManager object request fails</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>getEMDKManager method - EMDKManager object request fails</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/thread/33347; original snapshot: threads/resume-00169.html; SHA-256: 004b493793c33dc70b8bc10ead12dd7ca8d2321f6e78f07ec3734e098e1067f8</small><pre id="topic">
+
+    
+        getEMDKManager method - EMDKManager object request fails
+
+
+        
+      
+                        
+                    
+            A
+          
+          Anonymous
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            525
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  I&#x27;m following this tutorial on a TC56DJ device and i&#x27;m trying to initialize the scanner. getEMDKManager method always returns &quot;NONE&quot; as statusCode and the app crashes in onOpened (at getInstance).
+I&#x27;ve also tried barcodesample1 as is with the same result
+ 
+Here is my code in onCreate,
+ 
+EMDKResults results = EMDKManager.getEMDKManager(getApplicationContext(), this);
+ 
+if (results.statusCode != EMDKResults.STATUS_CODE.SUCCESS) {
+ 
+  System.out.println(&quot;&quot;EMDKManager object request failed!&quot;+ results.statusCode);  // Prints NONE
+ 
+}
+and here is my onOpened,
+ 
+@Overridepublic void onOpened(EMDKManager emdkManager) {
+ 
+  this.emdkManager = emdkManager;
+  emdkManager.getInstance(EMDKManager.FEATURE_TYPE.BARCODE);
+ 
+}
+The log.
+ 
+A/art: art/runtime/entrypoints/quick/quick_trampoline_entrypoints.cc:923] Check failed: called != nullptr int java.lang.Enum.ordinal() com.symbol.emdk.EMDKManager$FEATURE_TYPE[] virtual 15
+A/art: art/runtime/barrier.cc:90] Check failed: count_ == 0 (count_=-1, 0=0) Attempted to destroy barrier with non zero count
+A/art: art/runtime/runtime.cc:366] Runtime aborting --- recursively, so no thread-specific detail!
+A/art: art/runtime/runtime.cc:366]
+A/libc: Fatal signal 6 (SIGABRT), code -6 in tid 3877 (x.myapplication)
+Any hints?
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Anonymous (not verified)
+          
+          
+            7 years 5 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            That sounds very strange, NONE is the default value for the status so it is almost as if EMDK does not exist on that device.&amp;nbsp; TC56 is obviously the very latest device so EMDK should be pre-installed but you could try updating the device runtime, if you are on Windows it should be on your hard drive at &quot;C:\Program Files (x86)\Symbol EMDK for Android\v6.0\Device Runtime Deployment&quot;
+It is not an issue I have seen before but I do not have a TC56 device to try to reproduce.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

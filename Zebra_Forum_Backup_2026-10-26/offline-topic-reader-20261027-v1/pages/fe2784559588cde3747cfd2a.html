@@ -1,0 +1,147 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>GK420d/GK421d - Asynchronous odometer.total_label_count update issue</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>GK420d/GK421d - Asynchronous odometer.total_label_count update issue</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/gk420dgk421d-asynchronous-odometertotallabelcount-update-issue; original snapshot: threads/00354.html; SHA-256: 002edbdd593de017beccfb345059b0f0a8d0ba3cf4ed65df64ddbf95cc749818</small><pre id="topic">
+
+    
+        GK420d/GK421d - Asynchronous odometer.total_label_count update issue
+
+
+        
+      
+                        
+                    
+            A
+          
+          Alex Tavobal
+          11 months 3 weeks ago
+        
+        
+      
+        
+            
+                  
+            
+            88
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  We are experiencing an issue with label counter verification on Zebra GK420d and GK421d printers when using SGD command &quot;odometer.total_label_count&quot;. PROBLEM:When printing multiple labels (e.g., 10 labels in one ZPL file), the odometer counter does not update immediately after printing completes. EXAMPLE (from production logs):- Sent: 10 labels (ZPL file with 10× ^XA...^XZ sequences)- Before count: 59894- After 8 seconds: 59897 (counter +3 instead of +10)- After ~22 minutes: 59904 (counter +10 - finally correct) QUESTION:1. Is this asynchronous update behavior documented anywhere?2. Is there a way to force immediate odometer update or &quot;flush&quot; the counter?3. Is there an alternative SGD command for real-time label counting?4. What is the recommended method for print job verification in production? CURRENT WORKAROUND:We implemented retrospective verification (checking counter on next print job),but we would prefer immediate verification for quality control. PRINTER DETAILS:- Models: GK420d, GK421d- Connection: TCP/IP RAW (port 9100)- Firmware: [můžete doplnit verzi]- Commands used: ! U1 getvar &quot;odometer.total_label_count&quot;, ~HS Thank you for your assistance.
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              A
+            
+          
+                
+          
+            Amar Byrisetty
+          
+          
+            10 months 4 weeks ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Alex,
+In GK Series, to reduce the CPU loading and to reduce the frequent flash read/write cycles, it is implemented as delayed saving. Hence this behaviour is expected. We do not have option or way to update the odometer immediately. 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

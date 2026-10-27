@@ -1,0 +1,572 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Print a pdf ZQ620</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Print a pdf ZQ620</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/print-pdf-zq620; original snapshot: threads/00765.html; SHA-256: b4f7b8c55b4d79e393e6bf23f8688053af1f3f2c4c7c91aec87311c33bcba0c9</small><pre id="topic">
+
+    
+        Print a pdf ZQ620
+
+
+        
+      
+                        
+                    
+            L
+          
+          Lim Carle
+          4 years 2 months ago
+        
+        
+      
+        
+            
+                  
+            
+            361
+          
+                
+                  
+            
+            7
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello, I have an Android application that has an invoice and delivery note printing functionality.
+Printing is done correctly with the sendFileContents(filePath) function on both ZQ510 and ZQ511 printers which have Link OS 6.3.
+Today I received a new ZQ620 printer and printing does not work on this new printer, it prints me a blank page with the printer configurations.
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      7 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Update the firmware on the ZQ620 to the latest and don&#x27;t forget to enable the PDF Direct on the ZQ620 as well. See this article for the instructions - Announcement | Printers Include Free PDF Direct with Link-OS 6.3.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              L
+            
+          
+                
+          
+            Lim Carle
+          
+          
+            4 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello thank you for your answer, but I still can&#x27;t print.
+The printer has Link OS 6.6 V85.20.24Z and direct pdf is active.
+I also added this line in the procedure which allows to Takes the size of the pdf and the printer&#x27;s maximum size and scales the file down
+else if (printerModel.equals(&quot;iMZ32&quot;)||printerModel.equals(&quot;QLn32&quot;)||printerModel.equals(&quot;ZQ510&quot;)||printerModel.equals(&quot;ZQ511&quot;)||printerModel.equals(&quot;ZQ620&quot; )) {
+scaleFactor = 3.0/fileWidth*100;
+}
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Please also make sure that the device.languages is set to zpl. It has to be in ZPL in order to print PDF on a PDF Direct enabled printer. Use the following SGD to set and verify the setting.
+### Set to zpl
+! U1 setvar &quot;device.languages&quot; &quot;zpl&quot;
+
+### Verify the setting.
+! U1 getvar &quot;device.languages&quot; 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              L
+            
+          
+                
+          
+            Lim Carle
+          
+          
+            4 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello, I force the zpl language at the beginning of my function, here is the procedure I use. Thanks
+public static String sendPrint(String MacAddress, String filePath) {
+	Connection connection = new BluetoothConnection(MacAddress);
+	String sTrace = &quot;&quot;;
+	String pageDescriptionLanguage = &quot;pdf&quot;;
+	String Language = &quot;&quot;;
+	try {
+
+		connection.open();
+		ZebraPrinter printer = ZebraPrinterFactory.getInstance(connection);
+		
+
+		boolean isReady = checkPrinterStatus(printer, filePath);
+		SGD.SET(&quot;device.languages&quot;,&quot;zpl&quot;,connection);
+		
+		SGD.SET(&quot;media.type&quot;, &quot;journal&quot;, connection);
+		
+		Language = SGD.GET(&quot;apl.enable&quot;, connection);
+		if (!Language.contains(pageDescriptionLanguage))
+		{
+			SGD.SET(&quot;apl.enable&quot;, &quot;pdf&quot;, connection);
+		}
+		else  {
+			
+			SGD.SET(&quot;apl.settings&quot;, &quot;dither&quot; ,connection);
+			String scale = scalePrint(connection, 9);
+			SGD.SET(&quot;apl.settings&quot;,scale,connection);
+			
+			SGD.SET(&quot;apl.settings&quot;, &quot;scale-to-fit no-varlen orient = N&quot; ,connection);
+			SGD.SET(&quot;apl.settings&quot;, &quot;scale-to-fit no-varlen no-text-smooth mct = 0x94&quot;,connection);
+			
+			if (isReady) {
+				if (filePath != null) {
+					
+					printer.sendFileContents(filePath);
+				} else {
+					sTrace+= &quot;no_pdf_selected&quot;;
+				}
+			} else {
+				
+				sTrace+= showPrinterStatus(printer);
+			}
+			
+		}
+		
+		
+	} catch (ConnectionException e) {
+		e.printStackTrace();
+		sTrace+= &quot;no_printer&quot;;
+	} catch (ZebraPrinterLanguageUnknownException e) {
+		e.printStackTrace();
+	} finally {
+		try {
+			connection.close();
+		} catch (ConnectionException e) {
+			e.printStackTrace();
+		}
+	}
+	return sTrace;
+} 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The code looks just fine. Not sure why it works on your ZQ510, but not work with your ZQ620. Is the Bluetooth connection okay? If the app connects to the ZQ620, but doesn&#x27;t print PDF, it is most likely related to the settings. You can do an &quot;allcv&quot; output from the working ZQ510 and compare the &quot;allcv&quot; output from the ZQ620 to compare the PDF settings, Bluetooth settings, language setting, etc.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              L
+            
+          
+                
+          
+            Lim Carle
+          
+          
+            4 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            you think it comes from setting the dither scale? how much should it be for the ZQ620 printer?
+What I don&#x27;t understand is that I can&#x27;t print a pdf file either via the &quot;printer setup&quot; application provided by zebra on the ZQ620 while it prints the same file on the ZQ510 printer
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            4 years 2 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Here are the PDF print related configuration.
+ZQ510 Parameters:
+...
+apl.
+apl.enable : none , Choices: pdf,none
+apl.framework_version : 1.3
+apl.version : none
+apl.o.
+apl.o.graphics_byte_width : 72 , Choices: 0-255
+...On the ZQ620, the PDF print is configured as below.
+ZQ620 Parameters:
+...
+apl.
+apl.enable : none , Choices: apl-e,apl-m,apl-s,pdf,apl-d,apl-i,none
+apl.framework_version : 1.4
+apl.version : none
+apl.settings : scale-to-fit no-varlen no-text-smooth mct = 0x94
+apl.o.
+apl.o.graphics_byte_width : 7 , Choices: 0-255
+...
+Because the ZQ510 has old firmware, the apl.framework_version is v1.3. The ZQ620 has the latest firmware, so the apl.framework_version is v1.4. Based on the output above, the PDF print is not enabled on either the ZQ510 or the ZQ620, because the apl.enable is set to none on both. If the PDF print is enabled, it should be shown as:
+apl.enable : pdf , Choices: pdf,none
+Please enable the PDF on both printers first via the following command, and retry.
+! U1 setvar &quot;apl.enable&quot; &quot;pdf&quot;
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

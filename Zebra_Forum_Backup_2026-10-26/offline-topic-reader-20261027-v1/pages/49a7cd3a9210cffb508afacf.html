@@ -1,0 +1,335 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Printer connectivity issues on iOS 14 devices</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Printer connectivity issues on iOS 14 devices</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/forum/25732; original snapshot: threads/resume-00550.html; SHA-256: d31d55fbbee880d8ab2d8e3a83d31f94a50b1bb656d61406312fe9cf77ff0fc8</small><pre id="topic">
+
+    
+        Printer connectivity issues on iOS 14 devices
+
+
+        
+      
+                        
+                    
+            J
+          
+          Jules Robichaud-Gagnon
+          5 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            133
+          
+                
+                  
+            
+            3
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  There is a racing condition between the initialization of MfiBtPrinterConnection and ZebraPrinterFactory&#x27;s getInstance that occurs on recent iOS devices.
+        connection = [[[MfiBtPrinterConnection alloc] initWithSerialNumber:self.connectivityViewController.bluetoothPrinterLabel.text] autorelease];
+        BOOL didOpen = [connection open];
+        if(didOpen == YES) {
+                // A VERY SHORT DELAY IS NEEDED HERE TO WORK
+                NSError *error = nil;
+                id printer = [ZebraPrinterFactory getInstance:connection error:&amp;error];
+        }
+If we wait long enough the error will be &quot;Unable to determine printer language&quot;
+The bug may not occur if there are NSLog or other code causing delays. Sometimes the connection seems to stop and a log like this appear:
+        2020-10-29 15:13:37.733311-0400 ZSDKDeveloperDemos[2200:457464] CoreAccessories accessoryInfo for departure = {
+                ACCExternalAccessoryPPIDKey = &quot;&quot;;
+                ACCExternalAccessoryPrimaryUUID = &quot;232DDB75-5A99-4076-A1B2-0F58538A0884&quot;;
+                ACCExternalAccessoryProtocolDetailsKey =     {
+                        &quot;com.zebra.rawport&quot; =         {
+                                ACCExternalAccessoryMatchAction = 2;
+                                ACCExternalAccessoryProtocolEndpointUUID = &quot;232DDB75-5A99-4076-A1B2-0F58538A0884&quot;;
+                                ACCExternalAccessoryProtocolIndex = 90;
+                                ACCExternalAccessoryProtocolType = 0;
+                                ACCExternalAccessorySessionUsesSocketInterfaceKey = 1;
+                        };
+                };
+                IAPAppAccessoryCapabilitiesKey = 1;
+                IAPAppAccessoryDockTypeKey = &quot;&quot;;
+                IAPAppAccessoryFirmwareRevisionKey = 001;
+                IAPAppAccessoryFirmwareRevisionPendingKey = &quot;&quot;;
+                IAPAppAccessoryHardwareRevisionKey = 001;
+                IAPAppAccessoryMacAddressKey = &quot;48:A4:93:4F:F7:DF&quot;;
+                IAPAppAccessoryManufacturerKey = &quot;Zebra Technologies&quot;;
+                IAPAppAccessoryModelNumberKey = ZQ521;
+                IAPAppAccessoryNameKey = XX_HID_SERIAL_NUMBER;
+                IAPAppAccessoryProtocolsKey =     {
+                        &quot;com.zebra.rawport&quot; = 90;
+                };
+                IAPAppAccessorySerialNumberKey = XX_HID_SERIAL_NUMBER;
+                IAPAppAccessoryTransportType = 2;
+                IAPAppAccessoryVehicleInfoInitialDataKey =     {
+                };
+                IAPAppConnectionIDKey = 49928821;
+        }
+== Workaround for the racing condition ==
+Add a sleep:
+        connection = [[[MfiBtPrinterConnection alloc] initWithSerialNumber:self.connectivityViewController.bluetoothPrinterLabel.text] autorelease];
+        BOOL didOpen = [connection open];
+        if(didOpen == YES) {
+                [NSThread sleepForTimeInterval:0.01f]; // Very short sleep is needed otherwise the printer is not really ready on faster iOS devices
+                NSError *error = nil;
+                id printer = [ZebraPrinterFactory getInstance:connection error:&amp;error];
+        }
+But it does not fix the problem, sometimes it will get stuck in                 id printer = [ZebraPrinterFactory getInstance:connection error:&amp;error];.
+== Printer ==
+- Model: ZQ521
+- Firmware: V91.21.05Z
+- PDFDirect: v206
+- Configurations:
+        - apl.enable &quot;pdf&quot;
+        - ezpl.media_type &quot;continuous&quot;
+== SDK ==
+SDK: iOS v1.5.1049
+== iOS models ==
+- iPhone 12 PRO iOS 14.1
+- iPad Air 4 with iOS 14.1
+== Steps to reproduce ==
+1. Pair printer with iOS device.
+2. Open iOS demo
+3. In StatusViewController.mm comment lines 97 and 99. Ex:
+‎‎        // [self.connectivityViewController setStatus:@&quot;Connected...&quot; withColor:[UIColor greenColor]];
+        // [self.connectivityViewController setStatus:@&quot;Determining Printer Language...&quot; withColor:[UIColor yellowColor]];
+4. Start app using debugger
+5. Press &quot;Start&quot; button
+6. Press &quot;Printer Status&quot;
+7. Select &quot;Bluetooth&quot;
+8. Select printer
+9. Press &quot;Check Status&quot;
+10. Thread get stuck at line &quot;id printer = [ZebraPrinterFactory getInstance:connection error:&amp;error];&quot; for a while and fail after a while
+
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      3 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            5 years 11 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Thanks for sharing the findings. I don&#x27;t have iPhone 12 Pro to reproduce the issue. This might be something related to iPhone 12 Pro specifically, though I am not 100% sure.
+With iPhone 11 Pro &amp;amp; iOS 14.1, we have observed that Bluetooth connection is a little flaky. The Bluetooth connection gets disconnected periodically every 30 to 50 seconds for no reason. Since I don&#x27;t have iPhone 12 Pro,&amp;nbsp;I cannot be 100% sure if the same iOS bug gets&amp;nbsp;carried over from iPhone 11 Pro. You can simply verify this with your iPhone 12 Pro by opening Settings-&amp;gt;Bluetooth and watch if the Bluetooth status radio button along with the entire page blinks roughly every 30 to 50 seconds. When it blinks, it means the iPhone is trying to reestablish the connection, which cause the&amp;nbsp;disconnection briefly. This might be the root cause of the problem you reported above. If this blink&amp;nbsp;happens with iPhone 12 Pro, then we cannot do anything about it on the SDK side.
+Below is the screenshot I had with iPhone 11&amp;nbsp;Pro. I had a number of Bluetooth devices connected. The Bluetooth setting page blinks every 30 or 50 sec.
+&amp;nbsp;
+&amp;nbsp;
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            Jules Robichau…
+          
+          
+            5 years 12 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I found this issue: https://developer.zebra.com/community/home/blog/2017/11/01/ios-11-blueto...
+The proposed solution on the closure of the the connection did not change anything.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              J
+            
+          
+                
+          
+            James Cullis
+          
+          
+            5 years 1 month ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            We have the same issue with both an 11 Pro and 12, but we have an iPhone 8 that works perfectly.
+All three are running 14.8
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

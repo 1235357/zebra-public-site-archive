@@ -1,0 +1,213 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Trouble programmatically getting the firmware and hardware versions (link-os)</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/thread/33291; snapshot threads/resume-00160.html; SHA-256 86809568841e66a0e4d1394959d44905bdd701d8b649e3388f1d869ecae20c42. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Trouble programmatically getting the firmware and hardware versions (link-os)</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            D
+          </div>
+          <div class="forum-topic__author-name">Del Brown</div>
+          <div class="forum-topic__timestamp">5 years 6 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            295
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            1
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>I have an iOS app which implements Link-OS for receipt printing to the iMZ220 bluetooth printer.<br>
+ <br>
+Occasionally a couple of our customers complain about receipts printing multiple copies (not at the end of a roll).  One of the troubleshooting steps that could really help me (I think) is being able to correlate details, like firmware version, and possibly hardware version.<br>
+ <br>
+Looking through Link-OS, I couldn't find a way to get the firmware version and the hardware version.<br>
+ <br>
+I *am* able to provide a way for the user to print a configuration label as follows:<br>
+ <br>
+    var serialNumber: String?<br>
+    if let connectedPrinter = EAAccessoryManager.shared().connectedAccessories.first(where:{$0.protocolStrings.contains(where: {$0 == "com.zebra.rawport"})}){<br>
+      serialNumber = connectedPrinter.serialNumber<br>
+        DispatchQueue.global(qos: .utility).async(execute: {<br>
+          let zebraConnection = MfiBtPrinterConnection(serialNumber: serialNumber)<br>
+          zebraConnection?.open()<br>
+          do{<br>
+            let zebraPrinter = try ZebraPrinterFactory.getInstance(zebraConnection)<br>
+            try zebraPrinter.getToolsUtil().printConfigurationLabel()<br>
+          } catch{<br>
+            DDLogVerbose("Couldn't get the zebraPrinter instance or the printConfigurationLabel failed")<br>
+          }<br>
+          zebraConnection?.close()<br>
+        })<br>
+    }<br>
+ <br>
+which spits out some useful info, but I want to programmatically log those versions, not require the end user to print the configuration label and then somehow send it to me (via email, mms or some such).<br>
+ <br>
+So I resorted to using iOS's EAAccessory.  This does not appear to be accurate for firmareRevision and harwareRevision.<br>
+ <br>
+    let connectedPrinter = EAAccessoryManager.shared().connectedAccessories.first(where:{$0.protocolStrings.contains(where: {$0 == "com.zebra.rawport"})}){<br>
+ <br>
+In Xcode's debug console, I print the connectedPrinter object:<br>
+ <br>
+po connectedPrinter<br>
+ <br>
+ {<br>
+  connected:YES<br>
+  connectionID:19337234<br>
+  name: XXXXJ154601825<br>
+  manufacturer: Zebra Technologies<br>
+  modelNumber: iMZ220<br>
+  serialNumber: XXXXJ154601825<br>
+  firmwareRevision: 0.0.1<br>
+  hardwareRevision: 0.0.1<br>
+  dockType: (null)<br>
+protocols: (<br>
+    "com.zebra.rawport"<br>
+)<br>
+ <br>
+As you can see, some of the info is very helpful to me: name, manufacturer, modelNumber, and serialNumber.  But the firmwareRevison and hardwareRevision are useless.<br>
+ <br>
+The printed configuration label shows me:<br>
+ <br>
+V73.19.13Z </p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      1 Reply
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-40636" class="comment forum-topic__reply js-comment by-anonymous forum-topic__reply--comment by-viewer">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              A
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Anonymous (not verified)</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            7 years 5 months ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>Hi Del,<br>
+This is where the SGD class comes in.&amp;nbsp; It is the primary way to work with settings and printer configuration.&amp;nbsp; The two "settings" you are looking for are "appl.name" for firmware, "device.product_name" for model, and&amp;nbsp; "device.unique_id" for serial number. </p>
+<p>BOOL success = [zebraPrinterConnection open];<br>
+NSError *error = nil;<br>
+id printer = [ZebraPrinterFactory getInstance:zebraPrinterConnection error:&amp;amp;error];<br>
+NSString *firmware = [SGD GET:"appl.name" withPrinterConnection:zebraPrinterConnection error:&amp;amp;error];<br>
+NSLog(@"The Firmware version is: %", firmware);<br>
+[zebraPrinterConnection close];<br>
+if (error != nil || printer == nil || success == NO)<br>
+{<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:"Error" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; [errorAlert show]; [errorAlert release];<br>
+}<br>
+[zebraPrinterConnection release];</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/thread/33291%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/thread/33291%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

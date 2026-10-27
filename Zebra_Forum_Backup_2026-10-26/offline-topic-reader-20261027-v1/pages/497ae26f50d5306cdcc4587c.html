@@ -1,0 +1,153 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>CustomDPC with Zebra OEMConfig Powered by MX</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>CustomDPC with Zebra OEMConfig Powered by MX</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/customdpc-zebra-oemconfig-powered-mx; original snapshot: threads/00068.html; SHA-256: 335ff061076507b6424b0832d2bbf764d1eb0b6cbb2b9aac26aca772a401cabb</small><pre id="topic">
+
+    
+        CustomDPC with Zebra OEMConfig Powered by MX
+
+
+        
+      
+                        
+                    
+            S
+          
+          Safa Orhan
+          1 year 8 months ago
+        
+        
+      
+        
+            
+                  
+            
+            172
+          
+                
+                  
+            
+            1
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello,I&#x27;ve been developing a custom DPC (Device Policy Controller) app which behaves as a device owner and manages the devices (TC52) we use.It&#x27;s been going well so far but I couldn&#x27;t get OEMConfig integration going.Whatever configuration I try to apply over DevicePolicyManager, OEMConfig app installed on the device doesn&#x27;t get it.This is what I do (I tried with many other configs and nothing seems to be working):val bundle = Bundle().apply {    putBundle(&quot;uiConfig&quot;, Bundle().apply {        putBundle(&quot;displayConfig&quot;, Bundle().apply {            putBundle(&quot;displayPowerConfig&quot;, Bundle().apply {                putInt(&quot;displayPowerBrightnessMode&quot;, 2)                putInt(&quot;displayPowerBrightness&quot;, 50)            })        })    })}dpm.setApplicationRestrictions(    dpm.activeAdmins!![0],    &quot;com.zebra.oemconfig.release&quot;,    bundle)This code runs without an exception, logcat doesn&#x27;t show anything interesting, but OEMConfig&#x27;s LAST UPDATE BROADCASE RECEIVED DATE AND TIME and LAST BUNDLE PROCESSED DATE AND TIME remains empty.Also, nothing on the device seems to be changing.When I get back the restrictions I applied, I can see the values I set:val b = dpm.getApplicationRestrictions(dpm.activeAdmins!![0], &quot;com.zebra.oemconfig.release&quot;)I can read the values I have written back.At this point I started thinking that maybe OEMConfig app doesn&#x27;t really support any admin app to issue managed configurations on it but it has some sort of filtering / registering mechanism. Does it only work with EMM&#x27;s DPC apps? If yes, what am I doing wrong?Thanks,Safa---Some more details:TC520KAndroid 13Android Build Number: 13-34-31.00-TG-U00-STD-HEL-04OEMConfig: 13.5.0.3MX: 13.4.0.21Schema I use: https://techdocs.zebra.com/oemconfig/13-5/mc2/I don&#x27;t have the legacy OEMConfig installed. 
+              
+
+                    
+          
+      
+              
+ Screenshot_20250215_000649.png
+
+              
+ Screenshot 2025-02-15 at 00.07.52.png
+
+          
+  
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      1 Reply
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Safa Orhan
+          
+          
+            1 year 8 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            After successfully trying to run managed configurations on other apps, I am getting under the impression that OEMConfig has some kind of whitelist for admin apps. Is this true?If so, what&#x27;s the process of registering a dpc package with OEMConfig?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

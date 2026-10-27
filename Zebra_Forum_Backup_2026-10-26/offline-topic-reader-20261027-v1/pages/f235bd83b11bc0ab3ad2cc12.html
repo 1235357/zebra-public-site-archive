@@ -1,0 +1,363 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Create cordova plugin for TC53E-rfid</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Create cordova plugin for TC53E-rfid</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/create-cordova-plugin-tc53e-rfid; original snapshot: threads/00108.html; SHA-256: b6475ae1d672564d3864af1b70e7d7be9a54a80e7818924201a4e57eed173d69</small><pre id="topic">
+
+    
+        Create cordova plugin for TC53E-rfid
+
+
+        
+      
+                        
+                    
+            C
+          
+          chetan patel
+          1 year 10 months ago
+        
+        
+      
+        
+            
+                  
+            
+            301
+          
+                
+                  
+            
+            5
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  Hello Team i am cordova developer Currently i used TC27 device but now i need to used RFID device for my applicationI selected a new device : TC53E-rfid i need to create cordova plugin for use of RFID function in my application. can you please suggest which SDK and how to write code in my cordova plugin.currently i tried to using Zebra_RFIDAPI3_SDK_2.0.3.162.zip file. please suggest and provide file if possibleThank you
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      5 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              I
+            
+          
+                
+          
+            Ian Hatton
+          
+          
+            1 year 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            One option to simplify this would be to use Datawedge to manage the RFID connection ( https://techdocs.zebra.com/datawedge/14-1/guide/input/rfid/  )  and to send the tag data via the intent output interface. The main limitation of this approach is that it allows tag reading only (no tag write) but it is much simpler to implement than the full RFID3 native API. 
+To test this you will need to create a Datawedge profile , associate it to your Cordova app and configure the TC53e RFID reader and the intent output. You can then add an intent listener to your app using the plugin detailed here (or similar):  https://developer.zebra.com/community/home/blog/2016/08/04/integrating-datawedge-into-your-cordova-application
+When RFID tag data is sent via Datawedge , the extra &quot;com.symbol.datawedge.source&quot; will be &quot;rfid&quot; and the tagid(s) will be in &quot;com.symbol.datawedge.data_string&quot; with a \n delimiter between each tagid.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            chetan patel
+          
+          
+            1 year 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Ian HattonThank you for your response.yes, agree with you but i need both function tag read and write in our cordova application.so, can you please suggestion or make small demo example for read and write tag function if possible.also please suggestion which SDK .aar file use for make cordova plugin because in Zebra_RFIDAPI3_SDK_2.0.3.162.zip file in multiple .aar file exist. https://www.zebra.com/us/en/support-downloads/software/rfid-software/rfid-sdk-for-android.html?downloadId=37746677-7567-4b97-a54b-33dce8bdb7c2 Thank you
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              I
+            
+          
+                
+          
+            Ian Hatton
+          
+          
+            1 year 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            If you need write functionality then you may be able to modify the existing RFID Cordova plugin here https://github.com/GURPREET-GANDHI/cordova-plugin-rfid-connector/tree/master in order to add support for RFD40 and tag writing. Also check the SDK guide here Introduction to API3 sdk - Zebra Technologies Techdocs in order to see which libraries are required as it varies depending upon the RFID device you are targeting.
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            chetan patel
+          
+          
+            1 year 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Ian HattonThank you for your response.can you please give example of write in TID and EPC memory if possible (using 2.0.3.162 sdk version)?https://www.zebra.com/us/en/support-downloads/software/rfid-software/rfid-sdk-for-android.html?downloadId=37746677-7567-4b97-a54b-33dce8bdb7c2because i need to both read and write functionality.thank you
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              C
+            
+          
+                
+          
+            chetan patel
+          
+          
+            1 year 10 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hello Ian HattonI checked base on Chat GPT response, but got error during buildcan you please suggestion also for initialize internal reader?Thank you
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>

@@ -1,0 +1,455 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src &#39;self&#39;; style-src &#39;unsafe-inline&#39;"><title>Problems connecting RFD8500 scanner via Bluetooth for C# WPF app</title><style>body{font-family:system-ui;max-width:100ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere}img{max-width:100%;height:auto}table{border-collapse:collapse}td,th{border:1px solid #aaa;padding:.3rem}</style></head><body><p><a href="../index.html">Back to index</a></p><p>Offline partial copy from saved DOM. Source: https://developer.zebra.com/content/problems-connecting-rfd8500-scanner-bluetooth-c-wpf-app; snapshot threads/00751.html; SHA-256 b3fc8ba5e1fa8cee708c1771aa1db48c225f75a40b40a9d61152a88c26e1f882. Original scripts, forms and external links disabled; missing images identified. No completeness claim.</p><article class="node node--type-forum node--view-mode-full forum-topic-page">
+
+    <header class="forum-topic__header">
+        <h1 class="forum-topic__title"><span class="field field--name-title field--type-string field--label-hidden">Problems connecting RFD8500 scanner via Bluetooth for C# WPF app</span>
+</h1>
+
+        <div class="forum-topic__meta">
+      <div class="forum-topic__author-info">
+                        <div class="forum-topic__author-details">
+                    <div class="forum-topic__author-initial">
+            D
+          </div>
+          <div class="forum-topic__author-name">Dougie Birrell</div>
+          <div class="forum-topic__timestamp">4 years 2 months ago</div>
+        </div>
+        
+      </div>
+        
+            <div class="status-info">
+                  <span class="status-icons pageView">
+            <span class="eye-svg"></span>
+            302
+          </span>
+                
+                  <span class="status-icons commentCount">
+            <span class="comment-svg"></span>
+            6
+          </span>
+                
+              </div>
+
+            <div class="forum-topic__engagement">
+        <div class="forum-topic__votes">
+          
+        </div>
+      </div>
+    </div>
+    <div class="expert_answer">
+                </div>
+  </header>
+
+    <div class="forum-topic__wrapper">
+    
+        <main class="forum-topic__content">
+      
+            <div class="forum-topic__body">
+                  <p>The API documentation (Zebra RFID SDK for Windows Overview) is outdated and sample app crashes, and doesn't compile from the source code (Windows.Desktop.DemoApp.Src_v3.0.23.zip)</p>
+<p>Environment:<br>
+Windows 10 21H2<br>
+Visual Studio Pro 2022<br>
+.NET 4.8 C# WFP project</p>
+<p>When following the SDK instructions: (From Page 9 - "Connecting to an RFID Reader")<br>
+Create an IRemoteReaderManagement interface instance by using the RfidSdk.RemoteReaderManagementServicesFactory class. Create the method as follows:<br>
+IRemoteReaderManagement readerManagement =RfidSdk.RemoteReaderManagementServicesFactory.Create();</p>
+<p>Visual Studio complains that "RemoteReaderManagementServicesFactory" is obselete and to use ReaderManagementServicesFactory instead.<br>
+So, off I got, and find out I need to supply a ReaderCommunicationMode, which I discover from the Sample app code mentioned above to be passed as "ReaderCommunicationMode.Bluetooth" so my code now looks like this...</p>
+<p>IRemoteReaderManagement readerManagement =RfidSdk.RemoteReaderManagementServicesFactory.Create(ReaderCommunicationMode.Bluetooth);</p>
+<p>If I run this, it crashes out with:<br>
+System.ArgumentException: 'Value does not fall within the expected range.' </p>
+<p>Can anyone help me with this, it's so frustrating, have I overlooked something? Is it a dev environment issue? Does anyone have an updated API or sample code that compiles out of the box that reads RFID tags via Bluetooth?. </p>
+<p>My end goal is to create a windows C# .Net 4.x app that reads surrounding RFID tag numbers using a RFD8500 scanner, which is connected to Windows PC via Bluetooth.</p>
+<p>Thanks</p>
+
+              </div>
+
+                    <div class="forum-topic__attachments">
+          
+        </div>
+      
+                    <section class="forum-topic__replies">
+          
+
+<section class="forum-topic__comments-field field field--name-comment field--type-comment field--label-hidden">
+
+    
+      <div class="forum-topic__replies-header">
+    <h2 id="forum-topic-replies-title" class="forum-topic__replies-heading">
+      6 Replies
+    </h2>
+      </div>
+
+        <div class="forum-topic__comments-list">
+        
+
+
+
+<article id="comment-50855" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              P
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Panos Papanikolaou</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>The Windows.Desktop.DemoApp.Src_v3.0.23.zip that I downloaded contains a WinForms project, not a WPF. Did you mean to write WinForms instead of WPF?<br>
+If that's the case, then you are right: the WinForms project doesn't build and it needs some fixing.<br>
+I managed to build it and connect to a RFD8500 via Bluetooth from my laptop (Win 10 Pro, VS 2022) successfully. Unfortunately I can't find a way to upload the zip file to this forum. Can you help me find a way?</p>
+<p>Regarding the System.ArgumentException: 'Value does not fall within the expected range.':<br>
+Have you by any chance forgotten to copy the App.config contained in the project? The RFID library expects some specific appSettings.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-50856" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Dougie Birrell</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>The WPF solution attempt was me following the documentation in the API, as Winforms, seem to be depreciated, the old way of doing things. I get the same issue if I try and use a WinForm solution.</p>
+<p>If I use the API sample code (which uses winforms) and open the .sln solution. I get a lot of errors, lots of missing assembly references. I can get rid of some by adding references, but it's taking a while to go through them.</p>
+<p>For uploading a sample, you'd need to put the zip on a 3rd party site? Sign up for a free mega.nz account (for a permanent place to store it) or you could upload it to a temporary site like WeTransfer which would be there for about 7 days.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div>  
+
+
+
+<article id="comment-50857" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              P
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Panos Papanikolaou</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I've uploaded my source to <span data-original-href="https://github.com/pkpapani/Windows.Desktop.DemoApp.Src_v3.0.23">https://github.com/pkpapani/Windows.Desktop.DemoApp.Src_v3.0.23</span>. Have a look and let me know if this helps.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-50865" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Dougie Birrell</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I can get it to compile and run, and when I do it detects the RFID reader serial and appears in 'Active RFID Readers'. There is still an issue, when I try to connect, I get this error in the 'Log'  </p>
+<p>Events_StatusNotify: Connected.<br>
+Enable notification on device failed. Operation In Progress-Command Not Allowed</p>
+<p>To try and get a bit more error info, as it's happening within IRfidReader's Connect() function<br>
+System.ArgumentException: Enable notification on device failed. Operation In Progress-Command Not Allowed<br>
+   at Symbol.RFID.SDK.Domain.Reader.ZetiRfidReader.PostConnectInitialize()<br>
+   at Symbol.RFID.SDK.Domain.Reader.ZetiRfidReader.Connect()</p>
+<p>Have you any ideas as to why this might be happening, I tried running VS in administrator mode in case it was security related, but got the same error.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-50866" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              P
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Panos Papanikolaou</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>I don't think it has anything to do with the code or the desktop app. I'd suggest you unpair the device, pair again and then open the app.<br>
+Also, whenever you make an action (change a setting, scan a tag etc) I suggest that you wait for the event handler to be triggered and print to log before you make another action. I suspect that the desktop app hangs because it waits for a response from the device. But that's just a "feeling" I have.<br>
+Have you managed to perform any basic ops: scan, read data, write data, locate tag? I have, but generally the desktop app is not very stable; sometimes it seems to leave the device in an "unstable" state and it keeps logging error messages (like the one you described). On the other hand, the Android app seems far more reliable.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+
+<div class="indented">  
+
+
+
+<article id="comment-50878" class="comment forum-topic__reply js-comment forum-topic__reply--comment">
+
+    <div class="forum-topic__reply-card">
+
+        <header class="forum-topic__reply-header">
+      <div class="forum-topic__reply-author-info">
+                    <div class="forum-topic__reply-avatar">
+            <div class="forum-topic__reply-author-initial">
+              D
+            </div>
+          </div>
+                <div class="forum-topic__reply-author-meta">
+          <div class="forum-topic__reply-author-name">
+            <span>Dougie Birrell</span>
+          </div>
+          <div class="forum-topic__reply-timestamp">
+            4 years 1 month ago
+          </div>
+        </div>
+      </div>
+
+           <div class="forum-topic__reply-footer-left">
+                          <div class="forum-topic__reply-approval">
+            
+          </div>
+              </div>
+      <div class="forum-topic__reply-actions-top">
+                  <div class="forum-topic__reply-votes">
+            
+          </div>
+              </div>
+    </header>
+
+        <div class="forum-topic__reply-content js-comment-content">
+      
+            <div class="clearfix text-formatted field field--name-comment-body field--type-text-long field--label-hidden field__item"><p>There is definitely an issue with the Connect() function in the SDK for Windows. I can't do anything because the Connect() function appears to hang, and am unable to read any tags. Unfortunately it does it every time, unless I sit down and workout how to write my own driver (or Zebra update the driver/SDK) I think I'm stuck. I'll ask on the other forum and see if anything comes along.</p>
+<p>I was wanting a Windows version, just so I can easily connect to a MSSQL and "check off" each RFID tag as it would be really easy for me to do so.<br>
+Android isn't really an option as it would involve learning new ways to do what already can and the android device wouldn't be able to be on the same network as the SQL server.   </p>
+<p>Thank you again for your help.</p>
+</div>
+      
+    </div>
+
+        <footer class="forum-topic__reply-footer">
+     <div class="forum-topic__reply-footer-left">
+        </div>
+      <div class="forum-topic__reply-footer-right">
+                          
+              </div>
+    </footer>
+  </div>
+
+</article>
+</div></div></div>
+    </div>
+  
+    <div id="forum-topic-comment-form" class="forum-topic__comment-form-wrapper">
+                <div class="forum-topic__anonymous-prompt">
+        <ul class="forum-topic__anonymous-prompt-list">
+          <li>
+            <span class="forum-topic__link" data-original-href="/user/login?destination=/content/problems-connecting-rfd8500-scanner-bluetooth-c-wpf-app%23comment-form">Log in</span> 
+            or <span class="forum-topic__link" data-original-href="/user/register?destination=/content/problems-connecting-rfd8500-scanner-bluetooth-c-wpf-app%23comment-form">register</span> 
+            to post comments
+          </li>
+        </ul>
+      </div>
+      </div>
+
+</section>
+
+        </section>
+      
+                              
+    </main>
+
+  </div>
+
+</article>
+
+  </body></html>

@@ -1,0 +1,1280 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;"><title>Does ZQ printers series have Store and recover format to print cappabilitites?</title><style>body{font-family:system-ui;max-width:80ch;margin:2rem auto;padding:0 1rem;line-height:1.5}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}small{color:#555}</style></head><body><p><a href="../index.html">Back to index</a></p><h1>Does ZQ printers series have Store and recover format to print cappabilitites?</h1><small>Extracted text from captured DOM; images and original interactive features are omitted. Source: https://developer.zebra.com/content/does-zq-printers-series-have-store-and-recover-format-print-cappabilitites; original snapshot: threads/00592.html; SHA-256: 04d3fac59e89466616f93270a6da449fe797babfc7b5b9f852ec4f2e6cecc4ec</small><pre id="topic">
+
+    
+        Does ZQ printers series have Store and recover format to print cappabilitites?
+
+
+        
+      
+                        
+                    
+            G
+          
+          Gabriel Gallegos
+          3 years 6 months ago
+        
+        
+      
+        
+            
+                  
+            
+            232
+          
+                
+                  
+            
+            19
+          
+                
+              
+
+            
+        
+          
+        
+      
+    
+    
+                  //Expert user has replied.
+                
+  
+
+    
+    
+        
+      
+            
+                  is it possible to store a format and print it with variables using ZQ620 and ZQ220 printer series? I&#x27;m trying to store a format in these printers using ZebraDesigner, but when i use the 
+
+
+! U1 getvar &quot;file.dir&quot;
+
+command, it doesnt appear in the file list on printer....
+              
+
+                    
+          
+        
+      
+                    
+          
+
+
+
+    
+      
+    
+      19 Replies
+    
+      
+
+        
+        
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gabriel Gallegos
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            When Storing the fromat into printer, i receive a message printed on the label that says: File CRC error... :(
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Both ZQ220 &amp; ZQ620 support the template based printing, i.e., storing the label format template on the printer and then recalling the template on the printer with the variables to print the label. Please refer to the Stored Format (^DF command) and the Recall Stored Format (^XF command) for the details. 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gabriel Gallegos
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Steven. Thanks for the reply.
+
+In my case, i&#x27;m trying to use the printers with CPCL language. This because i&#x27;m working with ZQ220 model printers and as i know this models cant use the ZPL languaje. I found this manual (https://supportcommunity.zebra.com/s/article/Store-label-format-and-recall-for-printing-using-ZebraDesigner-3) to store and get formats using ZebraDesigner but, when im using the &quot;Store to Printer&quot; button, the parameter &quot;Store variant&quot; doesn&#x27;t appear on the screen... moreover, on the Page Properties Administrator in Zebra Designer, i can select the printer, but when selecting ZQ220 or ZQ620, the &quot;Use store and recover of printing&quot; appear disabled... this is why i&#x27;m thinking that this option is not available for these printers...
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You are right. The ZQ220 doesn&#x27;t support ZPL. To use the template based printing for both ZQ220 and ZQ620, you would use the CPCL. The DEFINE FORMAT and USE FORMAT on the CPCL user guide have the details on how to create a label template and store it on the printer (! DF SHELF.FMT), and how to call out the template (! UF SHELF.FMT) with variable values.
+When using the ZebraDesigner, the default name for the template is LABEL.FMT. When choosing the ZQ220 in the ZebraDesigner, it automatically recognize the ZQ220 is a CPCL printer. When choosing the ZQ620, the ZebraDesigner may recognize it as a ZPL printer by default (unless the device.pnp_option is set to CPCL on the ZQ620 with the SGD: ! U1 setvar &quot;device.pnp_option&quot; &quot;cpcl&quot;).
+The template file can be stored directly to the ZQ220 printer from the ZebraDesigner by using the File-&gt;Store option. It can also be saved into a local file on the PC if the &quot;Print to file&quot; option is check-marked. The ! DF LABEL.FMT is the first line in the locally saved file. The local file can then be sent to the printer, which results in the LABEL.FMT, i.e., the template to be stored on the printer.
+To recall the template file on the printer in CPCL, you will need to create a file manually by following the format defined in the USE FORMAT.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gabriel Gallegos
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            So, in ZQ220 we cannot use Zebra designer to define the format?...
+
+When you says: &quot;To recall the template file on the printer in CPCL, you will need to create a file manually by following the format defined in the USE FORMAT.&quot; you&#x27;re meaning that when i need to print a label with a definaed format, i need to send a file with it&#x27;s value as shown in &quot;USE FORMAT&quot; section?... is a simple text file? any particulary extension?
+
+Is there any example of this?
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            You can create a label template in CPCL for the ZQ220. As mentioned in the early reply, you need to use the File-&gt;Store option in the ZebraDesigner to generate the template file. Once the file is stored on the ZQ220 (by default, the filename of the template is LABEL.FMT). See the examples copied from the  DEFINE FORMAT and USE FORMAT after renaming the SHELF.FMT to LABEL.FMT.
+#### Example of the stored template file in CPCL
+! DF LABEL.FMT
+! 0 200 200 210 1
+CENTER
+TEXT 4 3 0 15 \\
+TEXT 4 0 0 95 \\
+BARCODE UPCA 1 1 4 \\
+TEXT 7 0 0 185 \\
+FORM
+PRINT### Example of the recall format in CPCL
+! UF LABEL.FMT
+$22.99
+SWEATSHIRT
+40123456784
+40123456784 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gabriel Gallegos
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Steven... i&#x27;m very thankfull for you patience.
+
+I have done connectes my ZQ220 printer so i proceed to save my format.
+
+This is my Label format. As you can see, i named it as &quot;Inventario&quot; but, according to your explanation, it would be renamed as &quot;Label.fmt&quot; in my printer memory... isnt it??
+
+
+
+This is my selected printer... is the same that i have connected to my PC. Here is where i say that there&#x27;s &quot;Use store/recall printing mode&quot; values disabled...
+
+
+
+Saving my format into a printer memory
+
+
+
+but, when i use the (! U1 getvar &quot;file.dir&quot;) command in the &quot;Zebra Setup Utilities&quot; application, i only get this lines from the printer... any file has the &quot;FMT&quot; extension...
+
+
+
+Do you think i have done anything wrong?
+
+ 
+
+Regards!
+
+ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gabriel Gallegos
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Ouch... i can&#x27;t post images :(
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gabriel Gallegos
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            I just save the ZebraDesigner output file into my PC, and it has been saved with a &quot;PRN&quot; extensión....
+
+if i open it, it&#x27;s shown as this: (Do you thinks is the expected result?)
+
+! CISDFCRC16
+F258
+INVENTAR.FMT
+00003F83
+0035
+! 0 200 200 1015 1
+PW 574
+TONE 0
+SPEED 4
+ON-FEED IGNORE
+NO-PACE
+GAP-SENSE
+00003C39
+D103
+PCX 8 98
+    -€K K    ÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿ F  x                                                         0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃÿÿÇÿÿÿÇÿ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏÿÿÇÿÿÿÇÿ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏÿÿÇÿûÿÁÏÃÿÁþÅÿ?úÿÁÏÃÿÁüÄÿÁÏ?úÿÁÏÃÿÁùÁçÄÿÁÏ?éÿ9Áç‡ÁÌd&lt;? ÈÿÁÏÃÿÁùÅÿÁÏ?éÿ9ÁçÁÌ0 ÇÿÁùÁÈÁü~Áù1ÁùÂÿÁÏêÿ9Áç3ÁÏ1™Žg ÇÿÁùÁÀx&lt;ÁøÁùÃÿêÿÁùÁæyÁÏ3ÁÌÁóÁüÇÿÁùÁÆsÁøÁÇ˜ÁùÃÿ?éÿÁùÁæyÁÏ3ÁÌÁóÁüÈÿÁÏ?˜ÁãÁùÁçœyÂÿÁÏ?éÿÁùÁæyÁÏ0?ÁÌÁóÁüÈÿÁÏ?™ÁóÁùÁçœyÂÿÁÏ?éÿÁùÁæyÁÏ0ÁÿÁÌÁóÁüÈÿÁÏ0ÁÿÁùÁçž9ÂÿÁÏ?éÿÁùÁæyÁÏ3ÁýÁÌÁóÁüÈÿÁÏ0ÁùÁçŸÂÿÁÏêÿ8ÁÇ3ÁÏ3™ŽgÁüÈÿÁÏ3œÁùÁçœÃÿêÿ8ÁÌÁüÇÿÁùÁÆ3ŸÁøÁÇ˜Ãÿ?éÿ&lt;&#x27;‡ÁÌ&lt;?ÁüÇÿÁùÁÀx?ÁãÁø    ÁùÂÿÁÏ?íÿ?ÃÿÁüÇÿÁùÁÈÁüyÁóÁù    ÁùÂÿÁÏ?íÿ?ÃÿÁüÊÿÁøÁóÂÿ™ÁùÂÿÁÏ?ìÿÁÏ?ÃÿÁüÊÿÁüÂÿ˜ÂÿÁÏíÿÁÏÃÿÁüÊÿÁüÂÿœÃÿýÿÁþÂÿ¾Ãÿ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏÿÿÇÿÿÿÇÿ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏÿÿÇÿÿÿÇÿ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏÿÿÇÿÇÿÁÇõÿŸÇÿ?Æÿ‡õÿŸÆÿÁÏ?ÆÿŸõÿŸ?ÆÿÁÏ?ÆÿÁýôÿž?ÆÿÁÏ?ÅÿŸ8ðÿÁùÁñÁøž?ŸÁþ&lt;ÁóŸÁÿÁÏÆÿŸðÿÁùÁàÁð?ŸÁþ&lt;ÁóŸÂÿÆÿžœðÿÁùÁÌcŸÁþ&lt;ÁóŸÂÿ?ÅÿÁþOœ1ñÿÁþgœÂŸÁþ&lt;ÁóŸÁÿÁÏ?ÅÿÁþOÂ˜ñÿÁþgœÂŸÁüœÁóŸÁÿÁÏ?ÅÿÁþO™ÁÜñÿÁÀgœÂŸÁüœÁóŸÁÿÁÏ?ÅÿÁüÁç™ÁüñÿÁÀg™ÁÏŸÁüœÁóŸÁÿÁÏÆÿÁüÁç™ÁüñÿÁÎg™ÁÏŸÁùÁÌÁóŸÂÿÆÿœÁç™ÁüðÿÁùÁÎcÁÏŸÁùÁÌcŸÂÿ?Åÿ™Áò    ÁüðÿÁùÁàÁðÁçŸÁùÁÌŸÁÿÁÏ?Åÿ™ÁòÁøðÿÁùÁñÁø“ÁçŸÁùÁÎŸÁÿÁÏ?ÇÿœÁñõÿŸÃÿŸÁÿÁÏ?ÇÿœôÿÁøÃÿŸÁÿÁÏÈÿžôÿÁøÃÿŸÂÿÈÿ¿ôÿÁøÃÿŸÂÿ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏÿÿÇÿÿÿÇÿ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏÿÿÇÿÿÿÇÿ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏÿÿÇÿÿÿÇÿ?ÿÿÅÿÁÏ?þÿ&lt;Áç&lt;xÁóÁÿÁÏ?þÿ&lt;ÁçÂ8sÁÿÁÏ?þÿ&lt;Áç3sÁÿÁÏÿÿÁüÁç?žsÂÿÿÿÁüÁç?žsÂÿ?þÿÁüÁç0sÁÿÁÏ?þÿÁüÁç0sÁÿÁÏ?þÿÁüÁç3žsÁÿÁÏ?þÿ&lt;ÁÆ3žsÁÿÁÏÿÿ&lt; Â83Âÿÿÿ&gt;1&lt;x3Âÿ?ÿÿÂÿÁþsÁÿÁÏ?ÿÿÂÿÁþsÁÿÁÏ?ÿÿÂÿÁþsÁÿÁÏ?ÿÿÂÿÁþÁóÁÿÁÏÿÿÇÿÿÿÇÿ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏ?ÿÿÅÿÁÏÿÿÇÿÿÿÇÿ?ÿÿÅÿÁÏa†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†ÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿ†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a‡†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a‡ÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿûÿÁçÄÿÅÿŸúÿÁçÃÿÁþÄÿÁçŸúÿÁçÃÿÁüÁóÄÿÁçŸéÿœÁóÁÃÁæ2‡€ÇÿÁçÃÿÁüÅÿÁçŸéÿœÁóÁæ€ÆÿÁüÁä~?ÁüÁüÂÿÁçêÿœÁó™Áç˜ÁÌÁÇ3€ÆÿÁüÁà&lt;Áü ÁüÃÿêÿÁüÁó&lt;Áç™ÁÎÁæyÁþÆÿÁüÁã9ŒÁücÁÌ|ÃÿŸéÿÁüÁó&lt;Áç™ÁæyÁþÇÿÁçŸÁÌqÁüÁóÁÎ&lt;ÂÿÁçŸéÿÁüÁó&lt;Áç˜ÁæyÁþÇÿÁçŸÁÌÁùÁüÁóÁÎ&lt;ÂÿÁçŸéÿÁüÁó&lt;Áç˜ÁæyÁþÇÿÁç˜ ÁüÁóÁÏÂÿÁçŸéÿÁüÁó&lt;Áç™ÁþÁæyÁþÇÿÁç˜ ÁüÁóÁÏ€ÂÿÁçêÿœc™Áç™ÁÌÁÇ3ÁþÇÿÁç™ÁÎÁüÁóÁÎ ÃÿêÿœÁæÁþÆÿÁüÁãÁÏƒÁücÁÌ ÃÿŸéÿžÁÃÁæ ‡ÁþÆÿÁüÁà&lt;ÁñÁüÁüÂÿÁçŸíÿŸÃÿÁþÆÿÁüÁä~&lt;ÁùÁüÁüÂÿÁçŸíÿŸÃÿÁþÉÿÁüyÂÿÁÌÁüÂÿÁçŸìÿÁçŸÃÿÁþÉÿÁþÂÿÁÌ ÂÿÁçíÿÁç¿ÃÿÁþÉÿÁþÂÿÁÎ ÃÿþÿÂÿÁß ÃÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÇÿÁãõÿÁÏÁÇÇÿŸÆÿÁÃõÿÁÏ‡ÆÿÁçŸÆÿÁÏõÿÁÏŸÆÿÁçŸÆÿÁþôÿÁÏÆÿÁçŸÅÿÁÏðÿÁüÁøÁüOÁÏÁÿyÁÏÁÿÁçÆÿÁÏðÿÁüÁðxÁÏÁÿyÁÏÂÿÆÿÁÏÁÎ ðÿÁüÁæ1ŽÁÏÁÿyÁÏÂÿŸÆÿ&#x27;ÁÎòÿ3ÁÎOÁÏÁÿyÁÏÁÿÁçŸÆÿ&#x27;ÁÌLñÿ3ÁÎOÁÏÁþNyÁÏÁÿÁçŸÆÿ&#x27;ÁÌÁîðÿÁà3ÁÎOÁÏÁþNyÁÏÁÿÁçŸÅÿÁþsÁÌÁþðÿÁà3ÁÌÁçÁÏÁþNyÁÏÁÿÁçÆÿÁþsÁÌÁþðÿÁç3ÁÌÁçÁÏÁüÁæyÁÏÂÿÆÿÁÎsÁÌÁþïÿÁüÁç1ŒÁçÁÏÁüÁæ1ÁÏÂÿŸÅÿÁÌÁùÁþïÿÁüÁðx    ÁóÁÏÁüÁæÁÏÁÿÁçŸÅÿÁÌÁù|ïÿÁüÁøÁüIÁóÁÏÁüÁç    ÁÏÁÿÁçŸÇÿÁÎxõÿÁÏÃÿÁÏÁÿÁçŸÇÿÁÎ ôÿÁü ÃÿÁÏÁÿÁçÈÿÁÏôÿÁü ÃÿÁÏÂÿÈÿÁßƒôÿÁü ÃÿÁÏÂÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸþÿžsž&lt;yÁÿÁçŸþÿžsœ9ÁÿÁçŸþÿžs™9ÁÿÁçÿÿÁþsŸÁÏ9ÂÿÿÿÁþsŸÁÏ9ÂÿŸþÿÁþs˜9ÁÿÁçŸþÿÁþs˜9ÁÿÁçŸþÿÁþs™ÁÏ9ÁÿÁçŸþÿžcÁÏ9ÁÿÁçÿÿž ÂÂÿÿÿŸž&lt;ÂÿŸÿÿÃÿ9ÁÿÁçŸÿÿÃÿ9ÁÿÁçŸÿÿÃÿ9ÁÿÁçŸÿÿÃÿyÁÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŒ0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃŒ0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿ†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a‡†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a‡ÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿûÿÁçÄÿÅÿŸúÿÁçÃÿÁþÄÿÁçŸúÿÁçÃÿÁüÁóÄÿÁçŸéÿœÁóÁÃÁæ2‡€ÇÿÁçÃÿÁüÅÿÁçŸéÿœÁóÁæ€ÆÿÁüÁä~?ÁüÁüÂÿÁçêÿœÁó™Áç˜ÁÌÁÇ3€ÆÿÁüÁà&lt;Áü ÁüÃÿêÿÁüÁó&lt;Áç™ÁÎÁæyÁþÆÿÁüÁã9ŒÁücÁÌ|ÃÿŸéÿÁüÁó&lt;Áç™ÁæyÁþÇÿÁçŸÁÌqÁüÁóÁÎ&lt;ÂÿÁçŸéÿÁüÁó&lt;Áç˜ÁæyÁþÇÿÁçŸÁÌÁùÁüÁóÁÎ&lt;ÂÿÁçŸéÿÁüÁó&lt;Áç˜ÁæyÁþÇÿÁç˜ ÁüÁóÁÏÂÿÁçŸéÿÁüÁó&lt;Áç™ÁþÁæyÁþÇÿÁç˜ ÁüÁóÁÏ€ÂÿÁçêÿœc™Áç™ÁÌÁÇ3ÁþÇÿÁç™ÁÎÁüÁóÁÎ ÃÿêÿœÁæÁþÆÿÁüÁãÁÏƒÁücÁÌ ÃÿŸéÿžÁÃÁæ ‡ÁþÆÿÁüÁà&lt;ÁñÁüÁüÂÿÁçŸíÿŸÃÿÁþÆÿÁüÁä~&lt;ÁùÁüÁüÂÿÁçŸíÿŸÃÿÁþÉÿÁüyÂÿÁÌÁüÂÿÁçŸìÿÁçŸÃÿÁþÉÿÁþÂÿÁÌ ÂÿÁçíÿÁç¿ÃÿÁþÉÿÁþÂÿÁÎ ÃÿþÿÂÿÁß ÃÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÇÿÁãõÿÁÏÁÇÇÿŸÆÿÁÃõÿÁÏ‡ÆÿÁçŸÆÿÁÏõÿÁÏŸÆÿÁçŸÆÿÁþôÿÁÏÆÿÁçŸÅÿÁÏðÿÁüÁøÁüOÁÏÁÿyÁÏÁÿÁçÆÿÁÏðÿÁüÁðxÁÏÁÿyÁÏÂÿÆÿÁÏÁÎ ðÿÁüÁæ1ŽÁÏÁÿyÁÏÂÿŸÆÿ&#x27;ÁÎòÿ3ÁÎOÁÏÁÿyÁÏÁÿÁçŸÆÿ&#x27;ÁÌLñÿ3ÁÎOÁÏÁþNyÁÏÁÿÁçŸÆÿ&#x27;ÁÌÁîðÿÁà3ÁÎOÁÏÁþNyÁÏÁÿÁçŸÅÿÁþsÁÌÁþðÿÁà3ÁÌÁçÁÏÁþNyÁÏÁÿÁçÆÿÁþsÁÌÁþðÿÁç3ÁÌÁçÁÏÁüÁæyÁÏÂÿÆÿÁÎsÁÌÁþïÿÁüÁç1ŒÁçÁÏÁüÁæ1ÁÏÂÿŸÅÿÁÌÁùÁþïÿÁüÁðx    ÁóÁÏÁüÁæÁÏÁÿÁçŸÅÿÁÌÁù|ïÿÁüÁøÁüIÁóÁÏÁüÁç    ÁÏÁÿÁçŸÇÿÁÎxõÿÁÏÃÿÁÏÁÿÁçŸÇÿÁÎ ôÿÁü ÃÿÁÏÁÿÁçÈÿÁÏôÿÁü ÃÿÁÏÂÿÈÿÁßƒôÿÁü ÃÿÁÏÂÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸþÿžsž&lt;yÁÿÁçŸþÿžsœ9ÁÿÁçŸþÿžs™9ÁÿÁçŸþÿÁþsŸÁÏ9ÁÿÁçÿÿÁþsŸÁÏ9ÂÿÿÿÁþs˜9ÂÿŸþÿÁþs˜9ÁÿÁçŸþÿÁþs™ÁÏ9ÁÿÁçŸþÿžcÁÏ9ÁÿÁçŸþÿž ÂÁÿÁçÿÿŸž&lt;ÂÿÿÿÄÿ9ÂÿŸÿÿÃÿ9ÁÿÁçŸÿÿÃÿ9ÁÿÁçŸÿÿÃÿyÁÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŒ0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃŒ0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿ†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a‡†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a‡ÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿûÿÁçÄÿÅÿŸúÿÁçÃÿÁþÄÿÁçŸúÿÁçÃÿÁüÁóÄÿÁçŸéÿœÁóÁÃÁæ2‡€ÇÿÁçÃÿÁüÅÿÁçŸéÿœÁóÁæ€ÆÿÁüÁä~?ÁüÁüÂÿÁçêÿœÁó™Áç˜ÁÌÁÇ3€ÆÿÁüÁà&lt;Áü ÁüÃÿêÿÁüÁó&lt;Áç™ÁÎÁæyÁþÆÿÁüÁã9ŒÁücÁÌ|ÃÿŸéÿÁüÁó&lt;Áç™ÁæyÁþÇÿÁçŸÁÌqÁüÁóÁÎ&lt;ÂÿÁçŸéÿÁüÁó&lt;Áç˜ÁæyÁþÇÿÁçŸÁÌÁùÁüÁóÁÎ&lt;ÂÿÁçŸéÿÁüÁó&lt;Áç˜ÁæyÁþÇÿÁç˜ ÁüÁóÁÏÂÿÁçŸéÿÁüÁó&lt;Áç™ÁþÁæyÁþÇÿÁç˜ ÁüÁóÁÏ€ÂÿÁçêÿœc™Áç™ÁÌÁÇ3ÁþÇÿÁç™ÁÎÁüÁóÁÎ ÃÿêÿœÁæÁþÆÿÁüÁãÁÏƒÁücÁÌ ÃÿŸéÿžÁÃÁæ ‡ÁþÆÿÁüÁà&lt;ÁñÁüÁüÂÿÁçŸíÿŸÃÿÁþÆÿÁüÁä~&lt;ÁùÁüÁüÂÿÁçŸíÿŸÃÿÁþÉÿÁüyÂÿÁÌÁüÂÿÁçŸìÿÁçŸÃÿÁþÉÿÁþÂÿÁÌ ÂÿÁçíÿÁç¿ÃÿÁþÉÿÁþÂÿÁÎ ÃÿþÿÂÿÁß ÃÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÇÿÁãõÿÁÏÁÇÇÿŸÆÿÁÃõÿÁÏ‡ÆÿÁçŸÆÿÁÏõÿÁÏŸÆÿÁçŸÆÿÁþôÿÁÏÆÿÁçŸÅÿÁÏðÿÁüÁøÁüOÁÏÁÿyÁÏÁÿÁçÆÿÁÏðÿÁüÁðxÁÏÁÿyÁÏÂÿÆÿÁÏÁÎ ðÿÁüÁæ1ŽÁÏÁÿyÁÏÂÿŸÆÿ&#x27;ÁÎòÿ3ÁÎOÁÏÁÿyÁÏÁÿÁçŸÆÿ&#x27;ÁÌLñÿ3ÁÎOÁÏÁþNyÁÏÁÿÁçŸÆÿ&#x27;ÁÌÁîðÿÁà3ÁÎOÁÏÁþNyÁÏÁÿÁçŸÅÿÁþsÁÌÁþðÿÁà3ÁÌÁçÁÏÁþNyÁÏÁÿÁçÆÿÁþsÁÌÁþðÿÁç3ÁÌÁçÁÏÁüÁæyÁÏÂÿÆÿÁÎsÁÌÁþïÿÁüÁç1ŒÁçÁÏÁüÁæ1ÁÏÂÿŸÅÿÁÌÁùÁþïÿÁüÁðx    ÁóÁÏÁüÁæÁÏÁÿÁçŸÅÿÁÌÁù|ïÿÁüÁøÁüIÁóÁÏÁüÁç    ÁÏÁÿÁçŸÇÿÁÎxõÿÁÏÃÿÁÏÁÿÁçŸÇÿÁÎ ôÿÁü ÃÿÁÏÁÿÁçÈÿÁÏôÿÁü ÃÿÁÏÂÿÈÿÁßƒôÿÁü ÃÿÁÏÂÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸþÿžsž&lt;yÁÿÁçŸþÿžsœ9ÁÿÁçŸþÿžs™9ÁÿÁçÿÿÁþsŸÁÏ9ÂÿÿÿÁþsŸÁÏ9ÂÿŸþÿÁþs˜9ÁÿÁçŸþÿÁþs˜9ÁÿÁçŸþÿÁþs™ÁÏ9ÁÿÁçŸþÿžcÁÏ9ÁÿÁçÿÿž ÂÂÿÿÿŸž&lt;ÂÿŸÿÿÃÿ9ÁÿÁçŸÿÿÃÿ9ÁÿÁçŸÿÿÃÿ9ÁÿÁçŸÿÿÃÿyÁÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŒ0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃŒ0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿ†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a‡†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a‡ÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿûÿÁçÄÿÅÿŸúÿÁçÃÿÁþÄÿÁçŸúÿÁçÃÿÁüÁóÄÿÁçŸéÿœÁóÁÃÁæ2‡€ÇÿÁçÃÿÁüÅÿÁçŸéÿœÁóÁæ€ÆÿÁüÁä~?ÁüÁüÂÿÁçêÿœÁó™Áç˜ÁÌÁÇ3€ÆÿÁüÁà&lt;Áü ÁüÃÿêÿÁüÁó&lt;Áç™ÁÎÁæyÁþÆÿÁüÁã9ŒÁücÁÌ|ÃÿŸéÿÁüÁó&lt;Áç™ÁæyÁþÇÿÁçŸÁÌqÁüÁóÁÎ&lt;ÂÿÁçŸéÿÁüÁó&lt;Áç˜ÁæyÁþÇÿÁçŸÁÌÁùÁüÁóÁÎ&lt;ÂÿÁçŸéÿÁüÁó&lt;Áç˜ÁæyÁþÇÿÁç˜ ÁüÁóÁÏÂÿÁçŸéÿÁüÁó&lt;Áç™ÁþÁæyÁþÇÿÁç˜ ÁüÁóÁÏ€ÂÿÁçêÿœc™Áç™ÁÌÁÇ3ÁþÇÿÁç™ÁÎÁüÁóÁÎ ÃÿêÿœÁæÁþÆÿÁüÁãÁÏƒÁücÁÌ ÃÿŸéÿžÁÃÁæ ‡ÁþÆÿÁüÁà&lt;ÁñÁüÁüÂÿÁçŸíÿŸÃÿÁþÆÿÁüÁä~&lt;ÁùÁüÁüÂÿÁçŸíÿŸÃÿÁþÉÿÁüyÂÿÁÌÁüÂÿÁçŸìÿÁçŸÃÿÁþÉÿÁþÂÿÁÌ ÂÿÁçíÿÁç¿ÃÿÁþÉÿÁþÂÿÁÎ ÃÿþÿÂÿÁß ÃÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÇÿÁãõÿÁÏÁÇÇÿŸÆÿÁÃõÿÁÏ‡ÆÿÁçŸÆÿÁÏõÿÁÏŸÆÿÁçŸÆÿÁþôÿÁÏÆÿÁçŸÅÿÁÏðÿÁüÁøÁüOÁÏÁÿyÁÏÁÿÁçÆÿÁÏðÿÁüÁðxÁÏÁÿyÁÏÂÿÆÿÁÏÁÎ ðÿÁüÁæ1ŽÁÏÁÿyÁÏÂÿŸÆÿ&#x27;ÁÎòÿ3ÁÎOÁÏÁÿyÁÏÁÿÁçŸÆÿ&#x27;ÁÌLñÿ3ÁÎOÁÏÁþNyÁÏÁÿÁçŸÆÿ&#x27;ÁÌÁîðÿÁà3ÁÎOÁÏÁþNyÁÏÁÿÁçŸÅÿÁþsÁÌÁþðÿÁà3ÁÌÁçÁÏÁþNyÁÏÁÿÁçÆÿÁþsÁÌÁþðÿÁç3ÁÌÁçÁÏÁüÁæyÁÏÂÿÆÿÁÎsÁÌÁþïÿÁüÁç1ŒÁçÁÏÁüÁæ1ÁÏÂÿŸÅÿÁÌÁùÁþïÿÁüÁðx    ÁóÁÏÁüÁæÁÏÁÿÁçŸÅÿÁÌÁù|ïÿÁüÁøÁüIÁóÁÏÁüÁç    ÁÏÁÿÁçŸÇÿÁÎxõÿÁÏÃÿÁÏÁÿÁçŸÇÿÁÎ ôÿÁü ÃÿÁÏÁÿÁçÈÿÁÏôÿÁü ÃÿÁÏÂÿÈÿÁßƒôÿÁü ÃÿÁÏÂÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸþÿžsž&lt;yÁÿÁçŸþÿžsœ9ÁÿÁçŸþÿžs™9ÁÿÁçŸþÿÁþsŸÁÏ9ÁÿÁçÿÿÁþsŸÁÏ9ÂÿÿÿÁþs˜9ÂÿŸþÿÁþs˜9ÁÿÁçŸþÿÁþs™ÁÏ9ÁÿÁçŸþÿžcÁÏ9ÁÿÁçŸþÿž ÂÁÿÁçÿÿŸž&lt;ÂÿÿÿÄÿ9ÂÿŸÿÿÃÿ9ÁÿÁçŸÿÿÃÿ9ÁÿÁçŸÿÿÃÿyÁÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŒ0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃŒ0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿ†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a‡†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a†a‡ÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿûÿÁçÄÿÅÿŸúÿÁçÃÿÁþÄÿÁçŸúÿÁçÃÿÁüÁóÄÿÁçŸéÿœÁóÁÃÁæ2‡€ÇÿÁçÃÿÁüÅÿÁçŸéÿœÁóÁæ€ÆÿÁüÁä~?ÁüÁüÂÿÁçêÿœÁó™Áç˜ÁÌÁÇ3€ÆÿÁüÁà&lt;Áü ÁüÃÿêÿÁüÁó&lt;Áç™ÁÎÁæyÁþÆÿÁüÁã9ŒÁücÁÌ|ÃÿŸéÿÁüÁó&lt;Áç™ÁæyÁþÇÿÁçŸÁÌqÁüÁóÁÎ&lt;ÂÿÁçŸéÿÁüÁó&lt;Áç˜ÁæyÁþÇÿÁçŸÁÌÁùÁüÁóÁÎ&lt;ÂÿÁçŸéÿÁüÁó&lt;Áç˜ÁæyÁþÇÿÁç˜ ÁüÁóÁÏÂÿÁçŸéÿÁüÁó&lt;Áç™ÁþÁæyÁþÇÿÁç˜ ÁüÁóÁÏ€ÂÿÁçêÿœc™Áç™ÁÌÁÇ3ÁþÇÿÁç™ÁÎÁüÁóÁÎ ÃÿêÿœÁæÁþÆÿÁüÁãÁÏƒÁücÁÌ ÃÿŸéÿžÁÃÁæ ‡ÁþÆÿÁüÁà&lt;ÁñÁüÁüÂÿÁçŸíÿŸÃÿÁþÆÿÁüÁä~&lt;ÁùÁüÁüÂÿÁçŸíÿŸÃÿÁþÉÿÁüyÂÿÁÌÁüÂÿÁçŸìÿÁçŸÃÿÁþÉÿÁþÂÿÁÌ ÂÿÁçíÿÁç¿ÃÿÁþÉÿÁþÂÿÁÎ ÃÿþÿÂÿÁß ÃÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÇÿÁãõÿÁÏÁÇÇÿŸÆÿÁÃõÿÁÏ‡ÆÿÁçŸÆÿÁÏõÿÁÏŸÆÿÁçŸÆÿÁþôÿÁÏÆÿÁçŸÅÿÁÏðÿÁüÁøÁüOÁÏÁÿyÁÏÁÿÁçÆÿÁÏðÿÁüÁðxÁÏÁÿyÁÏÂÿÆÿÁÏÁÎ ðÿÁüÁæ1ŽÁÏÁÿyÁÏÂÿŸÆÿ&#x27;ÁÎòÿ3ÁÎOÁÏÁÿyÁÏÁÿÁçŸÆÿ&#x27;ÁÌLñÿ3ÁÎOÁÏÁþNyÁÏÁÿÁçŸÆÿ&#x27;ÁÌÁîðÿÁà3ÁÎOÁÏÁþNyÁÏÁÿÁçŸÅÿÁþsÁÌÁþðÿÁà3ÁÌÁçÁÏÁþNyÁÏÁÿÁçÆÿÁþsÁÌÁþðÿÁç3ÁÌÁçÁÏÁüÁæyÁÏÂÿÆÿÁÎsÁÌÁþïÿÁüÁç1ŒÁçÁÏÁüÁæ1ÁÏÂÿŸÅÿÁÌÁùÁþïÿÁüÁðx    ÁóÁÏÁüÁæÁÏÁÿÁçŸÅÿÁÌÁù|ïÿÁüÁøÁüIÁóÁÏÁüÁç    ÁÏÁÿÁçŸÇÿÁÎxõÿÁÏÃÿÁÏÁÿÁçŸÇÿÁÎ ôÿÁü ÃÿÁÏÁÿÁçÈÿÁÏôÿÁü ÃÿÁÏÂÿÈÿÁßƒôÿÁü ÃÿÁÏÂÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸþÿžsž&lt;yÁÿÁçŸþÿžsœ9ÁÿÁçŸþÿžs™9ÁÿÁçÿÿÁþsŸÁÏ9ÂÿÿÿÁþsŸÁÏ9ÂÿŸþÿÁþs˜9ÁÿÁçŸþÿÁþs˜9ÁÿÁçŸþÿÁþs™ÁÏ9ÁÿÁçŸþÿžcÁÏ9ÁÿÁçÿÿž ÂÂÿÿÿŸž&lt;ÂÿŸÿÿÃÿ9ÁÿÁçŸÿÿÃÿ9ÁÿÁçŸÿÿÃÿ9ÁÿÁçŸÿÿÃÿyÁÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçŸÿÿÅÿÁçÿÿÇÿÿÿÇÿŸÿÿÅÿÁçŒ0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃŒ0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃ 0ÁÃÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÁÿ‡ÁøÂx €Â Áøù Áÿ‡ÁøÂx €Â Áøù Áÿ‡ÁøÂx €Â Áøù Áÿ‡ÁøÂx €Â Áøù Áø€ÂÿÂ‡Âÿ‡Áøù Áø€ÂÿÂ‡Âÿ‡Áøù Áø€ÂÿÂ‡Âÿ‡Áøù Áø€ÂÿÂ‡Âÿ‡Áøù €€Áÿ€‡€‡ûÿ€€Áÿ€‡€‡ûÿ€€Áÿ€‡€‡ûÿ€€Áÿ€‡€‡ûÿÁÿ€Áÿ‡Áø‡€‡ûÿÁÿ€Áÿ‡Áø‡€‡ûÿÁÿ€Áÿ‡Áø‡€‡ûÿÁÿ€Áÿ‡Áø‡€‡ûÿÁÿ€xÂ‡Áÿ‡€‡ûÿÁÿ€xÂ‡Áÿ‡€‡ûÿÁÿ€xÂ‡Áÿ‡€‡ûÿÁÿ€xÂ‡Áÿ‡€‡ûÿÁøÂÁø Â‡Âÿ‡íÿÁøŒqÁã‡ÁáÁÿÆÿÁø‡Áø Â‡Âÿ‡íÿÁøÁÀ1ÁãÁÀÆÿÁø‡Áø Â‡Âÿ‡íÿÁøÁÃÁâ1ŒÆÿÁø‡Áø Â‡Âÿ‡îÿÁÇÁâxÁþ?ÆÿÁÿÁðp‡ €Â îÿÁÇÁãÁøÁþ?ÆÿÁÿÁøx‡€€Â îÿÁÄ1ÁãÁø€?ÆÿÁÿÁøx‡€€Â îÿÁÀ1ÁãÁø€?ÆÿÁÿÁøx‡€€Â îÿÁÃÁñÁãÁøŽ0ÆÿÁÿ‡Áÿ€ xòÿÁÇ‘ÁâxŽ0ÆÿÁÿ‡Áÿ€ xñÿÁøÁÇÁÂ1ÁÄpÆÿÁÿ‡Áÿ€ xñÿÁøÁà8ÁÀÆÿÁÿ‡Áÿ€ xñÿÁøÁð|#‡ÁðÁÿÆÿ‡Áð‡Âÿ€ òÿÁãÃÿÆÿ‡Áø‡Âÿ€ òÿÁãÃÿÆÿ‡Áø‡Âÿ€ òÿÁãÂÿÁàÆÿ‡Áø‡Âÿ€ òÿÁãÂÿÁàÆÿ€ÂÂÿÁø xÁøðÿÁãÂÿÁàÆÿ€‡ÂÿÁø xÁøûÿ€‡ÂÿÁø xÁøûÿ€‡ÂÿÁø xÁøûÿ‡ÁðÁøxÃ €ûÿ‡ÁøÁøxÃ €ûÿ‡ÁøÁøxÃ €ûÿ‡ÁøÁøxÃ €ûÿÁð ‡ÃÿÁøüÿÁø Â‡ÃÿÁøüÿÁø Â‡ÃÿÁøüÿÁø Â‡ÃÿÁøüÿÁÿÁøÁÿ‡Áøx ÁøûÿÁÿÁøÁÿ‡Áøx ÁøûÿÁÿÁøÁÿ‡Áøx ÁøòÿÁþ?ÇÿÁÿÁøÁÿ‡Áøx ÁøòÿÁþ?ÇÿÄÿ€ öÿÁþ?ÇÿÄÿ€ öÿÁþ?ÇÿÄÿ€ öÿÁþ?ÇÿÄÿ€ ñÿÁøŒpÁðÁñ!Áâ Äÿ€Â Â‡€Â íÿÁøÁÀ0`0 Áâ Äÿ€Â Ã‡€Â íÿÁøÁÃF0ÁÂÁãŒ Äÿ€Â Ã‡€Â îÿÁÇÁâ&lt;cÁøÄÿ€Â Ã‡€Â îÿÁÇÁâ&lt;cÁøÄÿ‡ÂÿÃ‡Áÿ‡Âÿ‡îÿÁÄ&lt;@Áâ&lt;cÁøÄÿ‡ÂÿÃ‡Áÿ‡Âÿ‡îÿÁÀ&lt;@Áâ&lt;cÁøÄÿ‡ÂÿÃ‡Áÿ‡Âÿ‡îÿÁÃÁüGÁâ&lt;cŽ Äÿ‡ÂÿÃ‡Áÿ‡Âÿ‡îÿÁÇœGÁâ&lt;cŽ Äÿ‡€‡€Â‡€‡íÿÁøÁÇb1ÁâÁãŽ Äÿ‡€‡€Â‡€‡íÿÁøÁà0 1Áâ ÁâÁøÄÿ‡€‡€Â‡€‡íÿÁøÁðp8qÁâ!ÁâÁøÄÿ‡€‡€Â‡€‡ïÿÁüÄÿÁøÄÿ‡€‡Áø ‡€‡ïÿÁüÄÿÁøÄÿ‡€‡Áø ‡€‡ïÿÁüÄÿÁãœ Äÿ‡€‡Áø ‡€‡ïÿÁýÄÿÁã¼ Äÿ‡€‡Áø ‡€‡ôÿÁãÁü Äÿ‡€‡ÁÿÁø‡€‡ûÿ‡€‡ÁÿÁø‡€‡ûÿ‡€‡ÁÿÁø‡€‡ûÿ‡€‡ÁÿÁø‡€‡ûÿ‡Âÿ‡Áøx‡Âÿ‡ûÿ‡Âÿ‡Áøx‡Âÿ‡ûÿ‡Âÿ‡Áøx‡Âÿ‡ûÿ‡Âÿ‡Áøx‡Âÿ‡ûÿ€Â € €Â ûÿ€Â € €Â ûÿ€Â € €Â ûÿ€Â € €Â ûÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÚÿÁü|&gt;&lt; qƒÁüÔÿÁñÁðÁøÁð1ÁÃ8&lt;cÂÿÚÿÁüx&lt;@0ÁøÔÿÁñÁà8Áñ ÁÁ0&lt;cÂÿÚÿÁüqŽ&lt;CÁÂ0ÁøÔÿÁñÁÆ8Áñ q#&lt;cÂÿÛÿÁãÁÆ&lt;GÁâ8Áð‡ÕÿÁñq?Ž&lt;cÂÿÛÿÁãÁÆ&lt;GÁâÁñÁÇÕÿÁñq?ŽN&lt;cÂÿÛÿÁãÁÆ&lt;D1ÁâÁñÁÇÕÿÁñÁñ N&lt;cÂÿÛÿÁãÁÆ&lt;@1ÁãÁñÁÇÕÿÁñ Áñ F&lt;cÂÿÛÿÁãÁÆ&lt;CÁñÁãÁÀÁñÁÇÕÿÁñÁñ#ŒF&lt;cÂÿÛÿÁãÁÆ&lt;G‘ÁâÁñÁÇÕÿÁñq#ŒÁæ&lt;cÂÿÚÿÁüqŽ8GÁâ8ÁñÁÇÔÿÁñÁÆ8Ááq 1ÁâcÂÿÚÿÁüx `1ÁãÁñÁÇÔÿÁñÁàx€ÁÀ 0Áã cÂÿÚÿÁü|&gt;pqÁãƒÁñÁÇÔÿÁñÁðÁøÁÁÁÀÁÂ&lt;8Áã„cÂÿâÿÁñÁÇÙÿÁñÅÿÁãÂÿâÿÁñÁÇÙÿÁñÅÿÁãÂÿÜÿÁþ?ÄÿÁñÁÇÖÿÁøÂÿÁóÅÿÁãÂÿÜÿÁþ?ÄÿÁñÁÇÖÿÁøÂÿÁ÷ÅÿÁãÂÿÜÿÁþ?ÄÿÁñÁÇÖÿÁøÈÿÁãÂÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÿÿÇÿÉÿÁøÃÿÁÀ?ÁÿÁãÂÿÁÿÁøÃÿÁÀÂÿÁüÃÿÂÿÁøÁþ?ÈÿÁãÁüÁñÂÿÁÇÁøÂÿÁãÈÿÉÿÁøÃÿ ÁÿÁáÂÿÁÿÁàÂÿÁþ ÂÿÁüÂÿÁø ?ÁÿÁøÁþ?ÈÿÁÁÁüÁðÂÿ‡ÁøÁÿÁÃÈÿÉÿÁøÂÿÁü ÁÿÁñÂÿÁÿÁÀ ÁÿÁü ÂÿÁüÂÿÁð ÁÿÁø?Áþ?ÈÿÁÁÁüÁøÂÿÁüÁÿÁÇÈÿÉÿÁøÂÿÁø?ÁÿÁñÂÿÁÿƒÁð?ÁÿÁø?ƒÂÿÁøÂÿÁàÁþÁÿÁøÁþ?ÈÿÁÁÁüÁøÂÿÁüÁÿÁÇÈÿÉÿÁøÂÿÁøÁÿÁàÁÿÁøÁÿÁþ?ÁÿÁü?ÁÿÁðÁÿÁáÂÿÁøÂÿÁÃÁÿ‡ÁÿÁøÁþ?ÈÿˆÁüÁüÁÿÁþ?ÁÿÈÿÉÿÁøÂÿÁðÁÿÁøÁÿÁøÁÿÁþ?ÁþÁþÁÿÁáÁÿÁðÂÿÁøÂÿ‡ÁÿÁÃÁÿÁøÁþ?ÈÿˆÁüÁüÁÿÁþ?ÁÿÈÿÉÿÁøÂÿÁñÁÿÁøÁøÁü?Áþ?ÁÿÁÿÁãÁÿÁøÂÿÁð‡ÂÿÁÿÁãÁÿÁø‡Áþ?ÈÿˆÁüÁü?ÁþÁþÁÿÈÿÉÿÁøÂÿÁñÁÿÁüÁüÁüÁü?ÁÿÁÿÁÇÁÿÁüÁÿÁñÁÇÂÿÁÿÁñÁÿÁøÁÇÁþ?Èÿ|Áþ?Áþ?ÁÿÁÿÈÿÂÿÁø ÄÿÁøÂÿÁñÁÿÁüÁüÂ ÁüÁÿÁÿÁÇÁÿÁüÁÿÁáÁÃÂÿÁÿÁñÁÿÁøÁãÁþ?Ãÿ ?Ãÿ|ÁþÂ ?ÁÿÂ ÃÿÁÀ ÂÿÂÿÁø ÄÿÁøÂÿÁðÃÿÁþÂ Äÿ‡Áÿ‡ÁÿÁþ?ÁÿÂãÁÿÁþÁÿÁøÁÿÁøÁáÁþ?Ãÿ ?Ãÿ|ÁÿÂ Áÿ€ ?ÃÿÁÀ ÂÿÂÿÁø ÄÿÁøÂÿÁøÂÿÁþÂ ÄÿÁÇÁÿÁÿÁþ?ÁÿÂãÁÿÁþ?ÁÿÁøÁÿÁøÁñÁþ?Ãÿ ?Ãÿ&lt;ÁÿÂ Áÿ€ ?ÃÿÁÀ ÂÿÉÿÁøÂÿÁøÂÿÁþÁðÄÿÁÇÁÿÁÿÁþ?ÁÿÁÃÁáÁÿÁþ?ÁÿÁøÁÿÂøÁþ?Èÿ&gt;&lt;ÁÿÁøÁÿ‡Áü?ÈÿÉÿÁøÂÿÁüÃÿÁñÄÿÁÇÁÿÁÿÁþ?ÁÿÁÇÁñÁÿÁþ?ÁÿÁøÁÿÂøÁþ?Èÿ&gt;&lt;ÁÿÁøÂÿÁÇÁüÈÿÉÿÁøÂÿÁþ ÂÿÁñÄÿÁÇÁÿÁÿÁþ?ÁÿÁÇÁñÁÿÁþ?ÁÿÁøÁÿÁøÁü~?Èÿ&gt;ÁÿÁøÂÿÁÇÁüÈÿÉÿÁøÃÿ€ÂÿÁãÄÿÁÇÁÿÁÿÁþ?Áÿ‡ÁðÁÿÁþ?ÁÿÁøÁÿÁøÁþ&gt;?ÈÿÁÿÁÇÁñÂÿÁãÁøÉÿÉÿÁøÃÿÁøÂÿÁãÄÿÁÇÁÿÁÿÁþ?ÁÿÁøÁÿÁþ?ÁÿÁøÁÿÁøÁþ&gt;?ÈÿÁÿÁÇÁñÂÿÁãÁøÉÿÂÿÁø ÄÿÁøÄÿÂÿ‡ÁÃÄÿÁÇÁÿÁÿÁþ?ÁÿÁøÁÿÁþ?ÁÿÁøÁÿÁøÁÿ?Èÿ ÁÿÁÃÁáÂÿÁáÁðÄÿÁÀ ÂÿÂÿÁø ÄÿÁøÄÿÁðÂÿÂÇÄÿÁÇÁÿ‡ÁÿÁü?ÁÿÁøÁþÁÿÁðÁÿÁøÁÿ?ÈÿÁÿŒÁÿÂãÂÿÂñÄÿÁÀ ÂÿÂÿÁø ÄÿÁøÄÿÁøÂÿÂÇÄÿÁÿÁÇÁÿÁüÁÿÁüÁÿÁÿÁñÁÿÁøÁÿŽ?ÈÿÁÿŒÁÿÂãÂÿÂñÄÿÁÀ ÂÿÉÿÁøÂÿÁøÁÿÁøÂÿÁãÁÿÁþ?ÁÿÁÿÁÇÁÿÁüÁþÁü?ÁÿÁÿÁñÁÿÁøÁÿÁÆ?ÈÿÁÿ„ÁÿÁñÁÇÂÿÁøÁãÉÿÉÿÁøÂÿÁøÁÿÁøÂÿÁãÁÿÁþÁÿÁÿÁãÁÿÁøÁÿÁþ?Áþ?ÁÿÁÿÁãÁÿÁøÁÿÁÂ?ÈÿÁÿÁÄÁÿÁñÁÇÂÿÁøÁãÉÿÉÿÁøÂÿÁøÁøÂÿÁáÂÿÁþÁÿÁáÁÿÁðÁÿÁþ?Áþ?Áÿ‡ÁÿÁÃÁÿÁøÁÿÁâ?ÈÿÁÿÁÄÁÿÁð‡ÂÿÁøCÉÿÉÿÁøÂÿÁü?ÁñÂÿÁñÂÿÁü?ÁÿÁðÁÿÁáÁÿÁü?ÁþÁÿÁÃÁÿ‡ÁÿÁøÁÿÁð?ÈÿÁÿÁÀÁÿÁøÂÿÁüGÉÿÉÿÁøÂÿÁüÁÁÂÿÁñÂÿƒÁð?ÁÿÁø?ƒÁÿÁüÁÿÁÿÁàÁþÁÿÁøÁÿÁð?ÈÿÁÿÁàÁÿÁøÂÿÁüGÉÿÈÿÁðÂ Áþ ÂÿÁø?ÂÿÁÀ ÁÿÁü ÁÿÁüÁÿÁÿÁð ÁÿÁøÁÿÁø?ÈÿÁÿÁàÁÿÁüÂÿÁþÉÿÈÿÁðÂ Áÿ€ÂÿÁø?ÂÿÁàÂÿÁþ ÁÿÁøÁÿÁÿÁø ?ÁÿÁøÁÿÁü?ÈÿÁÿÁàÁÿÁüÂÿÁþÉÿÈÿÁðÂ ÁÿÁà?ÂÿÁø?ÂÿÁüÃÿÁÀÁÿÁøÂÿÂÿÂÿÁøÁÿÁü?ÈÿÁÿÁðÁÿÁüÂÿÁþÉÿ
+T180 5 0 457 958 \\
+T180 5 0 214 953 \\
+T180 5 0 458 918 \\
+T180 5 0 457 884 \\
+T180 5 0 506 826 \\
+T180 5 0 471 792 \\
+T180 5 0 51 792 \\
+T180 5 0 471 756 \\
+T180 5 0 338 755 \\
+T180 5 0 506 703 \\
+T180 5 0 471 669 \\
+T180 5 0 51 669 \\
+T180 5 0 471 633 \\
+T180 5 0 338 632 \\
+T180 5 0 506 578 \\
+T180 5 0 471 544 \\
+T180 5 0 51 544 \\
+T180 5 0 471 508 \\
+T180 5 0 338 507 \\
+T180 5 0 506 451 \\
+T180 5 0 471 417 \\
+T180 5 0 51 417 \\
+T180 5 0 471 381 \\
+T180 5 0 338 380 \\
+T180 5 0 506 326 \\
+T180 5 0 471 292 \\
+T180 5 0 51 292 \\
+T180 5 0 471 256 \\
+T180 5 0 338 255 \\
+T180 5 0 505 200 \\
+T180 5 0 470 166 \\
+T180 5 0 50 166 \\
+T180 5 0 470 130 \\
+T180 5 0 337 129 \\
+PRINT
+
+ 
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Yes, this is expected. The CISDFCRC16 command is another way to store a file on the printer.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gabriel Gallegos
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Finally!! i was able to print this stored format... first, i was unable put the format using the Zebra Designer software... i dont know why, the format never appear to be stored on the printer memory using this application but, saving format on my PC, i was able to use &quot;Zebra Setup Utilities&quot; program and the &quot;Open Printer tools&quot; option to locate the &quot;Send and store file in printer memory&quot; under the &quot;Action&quot; tab to store the format on the printer memory. So, using &quot;Zebra SDK Printer&quot; components, i was able to use the &quot;PrintStoredFormat&quot; function to call my format and print it sending it values...
+
+Now... my problem is that, when printing, the printer sends the label correctly but, at the end, after 1 waiting second, the printer pulls a little bit label with blank spaces, so the printer stop not at the end of the current label, but at the start of the next label. This let the label on the wrong position to cut and we need to readjust the label roll each printing time...
+
+Why does this occurs??
+
+
+Regards!
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            It is mostly likely that the issue is related to the calibration. Make sure the printer is calibrated properly. The printer&#x27;s User Guide should have the instruction on how to calibrate the media. Once the calibration is done, press the feed button should precisely advance one label at a time. Secondly, make sure the template file doesn&#x27;t have any commands that alter the label dimension, especially the length, which could void the calibration.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gabriel Gallegos
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Hi Steven...
+
+I have finished reading this manual: https://www.zebra.com/content/dam/zebra_new_ia/en-us/manuals/printers/mobile/zq220/zq220-ug-en.pdf but i cant find the calibration process :(
+
+Is there another guide for this printer?
+
+Very thankful...
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            The ZQ220 has an auto calibrate feature. Just load the media and press the feed button. If one label is advanced after a press on the feed button, then the printer is calibrate properly.
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gabriel Gallegos
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Uhm... i think that my printer is not properly calibrated... when i push the &quot;Feed&quot; button, it only pull a little portion of label...
+
+I have read this document: https://supportcommunity.zebra.com/s/article/000022278?language=en_US and it says that i have a printer model that supports labels, because my printer model is: ZQ22-A0E01KL-00 so i guess that my printer must have the Gap sensor...
+
+In Zebra designer i defined the label format to use: &quot;Gap sense&quot; option in the Printer properties... so, in the FMT file, exists the next command: GAP-SENSE in line 12. but printer still advance a little bit more from the GAP in the next label.
+
+The labels wich i&#x27;m using to work, has 4.75 by 3 inches (Only the white paper) so in the same way are defined in the &quot;Label Dimensions&quot; for the Label format in Zebra Designer... No margins and no vertical radous values are defined in format... all have zero values.
+
+On the &quot;Paper&quot; section, i have selected the &quot;Autimatically set page size based on label dimensions&quot; because is the recomended for &quot;Label&quot; type...
+
+ 
+
+I will appreciate your support... Thanks!
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Not sure if your ZQ220 printer supports the gap sensing or not. To set media sensor setting on the ZQ220 to gap, run the following SGD commands. If the setting can be set to gap, the getvar should return &quot;gap&quot;. Otherwise, the ZQ220 may only support the media with black bars.
+### Set the sensor setting to gap
+! U1 setvar &quot;media.sense_mode&quot; &quot;gap&quot;
+
+### Verify the sensor setting
+! U1 getvar &quot;media.sense_mode&quot;
+ 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gabriel Gallegos
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Ok, i execute the first command and nothing happens... Then, i execute the second command and the device responds with: &quot;gap&quot;
+
+So, i think we&#x27;re ok, the device can print gap labels...
+
+Doing another test... the printer still push a litle bit more label after finish the printing...
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              S
+            
+          
+                
+          
+            Steven Si
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Also make sure that the media.type is set to label as well.
+### Set the media to label
+! U1 setvar &quot;media.type&quot; &quot;label&quot;
+
+### Verify the media type setting
+! U1 getvar &quot;media.type&quot; 
+
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+  
+
+
+
+
+
+    
+
+        
+      
+                    
+            
+              G
+            
+          
+                
+          
+            Gabriel Gallegos
+          
+          
+            3 years 6 months ago
+          
+        
+      
+
+           
+                          
+            
+          
+              
+      
+                  
+            
+          
+              
+    
+
+        
+      
+            Done... and result is the same... :(
+
+I think there isn&#x27;t another way... i must override the size label for this printer, in order to consider the extra spaces that send after finishing the print process...
+
+ 
+
+Thanks for your patience!
+
+ 
+
+Sincerely, Gabo.
+      
+    
+
+        
+     
+        
+      
+                          
+              
+    
+  
+
+
+
+    
+  
+    
+                
+        
+          
+            Log in 
+            or register 
+            to post comments
+          
+        
+      
+      
+
+
+
+        
+      
+                              
+    
+
+  
+
+</pre></body></html>
