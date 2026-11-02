@@ -1,0 +1,38 @@
+name: Faculty demo checks
+on:
+  pull_request:
+    paths:
+      - 'faculty-checkin-2026-11-02/**'
+      - '.github/workflows/faculty-demo.yml'
+  push:
+    paths:
+      - 'faculty-checkin-2026-11-02/**'
+      - '.github/workflows/faculty-demo.yml'
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Check syntax and behavior
+        run: |
+          node --version
+          python3 --version
+          node --check faculty-checkin-2026-11-02/demo/app.js
+          node --test faculty-checkin-2026-11-02/demo/test-demo.cjs
+      - name: Verify delivered file manifest
+        run: |
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          root = Path('faculty-checkin-2026-11-02')
+          manifest = json.loads((root / 'MANIFEST.json').read_text())
+          expected = manifest['files']
+          actual = {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest() for p in root.rglob('*') if p.is_file() and p.name != 'MANIFEST.json'}
+          assert actual == expected, 'File manifest mismatch'
+          print(f'PASS: {len(actual)} file hashes match')
+          PY
