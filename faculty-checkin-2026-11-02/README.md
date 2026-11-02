@@ -4,7 +4,7 @@ This folder is a review candidate for the private archive repository. It is not 
 
 ## Run the static report locally
 
-From this directory, run `python -m http.server 18790 --bind 127.0.0.1` and open `http://127.0.0.1:18790/demo/`. Click **Load case and evidence**, then **Download candidate JSON**. Serve only a reviewed copy from a private computer; the demo has no authentication and must not be exposed to the internet. It loads fixed public-case paraphrase and editorial source review, not a live query, database or model. A source or case change is rejected until the content pins and review are updated. Hashes verify consistency, not identity or correctness.
+From this directory, run `python -m http.server 18790 --bind 127.0.0.1` and open `http://127.0.0.1:18790/demo/`. Click **Show the documentation evidence**, then **Download case report (JSON)**. The interface presents one question, a versioned official source and a proposed next review step; detailed limits are collapsed, and recorded model observations are linked separately. Serve only a reviewed copy from a private computer; the demo has no authentication and must not be exposed to the internet. It loads fixed public-case paraphrase and editorial source review, not a live query, database or model. A source or case change is rejected until the content pins and review are updated. Hashes verify consistency, not identity or correctness.
 
 ## What it shows
 
