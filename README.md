@@ -6,7 +6,7 @@ Developers use Zebra devices to scan barcodes and run business applications. Whe
 
 ## What we have done
 
-We have processed an existing forum archive and prepared eight development cases with related official references. Some cases still lack original text, images, or attachments, so the collection is not yet a complete benchmark.
+Our first deliverable is a short case report showing the question, relevant official passages, missing information, and a specific request for Zebra review. We have prepared eight development cases and identified twelve official sources; some original materials and version details remain incomplete. Some cases still lack original text, images, or attachments, so the collection is not yet a complete benchmark.
 
 Two recent local analyses show the kind of result we want to produce:
 
