@@ -4,7 +4,13 @@ Developers use Zebra devices to scan barcodes and run business applications. Whe
 
 **Our goal is to turn real developer questions into clear, evidence-backed case analyses.** We want to show what the official documentation explains, what information is missing, and what needs an expert's judgment. We will then compare how different models answer the same question using the same documentation.
 
-## What we have done
+## Project website · November 10, 2026
+
+[Open the project website](https://zebra-techdocs-practicum.vercel.app/).
+
+The read-only website includes the TC26 scanner lifecycle and DataWedge MultiBarcode reports, with source annotations and proposed documentation edits. These are preliminary analyses, not verified fixes or Zebra-approved guidance. Model comparison, device testing, and reader evaluation remain pending.
+
+## Earlier work through November 5
 
 Our first deliverable is a short case report showing the question, relevant official passages, missing information, and a specific request for Zebra review. We have prepared eight development cases and identified twelve official sources; some original materials and version details remain incomplete. Some cases still lack original text, images, or attachments, so the collection is not yet a complete benchmark.
 
