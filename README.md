@@ -8,7 +8,9 @@ Developers use Zebra devices to scan barcodes and run business applications. Whe
 
 [Open the project website](https://zebra-techdocs-practicum.vercel.app/).
 
-The website opens directly to a case table, without a sidebar. Its six public cases link to three complete archived articles (Notify, Import Config, and OEMinfo) and three excerpt previews. This selected subset is not the complete collected dataset or a complete TechDocs mirror.
+The website opens directly to a case table, without a sidebar. 6 public cases · 4 complete articles, 2 excerpt links · Proposals, not approved fixes. No internal customer tickets. This selected subset is not the complete collected dataset or a complete TechDocs mirror.
+
+[EHS 2.8 revision proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/ehs28-revised.html#linkremoval): official EHS 2.8 settings article retrieved on 13 November 2026. This is not the October archive. Only E1 is added; original code examples are unchanged. The reported device version remains unverified. The existing link-removal subsection already identifies the configuration entry and redeployment step.
 
 The revised pages show deletions, replacements, and additions in place, with numbered explanations and source links. Import I3 proposes a result-mode replacement while preserving the import-specific receiver. Notify N4 adds two result-request extras and explains the remaining receiver requirement. OEMinfo O1 separates service configuration from actual query outcomes. These changes are documentation proposals, not verified device repairs.
 
@@ -16,7 +18,7 @@ The revised pages show deletions, replacements, and additions in place, with num
 
 The [independent methods report](https://zebra-techdocs-practicum.vercel.app/document-reader/methods.html), currently in Chinese, separates completed source review and software checks from unperformed model, device, and reader comparisons. It is not a model ranking or proof of customer acceptance. The older two-case report remains historical evidence, not the overall methods report.
 
-The November 13 release passed 557 Python tests, with 10 existing skips, and 115 frontend tests. Independent review and Grammarly review of the new English prose were completed. The live table, Import replacement, Notify additions, OEMinfo illustrations, methods link, and downloads were checked. No internal customer tickets were published. Controlled model comparison, device validation, reader evaluation, and cross-framework integration remain unfinished.
+The November 13 release passed 558 Python tests, with 10 existing skips, and 115 frontend tests. Independent review and Grammarly review of the new English prose were completed. The live table, Import replacement, Notify additions, OEMinfo illustrations, methods link, and downloads were checked. No internal customer tickets were published. Controlled model comparison, device validation, reader evaluation, and cross-framework integration remain unfinished.
 
 ## Earlier work through November 5
 
