@@ -4,11 +4,19 @@ Developers use Zebra devices to scan barcodes and run business applications. Whe
 
 **Our goal is to turn real developer questions into clear, evidence-backed case analyses.** We want to show what the official documentation explains, what information is missing, and what needs an expert's judgment. We will then compare how different models answer the same question using the same documentation.
 
-## Project website · November 10, 2026
+## Project website · November 13, 2026
 
 [Open the project website](https://zebra-techdocs-practicum.vercel.app/).
 
-The read-only website includes the TC26 scanner lifecycle and DataWedge MultiBarcode reports, with source annotations and proposed documentation edits. These are preliminary analyses, not verified fixes or Zebra-approved guidance. Model comparison, device testing, and reader evaluation remain pending.
+The website opens directly to a case table, without a sidebar. Its six public cases link to three complete archived articles (Notify, Import Config, and OEMinfo) and three excerpt previews. This selected subset is not the complete collected dataset or a complete TechDocs mirror.
+
+The revised pages show deletions, replacements, and additions in place, with numbered explanations and source links. Import I3 proposes a result-mode replacement while preserving the import-specific receiver. Notify N4 adds two result-request extras and explains the remaining receiver requirement. OEMinfo O1 separates service configuration from actual query outcomes. These changes are documentation proposals, not verified device repairs.
+
+[Download CSV](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.csv) or [download XLSX](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.xlsx). Both exports were downloaded through the live website and matched the reviewed files exactly. Each contains six case rows and 19 columns; the workbook contains 24 hyperlinks.
+
+The [independent methods report](https://zebra-techdocs-practicum.vercel.app/document-reader/methods.html), currently in Chinese, separates completed source review and software checks from unperformed model, device, and reader comparisons. It is not a model ranking or proof of customer acceptance. The older two-case report remains historical evidence, not the overall methods report.
+
+The November 13 release passed 557 Python tests, with 10 existing skips, and 115 frontend tests. Independent review and Grammarly review of the new English prose were completed. The live table, Import replacement, Notify additions, OEMinfo illustrations, methods link, and downloads were checked. No internal customer tickets were published. Controlled model comparison, device validation, reader evaluation, and cross-framework integration remain unfinished.
 
 ## Earlier work through November 5
 
