@@ -97,4 +97,6 @@ This public repository holds research materials; application development is kept
 
 [EMDK for Android 11.0 RS6100 proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/emdk11-rs6100/index.html#rs6100-device-enumeration): links the supported scanner list to the documented enumeration overload without inventing a named identifier.
 
-[DataWedge 11.2 Workflow Input proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/dw112-workflow/index.html#image-capture-versus-free-form-ocr): distinguishes image capture from the Free-Form OCR feature introduced in 11.4. The production table has 23 proposed revisions pending Zebra review, with matching CSV and XLSX downloads.
+[DataWedge 11.2 Workflow Input proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/dw112-workflow/index.html#image-capture-versus-free-form-ocr): distinguishes image capture from the Free-Form OCR feature introduced in 11.4.
+
+[DataWedge 8.1 MultiBarcode licensing proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/dw81-licensing/index.html#license-and-build-specific-menu): separates the Professional-series license requirement from the configuration menu and the 8.1.45 label change. The production table has 24 proposed revisions pending Zebra review, with matching CSV and XLSX downloads.
