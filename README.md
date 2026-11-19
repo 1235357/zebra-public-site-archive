@@ -10,7 +10,9 @@ Developers use Zebra devices to scan barcodes and run business applications. Whe
 
 [Compare the four evidence-discovery approaches](https://zebra-techdocs-practicum.vercel.app/document-reader/methods.html#two-case-source-discovery). This methods appendix uses two known development cases, not a blind model or device evaluation.
 
-Current release (r56, November 19, 2026): 52 English review cases. [StageNow 5.8 Troubleshooting](https://zebra-techdocs-practicum.vercel.app/document-reader/stagenow58-dsd/index.html#dsd-xpert-step) adds an Xpert Mode DSD diagnostic entry before the separate plug-in deletion section. It preserves the adjacent source and masks the example address. It does not recommend a repair or infer a cause.
+[Three-case evidence-routing replay](https://zebra-techdocs-practicum.vercel.app/document-reader/methods.html#version-filter-route-replay) (r57 report update). The report compares version filtering and first-neighbor substitution on preselected document editions. The 52 case rows and r56 downloads are unchanged.
+
+Current case-data release (r56, November 19, 2026): 52 English review cases. [StageNow 5.8 Troubleshooting](https://zebra-techdocs-practicum.vercel.app/document-reader/stagenow58-dsd/index.html#dsd-xpert-step) adds an Xpert Mode DSD diagnostic entry before the separate plug-in deletion section. It preserves the adjacent source and masks the example address. It does not recommend a repair or infer a cause.
 
 Previous release (r55, November 19, 2026): 51 English review cases. [Enterprise Browser 3.3 Feature Demo](https://zebra-techdocs-practicum.vercel.app/document-reader/eb33-featuredemo/index.html#enable-versus-start) distinguishes Enable in step 4 from the soft trigger in step 5. It preserves the test barcode and points to the official example for the unbundled result illustration. It does not diagnose the reported CC600 behavior.
 
