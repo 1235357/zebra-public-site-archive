@@ -8,7 +8,7 @@ Developers use Zebra devices to scan barcodes and run business applications. Whe
 
 [Open the project website](https://zebra-techdocs-practicum.vercel.app/).
 
-The English-only project homepage opens directly to a six-column case table modeled on the SPR worksheet, without a sidebar. Thirty-four published cases link directly to documentation revision previews. These proposals are for client review, not approved fixes. No internal customer tickets are displayed. This selected subset is not the complete collected dataset or a complete TechDocs mirror.
+The English-only project homepage opens directly to a six-column case table modeled on the SPR worksheet, without a sidebar. Thirty-six published cases link directly to documentation revision previews. These proposals are for client review, not approved fixes. No internal customer tickets are displayed. This selected subset is not the complete collected dataset or a complete TechDocs mirror.
 
 [EMDK Setup 9.0 revision proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/emdk-setup9/index.html#package-version): adds guidance distinguishing the product release, Visual Studio extension, and NuGet package version. It does not assert compatibility or availability from other feeds.
 
@@ -42,7 +42,9 @@ The revised pages show deletions, replacements, and additions in place, with num
 
 [Enterprise Browser 1.6 Printer App proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/eb16-printer/index.html#select-printer-in-app): separates address-filtered discovery, Enterprise Browser printer ID lookup and successful connection. It explains when an app selection prompt can be avoided without promising unattended Android pairing.
 
-[Download CSV](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.csv) or [download XLSX](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.xlsx). Both exports were downloaded through the live website and matched the reviewed files exactly. In r36, each contains 34 case rows and 19 columns; the workbook contains 136 hyperlinks and no formula cells.
+[OEMinfo touch-mode snapshot proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/oeminfo-properties/index.html#touch-mode-snapshot) and [SIM EID field proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/oeminfo-properties/index.html#sim-eid-provider-fields) have different case IDs and share one static article. The first distinguishes published values from live readback; the second points to EID fields already documented, without promising an endpoint or slot for an unverified installation. The release masks a visible local example path and omits embedded illustration metadata.
+
+[Download CSV](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.csv) or [download XLSX](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.xlsx). Both exports were downloaded through the live website and matched the reviewed files exactly. In r37, each contains 36 case rows and 19 columns; the workbook contains 144 hyperlinks and no formula cells.
 
 The [independent methods report](https://zebra-techdocs-practicum.vercel.app/document-reader/methods.html), now in English, separates completed source review and software checks from unperformed model, device, and reader comparisons. It is not a model ranking or proof of customer acceptance. The older two-case report remains historical evidence, not the overall methods report.
 
@@ -53,6 +55,8 @@ The previous November 13 release passed 562 Python tests, with 10 existing skips
 The r35 release passed 604 Python tests (10 skipped) and 156 JavaScript tests; independently checked all manifest files, the new review anchor, and the matching live CSV and XLSX. The new static review mirrors the full article body, not its SmartDocs behavior or shell.
 
 The r36 release passed 606 Python tests (10 skipped) and 156 JavaScript tests. Independent review checked all 611 pinned files and both source illustrations. Illustration pixels are unchanged; ancillary metadata is omitted. Browser downloads were re-parsed and matched the release data.
+
+The r37 two-case batch passed 608 Python tests (10 skipped) and 156 JavaScript tests; independent checks verified all 617 pinned files, both anchors, legacy routes and sanitized image replacements.
 
 ## Earlier work through November 5
 
