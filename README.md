@@ -8,7 +8,9 @@ Developers use Zebra devices to scan barcodes and run business applications. Whe
 
 [Open the project website](https://zebra-techdocs-practicum.vercel.app/).
 
-Current release (r48, November 19, 2026): 44 English review cases. [DataWedge 15.0 Get Profiles List](https://zebra-techdocs-practicum.vercel.app/document-reader/dw15-profiles-list/index.html#profiles-list-result-receiver) moves the same-edition receiver registration reference next to the example, distinguishes the query result from barcode Intent Output, and preserves both original code blocks. It does not diagnose the reported Ionic bridge behavior.
+Current release (r49, November 19, 2026): 45 English review cases. [EMDK for Android 7.0 SDK dependency](https://zebra-techdocs-practicum.vercel.app/document-reader/emdk70-dependency/index.html#check-sdk-dependency-repository) cross-references later repository-migration guidance beside the unchanged dependency declaration and original screenshots. It does not promise that an older EMDK binary is available from another repository or diagnose the reported build failure.
+
+Previous release (r48, November 19, 2026): 44 English review cases. [DataWedge 15.0 Get Profiles List](https://zebra-techdocs-practicum.vercel.app/document-reader/dw15-profiles-list/index.html#profiles-list-result-receiver) moves the same-edition receiver registration reference next to the example, distinguishes the query result from barcode Intent Output, and preserves both original code blocks. It does not diagnose the reported Ionic bridge behavior.
 
 Previous release (r47, November 19, 2026): 43 English review cases. [DataWedge 13.0 scanner decoder readback](https://zebra-techdocs-practicum.vercel.app/document-reader/sc13-revised.html#verify-decoder-settings) adds a version-matched configuration verification step alongside the existing scanner support warning. It does not diagnose or resolve the reported WT5400 behavior.
 
@@ -22,7 +24,7 @@ Previous review snapshot (r43, November 19, 2026): the English case table and bo
 
 Previous review snapshot (r42, November 19, 2026): [StageNow 5.22 status-query example](https://zebra-techdocs-practicum.vercel.app/document-reader/stagenow522-nav/index.html#navigation-bar-query-output-review) now flags a discrepancy between the documented input and output while preserving both code samples and the Android 11+ query limitation. This is an evidence gap beside the earlier [Enable Navigation Bar correction](https://zebra-techdocs-practicum.vercel.app/document-reader/stagenow522-nav/index.html#navigation-bar-example-parameter), not a separate case or a verified device fix. At r42 the 37-row table and downloads were unchanged.
 
-The English-only project homepage opens directly to a six-column case table modeled on the SPR worksheet, without a sidebar. Forty-four published cases link directly to documentation revision previews. These proposals are for client review, not approved fixes. No internal customer tickets are displayed. This selected subset is not the complete collected dataset or a complete TechDocs mirror.
+The English-only project homepage opens directly to a six-column case table modeled on the SPR worksheet, without a sidebar. Forty-five published cases link directly to documentation revision previews. These proposals are for client review, not approved fixes. No internal customer tickets are displayed. This selected subset is not the complete collected dataset or a complete TechDocs mirror.
 
 [EMDK Setup 9.0 revision proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/emdk-setup9/index.html#package-version): adds guidance distinguishing the product release, Visual Studio extension, and NuGet package version. It does not assert compatibility or availability from other feeds.
 
@@ -64,7 +66,7 @@ The same case now includes a [DataWedge 15.0 Switch to Profile proposal](https:/
 
 The [StageNow 5.22 navigation example revision](https://zebra-techdocs-practicum.vercel.app/document-reader/stagenow522-nav/index.html#navigation-bar-example-parameter) changes one XML parameter name in the same umbrella case. The Android 13 activity-restart warning and the Android 11+ MX query limitation are preserved; device recovery and viewport behavior were not tested.
 
-[Download CSV](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.csv) or [download XLSX](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.xlsx). Both exports were downloaded through the live website and matched the reviewed files exactly. In r48, each contains 44 case rows and 19 columns; the workbook contains 176 hyperlinks and no formula cells.
+[Download CSV](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.csv) or [download XLSX](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.xlsx). Both exports were downloaded through the live website and matched the reviewed files exactly. In r49, each contains 45 case rows and 19 columns; the workbook contains 180 hyperlinks and no formula cells.
 
 The [five-case methods comparison](https://zebra-techdocs-practicum.vercel.app/document-reader/methods.html#five-case-evidence) reports fixed-budget evidence retrieval against a manually labeled reference; those results are not model or device accuracy. The [independent methods report](https://zebra-techdocs-practicum.vercel.app/document-reader/methods.html), now in English, separates completed source review and software checks from unperformed model, device, and reader comparisons. It is not a model ranking or proof of customer acceptance. The older two-case report remains historical evidence, not the overall methods report.
 
