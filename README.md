@@ -8,7 +8,7 @@ Developers use Zebra devices to scan barcodes and run business applications. Whe
 
 [Open the project website](https://zebra-techdocs-practicum.vercel.app/).
 
-The website opens directly to a case table, without a sidebar. 10 published case rows with linked documentation revision previews. These proposals are for client review, not approved fixes. No internal customer tickets are displayed. This selected subset is not the complete collected dataset or a complete TechDocs mirror.
+The English-only project homepage opens directly to a six-column case table modeled on the SPR worksheet, without a sidebar. Ten published cases link directly to documentation revision previews. These proposals are for client review, not approved fixes. No internal customer tickets are displayed. This selected subset is not the complete collected dataset or a complete TechDocs mirror.
 
 [EMDK Setup 9.0 revision proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/emdk-setup9/index.html#package-version): adds guidance distinguishing the product release, Visual Studio extension, and NuGet package version. It does not assert compatibility or availability from other feeds.
 
@@ -24,7 +24,7 @@ The revised pages show deletions, replacements, and additions in place, with num
 
 [Download CSV](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.csv) or [download XLSX](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.xlsx). Both exports were downloaded through the live website and matched the reviewed files exactly. Each contains ten case rows and 19 columns; the workbook contains 40 hyperlinks and no formula cells.
 
-The [independent methods report](https://zebra-techdocs-practicum.vercel.app/document-reader/methods.html), currently in Chinese, separates completed source review and software checks from unperformed model, device, and reader comparisons. It is not a model ranking or proof of customer acceptance. The older two-case report remains historical evidence, not the overall methods report.
+The [independent methods report](https://zebra-techdocs-practicum.vercel.app/document-reader/methods.html), now in English, separates completed source review and software checks from unperformed model, device, and reader comparisons. It is not a model ranking or proof of customer acceptance. The older two-case report remains historical evidence, not the overall methods report.
 
 In the November 19 release, 567 Python tests passed and 10 were skipped; 155 JavaScript tests passed. Independent review and production browser verification covered both new article anchors, the repaired example jump, the EMDK article images, and both table downloads. The new article previews preserve the documentation body within a review layout, not the entire original site shell.
 
