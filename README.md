@@ -4,11 +4,15 @@ Developers use Zebra devices to scan barcodes and run business applications. Whe
 
 **Our goal is to turn real developer questions into clear, evidence-backed case analyses.** We want to show what the official documentation explains, what information is missing, and what needs an expert's judgment. We will then compare how different models answer the same question using the same documentation.
 
-## Project website · November 13, 2026
+## Project website · November 19, 2026
 
 [Open the project website](https://zebra-techdocs-practicum.vercel.app/).
 
-The website opens directly to a case table, without a sidebar. 7 public cases · 7 complete articles, no excerpt links · Proposals, not approved fixes. No internal customer tickets. This selected subset is not the complete collected dataset or a complete TechDocs mirror.
+The website opens directly to a case table, without a sidebar. 9 published case rows with linked documentation revision previews. These proposals are for client review, not approved fixes. No internal customer tickets are displayed. This selected subset is not the complete collected dataset or a complete TechDocs mirror.
+
+[EMDK Setup 9.0 revision proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/emdk-setup9/index.html#package-version): adds guidance distinguishing the product release, Visual Studio extension, and NuGet package version. It does not assert compatibility or availability from other feeds.
+
+[DataWedge 15.0 Soft Scan Trigger revision proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/soft-scan-trigger15/index.html#resultcodes): repairs the link from Result Codes to the result-handling example. It leaves the API, warnings, and code samples unchanged and does not diagnose the related forum symptom.
 
 [EHS 2.8 revision proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/ehs28-revised.html#linkremoval): official EHS 2.8 settings article retrieved on 13 November 2026. This is not the October archive. Only E1 is added; original code examples are unchanged. The reported device version remains unverified. The existing link-removal subsection already identifies the configuration entry and redeployment step.
 
@@ -16,11 +20,13 @@ The website opens directly to a case table, without a sidebar. 7 public cases ·
 
 The revised pages show deletions, replacements, and additions in place, with numbered explanations and source links. Import I3 proposes a result-mode replacement while preserving the import-specific receiver. Notify N4 adds two result-request extras and explains the remaining receiver requirement. OEMinfo O1 separates service configuration from actual query outcomes. These changes are documentation proposals, not verified device repairs.
 
-[Download CSV](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.csv) or [download XLSX](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.xlsx). Both exports were downloaded through the live website and matched the reviewed files exactly. Each contains seven case rows and 19 columns; the workbook contains 28 hyperlinks.
+[Download CSV](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.csv) or [download XLSX](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.xlsx). Both exports were downloaded through the live website and matched the reviewed files exactly. Each contains nine case rows and 19 columns; the workbook contains 36 hyperlinks and no formula cells.
 
 The [independent methods report](https://zebra-techdocs-practicum.vercel.app/document-reader/methods.html), currently in Chinese, separates completed source review and software checks from unperformed model, device, and reader comparisons. It is not a model ranking or proof of customer acceptance. The older two-case report remains historical evidence, not the overall methods report.
 
-The November 13 release passed 562 Python tests, with 10 existing skips, and 115 frontend tests. Independent review and Grammarly review of the new English prose were completed. The live table, Import replacement, Notify additions, OEMinfo illustrations, methods link, and downloads were checked. No internal customer tickets were published. Controlled model comparison, device validation, reader evaluation, and cross-framework integration remain unfinished.
+In the November 19 release, 567 Python tests passed and 10 were skipped; 155 JavaScript tests passed. Independent review and production browser verification covered both new article anchors, the repaired example jump, the EMDK article images, and both table downloads. The new article previews preserve the documentation body within a review layout, not the entire original site shell.
+
+The previous November 13 release passed 562 Python tests, with 10 existing skips, and 115 frontend tests. Independent review and Grammarly review of the new English prose were completed. The live table, Import replacement, Notify additions, OEMinfo illustrations, methods link, and downloads were checked. No internal customer tickets were published. Controlled model comparison, device validation, reader evaluation, and cross-framework integration remain unfinished.
 
 ## Earlier work through November 5
 
