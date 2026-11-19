@@ -91,4 +91,6 @@ This public repository holds research materials; application development is kept
 
 [DataWedge 15.0 scanner status FAQ proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/dw15-faq/index.html#scanner-status-vs-decode-outcome): distinguishes scanner readiness from per-scan decode outcomes and links the version-matched Intent Output reference.
 
-[DataWedge 11.3 Intent Result Codes proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/dw11-result/index.html#command-status-and-result-details): distinguishes command result status, optional details, and scan output beside the existing example. The production table has 20 proposed revisions pending Zebra review.
+[DataWedge 11.3 Intent Result Codes proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/dw11-result/index.html#command-status-and-result-details): distinguishes command result status, optional details, and scan output beside the existing example.
+
+[DataWedge 14.0 RFID Input proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/dw14-rfid/index.html#read-bank-vs-prefilter-bank): distinguishes the memory bank read from the one used to match a pre-filter pattern. The production table has 21 proposed revisions pending Zebra review.
