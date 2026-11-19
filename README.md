@@ -10,7 +10,9 @@ Developers use Zebra devices to scan barcodes and run business applications. Whe
 
 [Compare the four evidence-discovery approaches](https://zebra-techdocs-practicum.vercel.app/document-reader/methods.html#two-case-source-discovery). This methods appendix uses two known development cases, not a blind model or device evaluation.
 
-Current release (r55, November 19, 2026): 51 English review cases. [Enterprise Browser 3.3 Feature Demo](https://zebra-techdocs-practicum.vercel.app/document-reader/eb33-featuredemo/index.html#enable-versus-start) distinguishes Enable in step 4 from the soft trigger in step 5. It preserves the test barcode and points to the official example for the unbundled result illustration. It does not diagnose the reported CC600 behavior.
+Current release (r56, November 19, 2026): 52 English review cases. [StageNow 5.8 Troubleshooting](https://zebra-techdocs-practicum.vercel.app/document-reader/stagenow58-dsd/index.html#dsd-xpert-step) adds an Xpert Mode DSD diagnostic entry before the separate plug-in deletion section. It preserves the adjacent source and masks the example address. It does not recommend a repair or infer a cause.
+
+Previous release (r55, November 19, 2026): 51 English review cases. [Enterprise Browser 3.3 Feature Demo](https://zebra-techdocs-practicum.vercel.app/document-reader/eb33-featuredemo/index.html#enable-versus-start) distinguishes Enable in step 4 from the soft trigger in step 5. It preserves the test barcode and points to the official example for the unbundled result illustration. It does not diagnose the reported CC600 behavior.
 
 Previous release (r54, November 19, 2026): 50 English review cases. [DataWedge 8.2 Intent Output](https://zebra-techdocs-practicum.vercel.app/document-reader/dw82-gs1-intent/index.html#gs1-datamatrix-label-type) adds the version-matched GS1 DataMatrix decoder condition beside the label_type field. The original section and examples remain intact. The edit does not infer Code 128, FNC1 byte behavior, or the reporter's device settings.
 
@@ -80,7 +82,7 @@ The same case now includes a [DataWedge 15.0 Switch to Profile proposal](https:/
 
 The [StageNow 5.22 navigation example revision](https://zebra-techdocs-practicum.vercel.app/document-reader/stagenow522-nav/index.html#navigation-bar-example-parameter) changes one XML parameter name in the same umbrella case. The Android 13 activity-restart warning and the Android 11+ MX query limitation are preserved; device recovery and viewport behavior were not tested.
 
-[Download CSV](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.csv) or [download XLSX](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.xlsx). Both exports were downloaded through the live website and matched the reviewed files exactly. In r55, each contains 51 case rows and 19 columns; the workbook contains 204 hyperlinks and no formula cells.
+[Download CSV](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.csv) or [download XLSX](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.xlsx). Both exports were downloaded through the live website and matched the reviewed files exactly. In r56, each contains 52 case rows and 19 columns; the workbook contains 208 hyperlinks and no formula cells.
 
 The [five-case methods comparison](https://zebra-techdocs-practicum.vercel.app/document-reader/methods.html#five-case-evidence) reports fixed-budget evidence retrieval against a manually labeled reference; those results are not model or device accuracy. The [independent methods report](https://zebra-techdocs-practicum.vercel.app/document-reader/methods.html), now in English, separates completed source review and software checks from unperformed model, device, and reader comparisons. It is not a model ranking or proof of customer acceptance. The older two-case report remains historical evidence, not the overall methods report.
 
