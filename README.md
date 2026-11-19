@@ -8,7 +8,7 @@ Developers use Zebra devices to scan barcodes and run business applications. Whe
 
 [Open the project website](https://zebra-techdocs-practicum.vercel.app/).
 
-The English-only project homepage opens directly to a six-column case table modeled on the SPR worksheet, without a sidebar. Sixteen published cases link directly to documentation revision previews. These proposals are for client review, not approved fixes. No internal customer tickets are displayed. This selected subset is not the complete collected dataset or a complete TechDocs mirror.
+The English-only project homepage opens directly to a six-column case table modeled on the SPR worksheet, without a sidebar. Seventeen published cases link directly to documentation revision previews. These proposals are for client review, not approved fixes. No internal customer tickets are displayed. This selected subset is not the complete collected dataset or a complete TechDocs mirror.
 
 [EMDK Setup 9.0 revision proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/emdk-setup9/index.html#package-version): adds guidance distinguishing the product release, Visual Studio extension, and NuGet package version. It does not assert compatibility or availability from other feeds.
 
@@ -23,6 +23,8 @@ The English-only project homepage opens directly to a six-column case table mode
 [DataWedge 13.0 Keystroke Output proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/datawedge-keystroke13/index.html#startup-input-readiness): distinguishes the active profile and app text-input readiness from delay settings before diagnosing startup behavior. The updated Methods report shows the six evidence-input replays separately from model or device verification.
 
 [EMDK for Xamarin 7.0 NFC SAM proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/emdk-xamarin-sam7/index.html#sam-version-note): clarifies the difference between the documentation edition, sample package declaration, and installed device runtime, without attributing the reported exception to a particular cause.
+
+[StageNow 5.11 Wi-Fi Manager proxy proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/stagenow-wifi511/index.html#proxy-scope-verification): distinguishes a per-network proxy, a global proxy, and removing a saved network. No device outcome or supported proxy-only change to the reported network was verified.
 
 [DataWedge 15.0 Soft Scan Trigger revision proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/soft-scan-trigger15/index.html#resultcodes): repairs the link from Result Codes to the result-handling example. It leaves the API, warnings, and code samples unchanged and does not diagnose the related forum symptom.
 
