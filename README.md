@@ -101,4 +101,6 @@ This public repository holds research materials; application development is kept
 
 [DataWedge 8.1 MultiBarcode licensing proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/dw81-licensing/index.html#license-and-build-specific-menu): separates the Professional-series license requirement from the configuration menu and the 8.1.45 label change.
 
-[EMDK for Android 7.4 EC30 SmartCradle proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/emdk74-cradle/index.html#callback-power-and-removal): separates command callback status and Android external-power events from physical removal without claiming a supported device-removal event. The production table has 25 proposed revisions pending Zebra review, with matching CSV and XLSX downloads.
+[EMDK for Android 7.4 EC30 SmartCradle proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/emdk74-cradle/index.html#callback-power-and-removal): separates command callback status and Android external-power events from physical removal without claiming a supported device-removal event.
+
+[DataWedge 8.2 RFID Input proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/dw82-rfid/index.html#configuration-versus-rfid-output): gives separate checks for device/reader, effective profile and RFID intent delivery. The production table has 26 proposed revisions pending Zebra review, with matching CSV and XLSX downloads.
