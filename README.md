@@ -95,4 +95,6 @@ This public repository holds research materials; application development is kept
 
 [DataWedge 14.0 RFID Input proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/dw14-rfid/index.html#read-bank-vs-prefilter-bank): distinguishes the memory bank read from the one used to match a pre-filter pattern.
 
-[EMDK for Android 11.0 RS6100 proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/emdk11-rs6100/index.html#rs6100-device-enumeration): links the supported scanner list to the documented enumeration overload without inventing a named identifier. The production table has 22 proposed revisions pending Zebra review.
+[EMDK for Android 11.0 RS6100 proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/emdk11-rs6100/index.html#rs6100-device-enumeration): links the supported scanner list to the documented enumeration overload without inventing a named identifier.
+
+[DataWedge 11.2 Workflow Input proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/dw112-workflow/index.html#image-capture-versus-free-form-ocr): distinguishes image capture from the Free-Form OCR feature introduced in 11.4. The production table has 23 proposed revisions pending Zebra review, with matching CSV and XLSX downloads.
