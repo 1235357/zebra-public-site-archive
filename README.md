@@ -89,4 +89,6 @@ The [structured report behind the earlier example](https://github.com/1235357/ze
 
 This public repository holds research materials; application development is kept separately in the private `zebra-techdocs-practicum` repository. The progress above includes local work through November 5, while the linked demonstration and slides are from November 2. No confirmed device fix, complete forum coverage, or client acceptance is claimed.
 
-[DataWedge 15.0 scanner status FAQ proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/dw15-faq/index.html#scanner-status-vs-decode-outcome): distinguishes scanner readiness from per-scan decode outcomes and links the version-matched Intent Output reference. The production table has 19 proposed revisions pending Zebra review.
+[DataWedge 15.0 scanner status FAQ proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/dw15-faq/index.html#scanner-status-vs-decode-outcome): distinguishes scanner readiness from per-scan decode outcomes and links the version-matched Intent Output reference.
+
+[DataWedge 11.3 Intent Result Codes proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/dw11-result/index.html#command-status-and-result-details): distinguishes command result status, optional details, and scan output beside the existing example. The production table has 20 proposed revisions pending Zebra review.
