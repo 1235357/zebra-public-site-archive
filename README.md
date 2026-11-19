@@ -8,7 +8,7 @@ Developers use Zebra devices to scan barcodes and run business applications. Whe
 
 [Open the project website](https://zebra-techdocs-practicum.vercel.app/).
 
-The English-only project homepage opens directly to a six-column case table modeled on the SPR worksheet, without a sidebar. Thirteen published cases link directly to documentation revision previews. These proposals are for client review, not approved fixes. No internal customer tickets are displayed. This selected subset is not the complete collected dataset or a complete TechDocs mirror.
+The English-only project homepage opens directly to a six-column case table modeled on the SPR worksheet, without a sidebar. Fourteen published cases link directly to documentation revision previews. These proposals are for client review, not approved fixes. No internal customer tickets are displayed. This selected subset is not the complete collected dataset or a complete TechDocs mirror.
 
 [EMDK Setup 9.0 revision proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/emdk-setup9/index.html#package-version): adds guidance distinguishing the product release, Visual Studio extension, and NuGet package version. It does not assert compatibility or availability from other feeds.
 
@@ -17,6 +17,8 @@ The English-only project homepage opens directly to a six-column case table mode
 [StageNow 5.4 File Manager proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/stagenow-filemgr54/index.html#target-uri): corrects the upload input rule to say remote destination URI, not source-file URI. File naming interaction and installed-device behavior remain unverified.
 
 [DataWedge 15.0 RFID Input proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/datawedge-rfid15/index.html#rfid-rssi-reporting): explains that the numeric RSSI post-filter and the Tag Reporting switch describe different settings. It does not infer a new API parameter or a device-level limitation.
+
+[DataWedge 15.0 Intent Output proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/datawedge-intent15/index.html#broadcast-receiver-scope): cross-references Android's runtime receiver policy where relevant, while retaining the original foreground-delay and package/signature guidance. It does not diagnose the reported application failure.
 
 [DataWedge 15.0 Soft Scan Trigger revision proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/soft-scan-trigger15/index.html#resultcodes): repairs the link from Result Codes to the result-handling example. It leaves the API, warnings, and code samples unchanged and does not diagnose the related forum symptom.
 
@@ -28,7 +30,7 @@ The English-only project homepage opens directly to a six-column case table mode
 
 The revised pages show deletions, replacements, and additions in place, with numbered explanations and source links. Import I3 proposes a result-mode replacement while preserving the import-specific receiver. Notify N4 adds two result-request extras and explains the remaining receiver requirement. OEMinfo O1 separates service configuration from actual query outcomes. These changes are documentation proposals, not verified device repairs.
 
-[Download CSV](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.csv) or [download XLSX](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.xlsx). Both exports were downloaded through the live website and matched the reviewed files exactly. Each contains thirteen case rows and 19 columns; the workbook contains 52 hyperlinks and no formula cells.
+[Download CSV](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.csv) or [download XLSX](https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.xlsx). Both exports were downloaded through the live website and matched the reviewed files exactly. Each contains fourteen case rows and 19 columns; the workbook contains 56 hyperlinks and no formula cells.
 
 The [independent methods report](https://zebra-techdocs-practicum.vercel.app/document-reader/methods.html), now in English, separates completed source review and software checks from unperformed model, device, and reader comparisons. It is not a model ranking or proof of customer acceptance. The older two-case report remains historical evidence, not the overall methods report.
 
