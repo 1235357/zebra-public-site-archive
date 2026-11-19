@@ -8,6 +8,8 @@ Developers use Zebra devices to scan barcodes and run business applications. Whe
 
 [Open the project website](https://zebra-techdocs-practicum.vercel.app/).
 
+[Compare the four evidence-discovery approaches](https://zebra-techdocs-practicum.vercel.app/document-reader/methods.html#two-case-source-discovery). This methods appendix uses two known development cases, not a blind model or device evaluation.
+
 Current release (r51, November 19, 2026): 47 English review cases. [EMDK for Android 11.0 Basic Scanning, Step 2](https://zebra-techdocs-practicum.vercel.app/document-reader/emdk-scanning11/index.html#debug-vs-release-scanner-startup) distinguishes initialization and trigger checks across debug and packaged builds, and points to the documented manifest declarations without assigning a cause.
 
 Previous release (r50, November 19, 2026): 46 English review cases. [StageNow 5.6 Smart Profiles, Section II step 3](https://zebra-techdocs-practicum.vercel.app/document-reader/stagenow56-smartprofiles/index.html#smart-profile-plus-error) adds a Zebra support link next to the Plus control used to create a Smart Profile. It does not diagnose the reported workstation. Seven screenshots have masks and two staging-barcode illustrations were not republished.
