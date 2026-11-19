@@ -8,7 +8,9 @@ Developers use Zebra devices to scan barcodes and run business applications. Whe
 
 [Open the project website](https://zebra-techdocs-practicum.vercel.app/).
 
-The English-only project homepage opens directly to a six-column case table modeled on the SPR worksheet, without a sidebar. Thirty-six published cases link directly to documentation revision previews. These proposals are for client review, not approved fixes. No internal customer tickets are displayed. This selected subset is not the complete collected dataset or a complete TechDocs mirror.
+Current review snapshot (r42, November 19, 2026): [StageNow 5.22 status-query example](https://zebra-techdocs-practicum.vercel.app/document-reader/stagenow522-nav/index.html#navigation-bar-query-output-review) now flags a discrepancy between the documented input and output while preserving both code samples and the Android 11+ query limitation. This is an evidence gap beside the earlier [Enable Navigation Bar correction](https://zebra-techdocs-practicum.vercel.app/document-reader/stagenow522-nav/index.html#navigation-bar-example-parameter), not a separate case or a verified device fix. The 37-row table and downloads are unchanged.
+
+The English-only project homepage opens directly to a six-column case table modeled on the SPR worksheet, without a sidebar. Thirty-seven published cases link directly to documentation revision previews. These proposals are for client review, not approved fixes. No internal customer tickets are displayed. This selected subset is not the complete collected dataset or a complete TechDocs mirror.
 
 [EMDK Setup 9.0 revision proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/emdk-setup9/index.html#package-version): adds guidance distinguishing the product release, Visual Studio extension, and NuGet package version. It does not assert compatibility or availability from other feeds.
 
