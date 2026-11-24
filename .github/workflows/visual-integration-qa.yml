@@ -1,0 +1,38 @@
+name: Contextual visual integration QA
+on:
+  pull_request:
+    paths:
+      - 'document-reader/visual/**'
+      - 'visual-integration-qa/**'
+      - '.github/workflows/visual-integration-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-visual-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            document-reader/visual
+            visual-integration-qa
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check portable source and video plan
+        run: node --test visual-integration-qa/test_bundle.cjs visual-integration-qa/test_contextual_video.cjs
+      - name: Check integrated visual interaction
+        run: node visual-integration-qa/test_visual_browser.cjs
+      - name: Check original reader to same-site answer handoff
+        run: node visual-integration-qa/test_team_visual_browser.cjs
+      - name: Encode and decode the contextual video
+        run: node visual-integration-qa/test_contextual_video_browser.cjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: team-contextual-demo-video
+          path: qa-output/contextual-video/
+          retention-days: 7
+          if-no-files-found: error

@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer"><title>Zebra • Ask &amp; Guide</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#182e3a;background:#f3f5f6;line-height:1.5;font-size:15px}*{box-sizing:border-box}body{margin:0}
+header{background:#fff;border-bottom:1px solid #dce3e7}header div,main{max-width:1080px;margin:auto;padding:20px 24px}header div{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+a{color:#076969;text-underline-offset:3px}h1{font-size:32px;line-height:1.13;letter-spacing:-.03em;margin:14px 0 10px}h2{font-size:19px;margin:0 0 12px}h3{font-size:15px;margin:12px 0 7px}
+p{margin:8px 0}.muted{color:#526671;font-size:13px}.kicker{text-transform:uppercase;font-size:11px;letter-spacing:.1em;font-weight:700;color:#176d68}
+.box{background:white;border:1px solid #dbe2e5;border-radius:12px;padding:20px;margin:16px 0}.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+label{display:block;font-size:13px;font-weight:650;margin:11px 0 6px}textarea,input,select,button{font:inherit}textarea,input:not([type=checkbox]):not([type=file]),select{width:100%;padding:10px;border:1px solid #b8c9cc;border-radius:6px;background:#fff;color:#182e3a}textarea{min-height:88px;resize:vertical}textarea.sources{min-height:65px;font-size:13px}
+button{cursor:pointer;font-weight:650;border:1px solid #b8cecc;border-radius:7px;color:#0d5551;background:#fff;padding:10px 14px}button.primary{color:white;background:#08776c;border-color:#08776c}button:disabled{cursor:default;opacity:.5}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0 8px}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid #8dc9bf;outline-offset:2px}
+.notice{background:#edf4f4;padding:12px 14px;border-left:4px solid #428c87;margin:12px 0;border-radius:5px}.warning{background:#fff4e3;border-color:#c28a35}.pill{font-size:12px;font-weight:650;border:1px solid #b8cfce;border-radius:12px;padding:3px 9px;display:inline-block}
+.evidence{background:#f7f9fa;border-left:3px solid #a6b6bd;padding:12px;margin:10px 0;overflow-wrap:anywhere}blockquote{margin:7px 0 0;font-family:ui-monospace,Consolas,monospace;font-size:13px;white-space:pre-wrap}ul{padding-left:20px}li{margin:6px 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;max-height:360px;overflow:auto}
+.step{padding:10px 0;border-bottom:1px solid #e0e6e8}.step:last-child{border-bottom:0}.check{display:flex;gap:8px;align-items:flex-start;font-size:13px;font-weight:400;margin-top:12px}.check input{margin-top:5px}
+#status{min-height:22px}details{margin-top:12px}summary{cursor:pointer;font-weight:650}footer{margin-top:24px;font-size:12px;color:#536873}
+@media(max-width:660px){header div,main{padding:16px}.grid{grid-template-columns:1fr}.box{padding:16px}h1{font-size:27px}}
+
+/* The visual guide is the primary interaction, not a decorative screenshot. */
+.vision-shell{border:1px solid #c5d6d7;border-radius:16px;background:#fff;padding:21px;margin:18px 0 20px;box-shadow:0 4px 20px #183c4009}
+.vision-heading h2{font-size:25px;letter-spacing:-.022em;line-height:1.2;margin:6px 0}.vision-heading p{max-width:760px}
+.vision-kicker{font-size:10px;font-weight:750;letter-spacing:.105em;color:#467075;text-transform:uppercase}
+.vision-flow{display:flex;align-items:stretch;gap:9px;margin:20px 0 13px}.vision-lane{display:flex;flex:1;min-width:0;flex-direction:column;justify-content:center;gap:9px}.vision-arrow{display:flex;align-items:center;justify-content:center;width:21px;flex:0 0 21px;color:#82999e;font-size:23px}
+button.vision-node{text-align:left;width:100%;min-height:115px;border:1px solid #d5dfe2;border-radius:10px;background:#f7f9fa;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:7px;padding:13px 12px;color:#223944;font-weight:500}
+.vision-node strong{font-size:15px;line-height:1.25;overflow-wrap:anywhere}.vision-node-caption{font-size:12px;line-height:1.4;color:#425e69;overflow-wrap:anywhere}.vision-node-status{font-size:9px;letter-spacing:.07em;font-weight:750;color:#526b75}
+button.vision-source{background:#edf6f7;border-color:#a9c7c8}.vision-source .vision-node-caption{font-family:ui-monospace,Consolas,monospace;font-weight:650;color:#146c68}
+button.vision-blocked{background:#fff4e5;border-color:#dfb977}.vision-blocked .vision-node-status{color:#865717}
+button.vision-waiting{background:#f4f6f7;color:#6b7a81;opacity:.88}.vision-selected{background:#edf5f1!important}.vision-current{border:2px solid #08796d!important;background:#f0faf8!important}
+button.vision-node[aria-pressed=true]{outline:3px solid #a7d3ca;outline-offset:2px}
+.vision-next{background:#103b40;color:#fff;border-radius:9px;padding:13px 16px;display:grid;gap:4px}.vision-next .vision-kicker{color:#b4ddd5}.vision-next strong{font-size:15px;font-weight:550;line-height:1.5}
+.vision-inspector{margin-top:12px;border:1px solid #dce5e5;border-radius:9px;padding:15px}.vision-inspector h3{margin:4px 0}.vision-quote{padding:10px 12px;margin-top:8px;border-left:3px solid #8cbab6;background:#f5f9f9;overflow-wrap:anywhere}.vision-quote a{font-size:12px;display:inline-block;margin-top:5px}
+.vision-controls{margin-top:15px;border-top:1px solid #e2e8e8;padding-top:12px}.vision-control{margin:13px 0;display:flex;flex-wrap:wrap;gap:9px;justify-content:space-between;align-items:center}.vision-control strong{font-size:13px}.vision-options{display:flex;flex-wrap:wrap;gap:4px}.vision-option{padding:6px 10px;font-size:13px}.vision-option[aria-pressed=true]{background:#0e756a;color:white;border-color:#0e756a}.vision-foot{font-size:11.5px;color:#60737b;margin-top:15px}.vision-presets{padding:0 0 12px;margin:0 0 13px;border-bottom:1px solid #e2e9e9}.vision-empty{padding:16px 0;color:#60737b}
+@media(max-width:700px){.vision-flow{flex-direction:column;gap:5px}.vision-lane{flex-direction:row;align-items:stretch}.vision-lane>button{flex:1;min-width:0;min-height:88px}.vision-arrow{height:25px;width:100%;flex:0 0 25px;transform:rotate(90deg)}.vision-shell{padding:15px}.vision-heading h2{font-size:21px}}
+
+/* Illustrated visual walkthrough: a single compact, source-linked player. */
+.story-player{padding:14px;background:#f5f8f8;border:1px solid #d9e5e5;border-radius:12px;margin:0 0 19px}
+.story-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:0 1px 9px}
+.story-heading strong{font-size:15px;color:#25444a}.story-scene{background:#fff;border-radius:10px;overflow:hidden}.story-scene svg{display:block;width:100%;height:auto;max-height:330px}
+.story-scene g[role=button]{cursor:pointer}.story-scene g[role=button]:focus-visible{outline:3px solid #168378;outline-offset:2px}
+.story-controls{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:10px 0 7px}.story-controls button{padding:7px 11px;font-size:12px}.story-controls button[data-story-action=play]{background:#126e64;color:#fff;min-width:66px}.story-controls button:disabled{opacity:.45}.story-controls input[type=range]{flex:1;min-width:80px;accent-color:#08796d;cursor:pointer}
+.story-rail{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}.story-step{font-size:11px;padding:5px 8px;background:white;border-color:#d6e2e2}.story-step[aria-pressed=true]{background:#e5f3ee;color:#08796d;border-color:#8cbfb1}
+.story-info{background:#fff;border-radius:9px;padding:12px}.story-info h3{margin:4px 0}.story-info p{margin:5px 0}.story-source{display:grid;gap:6px;margin-top:8px}.story-evidence{padding:8px 10px;border-left:2px solid #8cbab6;background:#f6faf9;overflow-wrap:anywhere}.story-evidence blockquote{margin:5px 0;font-size:13px}.story-evidence span,.story-evidence a{font-size:11px;display:inline-block;margin:3px 12px 0 0}.story-info .vision-foot{margin-top:8px}
+@media(max-width:700px){.story-player{padding:9px}.story-step{font-size:10px}.story-info{padding:10px}.story-scene svg{min-height:155px}}
+
+@media(min-width:901px){
+ .story-player:not([hidden]){display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);grid-template-areas:"heading heading" "scene info" "controls info" "rail info";gap:8px 14px;align-items:start}
+ .story-heading{grid-area:heading;padding-bottom:1px}.story-scene{grid-area:scene}.story-controls{grid-area:controls;margin:0}.story-rail{grid-area:rail;margin:0}.story-info{grid-area:info;align-self:stretch}
+}
+
+.media-panel{border:1px solid #d9e5e5;background:#fff;border-radius:10px;padding:13px;margin:0 0 15px}.media-panel h3{margin:4px 0 6px}.media-assets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}.media-asset{display:flex;flex-direction:column;gap:5px;padding:12px;background:#f5f9f8;border-radius:8px;border:1px solid #e0e9e8;min-width:0}.media-asset a{font-size:13px}.media-asset p{margin:0}.media-check{border-top:1px solid #e1e8e8;padding-top:11px}.media-check .actions{margin:8px 0}.media-check button[aria-pressed=true]{background:#e1f2eb;border-color:#8cbfb1;color:#08796d}.media-check p{margin:5px 0}@media(max-width:700px){.media-assets{grid-template-columns:1fr}}
+
+/* Explicitly requested, browser-local video export; never auto-play. */
+.story-video{grid-column:1/-1;min-width:0;border-top:1px solid #d9e5e5;padding:12px 2px 2px;margin-top:5px}.story-video[hidden]{display:none}.story-video strong{font-size:14px;color:#25444a}.story-video p{margin:5px 0}.story-video-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:7px 0}.story-video-actions button,.story-video-actions a{font-size:12px}.story-video-actions button[hidden]{display:none}.story-video-output video{display:block;width:100%;max-width:780px;height:auto;background:#17393f;border-radius:8px;margin:8px 0}.story-video-output a{overflow-wrap:anywhere}
+</style></head>
+<body><header><div><strong>Zebra TechDocs · Visual Guidance</strong><a href="https://zebra-techdocs-practicum.vercel.app/" target="_blank" rel="noopener noreferrer">Team TechDocs site ↗</a><a href="visual-companion.html?reader=dw62-intent-receiver">Team reader visual companion</a></div></header>
+<main><div class="kicker">Answer-side contribution</div><h1>Ask &amp; Guide</h1>
+<p>Ask a technical question, learn a concept through a contextual visual explanation, or explore a diagnostic step. Official media is selected only when relevant.</p>
+<div id="environment" class="notice">Offline planning is available. Checking for the optional local campus service…</div>
+<section class="vision-shell" id="visionBox" aria-label="Interactive visual guidance">
+<div class="actions vision-presets"><button id="loadConcept">Learn DataWedge Profiles</button><button id="loadPrereq">Scan-trigger flow</button><button id="loadExample">Compare parameter evidence</button><button id="loadConfig">Configuration structure</button><button id="loadUnknown">Missing version</button></div>
+<div id="storyOutput" class="story-player" hidden></div>
+<div id="mediaOutput" class="media-panel" hidden></div>
+<div id="visionOutput"><p class="vision-empty">Preparing the interactive evidence map…</p></div>
+</section>
+<section class="box">
+<h2>Ask a different question</h2>
+<div id="teamNotice" class="notice" hidden></div>
+<label for="question">Developer question</label><textarea id="question">Why might the software scan trigger fail to start scanning in DataWedge 6.8?</textarea>
+<div class="grid"><div><label for="product">Software product</label><select id="product"><option value="">Not specified</option><option value="datawedge" selected>DataWedge</option><option value="ehs">Enterprise Home Screen</option><option value="enterprise-browser">Enterprise Browser</option><option value="emdk-for-android">EMDK for Android</option><option value="stagenow">StageNow</option></select></div>
+<div><label for="version">Applicable documentation edition</label><input id="version" value="6.8" placeholder="e.g. 6.8 (confirm against installed version)"></div></div>
+<label for="context">Public configuration / observation (optional)</label><textarea id="context" placeholder="What was tried? What result was observed? Do not enter private ticket or customer details."></textarea>
+<label for="sources">Official source URLs (optional; up to two, one per line)</label><textarea id="sources" class="sources" placeholder="Leave blank for limited DataWedge topic routing">https://techdocs.zebra.com/datawedge/6-8/guide/api/softscantrigger/</textarea>
+<p class="muted">Automatic routing currently covers a few DataWedge topics. Other topics require the relevant version-specific article. It is not a full TechDocs search engine.</p>
+<details><summary>Import public case handoff</summary><p class="muted">Accepts the team's public case contract, including question and official evidence URLs. Imported text is not treated as verified evidence. Installed version is left blank for confirmation.</p><input id="importFile" type="file" accept=".json,application/json"><p id="importStatus" class="muted"></p></details>
+<details><summary>Import team public case CSV</summary><p class="muted">Question-only intake: never copies a root-cause label or recommended edit into a model question. Case IDs do not prove original-question provenance.</p><div class="actions"><button id="fetchCSV">Load published team CSV</button><input id="csvFile" type="file" accept=".csv,text/csv"></div><p id="csvStatus" class="muted" role="status"></p><label for="csvCase">Select imported public case</label><select id="csvCase" disabled><option value="">No cases loaded</option></select><button id="useCSV" disabled>Use selected question</button><div id="caseOrigin" class="muted"></div></details>
+<label class="check"><input id="consent" type="checkbox">I confirm the question and context contain only public or explicitly approved material. No customer SPRs, credentials or private device data.</label>
+<div class="actions"><button id="plan">Offline guidance · no model</button><button id="evidence">Fetch official excerpts only</button><button id="ask" class="primary">Ask campus Qwen</button><button id="compare">Compare baseline / guided</button></div><p id="status" class="muted" role="status" aria-live="polite"></p>
+</section>
+<section class="box" id="planBox" hidden><h2>Response safeguards</h2><div id="planOutput"></div></section>
+<section class="box" id="sourceBox" hidden><h2>Source evidence</h2><div id="sourceOutput"></div></section>
+<section class="box" id="answerBox" hidden><h2>Model answer review</h2><div id="answerOutput"></div></section><button id="download" hidden>Download result / handoff (JSON)</button>
+<footer>Independent student research prototype. A quoted passage is not a verified technical answer. No device validation, document publication, or measured reduction in support demand is claimed. Campus model only.</footer>
+</main><script src="guidance-planner.js"></script><script src="guidance-intake.js"></script><script src="guidance-visual.js"></script><script src="guidance-storyboard.js"></script><script src="guidance-team-bridge.js"></script><script>
+"use strict";
+const $=id=>document.getElementById(id);let access="",last=null,caseId="",csvRows=[];
+let visualState={},visualFocus="",visualConfirmed=false,visualApplied="",visualKey="",runEpoch=0,storyController=null,teamHandoff=null;
+function clearStoryboard(){if(storyController)storyController.destroy();storyController=null;$("storyOutput").hidden=true;$("mediaOutput").hidden=true;$("mediaOutput").replaceChildren();}
+function removeVisualReport(){
+ if(visualApplied){
+  const v=$("context").value;
+  if(v.endsWith(visualApplied))$("context").value=v.slice(0,v.length-visualApplied.length).trimEnd();
+ }
+ visualApplied="";
+}
+function resetVisualState(){
+ removeVisualReport();visualState={};visualFocus="";visualConfirmed=false;visualKey="";
+}
+function invalidate({keepTeam=false}={}){
+ runEpoch++;last=null;clearStoryboard();resetVisualState();busy(false);if(!keepTeam){teamHandoff=null;$("teamNotice").hidden=true;$("teamNotice").replaceChildren();}
+ $("planBox").hidden=true;$("sourceBox").hidden=true;$("answerBox").hidden=true;$("download").hidden=true;
+ $("visionOutput").replaceChildren(text("p","Question or context changed. Choose Offline guidance to rebuild the visual explanation.","vision-empty"));
+}
+function drawContextualMedia(result){
+ const packet=result.contextual_media,out=$("mediaOutput");
+ out.replaceChildren();out.hidden=!packet||!packet.assets.length;if(out.hidden)return;
+ out.append(text("div","CONTEXTUAL LEARNING MATERIAL","vision-kicker"),text("h3","Learn the concept · official resources"),text("p",packet.reason,"muted"));
+ const assets=text("div","","media-assets");
+ for(const asset of packet.assets){
+  const item=text("div","","media-asset");
+  item.append(text("span",asset.kind==="video"?"VIDEO · OFFICIAL PAGE LISTING":"DIAGRAM · OFFICIAL TECHDOCS","vision-kicker"),text("strong",asset.title));
+  const a=text("a",asset.kind==="video"?"Open introduction video ↗":"Open original diagram ↗");
+  try{const u=new URL(asset.url);const allowed=asset.kind==="video"?u.href==="https://www.youtube.com/watch?v=LCaPhWxk4y0":u.href==="https://techdocs.zebra.com/datawedge/15-0/guide/profiles/dw_profile.png";if(allowed){a.href=u.href;a.target="_blank";a.rel="noopener noreferrer"}}catch{}
+  item.append(a,link(asset.source_url,"Source documentation"),text("p",asset.kind==="video"?"Listed by Zebra; playback and timestamps not independently checked. Opens externally.":"Original official diagram was inspected. Open only if you want to load it.","muted"));
+  assets.append(item)
+ }
+ out.append(assets,text("p","No external media loads automatically. The interactive illustration above works without network or model access.","muted"));
+ if(packet.checkpoint){
+  const question=text("div","","media-check");question.append(text("h3","Quick understanding check"),text("p",packet.checkpoint.prompt));
+  const options=text("div","","actions"),feedback=text("p","","muted");feedback.setAttribute("role","status");
+  const choice=result.learning_checkpoint?.choice;
+  for(const option of packet.checkpoint.options){
+   const b=text("button",option.label);b.type="button";b.dataset.learnChoice=option.id;b.setAttribute("aria-pressed",String(choice===option.id));
+   b.addEventListener("click",()=>{const record=ZebraIntake.checkUnderstanding(packet,option.id);if(!record)return;result.learning_checkpoint=record;feedback.textContent=record.feedback;for(const child of options.children)child.setAttribute("aria-pressed",String(child.dataset.learnChoice===option.id))});options.append(b);
+  }
+  if(result.learning_checkpoint)feedback.textContent=result.learning_checkpoint.feedback;
+  question.append(options,feedback,text("p","Optional self-check only; this is not measured learning effectiveness or a model evaluation.","muted"));out.append(question)
+ }
+}
+function drawVision(result,restore=null){
+ const p=result.plan,key=JSON.stringify([p.question,p.product,p.version,p.source_urls]);
+ if(key!==visualKey){
+  visualState={};visualFocus="";visualConfirmed=false;visualKey=key;visualApplied="";
+ }
+ const map=ZebraVisual.graph(p,result,visualState);
+ const reported=!!visualApplied&&p.context.includes(visualApplied)&&ZebraVisual.reportedContext(map,true)===visualApplied;
+ result.visual_guidance=ZebraVisual.receipt(map,{reported});
+ result.visual_storyboard=ZebraStoryboard.build(map);
+ result.contextual_media=ZebraIntake.contextualMedia(p,map);
+ drawContextualMedia(result);
+ $("storyOutput").hidden=false;
+ if(!storyController)storyController=ZebraStoryboard.mount($("storyOutput"));
+ storyController.update(map,{focus:restore?.node||""});
+ visualFocus=ZebraVisual.render($("visionOutput"),map,{
+  focus:visualFocus,confirmed:visualConfirmed,reported,
+  onFocus:id=>{visualFocus=id;drawVision(result,{node:id})},
+  onState:next=>{
+   const old=map.state||{},field=Object.keys(next).find(k=>next[k]!==old[k]);
+   if(!field)return;
+   const hadReport=!!visualApplied;removeVisualReport();visualState=next;visualConfirmed=false;visualFocus="";
+   if(hadReport){run("plan");return}
+   drawVision(result,{field,value:next[field]});
+  },
+  onConfirm:value=>{visualConfirmed=value;drawVision(result,{confirm:true})},
+  onReport:note=>{
+   if(!note)return;
+   const current=$("context").value.trim(),base=visualApplied&&current.endsWith(visualApplied)?current.slice(0,-visualApplied.length).trimEnd():current;
+   const combined=(base?base+"\n":"")+note;
+   if(combined.length>1200){$("status").textContent="The context field is full. Shorten it before adding these observations.";return}
+   $("context").value=combined;visualApplied=note;visualConfirmed=true;run("plan");
+  }
+ });
+ if(restore){
+  let target;
+  if(restore.node)target=$("visionOutput").querySelector('[data-vision-node="'+restore.node+'"]');
+  else if(restore.field)target=$("visionOutput").querySelector('[data-vision-field="'+restore.field+'"][data-vision-value="'+restore.value+'"]');
+  else if(restore.confirm)target=$("visionOutput").querySelector('input[type="checkbox"]');
+  target?.focus({preventScroll:true});
+ }
+}
+const local=location.protocol==="http:"&&["127.0.0.1","localhost"].includes(location.hostname);
+const text=(tag,value,cls)=>{const e=document.createElement(tag);e.textContent=String(value??"");if(cls)e.className=cls;return e};
+function link(url,label){const e=text("a",label||url);try{const u=new URL(url);if(u.protocol==="https:"&&u.hostname==="techdocs.zebra.com"){e.href=u.href;e.target="_blank";e.rel="noopener noreferrer"}}catch{}return e}
+function addList(parent,items){const list=document.createElement("ul");for(const item of items||[])list.append(text("li",item));parent.append(list)}
+function busy(value){
+ for(const id of ["plan","loadExample","loadUnknown","loadPrereq","loadConfig","loadConcept","question","product","version","context","sources","importFile","csvFile","consent"])$(id).disabled=value;
+ for(const id of ["evidence","ask","compare"])$(id).disabled=value||!access;
+ $("fetchCSV").disabled=value;
+ $("csvCase").disabled=value||!csvRows.length;
+ $("useCSV").disabled=value||!csvRows.length||$("csvCase").value==="";
+}
+async function session(){
+ busy(false);
+ if(!local){$("environment").textContent="Offline guidance is active: no server or model is needed for planning and the checked source cards. Live inference requires the authorized local campus server.";return}
+ try{const r=await fetch("/api/session",{cache:"no-store",signal:AbortSignal.timeout(3000)});const x=await r.json();if(!r.ok||!x.local_session||!x.review_access)throw Error("No local session");access=x.review_access;$("environment").textContent="Offline guidance and official-source retrieval are available. Campus Qwen is optional; its configured model is "+x.model+". Actual connectivity is not yet established.";busy(false)}catch(e){$("environment").textContent="Local service unavailable. Offline guidance still works; restart the campus service for live evidence or inference.";busy(false)}
+}
+function drawPlan(p){
+ $("planBox").hidden=false;const out=$("planOutput");out.replaceChildren();
+ out.append(text("p",p.state==="clarification_required"?"Ask for missing context before answering.":"Version-specific source route selected; installed version is not independently verified.","pill"));
+ if(p.clarification?.length)addList(out,p.clarification);
+ for(const u of p.source_urls||[]){const row=text("div","","step");row.append(link(u));out.append(row)}
+ const head=text("h3","Candidate response safeguards");out.append(head);
+ for(const pol of p.policies||[]){const row=text("div","","step");row.append(text("strong",pol.id.replaceAll("_"," ")),text("p",pol.strategy,"muted"));out.append(row)}
+ out.append(text("p","These are provisional safeguards, not confirmed recurring failure causes.","muted"));
+}
+function drawCards(packet){
+ const cards=packet.cards||[];if(!cards.length)return;
+ $("sourceBox").hidden=false;const out=$("sourceOutput");out.replaceChildren();
+ out.append(text("p",packet.notice,"notice"));
+ for(const c of cards){
+  const item=text("section","","step");item.append(text("h3",c.title+" · DataWedge "+c.version),link(c.url,"Open official article"),text("p","Source inspected "+c.checked+"; not fetched in this run.","muted"));
+  const grid=text("div","","grid");
+  for(const x of c.sections){const card=text("div","","evidence");card.append(text("strong",x.section),text("blockquote",x.quote),text("p",x.note,"muted"));grid.append(card)}
+  item.append(grid,text("p",c.next,"notice"));out.append(item)
+ }
+}
+function drawSources(result){
+ if(!result.sources)return;
+ $("sourceBox").hidden=false;const out=$("sourceOutput");out.replaceChildren();
+ for(const s of result.sources){const item=text("div","","step");item.append(text("strong",s.id+" · retrieved official excerpt"),text("div",s.retrieved_at,"muted"),link(s.url));const detail=document.createElement("details");detail.append(text("summary","Read the frozen excerpt"),text("pre",s.text));item.append(detail);out.append(item)}
+ const sig=result.signals;
+ if(sig?.hits?.length){out.append(text("h3","Source vocabulary check"));const g=text("div","","grid");for(const hit of sig.hits){const card=text("div","","evidence");card.append(text("strong",hit.token),text("p",hit.evidence_id,"muted"),text("blockquote",hit.context),link(hit.url,"Read official source"));g.append(card)}out.append(g,text("p",sig.interpretation,"muted"))}
+ out.append(text("p","Evidence fingerprint: "+result.evidence_sha256,"muted"))
+}
+function drawAnswers(result){
+ if(!result.runs)return;
+ $("answerBox").hidden=false;const out=$("answerOutput");out.replaceChildren();
+ out.append(text("p",result.model_runs_completed+" of "+result.model_attempts+" model runs returned usable JSON. "+(result.runs.length===2?(result.pair_valid?"Same reported model; paired inputs frozen.":"Pair incomplete or model identity unconfirmed."):"One guided answer."),"notice"));
+ const g=text("div","",result.runs.length===2?"grid":"");
+ for(const run of result.runs){
+  const item=text("section","","box");item.append(text("h3",run.mode==="baseline"?"Baseline answer":"Guided answer"));
+  if(!run.completed){item.append(text("p",run.error,"warning notice"));g.append(item);continue}
+  const v=run.result;
+  item.append(text("p",v.model_reported_status.replaceAll("_"," ")+" · independent review required","pill"),text("p",v.exact_quote_count+"/"+v.claim_count+" claims have an exact excerpt match (not accuracy).","muted"));
+  if(!v.quote_checked_claims.length)item.append(text("p","No mechanically quote-checked claim to display."));
+  for(const c of v.quote_checked_claims){const box=text("div","","evidence");box.append(text("p",c.claim),text("blockquote",c.quote),link(c.url,c.evidence_id+" · source"));item.append(box)}
+  if(v.clarification.length){item.append(text("h3","Model asks"));addList(item,v.clarification)}
+  if(v.next_checks.length){item.append(text("h3","Suggested next checks"));addList(item,v.next_checks)}
+  if(v.rejected_claims.length){const d=document.createElement("details");d.append(text("summary",v.rejected_claims.length+" rejected / ungrounded claim(s)"),text("pre",JSON.stringify(v.rejected_claims,null,2)));item.append(d)}
+  item.append(text("p",v.metric_scope,"muted"));g.append(item)
+ }out.append(g);
+ $("download").hidden=false;
+}
+async function run(action){
+ if(action!=="plan"&&!access)return;
+ if(action!=="plan"&&!$("consent").checked){$("status").textContent="Confirm public/approved material before the network request.";return}
+ const epoch=++runEpoch;busy(true);last=null;clearStoryboard();$("visionOutput").replaceChildren(text("p","Preparing the current evidence map…","vision-empty"));$("planBox").hidden=true;$("sourceBox").hidden=true;$("answerBox").hidden=true;$("download").hidden=true;
+ $("status").textContent=action==="plan"?"Preparing offline guidance without network or model…":action==="evidence"?"Fetching official excerpts only. No model call…":"Retrieving version-pinned official sources and requesting campus inference…";
+ try{
+  const input={action,case_id:caseId,question:$("question").value,product:$("product").value,version:$("version").value,context:$("context").value,source_urls:$("sources").value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean),public_only:$("consent").checked};
+  if(action==="plan"){
+   const plan=ZebraGuidance.prepare(input),packet=ZebraIntake.offlineEvidence(plan);
+   last={schema:"zebra-offline-handoff/v1",mode:packet.mode,plan,offline_evidence:packet,model_attempts:0,model_runs_completed:0,device_tested:false,created_at:new Date().toISOString()};
+   if(teamHandoff&&plan.question===teamHandoff.question&&plan.context===teamHandoff.context)last.team_reader_reference=teamHandoff;
+   drawPlan(plan);drawCards(packet);drawVision(last);$("download").hidden=false;
+   $("status").textContent=plan.state==="clarification_required"?"Clarification required. No network or model was used.":packet.cards.length?"Version-matched source cards are ready for inspection. No model was used.":"Guidance plan is ready. No matching cached source; retrieve the official article when connected.";
+   return;
+  }
+  const response=await fetch("/api/answer-guidance",{method:"POST",headers:{"Content-Type":"application/json","X-Review-Access":access},body:JSON.stringify(input)});
+  const result=await response.json();if(epoch!==runEpoch)return;if(!response.ok||!result.ok)throw Error(result.error||"Guidance request failed");
+  last=result;if(teamHandoff&&result.plan.question===teamHandoff.question&&result.plan.context===teamHandoff.context)last.team_reader_reference=teamHandoff;drawPlan(result.plan);drawSources(result);drawAnswers(result);drawVision(result);$("download").hidden=false;
+  $("status").textContent=result.mode==="plan_only"?"Clarification required. No model was called.":result.mode==="evidence_only"?"Official excerpts retrieved. No model was called.":result.model_runs_completed?"Model result returned; inspect candidate claims.":"No usable model result returned. Inspect sources or switch to offline guidance.";
+ }catch(e){if(epoch===runEpoch){$("status").textContent=String(e.message).slice(0,300);$("visionOutput").replaceChildren(text("p","No current visual result. Try Offline guidance or correct the input.","vision-empty"))}}finally{if(epoch===runEpoch)busy(false)}
+}
+$("plan").addEventListener("click",()=>run("plan"));$("evidence").addEventListener("click",()=>run("evidence"));$("ask").addEventListener("click",()=>run("guided"));$("compare").addEventListener("click",()=>run("compare"));
+function example(unknown=false){invalidate();caseId="";$("question").value=unknown?"I am not receiving a result from DataWedge after requesting a command. What should I check?":"Why do the DataWedge result-code instructions mention RECEIVE_RESULT while the sample uses SEND_RESULT? Which should I use?";$("product").value="datawedge";$("version").value=unknown?"":"6.8";$("context").value="";$("sources").value=unknown?"":"https://techdocs.zebra.com/datawedge/6-8/guide/api/resultinfo/";$("consent").checked=false;run("plan")}
+$("loadExample").addEventListener("click",()=>example(false));$("loadUnknown").addEventListener("click",()=>example(true));
+$("loadPrereq").addEventListener("click",()=>{
+ invalidate();caseId="";$("question").value="Why might the software scan trigger fail to start scanning in DataWedge 6.8?";$("product").value="datawedge";$("version").value="6.8";$("context").value="";$("sources").value="https://techdocs.zebra.com/datawedge/6-8/guide/api/softscantrigger/";$("consent").checked=false;run("plan")
+});
+$("loadConcept").addEventListener("click",()=>{
+ invalidate();caseId="";$("question").value="What is DataWedge, and how do its profiles handle input, processing and output?";$("product").value="datawedge";$("version").value="15.0";$("context").value="";$("sources").value="https://techdocs.zebra.com/datawedge/15-0/guide/profiles/";$("consent").checked=false;run("plan")
+});
+$("loadConfig").addEventListener("click",()=>{
+ invalidate();caseId="";$("question").value="How should PARAM_LIST and PLUGIN_CONFIG be nested in DataWedge 15.0 SET_CONFIG?";$("product").value="datawedge";$("version").value="15.0";$("context").value="";$("sources").value="https://techdocs.zebra.com/datawedge/15-0/guide/api/setconfig/";$("consent").checked=false;run("plan")
+});
+function showCSV(csv){
+ const result=ZebraIntake.importCSV(csv);csvRows=result.rows;
+ const sel=$("csvCase");sel.replaceChildren(text("option","Choose a public case"));
+ sel.firstChild.value="";
+ for(let i=0;i<csvRows.length;i++){const row=csvRows[i],o=text("option",row.id+" · "+row.title+(row.question?"":" · original question needed"));o.value=String(i);sel.append(o)}
+ sel.disabled=!csvRows.length;$("useCSV").disabled=true;
+ $("csvStatus").textContent=result.rows.length+" public-ID rows admitted; "+result.skipped_rows+" skipped. "+(result.question_column?"Question column: "+result.question_column+". Origin still needs review.":"No explicit question column; retrieve original question manually.")+" None is declared eligible for blind evaluation.";
+}
+$("csvCase").addEventListener("change",()=>{$("useCSV").disabled=$("csvCase").value===""});
+$("useCSV").addEventListener("click",()=>{
+ const row=csvRows[Number($("csvCase").value)];if(!row||$("csvCase").value==="")return;
+ invalidate();caseId=row.id;$("question").value=row.question;$("context").value="";$("version").value="";$("sources").value=row.source_urls.join("\n");$("consent").checked=false;
+ const product=row.source_urls.length?new URL(row.source_urls[0]).pathname.split("/")[1]:"";$("product").value=ZebraGuidance.products.includes(product)?product:"";
+ const box=$("caseOrigin");box.replaceChildren(text("p",row.question?"Confirm this is the original user question, not an editorial summary.":"Original question missing. Read the linked report and enter the public question yourself."));
+ if(row.forum_url){const a=text("a","Open source forum report");a.href=row.forum_url;a.target="_blank";a.rel="noopener noreferrer";box.append(a)}
+ $("status").textContent="Loaded "+row.id+"; installed version intentionally unset.";
+});
+$("csvFile").addEventListener("change",async()=>{try{const f=$("csvFile").files?.[0];if(!f)return;if(f.size>700000)throw Error("CSV too large");showCSV(await f.text())}catch(e){$("csvStatus").textContent=e.message}});
+$("fetchCSV").addEventListener("click",async()=>{
+ $("csvStatus").textContent="Loading the published public case export…";
+ try{const r=await fetch(access?"/api/public-cases":"https://zebra-techdocs-practicum.vercel.app/document-reader/zebra-cases.csv",{redirect:"error",signal:AbortSignal.timeout(15000)});if(!r.ok)throw Error("Published CSV unavailable");const raw=access?(await r.json()).csv:await r.text();showCSV(raw)}catch(e){$("csvStatus").textContent="Unable to load the published export in this environment. Import the team's downloaded CSV instead."}
+});
+$("importFile").addEventListener("change",async()=>{
+ const file=$("importFile").files?.[0];if(!file)return;try{
+  if(file.size>1000000)throw Error("Public case handoff too large");const x=JSON.parse(await file.text());
+  if(x.inputOrigin!=="public-developer-forum"||typeof x.question!=="string"||typeof x.id!=="string"||!/^ZF-[0-9a-f]{16}$/i.test(x.id))throw Error("Expected a public developer forum ZF case");
+  const urls=(Array.isArray(x.evidence)?x.evidence:[]).filter(e=>e?.kind==="official"&&typeof e.url==="string").map(e=>e.url).filter(url=>{try{const u=new URL(url);return u.protocol==="https:"&&u.hostname==="techdocs.zebra.com"&&!u.username&&!u.password&&!u.port&&!u.search}catch{return false}});
+  const product=urls.length?new URL(urls[0]).pathname.split("/")[1]:"";invalidate();caseId=x.id;$("question").value=x.question.slice(0,1800);$("product").value=["datawedge","ehs","enterprise-browser","emdk-for-android","stagenow"].includes(product)?product:"";$("version").value="";$("context").value="";$("sources").value=[...new Set(urls)].slice(0,2).join("\n");$("consent").checked=false;$("importStatus").textContent="Loaded "+caseId+". Confirm installed version and compatible source URLs before running.";
+ }catch(e){$("importStatus").textContent=e.message}
+});
+$("download").addEventListener("click",()=>{if(!last)return;const b=new Blob([JSON.stringify(last,null,2)+"\n"],{type:"application/json"}),url=URL.createObjectURL(b),a=document.createElement("a");a.href=url;a.download="zebra-answer-"+(last.run_id||"plan")+".json";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
+for(const id of ["question","product","version","context","sources"])$(id).addEventListener("input",()=>{if(id==="question")caseId="";const keepTeam=!!teamHandoff&&$("question").value.trim()===teamHandoff.question&&$("context").value.trim()===teamHandoff.context&&$("product").value===teamHandoff.product;invalidate({keepTeam})});
+function loadTeamReference(){
+ if(!location.search)return false;
+ const key=ZebraTeamVisual.keyFromSearch(location.search),packet=ZebraTeamVisual.handoff(key);
+ if(!packet){$("teamNotice").hidden=false;$("teamNotice").textContent="No reviewed team reader reference matches this link. Enter a question yourself.";return true}
+ invalidate();caseId="";teamHandoff=packet;
+ $("question").value=packet.question;$("product").value=packet.product;$("version").value="";$("sources").value="";$("context").value=packet.context;$("consent").checked=false;
+ const notice=$("teamNotice");notice.hidden=false;
+ notice.append(text("strong","Historical public report · not your device"),text("p","Reported installed version: "+packet.reported_version+". Team document edition: "+packet.reader_document_edition+". Confirm the applicable documentation edition and source; neither has been automatically established for this answer run."));
+ const a=text("a","Return to contextual visual companion");a.href="visual-companion.html?reader="+encodeURIComponent(key);notice.append(a);
+ return false;
+}
+if(window.ZebraGuidance&&window.ZebraIntake&&window.ZebraVisual&&window.ZebraStoryboard&&window.ZebraTeamVisual){busy(false);session();if(!loadTeamReference())run("plan")}else{$("environment").textContent="Required offline modules are missing; open the page from the full repository checkout.";for(const id of ["plan","evidence","ask","compare"])$(id).disabled=true}
+</script></body></html>
