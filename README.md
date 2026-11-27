@@ -4,15 +4,17 @@ Developers use Zebra devices to scan barcodes and run business applications. Whe
 
 **Our goal is to turn real developer questions into clear, evidence-backed case analyses.** We want to show what the official documentation explains, what information is missing, and what needs an expert's judgment. We will then compare how different models answer the same question using the same documentation.
 
-## Project website · November 19, 2026
+## Project website · November 27, 2026
 
-[Open the project website](https://zebra-techdocs-practicum.vercel.app/).
+[Open the single project website](https://zebra-techdocs-practicum.vercel.app/).
+
+The homepage now prioritizes three evidence-backed editorial proposals within a retained 57-entry historical catalogue. These are not customer-approved changes or resolved device incidents. The [coverage review](https://zebra-techdocs-practicum.vercel.app/document-reader/coverage-review.html#author-body-screen) reports 2,852 recovered forum question IDs; identical lexical routing rules yield 319 title-only and 962 title-plus-author-text product-and-operation hints (960 distinct matching author-body hashes). These counts are routing candidates, not confirmed documentation defects, and questions without hints remain in scope. The [method and pattern evidence](https://zebra-techdocs-practicum.vercel.app/document-reader/project-shift.html) separates local corrections, recurring document families, negative controls, and exploratory model observations. Historical release notes follow.
 
 [Compare the four evidence-discovery approaches](https://zebra-techdocs-practicum.vercel.app/document-reader/methods.html#two-case-source-discovery). This methods appendix uses two known development cases, not a blind model or device evaluation.
 
 [Three-case evidence-routing replay](https://zebra-techdocs-practicum.vercel.app/document-reader/methods.html#version-filter-route-replay) (r57 report update). The report compares version filtering and first-neighbor substitution on preselected document editions. This methods update did not change case rows or downloads.
 
-Current case-data release (r62, November 20, 2026 UTC): 57 English review cases. [EHS 4.0: User Access to Settings](https://zebra-techdocs-practicum.vercel.app/document-reader/ehs40-settings-access/index.html#settings-control-scope) distinguishes a hidden shortcut, restricted panel display, and app availability. The original text and four example images remain; the edit links the edition-specific prerequisites and uninstall warning without prescribing a device policy.
+Historical case-data release (r62, November 20, 2026 UTC): 57 English review cases. [EHS 4.0: User Access to Settings](https://zebra-techdocs-practicum.vercel.app/document-reader/ehs40-settings-access/index.html#settings-control-scope) distinguishes a hidden shortcut, restricted panel display, and app availability. The original text and four example images remain; the edit links the edition-specific prerequisites and uninstall warning without prescribing a device policy.
 
 Previous case-data release (r61, November 20, 2026 UTC): 56 English review cases. [DataWedge 6.2: Intent Output](https://zebra-techdocs-practicum.vercel.app/document-reader/dw62-intent-receiver/index.html#receiving-app-intent-filter) corrects which app declares the intent filter and separates a test broadcast from scan delivery. The original XML, illustration, and receiver foreground flag explanation remain. The edit does not identify the cause of the reported device behavior.
 
@@ -179,4 +181,4 @@ Previous review snapshot (r32, 2026-11-19): [30 proposed revisions or review cas
 
 Previous review snapshot (r33, 2026-11-19): [31 proposed documentation revisions](https://zebra-techdocs-practicum.vercel.app/). The [DataWedge 7.3 Scanner Input Plug-in proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/dw73-suspend/index.html#suspend-result-vs-status) adds guidance for comparing a suspend command result to the active profile's separate scanner-state notification. It preserves all six code blocks and does not diagnose the reported TC21 or promise a time to transition. Both exports match r33.
 
-Latest review snapshot (r34, 2026-11-19): [32 proposed documentation revisions](https://zebra-techdocs-practicum.vercel.app/). The [EMDK 13.0 Basic Scanning tutorial proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/emdk13-et51ce/index.html#terminal-model-build-runtime) adds a device, Android build, and EMDK runtime check and replaces a stale 6.10 link with the same-edition programming guide. It preserves 22 code blocks and reuses three verified screenshots. It does not establish the reporter's specific compatibility or device failure. Both online exports match r34.
+Historical review snapshot (r34, 2026-11-19): [32 proposed documentation revisions](https://zebra-techdocs-practicum.vercel.app/). The [EMDK 13.0 Basic Scanning tutorial proposal](https://zebra-techdocs-practicum.vercel.app/document-reader/emdk13-et51ce/index.html#terminal-model-build-runtime) adds a device, Android build, and EMDK runtime check and replaces a stale 6.10 link with the same-edition programming guide. It preserves 22 code blocks and reuses three verified screenshots. It does not establish the reporter's specific compatibility or device failure. Both online exports match r34.
